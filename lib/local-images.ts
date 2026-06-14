@@ -33,10 +33,20 @@ export function programImageSrc(slug: string): string | null {
 /** Crop anchor for object-cover program photos (Tailwind object-position utilities). */
 const PROGRAM_IMAGE_OBJECT_POSITION: Partial<Record<string, string>> = {
   angamardana: "object-[95%_center]",
+  "bhastrika-kriya": "object-left",
 };
 
 export function programImageObjectPositionClass(slug: string): string {
   return PROGRAM_IMAGE_OBJECT_POSITION[slug] ?? "object-center";
+}
+
+/** Sidebar photo height per program (Tailwind aspect-ratio utilities). */
+const PROGRAM_SIDEBAR_IMAGE_ASPECT: Partial<Record<string, string>> = {
+  "bhuta-shuddhi": "aspect-[19/20]",
+};
+
+export function programSidebarImageAspectClass(slug: string): string {
+  return PROGRAM_SIDEBAR_IMAGE_ASPECT[slug] ?? "aspect-[9/10]";
 }
 
 export function programSymbolSrc(slug: string): string | null {

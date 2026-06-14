@@ -34,14 +34,15 @@ export function LocalProgramImage({
   }
 
   return (
-    <Image
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-      sizes={sizes}
-      priority={priority}
-      className={cn(programImageObjectPositionClass(slug), className)}
-    />
+    <div className="relative h-full w-full">
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes={sizes}
+        priority={priority}
+        className={cn(programImageObjectPositionClass(slug), "object-cover", className)}
+      />
+    </div>
   );
 }

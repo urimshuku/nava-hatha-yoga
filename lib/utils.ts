@@ -3,6 +3,14 @@ export function cn(...classes: Array<string | false | null | undefined>): string
   return classes.filter(Boolean).join(" ");
 }
 
+/** Ensure list-style copy ends with a sentence period. */
+export function ensureTrailingPeriod(text: string): string {
+  const trimmed = text.trimEnd();
+  if (!trimmed) return text;
+  if (/[.!?…]$/.test(trimmed)) return trimmed;
+  return `${trimmed}.`;
+}
+
 /** Format an ISO date string into a calm, readable label. */
 export function formatDate(
   dateString?: string | null,

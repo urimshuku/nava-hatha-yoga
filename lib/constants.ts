@@ -93,6 +93,9 @@ const PROGRAM_VIDEO_LINKS: Record<string, { title: string }> = {
   angamardana: {
     title: "Sadhguru speaks on Angamardana",
   },
+  "bhuta-shuddhi": {
+    title: "Bhuta Shuddhi — The Ultimate Cleansing",
+  },
 };
 
 export function getProgramVideoLink(slug: string, programTitle: string) {
