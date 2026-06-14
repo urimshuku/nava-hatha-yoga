@@ -1,5 +1,6 @@
 import type { SchemaTypeDefinition } from "sanity";
 
+import { aboutSection } from "./objects/aboutSection";
 import { blockContent } from "./objects/blockContent";
 import { ctaLink } from "./objects/ctaLink";
 import { imageWithAlt } from "./objects/imageWithAlt";
@@ -15,6 +16,7 @@ import { legalPage } from "./legalPage";
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   // Objects
+  aboutSection,
   blockContent,
   ctaLink,
   imageWithAlt,

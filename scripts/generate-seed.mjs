@@ -305,16 +305,40 @@ docs.push({
   _type: "aboutPage",
   title: "About Ananta Hatha Yoga",
   intro: blocks(
-    "Ananta Hatha Yoga is a space dedicated to Classical Hatha Yoga — practices offered in their original form, with care for both the tradition and the practitioner.",
+    "Ananta Hatha Yoga is dedicated to Classical Hatha Yoga — practices offered in their original form, with care for both the tradition and those who come to learn.",
   ),
-  story: blocks(
-    "The practices offered here are taught by Erlinda Mustafaraj, based in Saranda, Albania. The intention behind Ananta Hatha Yoga is simple: to make these time-honoured practices available locally and to share them with sincerity.",
-    "Rather than treating yoga as exercise, the focus is on offering each practice correctly and completely, so that those who come can experience the depth of the tradition for themselves.",
-  ),
-  training: blocks(
-    "Erlinda is certified to teach these Classical Hatha Yoga practices through Isha, the organisation founded by Sadhguru, and has the permission and training required to offer them in their traditional form.",
-    "This certification reflects a commitment to teaching the practices accurately and responsibly, honouring the source from which they come.",
-  ),
+  sections: [
+    {
+      _type: "aboutSection",
+      title: "Isha Hatha Yoga Teacher Training",
+      body: blocks(
+        "Isha Hatha Yoga School delivers classical Hatha Yoga in its full depth and dimension. It is Sadhguru's vision to offer this ancient science in all its purity and make it available to every individual. As a step towards realizing this vision, he has devised the Hatha Yoga Teacher Training Program. In this program, Hatha Yoga will be taught as a living experience in the most beautiful ashram setting of the Isha Yoga Center, India under the grace of a living master. Upon completion of the program, trainees will have the privilege and fulfillment of bringing this knowledge to many more people.",
+      ),
+    },
+    {
+      _type: "aboutSection",
+      title: "Isha Yoga Center",
+      body: blocks(
+        "Located at the foothills of the lush Velliangiri Mountains in Tamil Nadu, South India, the Isha Yoga Center is a sacred space for self-transformation dedicated to fostering inner transformation and creating an established state of wellbeing in individuals. The center offers all four major paths of yoga – kriya (energy), gnana (knowledge), karma (action), and bhakti (devotion), attracting people from all over the world. A large residential facility houses an active international community of monks, full-time volunteers, guests and visitors, making it a vibrant hub of spiritual growth and activity.",
+      ),
+    },
+    {
+      _type: "aboutSection",
+      title: "Isha Foundation",
+      body: blocks(
+        "Sadhguru's vision to transform the world has been unfolding over the past 30 years through programs designed to create an inclusive culture and establish global harmony. He established the Isha Foundation, an international non-profit service organization, through which he has offered powerful yoga programs that extend a rare opportunity for self-discovery, inner transformation, and empowerment for individuals to reach their full potential. He has initiated many large scale human service projects for rural upliftment, quality education for the poor, environmental stewardship and holistic health, which have impacted the lives of millions of people around the world, earning a special consultative status with the United Nations.",
+        "Isha Foundation is run entirely by volunteers inspired by their own personal transformation. Sadhguru has emphasized that humanity now has the necessary capability and resources to address every problem on the planet; the only missing element is willingness. Sadhguru has kindled this willingness within millions of people to extend their heads, hands, and hearts toward the betterment of humanity.",
+      ),
+    },
+    {
+      _type: "aboutSection",
+      title: "Sadhguru",
+      body: blocks(
+        "Sadhguru is a yogi, mystic and visionary, and a prominent spiritual leader. An author, poet, and internationally-renowned speaker, Sadhguru's wit and piercing logic provoke and widen our perception of life. www.ishafoundation.org",
+        "Yogi, mystic and visionary, Sadhguru is a spiritual master with a difference. An arresting blend of profundity and pragmatism, his life and work serve as a reminder that yoga is not an esoteric discipline from an outdated past, but a contemporary science, vitally relevant to our times. Probing, passionate and provocative, insightful, logical and unfailingly witty, Sadhguru's talks have earned him the reputation of a speaker and opinion-maker of international renown. With a celebratory engagement with life on all levels, Sadhguru's areas of active involvement encompass fields as diverse as architecture and visual design, poetry and painting, ecology and horticulture, music and sports. Sadhguru is also the founder of Isha Foundation, a non-profit organization which has been dedicated to the wellbeing of the individual and the world for the past three decades. Isha Foundation does not promote any particular ideology, religion, or race, but transmits inner sciences of universal appeal.",
+      ),
+    },
+  ],
 });
 
 const legal = [

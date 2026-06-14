@@ -42,12 +42,16 @@ export interface Program extends ProgramListItem {
   seo?: SeoFields;
 }
 
+export interface AboutSection {
+  title?: string;
+  body?: PortableTextBlock[];
+  image?: SanityImage;
+}
+
 export interface AboutPage {
   title?: string;
   intro?: PortableTextBlock[];
-  story?: PortableTextBlock[];
-  training?: PortableTextBlock[];
-  image?: SanityImage;
+  sections?: AboutSection[];
   seo?: SeoFields;
 }
 

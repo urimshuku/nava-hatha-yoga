@@ -17,30 +17,22 @@ export const aboutPage = defineType({
       initialValue: "About Ananta Hatha Yoga",
     }),
     defineField({
-      name: "image",
-      title: "Image",
-      type: "imageWithAlt",
-      group: "content",
-    }),
-    defineField({
       name: "intro",
-      title: "Introduction",
+      title: "Page introduction",
       type: "blockContent",
       group: "content",
+      description:
+        "Optional short introduction shown below the page heading, before the main sections.",
     }),
     defineField({
-      name: "story",
-      title: "Story",
-      type: "blockContent",
+      name: "sections",
+      title: "Sections",
+      type: "array",
       group: "content",
-      description: "The teacher's story and the intention behind Ananta Hatha Yoga.",
-    }),
-    defineField({
-      name: "training",
-      title: "Training & certification",
-      type: "blockContent",
-      group: "content",
-      description: "Training background (e.g. Isha certification).",
+      of: [{ type: "aboutSection" }],
+      description:
+        "The four main sections on the About page. Each section supports a title, image, and text.",
+      validation: (rule) => rule.min(1).max(6),
     }),
     defineField({
       name: "seo",

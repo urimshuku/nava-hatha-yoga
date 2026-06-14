@@ -46,9 +46,11 @@ export const aboutPageQuery = groq`
   *[_type == "aboutPage"][0]{
     title,
     intro,
-    story,
-    training,
-    image${imageFields},
+    sections[]{
+      title,
+      body,
+      image${imageFields}
+    },
     ${seoFields}
   }
 `;
