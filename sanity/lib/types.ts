@@ -64,7 +64,7 @@ export interface HomePage {
     secondaryCta?: CtaLink;
     image?: SanityImage;
   };
-  intro?: { eyebrow?: string; heading?: string; body?: PortableTextBlock[] };
+  intro?: { eyebrow?: string; heading?: string; body?: PortableTextBlock[]; videoUrl?: string };
   featuredPrograms?: ProgramListItem[];
   privateCorporate?: { heading?: string; body?: PortableTextBlock[] };
   aboutIntro?: {

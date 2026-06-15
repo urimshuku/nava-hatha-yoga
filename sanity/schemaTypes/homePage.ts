@@ -32,6 +32,12 @@ export const homePage = defineType({
         { name: "eyebrow", title: "Eyebrow (small label)", type: "string" },
         { name: "heading", title: "Heading", type: "string" },
         { name: "body", title: "Body", type: "blockContent" },
+        {
+          name: "videoUrl",
+          title: "YouTube video URL",
+          type: "url",
+          description: "Optional video shown below the intro text.",
+        },
       ],
     }),
     defineField({

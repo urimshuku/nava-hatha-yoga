@@ -26,7 +26,7 @@ export const homePageQuery = groq`
       secondaryCta{ label, href },
       image${imageFields}
     },
-    intro{ eyebrow, heading, body },
+    intro{ eyebrow, heading, body, videoUrl },
     featuredPrograms[]->{
       _id,
       title,

@@ -1,6 +1,7 @@
 import { EventCard } from "@/components/cards/EventCard";
 import { ProgramCard } from "@/components/cards/ProgramCard";
 import { CMSRichText } from "@/components/content/CMSRichText";
+import { YouTubeEmbed } from "@/components/content/YouTubeEmbed";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
@@ -16,6 +17,7 @@ import {
   getSiteSettings,
   getUpcomingEvents,
 } from "@/sanity/lib/fetch";
+import { getYouTubeVideoId } from "@/lib/youtube";
 
 const HERO_GLOW = {
   backgroundImage:
@@ -53,6 +55,9 @@ export default async function HomePage() {
     : await getFeaturedPrograms();
 
   const hero = home.hero;
+  const introVideoId = home.intro?.videoUrl
+    ? getYouTubeVideoId(home.intro.videoUrl)
+    : null;
 
   return (
     <>
@@ -108,6 +113,15 @@ export default async function HomePage() {
               <CMSRichText value={home.intro?.body} className="text-lg" />
             </MotionReveal>
           </div>
+          {introVideoId ? (
+            <MotionReveal delay={0.15} className="mt-12">
+              <YouTubeEmbed
+                videoId={introVideoId}
+                title={home.intro?.heading ?? DEFAULT_INTRO_HEADING}
+                className="mx-auto max-w-3xl"
+              />
+            </MotionReveal>
+          ) : null}
         </Container>
       </Section>
 

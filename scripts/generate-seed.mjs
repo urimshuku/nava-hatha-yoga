@@ -41,6 +41,11 @@ const PROGRAM_PRICE_LABELS = {
   angamardana: "300€",
   "bhastrika-kriya": "55€",
   "bhuta-shuddhi": "175€",
+  "eye-care-practices": "55€",
+  "jala-neti": "55€",
+  pavanamuktasana: "55€",
+  "shanmukhi-mudra": "55€",
+  "surya-kriya": "150€",
 };
 
 function programPriceLabel(slug, priceLabel) {
@@ -132,69 +137,97 @@ const programs = [
     title: "Eye Care Practices",
     slug: "eye-care-practices",
     shortIntro:
-      "Gentle, traditional practices for the eyes, offered to support comfort and care for the visual system.",
+      "Simple yogic practices that improve or maintain one's eye sight.",
     body: [
-      "The yogic tradition includes simple practices intended to care for the eyes. In a time of constant screens, these offer a grounded way to give attention to the eyes.",
-      "These practices are gentle and accessible, and are designed to support relaxation and comfort around the eyes when done regularly.",
+      "Eye care practices offer a natural way to improve vision related issues which many a times stem from routine patterns of sitting in front of computers, televisions, phones etc.",
+    ],
+    aboutThePractice: [
+      "These unique practises, devised by Sadhguru, are designed to have a phenomenal impact on the overall health and capabilities of the eyes. The practices can help correct eye problems, such as myopia (nearsightedness) and hyperopia (farsightedness) and strengthen the eye's overall vision and focus; that can be maintained even into old age.",
+      "They are a very simple set of practices including body movements and practices directly for the eyes. It is a natural way to correct one's vision without surgery or laser treatments.",
+      "The eyes have a muscular structure just like any other part of the body and, depending on the situation surrounding the eyes, can be corrected naturally provided there are no other complications.",
     ],
     benefits: [
-      "May support comfort and relaxation for the eyes.",
-      "Can help create a habit of mindful care.",
-      "Is designed to support overall ease.",
+      "Strengthens the eye muscles.",
+      "Improves eyesight.",
+      "Helps relieve eye strain from prolonged exposure to computers, bringing relaxation to eyes.",
+      "Recommended for those with Myopia and Hypermetropia.",
     ],
     experiences: [
       "A sense of relief around the eyes",
       "A calmer relationship with daily screen use",
     ],
+    priceLabel: "55€",
   },
   {
     title: "Jala Neti",
     slug: "jala-neti",
     shortIntro:
-      "A traditional cleansing practice for the nasal passages using water, offered in its classical form.",
-    body: [
-      "Jala Neti is a simple cleansing practice (kriya) that uses water to clear the nasal passages. It is one of the well-known hatha yoga cleansing techniques.",
-      "Practised carefully, Jala Neti is designed to support clear breathing and a sense of freshness, and is taught here with attention to correct, hygienic technique.",
+      "Keeping your sinuses well-balanced and maintaining free movement within them is very important. Jala Neti is towards this – it reduces the mucus in the system. But this practice has to be properly imparted. ― Sadhguru",
+    whatIs: [
+      "Jala Neti is a simple but effective process of cleansing the nasal passages with salt water using a copper Jala Neti pot designed by Sadhguru. The process makes breathing easier by helping air enter the lungs unimpeded by mucus and dirt which easily builds up during the day.",
+    ],
+    aboutThePractice: [
+      "In this program you will learn two powerful practices in the form of Jala Neti and Bhastrika Kriya as a powerful combination in taking care of all aspects of making sure your breath and respiratory system function at its optimum.",
     ],
     benefits: [
-      "May support clearer breathing.",
-      "Can help create a sense of freshness.",
-      "Is designed to support nasal comfort.",
+      "Helps with the disease of eyes, nose throat.",
+      "Removes excess mucus and pollutants from nasal passages and sinuses.",
+      "Helps relieve insomnia, tiredness, improves quality of sleep.",
+      "Prevents and helps with respiratory tract disease like asthma, pneumonia, bronchitis.",
+      "Relieves cold, allergies, sinusitis.",
+      "Helps with tonsillitis, allergic rhinitis, hay fever.",
+      "Relieve migraine and headaches, anxiety, stress release and brings tranquility.",
+      "Helps with epilepsy.",
     ],
     experiences: ["Easier, clearer breathing", "A light, refreshed feeling"],
+    priceLabel: "55€",
   },
   {
     title: "Pavanamuktasana",
     slug: "pavanamuktasana",
     shortIntro:
-      "A series of accessible movements designed to support ease and freedom in the joints and body.",
+      "A posture designed to release trapped gas, stimulate digestion, and relieve lower back tension.",
     body: [
-      "Pavanamuktasana is a set of gentle practices that work with the joints and the movement of energy through the body. The practices are accessible to most people.",
-      "This series is designed to support a sense of looseness and ease, gently preparing the body and helping to release tension held in the joints.",
+      "Pavanamuktasana is a classic yoga posture which involves lying on your back, drawing your knees to your chest, and using your arms to compress the abdomen.",
+      "This posture is designed to release trapped gas, stimulate digestion, and relieve lower back tension.",
     ],
     benefits: [
-      "May support ease and mobility in the joints.",
-      "Can help create a sense of lightness.",
-      "Is designed to support gentle release of tension.",
+      "Loosens the spinal vertebrae and creates flexibility and strength in the spine.",
+      "Massages abdomen and internal organs and keeps the colon healthy.",
+      "Effective in removing gas and constipation.",
+      "Can help with impotence, sterility and menstrual disorders.",
+      "Beneficial for heart and lungs.",
+      "Improves digestion.",
+      "Can support in neuromuscular disorders.",
     ],
     experiences: [
       "Freer, more comfortable movement",
       "A relaxed and grounded body",
     ],
+    priceLabel: "55€",
   },
   {
     title: "Shanmukhi Mudra",
     slug: "shanmukhi-mudra",
+    priceLabel: "55€",
     shortIntro:
-      "A subtle practice that turns the attention inward, offered in its traditional form.",
+      "If you turn inward, you will find a space where there is a solution for everything. ― Sadhguru",
     body: [
-      "Shanmukhi Mudra is a practice in which the senses are gently drawn inward. It belongs to the more subtle dimension of yoga practice.",
-      "When approached with patience, this practice is designed to support a quiet, inward focus and a settling of the mind.",
+      "Shanmukhi mudra is a simple but subtle practice that brightens and rejuvenates the face and eyes and brings about a state of balance leading toward increased awareness and meditativeness.",
+    ],
+    aboutThePractice: [
+      "Shanmukhi Mudra is a yogic practice focused on turning inward by using hand gestures and breath to withdraw the senses. It's a subtle but powerful technique that prepares one for Pratyahara, the mastery of senses and offers benefits like improved vision, mental balance, and enhanced awareness.",
+      "Known as beautifying yoga as it also brightens up the aura of the face.",
     ],
     benefits: [
-      "May help bring a quiet, inward focus.",
-      "Can help create a settled state of mind.",
-      "Is designed to support inner stillness.",
+      "Improves vision.",
+      "Brightens the eyes and face.",
+      "Improves the aura in the face for people concerned about their beauty.",
+      "Helps turn a person inward, prepares one for pratyahara.",
+      "Rejuvenates different parts of the face, including helping with ailments related to nose, ears and eyes.",
+      "Helps relieve vertigo and tinnitus.",
+      "Enhances awareness.",
+      "Brings about mental balance.",
     ],
     experiences: [
       "A sense of quiet and inwardness",
@@ -204,16 +237,27 @@ const programs = [
   {
     title: "Surya Kriya",
     slug: "surya-kriya",
+    priceLabel: "150€",
+    videoUrl: "https://youtu.be/_wq-OiPk-pU?si=qrktHL8oppvDoS7N",
     shortIntro:
-      "A potent classical practice working with the sun's energy within the system, taught in its original form.",
+      "\"Surya\" means \"sun,\" and \"kriya\" means \"inner energy process.\" Surya Kriya activates the solar plexus to raise the samat prana, or solar heat, in the system.",
     body: [
-      "Surya Kriya is a classical yogic practice that works with the dimension of the sun within the human system. It is a complete process in itself, performed as a precise sequence.",
-      "Taught in its original form, Surya Kriya is designed to support physical wellbeing, stability of the mind, and a balanced flow of energy. It asks for sincerity and consistency from the practitioner.",
+      "Surya Kriya is a potent 21-step yogic practice of tremendous antiquity, designed as a holistic process for health and inner wellbeing.",
+    ],
+    aboutThePractice: [
+      "Surya Kriya is a potent yogic practice of tremendous antiquity, designed as a holistic process for health, wellness, and complete inner well-being.",
+      "\"Surya\" means \"sun,\" and \"kriya\" means \"inner energy process.\" Surya Kriya activates the solar plexus to raise the samat prana, or solar heat, in the system. It also balances a person's left and right energy channels, leading to stability of the body and stillness of the mind.",
+      "This strong foundation becomes the basis to explore higher dimensions of life.",
     ],
     benefits: [
-      "Is designed to support physical and mental balance.",
-      "May support steadiness and vitality.",
-      "Can help create a stable inner foundation.",
+      "Develops mental clarity and focus.",
+      "Remedies weak constitution.",
+      "Boosts vigor and vitality.",
+      "Balances the body, mind and energies.",
+      "Rejuvenates all the major organ systems including balancing hormonal levels.",
+      "Supports one to become meditative and experience peacefulness and joy.",
+      "Capacity of the lungs increases over a period of time.",
+      "Helps to maintain homeostasis of the body.",
     ],
     experiences: ["A grounded, balanced state", "Steady energy through the day"],
   },
@@ -337,6 +381,7 @@ docs.push({
       "Classical Hatha Yoga stems from a deep understanding of the mechanics of the body, and uses yogic postures, or yogasanas, to enable the system to sustain higher dimensions of energy. By practicing this profound science, one can change and enhance the way they think, feel, and experience life.",
       "Classical Hatha Yoga is about creating a body that is not a hurdle in your life. The body becomes a stepping stone in the progress towards blossoming into your ultimate possibility.",
     ),
+    videoUrl: "https://youtu.be/UIK3hR-NjYU",
   },
   featuredPrograms: [
     { _type: "reference", _key: key(), _ref: "program-surya-kriya" },

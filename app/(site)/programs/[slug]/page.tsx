@@ -17,12 +17,13 @@ import { buildMetadata } from "@/lib/seo";
 import { ensureTrailingPeriod, cn } from "@/lib/utils";
 import {
   PROGRAM_AFTER_PROGRAM_TITLE,
-  PROGRAM_BEFORE_PROGRAM_TITLE,
   PROGRAM_MEDICAL_NOTICE,
   PROGRAM_MEDICAL_NOTICE_TITLE,
   getBeforeProgramNotes,
+  getBeforeProgramTitle,
   getProgramPriceLabel,
   getProgramVideoLink,
+  programWhatIsSectionTitle,
   programAfterProgramText,
   programSidebarCtaText,
 } from "@/lib/constants";
@@ -115,7 +116,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
           <div className="grid gap-12 lg:grid-cols-[1.4fr_0.6fr] lg:gap-16">
             <div>
               {hasRichText(program.whatIs) ? (
-                <ProgramSection title={`What is ${program.title}?`} first>
+                <ProgramSection title={programWhatIsSectionTitle(program.title)} first>
                   <CMSRichText value={program.whatIs} />
                 </ProgramSection>
               ) : null}
@@ -151,7 +152,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
               ) : null}
 
               <ProgramSection
-                title={PROGRAM_BEFORE_PROGRAM_TITLE}
+                title={getBeforeProgramTitle(program.slug)}
                 first={
                   !hasRichText(program.whatIs) &&
                   !hasRichText(program.aboutThePractice) &&

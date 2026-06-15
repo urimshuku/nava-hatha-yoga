@@ -61,7 +61,22 @@ const PROGRAM_BEFORE_PROGRAM_NOTES_BY_SLUG: Record<string, readonly string[]> = 
     "This practice does not require prior yoga experience.",
     "Those who are pregnant, recovering from surgery, or managing chronic injuries should speak with the teacher before registering.",
   ],
+  "eye-care-practices": [
+    "Must have learned any of the following programs such as: Surya Kriya, Surya Shakti, Yogasanas, Angamardana or full Upa-Yoga (not taught online or in Inner Engineering).",
+  ],
+  "jala-neti": [
+    "Must have learned any of the following programs such as: Surya Kriya, Surya Shakti, Yogasanas, Angamardana.",
+  ],
 };
+
+const PROGRAM_BEFORE_PROGRAM_TITLES_BY_SLUG: Record<string, string> = {
+  "eye-care-practices": "Pre-Requisite",
+  "jala-neti": "Pre-Requisite",
+};
+
+export function getBeforeProgramTitle(slug: string): string {
+  return PROGRAM_BEFORE_PROGRAM_TITLES_BY_SLUG[slug] ?? PROGRAM_BEFORE_PROGRAM_TITLE;
+}
 
 export function getBeforeProgramNotes(slug: string): readonly string[] {
   return PROGRAM_BEFORE_PROGRAM_NOTES_BY_SLUG[slug] ?? PROGRAM_BEFORE_PROGRAM_NOTES;
@@ -112,9 +127,21 @@ const PROGRAM_PRICE_LABELS: Record<string, string> = {
   angamardana: "300€",
   "bhastrika-kriya": "55€",
   "bhuta-shuddhi": "175€",
+  "eye-care-practices": "55€",
+  "jala-neti": "55€",
+  pavanamuktasana: "55€",
+  "shanmukhi-mudra": "55€",
+  "surya-kriya": "150€",
 };
 
 export function getProgramPriceLabel(slug: string, priceLabel?: string | null): string {
   if (priceLabel?.trim()) return priceLabel.trim();
   return PROGRAM_PRICE_LABELS[slug] ?? PROGRAM_DEFAULT_PRICE_LABEL;
+}
+
+export function programWhatIsSectionTitle(title: string): string {
+  if (title.endsWith("Practices")) {
+    return `What are ${title}?`;
+  }
+  return `What is ${title}?`;
 }

@@ -34,6 +34,8 @@ export function programImageSrc(slug: string): string | null {
 const PROGRAM_IMAGE_OBJECT_POSITION: Partial<Record<string, string>> = {
   angamardana: "object-[95%_center]",
   "bhastrika-kriya": "object-left",
+  "shanmukhi-mudra": "object-[30%_center]",
+  "surya-kriya": "object-[85%_center]",
 };
 
 export function programImageObjectPositionClass(slug: string): string {
