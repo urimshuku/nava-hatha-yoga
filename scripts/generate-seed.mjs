@@ -398,11 +398,11 @@ programDocs.forEach((p, i) => {
 docs.push({
   _id: "siteSettings",
   _type: "siteSettings",
-  brandName: "Ananta Hatha Yoga",
-  tagline: "Above all, balance.",
+  brandName: "Nava Hatha Yoga",
+  tagline: "In balance, life unfolds.",
   description:
-    "Ananta Hatha Yoga offers Classical Hatha Yoga in Saranda, Albania — practices taught in their traditional form to support clarity, balance, and inner stability. Classes are in-person.",
-  email: "info@anantahathayoga.com",
+    "Nava Hatha Yoga offers Classical Hatha Yoga in Saranda, Albania — practices taught in their traditional form to support clarity, balance, and inner stability. Classes are in-person.",
+  email: "info@navahathayoga.com",
   phone: "+355 69 939 1791",
   whatsapp: "355699391791",
   location: "Saranda, Albania",
@@ -443,7 +443,7 @@ docs.push({
     eyebrow: "About",
     heading: "A quiet, serious space for practice",
     body: blocks(
-      "Ananta Hatha Yoga is dedicated to offering Classical Hatha Yoga with sincerity and respect for the tradition. Classes are held in person in Saranda, Albania, and are open to both beginners and committed practitioners.",
+      "Nava Hatha Yoga is dedicated to offering Classical Hatha Yoga with sincerity and respect for the tradition. Classes are held in person in Saranda, Albania, and are open to both beginners and committed practitioners.",
     ),
   },
   finalCta: {
@@ -456,7 +456,7 @@ docs.push({
 docs.push({
   _id: "aboutPage",
   _type: "aboutPage",
-  title: "About Ananta Hatha Yoga",
+  title: "Classical Hatha Yoga, taught with care.",
   sections: [
     {
       _type: "aboutSection",
@@ -504,7 +504,7 @@ const legal = [
     slug: "terms-of-service",
     title: "Terms of Service",
     body: [
-      "These Terms of Service govern your use of the Ananta Hatha Yoga website and participation in our in-person classes and programs. This is placeholder content to be reviewed and finalised before launch.",
+      "These Terms of Service govern your use of the Nava Hatha Yoga website and participation in our in-person classes and programs. This is placeholder content to be reviewed and finalised before launch.",
       "By using this website or registering for a class, you agree to engage with the practices responsibly and to follow any guidance provided by the teacher. Classes are offered in person, and registration is confirmed personally.",
       "Please consult a qualified health professional before beginning any new practice if you have a medical condition.",
     ],
@@ -513,7 +513,7 @@ const legal = [
     slug: "privacy-policy",
     title: "Privacy Policy",
     body: [
-      "This Privacy Policy describes how Ananta Hatha Yoga handles the information you share with us. This is placeholder content to be reviewed and finalised before launch.",
+      "This Privacy Policy describes how Nava Hatha Yoga handles the information you share with us. This is placeholder content to be reviewed and finalised before launch.",
       "When you contact us through the website, we collect only the details you provide — such as your name, email, phone number, and message — in order to respond to your enquiry. We do not sell your information.",
       "You may request access to or deletion of your information at any time by contacting us.",
     ],
@@ -522,7 +522,7 @@ const legal = [
     slug: "cookie-policy",
     title: "Cookie Policy",
     body: [
-      "This Cookie Policy explains how Ananta Hatha Yoga uses cookies and similar technologies. This is placeholder content to be reviewed and finalised before launch.",
+      "This Cookie Policy explains how Nava Hatha Yoga uses cookies and similar technologies. This is placeholder content to be reviewed and finalised before launch.",
       "This website aims to use only essential cookies needed for the site to function. Any analytics or additional cookies would be described here and used only with appropriate consent.",
     ],
   },
@@ -582,7 +582,7 @@ docs.push({
 
 // Surya Kriya — Saranda intensive (27-29 June 2026)
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.anantahathayoga.com";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.navahathayoga.com";
 
 const suryaKriyaProgram = programs.find((p) => p.slug === "surya-kriya");
 

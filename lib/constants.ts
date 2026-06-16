@@ -4,8 +4,10 @@
  * sensible placeholders before the CMS is connected.
  */
 
-export const SITE_NAME = "Ananta Hatha Yoga";
-export const SITE_TAGLINE = "Above all, balance.";
+export const SITE_NAME = "Nava Hatha Yoga";
+export const SITE_TAGLINE = "In balance, life unfolds.";
+export const ABOUT_PAGE_HERO_TITLE =
+  "Classical Hatha Yoga, taught with care.";
 
 /** Footer certification badge (local file only). */
 export const FOOTER_CERTIFICATION_LOGO = {
@@ -15,13 +17,13 @@ export const FOOTER_CERTIFICATION_LOGO = {
   height: 135,
 } as const;
 export const SITE_DESCRIPTION =
-  "Ananta Hatha Yoga offers Classical Hatha Yoga in Saranda, Albania — practices taught in their traditional form to support clarity, balance, and inner stability. Classes are in-person.";
+  "Nava Hatha Yoga offers Classical Hatha Yoga in Saranda, Albania — practices taught in their traditional form to support clarity, balance, and inner stability. Classes are in-person.";
 
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.anantahathayoga.com";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.navahathayoga.com";
 
 export const CONTACT = {
-  email: "info@anantahathayoga.com",
+  email: "info@navahathayoga.com",
   phone: "+355 69 939 1791",
   // Digits only (international format, no +, spaces, or symbols) for wa.me links
   whatsapp: "355699391791",

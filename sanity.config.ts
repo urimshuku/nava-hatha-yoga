@@ -12,7 +12,7 @@ export default defineConfig({
   basePath: "/studio",
   projectId: projectId || "placeholder",
   dataset,
-  title: "Ananta Hatha Yoga",
+  title: "Nava Hatha Yoga",
   schema: { types: schemaTypes },
   plugins: [
     structureTool({ structure }),

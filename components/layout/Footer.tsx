@@ -16,7 +16,6 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
   const tagline = settings?.tagline || SITE_TAGLINE;
   const email = settings?.email;
   const phone = settings?.phone;
-  const location = settings?.location;
   const whatsapp = settings?.whatsapp;
   const year = new Date().getFullYear();
 
@@ -51,7 +50,6 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
           <div>
             <h2 className="eyebrow mb-4">Contact</h2>
             <ul className="space-y-2.5 text-sm text-charcoal/80">
-              {location ? <li>{location}</li> : null}
               {email ? (
                 <li>
                   <a href={`mailto:${email}`} className="hover:text-saffron">

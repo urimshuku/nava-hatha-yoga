@@ -1,18 +1,42 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 
 import { AboutHighlightCards } from "@/components/content/AboutHighlightCards";
 import { AboutSectionBlock } from "@/components/content/AboutSectionBlock";
-import { CTASection } from "@/components/ui/CTASection";
 import { PageHero } from "@/components/ui/PageHero";
+import { ABOUT_PAGE_HERO_TITLE } from "@/lib/constants";
 import { buildMetadata } from "@/lib/seo";
 import { getAboutPage } from "@/sanity/lib/fetch";
+
+function AboutPageHeroTitle({ title }: { title?: string }): ReactNode {
+  const normalized = title?.trim();
+  const text =
+    !normalized ||
+    normalized === "About Nava Hatha Yoga" ||
+    normalized === "Classical Hatha Yoga, taught with care and precision."
+      ? ABOUT_PAGE_HERO_TITLE
+      : normalized;
+
+  if (text.startsWith("Classical Hatha Yoga,")) {
+    const rest = text.slice("Classical Hatha Yoga,".length).trim();
+    return (
+      <>
+        Classical Hatha Yoga,
+        <br />
+        {rest}
+      </>
+    );
+  }
+
+  return text;
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutPage();
   return buildMetadata({
     title: "About",
     description:
-      "About Ananta Hatha Yoga — Classical Hatha Yoga taught in its original form in Saranda, Albania.",
+      "About Nava Hatha Yoga — Classical Hatha Yoga taught in its original form in Saranda, Albania.",
     seo: about.seo,
     path: "/about",
   });
@@ -26,8 +50,8 @@ export default async function AboutPage() {
     <>
       <PageHero
         eyebrow="About"
-        title={about.title ?? "About Ananta Hatha Yoga"}
-        description="A space dedicated to Classical Hatha Yoga, offered in its original form with care for the tradition and for those who come to practice."
+        title={<AboutPageHeroTitle title={about.title} />}
+        description="Know more about the teacher, Isha Hatha Yoga teacher training, Isha Yoga Center, Isha Foundation, and Sadhguru."
       />
 
       <AboutHighlightCards
@@ -56,13 +80,6 @@ export default async function AboutPage() {
           tone={index % 2 === 0 ? "cream" : "ivory"}
         />
       ))}
-
-      <CTASection
-        heading="Come and practice"
-        body="Classes are held in person in Saranda, Albania. Reach out to learn more or register your interest."
-        ctaLabel="Get in Touch"
-        ctaHref="/contact"
-      />
     </>
   );
 }

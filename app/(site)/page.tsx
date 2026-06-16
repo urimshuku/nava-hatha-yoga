@@ -1,3 +1,4 @@
+import { PrivateSessionsSection } from "@/components/content/PrivateSessionsSection";
 import { EventCard } from "@/components/cards/EventCard";
 import { ProgramCard } from "@/components/cards/ProgramCard";
 import { CMSRichText } from "@/components/content/CMSRichText";
@@ -5,7 +6,7 @@ import { YouTubeEmbed } from "@/components/content/YouTubeEmbed";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
-import { CTASection } from "@/components/ui/CTASection";
+import { ContactSection } from "@/components/ui/ContactSection";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { MotionItem, MotionStagger } from "@/components/ui/Motion";
 import { MotionReveal } from "@/components/ui/MotionReveal";
@@ -14,6 +15,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import {
   getFeaturedPrograms,
   getHomePage,
+  getPrograms,
   getSiteSettings,
   getUpcomingEvents,
 } from "@/sanity/lib/fetch";
@@ -26,21 +28,6 @@ const HERO_GLOW = {
 };
 
 const DEFAULT_INTRO_HEADING = "What is Classical Hatha Yoga?";
-
-const PRIVATE_OFFERINGS = [
-  {
-    title: "One-on-One Session",
-    body: "Highly personalized instruction tailored to your specific physical capabilities and wellbeing goals. Ideal for those seeking deeper refinement or specific health support.",
-  },
-  {
-    title: "Small-Group Session",
-    body: "Gather friends, family, or colleagues for a private session. A focused environment that balances personalized attention with shared experience.",
-  },
-  {
-    title: "Corporate Session",
-    body: "Bring ancient tools for clarity and balance into the workplace. Designed to combat stress and foster a vibrant, focused professional environment.",
-  },
-] as const;
 
 function IntroHeading({ heading }: { heading?: string }) {
   const text = heading ?? DEFAULT_INTRO_HEADING;
@@ -60,10 +47,11 @@ function IntroHeading({ heading }: { heading?: string }) {
 }
 
 export default async function HomePage() {
-  const [home, settings, events] = await Promise.all([
+  const [home, settings, events, programs] = await Promise.all([
     getHomePage(),
     getSiteSettings(),
     getUpcomingEvents(),
+    getPrograms(),
   ]);
 
   const specialProgramSlugs = new Set<string>(SPECIAL_PROGRAM_SLUGS);
@@ -204,48 +192,12 @@ export default async function HomePage() {
         </Container>
       </Section>
 
-      {/* 5. Private & Corporate Sessions */}
-      <Section tone="sand" size="small">
-        <Container>
-          <div className="grid items-center gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-            <MotionReveal>
-              <h2 className="text-display-sm text-balance">Private Sessions</h2>
-              <p className="mt-6 max-w-md text-lg leading-relaxed text-brown">
-                Private sessions are available upon request. Depending on the needs of the
-                individual, group, or organization, selected Classical Hatha Yoga practices can be
-                offered in a focused setting.
-              </p>
-              <div className="mt-8">
-                <Button href="/contact" variant="secondary">
-                  Request a private session
-                </Button>
-              </div>
-            </MotionReveal>
+      <PrivateSessionsSection />
 
-            <MotionStagger className="grid gap-5">
-              {PRIVATE_OFFERINGS.map((offering) => (
-                <MotionItem key={offering.title}>
-                  <article className="rounded-2xl border border-border-strong/60 bg-cream/70 px-7 py-7 shadow-soft sm:px-8">
-                    <h3 className="font-heading text-2xl text-charcoal">
-                      {offering.title}
-                    </h3>
-                    <p className="mt-4 leading-relaxed text-brown">
-                      {offering.body}
-                    </p>
-                  </article>
-                </MotionItem>
-              ))}
-            </MotionStagger>
-          </div>
-        </Container>
-      </Section>
-
-      {/* 6. Final CTA */}
-      <CTASection
-        heading={home.finalCta?.heading}
-        body={home.finalCta?.body}
-        ctaLabel={home.finalCta?.cta?.label}
-        ctaHref={home.finalCta?.cta?.href}
+      {/* 6. Contact */}
+      <ContactSection
+        programs={programs.map((program) => program.title)}
+        email={settings.email}
       />
     </>
   );

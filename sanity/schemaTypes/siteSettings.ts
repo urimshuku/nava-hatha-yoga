@@ -16,7 +16,7 @@ export const siteSettings = defineType({
       type: "string",
       group: "brand",
       validation: (rule) => rule.required(),
-      initialValue: "Ananta Hatha Yoga",
+      initialValue: "Nava Hatha Yoga",
     }),
     defineField({
       name: "tagline",

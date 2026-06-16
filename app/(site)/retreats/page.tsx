@@ -15,7 +15,7 @@ import { getRetreats } from "@/sanity/lib/fetch";
 export const metadata: Metadata = buildMetadata({
   title: "Retreats",
   description:
-    "Immersive Classical Hatha Yoga retreats from Ananta Hatha Yoga — coming soon.",
+    "Immersive Classical Hatha Yoga retreats from Nava Hatha Yoga — coming soon.",
   path: "/retreats",
 });
 
@@ -43,7 +43,7 @@ export default async function RetreatsPage() {
       <PageHero
         eyebrow="Retreats"
         title="Immersive retreats"
-        description="Dedicated time to step away from the everyday and deepen your practice in a calm, supportive setting."
+        description="Immersive weekends in quiet settings — devoted to Classical Hatha Yoga, sattvic meals and time in nature."
       />
 
       {hasRetreats ? (
@@ -116,13 +116,6 @@ export default async function RetreatsPage() {
               </MotionStagger>
             </Container>
           </Section>
-
-          <CTASection
-            heading="Be the first to know"
-            body="Register your interest and we'll let you know as soon as retreat dates are announced."
-            ctaLabel="Register your interest"
-            ctaHref="/contact"
-          />
         </>
       )}
     </>

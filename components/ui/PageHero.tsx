@@ -4,7 +4,7 @@ import { Container } from "@/components/layout/Container";
 
 interface PageHeroProps {
   eyebrow?: string;
-  title: string;
+  title: ReactNode;
   description?: string;
   children?: ReactNode;
 }

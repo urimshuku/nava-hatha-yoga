@@ -8,7 +8,7 @@ import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
   title: "Register",
-  description: "Register for an Ananta Hatha Yoga program in Saranda, Albania.",
+  description: "Register for an Nava Hatha Yoga program in Saranda, Albania.",
   path: "/register",
   noIndex: true,
 });

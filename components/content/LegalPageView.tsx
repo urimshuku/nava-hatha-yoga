@@ -16,7 +16,7 @@ export function LegalPageView({
       <PageHero eyebrow="Legal" title={page?.title ?? fallbackTitle} />
       <Section tone="cream">
         <Container size="narrow">
-          <article className="prose prose-ananta">
+          <article className="prose prose-nava">
             <CMSRichText value={page?.body} />
           </article>
         </Container>

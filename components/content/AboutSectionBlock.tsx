@@ -4,7 +4,6 @@ import { CMSRichText } from "@/components/content/CMSRichText";
 import { AboutSectionImage } from "@/components/ui/AboutSectionImage";
 import { Button } from "@/components/ui/Button";
 import { MotionReveal } from "@/components/ui/MotionReveal";
-import { Ornament } from "@/components/ui/Ornament";
 import { cn } from "@/lib/utils";
 import type { CtaLink, SanityImage as SanityImageType } from "@/sanity/lib/types";
 
@@ -60,7 +59,6 @@ export function AboutSectionBlock({
         >
           <p className="eyebrow mb-4">About</p>
           <h2 className="text-display-sm text-balance">{title}</h2>
-          <Ornament className="mt-6" width="w-14" />
           {hasBody ? (
             <div className="mt-8 text-lg [&_p]:leading-relaxed [&_p]:text-charcoal/90">
               <CMSRichText value={body} />

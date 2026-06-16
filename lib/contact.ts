@@ -12,7 +12,7 @@
  *        const { Resend } = await import("resend");
  *        const resend = new Resend(process.env.RESEND_API_KEY);
  *        await resend.emails.send({
- *          from: "Ananta Hatha Yoga <info@anantahathayoga.com>",
+ *          from: "Nava Hatha Yoga <info@navahathayoga.com>",
  *          to: process.env.CONTACT_NOTIFICATION_EMAIL!,
  *          subject: `New enquiry from ${submission.fullName}`,
  *          replyTo: submission.email,

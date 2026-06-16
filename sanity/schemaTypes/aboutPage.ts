@@ -14,7 +14,7 @@ export const aboutPage = defineType({
       title: "Page title",
       type: "string",
       group: "content",
-      initialValue: "About Ananta Hatha Yoga",
+      initialValue: "Classical Hatha Yoga, taught with care.",
     }),
     defineField({
       name: "intro",

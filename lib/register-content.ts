@@ -138,7 +138,7 @@ export const MEDICAL_DISCLAIMER_DOCUMENT: readonly DisclaimerSection[] = [
         lead: "The data controller responsible for processing is:",
         contact: {
           name: "Erlinda Mustafaraj",
-          email: "info@anantahathayoga.com",
+          email: "info@navahathayoga.com",
         },
       },
     ],
@@ -344,7 +344,7 @@ export const BEFORE_PROGRAM_DOCUMENT: readonly GuidelineSection[] = [
         heading: "Accompaniment & Support",
         paragraphs: [
           "Your learning does not end with the completion of the course. If questions arise during your practice, or if you need clarification, I am happy to support you.",
-          "Please feel free to contact me at any time \u2013 by email at info@anantahathayoga.com or by WhatsApp at +355 69 939 1791.",
+          "Please feel free to contact me at any time \u2013 by email at info@navahathayoga.com or by WhatsApp at +355 69 939 1791.",
         ],
       },
       {

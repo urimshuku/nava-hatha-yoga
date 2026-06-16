@@ -1,6 +1,6 @@
-# Ananta Hatha Yoga
+# Nava Hatha Yoga
 
-A premium, calm, light-only website for **Ananta Hatha Yoga** — Classical Hatha Yoga taught in its original form in Saranda, Albania, by Erlinda Mustafaraj.
+A premium, calm, light-only website for **Nava Hatha Yoga** — Classical Hatha Yoga taught in its original form in Saranda, Albania, by Erlinda Mustafaraj.
 
 Built with **Next.js (App Router)**, **TypeScript**, **Tailwind CSS**, and **Sanity CMS**.
 

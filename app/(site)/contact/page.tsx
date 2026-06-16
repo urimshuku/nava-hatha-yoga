@@ -12,7 +12,7 @@ import { getPrograms, getSiteSettings } from "@/sanity/lib/fetch";
 export const metadata: Metadata = buildMetadata({
   title: "Contact",
   description:
-    "Get in touch with Ananta Hatha Yoga in Saranda, Albania. Classes are in-person and registration is handled personally.",
+    "Get in touch with Nava Hatha Yoga in Saranda, Albania. Classes are in-person and registration is handled personally.",
   path: "/contact",
 });
 
@@ -32,7 +32,7 @@ export default async function ContactPage() {
       <PageHero
         eyebrow="Contact"
         title="Get in touch"
-        description="Classes are held in person in Saranda, Albania, and registration is handled personally. Send a message and we'll get back to you."
+        description="For questions regarding upcoming programs, private instruction, or general inquiries, please leave a message below."
       />
 
       <Section tone="cream">
@@ -49,7 +49,6 @@ export default async function ContactPage() {
               <div>
                 <h2 className="eyebrow mb-4">Contact details</h2>
                 <ul className="space-y-3 text-charcoal/90">
-                  {settings.location ? <li>{settings.location}</li> : null}
                   {settings.email ? (
                     <li>
                       <a
@@ -84,11 +83,6 @@ export default async function ContactPage() {
                 <Button href={waHref} variant="secondary">
                   Message on WhatsApp
                 </Button>
-              </div>
-
-              <div className="rounded-xl border border-border bg-sand/50 p-5 text-sm leading-relaxed text-brown">
-                Please note: there are no online payments. Registration and payment are
-                handled manually or in person.
               </div>
             </aside>
           </div>

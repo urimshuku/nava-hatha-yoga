@@ -38,7 +38,7 @@ function IconShare() {
 }
 
 async function shareOrDownloadBlob(blob: Blob): Promise<void> {
-  const file = new File([blob], "ananta-payment-details.png", {
+  const file = new File([blob], "nava-payment-details.png", {
     type: "image/png",
   });
 
@@ -52,7 +52,7 @@ async function shareOrDownloadBlob(blob: Blob): Promise<void> {
       await navigator.share({
         files: [file],
         title: "Payment Details",
-        text: "Ananta Hatha Yoga — bank transfer details",
+        text: "Nava Hatha Yoga — bank transfer details",
       });
       return;
     } catch (error) {
@@ -63,7 +63,7 @@ async function shareOrDownloadBlob(blob: Blob): Promise<void> {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "ananta-payment-details.png";
+  link.download = "nava-payment-details.png";
   link.click();
   URL.revokeObjectURL(url);
 }

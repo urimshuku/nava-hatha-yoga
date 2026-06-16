@@ -66,7 +66,7 @@ const config: Config = {
         calm: "cubic-bezier(0.22, 1, 0.36, 1)",
       },
       typography: () => ({
-        ananta: {
+        nava: {
           css: {
             "--tw-prose-body": "#3a322a",
             "--tw-prose-headings": "#211C16",

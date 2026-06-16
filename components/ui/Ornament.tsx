@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Ananta celestial divider — sun, tapering rules, and inward crescents.
+ * Nava celestial divider — sun, tapering rules, and inward crescents.
  * Uses the brand SVG asset. Decorative only.
  */
 export function Ornament({
@@ -18,7 +18,7 @@ export function Ornament({
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/images/ananta-divider.svg"
+        src="/images/nava-divider.svg"
         alt=""
         width={1507}
         height={245}

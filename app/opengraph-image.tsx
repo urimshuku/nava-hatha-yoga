@@ -31,7 +31,7 @@ export default function OpengraphImage() {
             color: "#B08D57",
           }}
         >
-          Ananta
+          Nava
         </div>
         <div style={{ fontSize: 88, marginTop: 16, fontWeight: 600 }}>
           {SITE_NAME}

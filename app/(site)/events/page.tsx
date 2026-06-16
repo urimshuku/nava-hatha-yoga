@@ -14,7 +14,7 @@ import { getSiteSettings, getUpcomingEvents } from "@/sanity/lib/fetch";
 export const metadata: Metadata = buildMetadata({
   title: "Upcoming Events",
   description:
-    "Upcoming Classical Hatha Yoga workshops, free sessions, and gatherings at Ananta Hatha Yoga in Saranda, Albania.",
+    "Upcoming Classical Hatha Yoga workshops, free sessions, and gatherings at Nava Hatha Yoga in Saranda, Albania.",
   path: "/events",
 });
 
@@ -29,7 +29,7 @@ export default async function EventsPage() {
       <PageHero
         eyebrow="Events"
         title="Upcoming events"
-        description="All classes are currently held in person in Saranda, Albania. Registration is handled personally — by link or directly over WhatsApp."
+        description="Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life."
       />
 
       <Section tone="cream">
