@@ -47,6 +47,7 @@ export interface AboutSection {
   title?: string;
   body?: PortableTextBlock[];
   image?: SanityImage;
+  cta?: CtaLink;
 }
 
 export interface AboutPage {

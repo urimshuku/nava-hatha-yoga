@@ -1,3 +1,5 @@
+import { MAIN_PROGRAM_SLUGS } from "@/lib/constants";
+
 import { client } from "./client";
 import { isSanityConfigured } from "../env";
 import * as Q from "./queries";
@@ -67,8 +69,12 @@ export async function getPrograms(): Promise<ProgramListItem[]> {
 }
 
 export async function getFeaturedPrograms(): Promise<ProgramListItem[]> {
-  const data = await sanityFetch<ProgramListItem[]>(Q.featuredProgramsFallbackQuery);
-  return isEmpty(data) ? placeholderPrograms.slice(0, 6) : (data as ProgramListItem[]);
+  const programs = await getPrograms();
+  const bySlug = new Map(programs.map((program) => [program.slug, program]));
+  return MAIN_PROGRAM_SLUGS.flatMap((slug) => {
+    const program = bySlug.get(slug);
+    return program ? [program] : [];
+  });
 }
 
 export async function getProgramSlugs(): Promise<string[]> {

@@ -11,7 +11,7 @@ import type {
   SiteSettings,
   YogaEvent,
 } from "@/sanity/lib/types";
-import { CONTACT, getProgramPriceLabel, PROGRAM_ORDER, programAfterProgramText, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE } from "@/lib/constants";
+import { CONTACT, getProgramPriceLabel, MAIN_PROGRAM_SLUGS, PROGRAM_ORDER, programAfterProgramText, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE } from "@/lib/constants";
 
 /** Build a minimal Portable Text block from plain paragraphs. */
 export function blocks(...paragraphs: string[]): PortableTextBlock[] {
@@ -368,7 +368,7 @@ export const placeholderHomePage: HomePage = {
   hero: {
     headline: "Classical Hatha Yoga",
     supportingText:
-      "A grounded space to learn time-honoured yogic practices with care and clarity, in Saranda, Albania.",
+      "“Hatha Yoga is not body-bending business. It is about taking charge of the way you think, feel, and perceive life.” ― Sadhguru",
     primaryCta: { label: "View Upcoming Events", href: "/events" },
     secondaryCta: { label: "Explore Programs", href: "/programs" },
   },
@@ -381,6 +381,10 @@ export const placeholderHomePage: HomePage = {
     ),
     videoUrl: "https://youtu.be/UIK3hR-NjYU",
   },
+  featuredPrograms: MAIN_PROGRAM_SLUGS.flatMap((slug) => {
+    const program = placeholderPrograms.find((p) => p.slug === slug);
+    return program ? [program] : [];
+  }),
   privateCorporate: {
     heading: "Private & Corporate Sessions",
     body: blocks(
@@ -403,15 +407,16 @@ export const placeholderHomePage: HomePage = {
 
 export const placeholderAboutPage: AboutPage = {
   title: "About Ananta Hatha Yoga",
-  intro: blocks(
-    "Ananta Hatha Yoga is dedicated to Classical Hatha Yoga — practices offered in their original form, with care for both the tradition and those who come to learn.",
-  ),
   sections: [
     {
       title: "Isha Hatha Yoga Teacher Training",
       body: blocks(
         "Isha Hatha Yoga School delivers classical Hatha Yoga in its full depth and dimension. It is Sadhguru's vision to offer this ancient science in all its purity and make it available to every individual. As a step towards realizing this vision, he has devised the Hatha Yoga Teacher Training Program. In this program, Hatha Yoga will be taught as a living experience in the most beautiful ashram setting of the Isha Yoga Center, India under the grace of a living master. Upon completion of the program, trainees will have the privilege and fulfillment of bringing this knowledge to many more people.",
       ),
+      cta: {
+        label: "Learn more about the training",
+        href: "https://isha.sadhguru.org/us/en/yoga-meditation/yoga-teacher-training/hatha-yoga-teacher-training",
+      },
     },
     {
       title: "Isha Yoga Center",
@@ -425,6 +430,10 @@ export const placeholderAboutPage: AboutPage = {
         "Sadhguru's vision to transform the world has been unfolding over the past 30 years through programs designed to create an inclusive culture and establish global harmony. He established the Isha Foundation, an international non-profit service organization, through which he has offered powerful yoga programs that extend a rare opportunity for self-discovery, inner transformation, and empowerment for individuals to reach their full potential. He has initiated many large scale human service projects for rural upliftment, quality education for the poor, environmental stewardship and holistic health, which have impacted the lives of millions of people around the world, earning a special consultative status with the United Nations.",
         "Isha Foundation is run entirely by volunteers inspired by their own personal transformation. Sadhguru has emphasized that humanity now has the necessary capability and resources to address every problem on the planet; the only missing element is willingness. Sadhguru has kindled this willingness within millions of people to extend their heads, hands, and hearts toward the betterment of humanity.",
       ),
+      cta: {
+        label: "Visit Isha Foundation",
+        href: "https://isha.sadhguru.org/global/en",
+      },
     },
     {
       title: "Sadhguru",

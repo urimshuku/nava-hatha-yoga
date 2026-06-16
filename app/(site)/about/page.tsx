@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 
+import { AboutHighlightCards } from "@/components/content/AboutHighlightCards";
 import { AboutSectionBlock } from "@/components/content/AboutSectionBlock";
-import { CMSRichText } from "@/components/content/CMSRichText";
-import { Container } from "@/components/layout/Container";
-import { Section } from "@/components/layout/Section";
 import { CTASection } from "@/components/ui/CTASection";
-import { MotionReveal } from "@/components/ui/MotionReveal";
 import { PageHero } from "@/components/ui/PageHero";
 import { buildMetadata } from "@/lib/seo";
 import { getAboutPage } from "@/sanity/lib/fetch";
@@ -23,7 +20,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AboutPage() {
   const about = await getAboutPage();
-  const hasIntro = Boolean(about.intro && about.intro.length > 0);
   const sections = about.sections ?? [];
 
   return (
@@ -34,15 +30,38 @@ export default async function AboutPage() {
         description="A space dedicated to Classical Hatha Yoga, offered in its original form with care for the tradition and for those who come to practice."
       />
 
-      {hasIntro ? (
-        <Section tone="cream">
-          <Container size="narrow">
-            <MotionReveal className="text-center text-lg [&_p]:leading-relaxed [&_p]:text-charcoal/90">
-              <CMSRichText value={about.intro} />
-            </MotionReveal>
-          </Container>
-        </Section>
-      ) : null}
+      <AboutHighlightCards
+        teacherBody={
+          <div className="space-y-6 font-heading">
+            <div className="space-y-4 italic">
+              <p>My name is Linda.</p>
+              <p>
+                What began as a personal journey, over 10 years of lived experience and teaching
+                at Isha Yoga Center in India, has naturally become a longing to share across the
+                world Classical Hatha Yoga in its purest form.
+              </p>
+            </div>
+
+            <div className="space-y-3 not-italic text-charcoal/90">
+              <div>
+                <span className="font-medium text-charcoal">E Mail:</span>{" "}
+                <a href="mailto:welcome@lindabliss.studio" className="hover:text-saffron">
+                  welcome@lindabliss.studio
+                </a>
+              </div>
+              <div>
+                <span className="font-medium text-charcoal">What's Up:</span>{" "}
+                <a
+                  href="https://wa.me/355699391791"
+                  className="hover:text-saffron"
+                >
+                  + 355 69 93 91 7 91
+                </a>
+              </div>
+            </div>
+          </div>
+        }
+      />
 
       {sections.map((section, index) => (
         <AboutSectionBlock
@@ -50,6 +69,7 @@ export default async function AboutPage() {
           title={section.title ?? "Untitled section"}
           body={section.body}
           image={section.image}
+          cta={section.cta}
           index={index}
           tone={index % 2 === 0 ? "cream" : "ivory"}
         />

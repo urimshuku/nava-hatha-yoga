@@ -23,6 +23,12 @@ export const aboutSection = defineType({
       type: "blockContent",
       description: "The main content for this section.",
     }),
+    defineField({
+      name: "cta",
+      title: "Button",
+      type: "ctaLink",
+      description: "Optional link shown below the section text.",
+    }),
   ],
   preview: {
     select: { title: "title", media: "image" },

@@ -59,6 +59,20 @@ export function programSymbolSrc(slug: string): string | null {
   return resolveLocalImageSrc(["programs"], `${slug}-symbol`);
 }
 
+/** Crop anchor for object-cover about section photos (Tailwind object-position utilities). */
+const ABOUT_SECTION_IMAGE_OBJECT_POSITION: Partial<Record<string, string>> = {
+  "isha-yoga-center": "object-[35%_center]",
+  sadhguru: "object-[center_20%]",
+};
+
+export function aboutSectionImageSrc(key: string): string | null {
+  return resolveLocalImageSrc(["about"], key);
+}
+
+export function aboutSectionImageObjectPositionClass(key: string): string {
+  return ABOUT_SECTION_IMAGE_OBJECT_POSITION[key] ?? "object-center";
+}
+
 export function footerCertificationLogoSrc(): string | null {
   return resolveLocalImageSrc([], "Sadhguru_Gurukulam_Logo");
 }

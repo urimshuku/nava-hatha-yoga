@@ -26,7 +26,16 @@ Save each program image in the programs/ folder using the program slug as the fi
   programs/thoppukarnam.jpg
   programs/yogasanas.jpg
 
-Supported formats: .webp, .jpg, .jpeg, .png
+About page photos
+-----------------
+Save each about section image in the about/ folder using a slug derived from the section title:
+
+  about/sadhguru.jpg
+  about/isha-yoga-center.jpg
+  about/isha-hatha-yoga-teacher-training.jpg
+  about/isha-foundation.jpg
+
+Supported formats: .webp, .jpg, .jpeg, .png, .avif
 
 Optional program symbols (detail page header)
 -------------------------------------------

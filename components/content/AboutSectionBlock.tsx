@@ -1,16 +1,18 @@
 import type { PortableTextBlock } from "@portabletext/types";
 
 import { CMSRichText } from "@/components/content/CMSRichText";
+import { AboutSectionImage } from "@/components/ui/AboutSectionImage";
+import { Button } from "@/components/ui/Button";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 import { Ornament } from "@/components/ui/Ornament";
-import { SanityImage } from "@/components/ui/SanityImage";
 import { cn } from "@/lib/utils";
-import type { SanityImage as SanityImageType } from "@/sanity/lib/types";
+import type { CtaLink, SanityImage as SanityImageType } from "@/sanity/lib/types";
 
 type AboutSectionBlockProps = {
   title: string;
   body?: PortableTextBlock[];
   image?: SanityImageType;
+  cta?: CtaLink;
   index: number;
   tone?: "cream" | "ivory";
 };
@@ -19,6 +21,7 @@ export function AboutSectionBlock({
   title,
   body,
   image,
+  cta,
   index,
   tone = "cream",
 }: AboutSectionBlockProps) {
@@ -39,13 +42,13 @@ export function AboutSectionBlock({
         >
           <div className="overflow-hidden rounded-2xl border border-border bg-ivory shadow-soft">
             <div className="aspect-[4/3] sm:aspect-[5/4]">
-              <SanityImage
+              <AboutSectionImage
+                title={title}
                 image={image}
-                alt={title}
                 width={760}
                 height={608}
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="h-full w-full object-cover"
+                className="h-full w-full"
               />
             </div>
           </div>
@@ -67,6 +70,13 @@ export function AboutSectionBlock({
               Content for this section will be added soon.
             </p>
           )}
+          {cta?.href && cta.label ? (
+            <div className="mt-8">
+              <Button href={cta.href} variant="secondary">
+                {cta.label}
+              </Button>
+            </div>
+          ) : null}
         </MotionReveal>
       </div>
     </article>

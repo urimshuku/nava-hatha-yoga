@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "predev": "node scripts/clear-dev-lock.mjs",
-    "dev": "for n in 524288 262144 131072 65536 32768 24576 12288 10240; do ulimit -n $n 2>/dev/null && break; done; next dev",
-    "dev:webpack": "for n in 524288 262144 131072 65536 32768 24576 12288 10240; do ulimit -n $n 2>/dev/null && break; done; next dev --webpack",
+    "dev": "for n in 524288 262144 131072 65536 32768 24576 12288 10240; do ulimit -n $n 2>/dev/null && break; done; next dev --webpack",
+    "dev:turbo": "for n in 524288 262144 131072 65536 32768 24576 12288 10240; do ulimit -n $n 2>/dev/null && break; done; next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",

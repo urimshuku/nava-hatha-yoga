@@ -47,7 +47,8 @@ export const aboutPageQuery = groq`
     sections[]{
       title,
       body,
-      image${imageFields}
+      image${imageFields},
+      cta{ label, href }
     },
     ${seoFields}
   }

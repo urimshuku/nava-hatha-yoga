@@ -17,6 +17,7 @@ import {
   getSiteSettings,
   getUpcomingEvents,
 } from "@/sanity/lib/fetch";
+import { SPECIAL_PROGRAM_SLUGS } from "@/lib/constants";
 import { getYouTubeVideoId } from "@/lib/youtube";
 
 const HERO_GLOW = {
@@ -50,9 +51,11 @@ export default async function HomePage() {
     getUpcomingEvents(),
   ]);
 
-  const featured = home.featuredPrograms?.length
+  const specialProgramSlugs = new Set<string>(SPECIAL_PROGRAM_SLUGS);
+  const rawFeatured = home.featuredPrograms?.length
     ? home.featuredPrograms
     : await getFeaturedPrograms();
+  const featured = rawFeatured.filter((program) => !specialProgramSlugs.has(program.slug));
 
   const hero = home.hero;
   const introVideoId = home.intro?.videoUrl
@@ -75,9 +78,7 @@ export default async function HomePage() {
               {hero?.headline ?? "Classical Hatha Yoga"}
             </h1>
             {hero?.supportingText ? (
-              <p className="mx-auto mt-7 max-w-xl text-lg leading-relaxed text-brown">
-                {hero.supportingText}
-              </p>
+              <p className="hero-subtitle mt-7">{hero.supportingText}</p>
             ) : null}
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button href={hero?.primaryCta?.href ?? "/events"} size="lg">
