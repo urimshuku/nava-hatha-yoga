@@ -21,10 +21,10 @@ export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.anantahathayoga.com";
 
 export const CONTACT = {
-  email: "hello@anantahathayoga.com",
-  phone: "+355 69 000 0000",
+  email: "info@anantahathayoga.com",
+  phone: "+355 69 939 1791",
   // Digits only (international format, no +, spaces, or symbols) for wa.me links
-  whatsapp: "355690000000",
+  whatsapp: "355699391791",
   location: "Saranda, Albania",
 };
 

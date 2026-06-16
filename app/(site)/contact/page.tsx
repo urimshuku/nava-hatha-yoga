@@ -60,13 +60,15 @@ export default async function ContactPage() {
                       </a>
                     </li>
                   ) : null}
-                  {settings.phone ? (
+                  {settings.whatsapp ? (
                     <li>
                       <a
-                        href={`tel:${settings.phone.replace(/\s+/g, "")}`}
+                        href={waHref}
                         className="hover:text-saffron"
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
-                        {settings.phone}
+                        WhatsApp{settings.phone ? `: ${settings.phone}` : ""}
                       </a>
                     </li>
                   ) : null}

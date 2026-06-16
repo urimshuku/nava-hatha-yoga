@@ -41,24 +41,6 @@ export default async function AboutPage() {
                 world Classical Hatha Yoga in its purest form.
               </p>
             </div>
-
-            <div className="space-y-3 not-italic text-charcoal/90">
-              <div>
-                <span className="font-medium text-charcoal">E Mail:</span>{" "}
-                <a href="mailto:welcome@lindabliss.studio" className="hover:text-saffron">
-                  welcome@lindabliss.studio
-                </a>
-              </div>
-              <div>
-                <span className="font-medium text-charcoal">What's Up:</span>{" "}
-                <a
-                  href="https://wa.me/355699391791"
-                  className="hover:text-saffron"
-                >
-                  + 355 69 93 91 7 91
-                </a>
-              </div>
-            </div>
           </div>
         }
       />

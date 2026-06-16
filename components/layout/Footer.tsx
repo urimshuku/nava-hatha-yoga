@@ -59,13 +59,6 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
                   </a>
                 </li>
               ) : null}
-              {phone ? (
-                <li>
-                  <a href={`tel:${phone.replace(/\s+/g, "")}`} className="hover:text-saffron">
-                    {phone}
-                  </a>
-                </li>
-              ) : null}
               {whatsapp ? (
                 <li>
                   <a
@@ -74,7 +67,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
                     rel="noopener noreferrer"
                     className="hover:text-saffron"
                   >
-                    WhatsApp
+                    WhatsApp{phone ? `: ${phone}` : ""}
                   </a>
                 </li>
               ) : null}

@@ -402,9 +402,9 @@ docs.push({
   tagline: "Above all, balance.",
   description:
     "Ananta Hatha Yoga offers Classical Hatha Yoga in Saranda, Albania — practices taught in their traditional form to support clarity, balance, and inner stability. Classes are in-person.",
-  email: "hello@anantahathayoga.com",
-  phone: "+355 69 000 0000",
-  whatsapp: "355690000000",
+  email: "info@anantahathayoga.com",
+  phone: "+355 69 939 1791",
+  whatsapp: "355699391791",
   location: "Saranda, Albania",
 });
 
