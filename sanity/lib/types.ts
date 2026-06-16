@@ -84,13 +84,17 @@ export interface YogaEvent {
   _id: string;
   title: string;
   date: string;
+  endDate?: string;
   time?: string;
   location?: string;
   priceLabel?: string;
+  paymentNote?: string;
   teacher?: string;
+  ageRequirement?: string;
   category?: EventCategory;
   relatedProgram?: { title?: string; slug?: string } | null;
   description?: string;
+  notes?: string[];
   image?: SanityImage;
   registrationLink?: string;
   whatsappEnabled?: boolean;
@@ -100,6 +104,7 @@ export interface PastEvent {
   _id: string;
   title: string;
   date: string;
+  endDate?: string;
   time?: string;
   location?: string;
   category?: EventCategory;

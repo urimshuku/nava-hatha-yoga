@@ -31,8 +31,16 @@ export const event = defineType({
       type: "datetime",
       group: "details",
       description:
-        "When the event takes place. Past events move automatically to the archive.",
+        "When the event takes place (or starts). Past events move automatically to the archive.",
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "endDate",
+      title: "End date",
+      type: "datetime",
+      group: "details",
+      description:
+        "Optional. For multi-day events, the last day. The card shows a date range (e.g. 27-29 June 2026).",
     }),
     defineField({
       name: "time",
@@ -56,11 +64,26 @@ export const event = defineType({
       description: "E.g. 'Free', 'By donation', or a price. Payments are handled in person.",
     }),
     defineField({
+      name: "paymentNote",
+      title: "Payment note",
+      type: "string",
+      group: "details",
+      description:
+        "Optional note shown in parentheses next to the price (e.g. payment instructions).",
+    }),
+    defineField({
       name: "teacher",
       title: "Teacher",
       type: "string",
       group: "details",
       initialValue: "Erlinda Mustafaraj",
+    }),
+    defineField({
+      name: "ageRequirement",
+      title: "Age requirement",
+      type: "string",
+      group: "details",
+      description: "Shown on the event card, e.g. '14+'.",
     }),
     defineField({
       name: "category",
@@ -90,6 +113,15 @@ export const event = defineType({
       type: "text",
       rows: 4,
       group: "details",
+    }),
+    defineField({
+      name: "notes",
+      title: "Card notes",
+      type: "array",
+      of: [{ type: "string" }],
+      group: "details",
+      description:
+        "Short reminders shown on the event card (e.g. payment info, age requirement).",
     }),
     defineField({
       name: "image",

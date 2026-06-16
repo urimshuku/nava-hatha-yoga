@@ -35,7 +35,7 @@ export default async function EventsPage() {
       <Section tone="cream">
         <Container>
           {events.length > 0 ? (
-            <MotionStagger className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <MotionStagger className="mx-auto flex max-w-4xl flex-col gap-6">
               {events.map((event) => (
                 <MotionItem key={event._id} className="h-full">
                   <EventCard event={event} whatsappNumber={settings.whatsapp} />

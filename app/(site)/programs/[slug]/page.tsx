@@ -231,7 +231,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
               <h2 className="text-display-sm">Sessions for {program.title}</h2>
               <Ornament className="mt-7" width="w-16" />
             </div>
-            <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="mx-auto mt-12 flex max-w-4xl flex-col gap-6">
               {relatedEvents.slice(0, 3).map((event) => (
                 <EventCard
                   key={event._id}

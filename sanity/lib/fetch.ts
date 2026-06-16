@@ -98,7 +98,8 @@ export async function getUpcomingEventsByProgram(
   const data = await sanityFetch<YogaEvent[]>(Q.upcomingEventsByProgramQuery, {
     slug,
   });
-  return data ?? [];
+  if (data) return data;
+  return placeholderEvents.filter((event) => event.relatedProgram?.slug === slug);
 }
 
 export async function getPastEvents(): Promise<PastEvent[]> {

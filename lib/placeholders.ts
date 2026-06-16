@@ -11,7 +11,16 @@ import type {
   SiteSettings,
   YogaEvent,
 } from "@/sanity/lib/types";
-import { CONTACT, getProgramPriceLabel, MAIN_PROGRAM_SLUGS, PROGRAM_ORDER, programAfterProgramText, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE } from "@/lib/constants";
+import {
+  CONTACT,
+  getProgramPriceLabel,
+  MAIN_PROGRAM_SLUGS,
+  PROGRAM_ORDER,
+  programAfterProgramText,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TAGLINE,
+} from "@/lib/constants";
 
 /** Build a minimal Portable Text block from plain paragraphs. */
 export function blocks(...paragraphs: string[]): PortableTextBlock[] {
@@ -445,7 +454,53 @@ export const placeholderAboutPage: AboutPage = {
   ],
 };
 
-export const placeholderEvents: YogaEvent[] = [];
+function buildSuryaKriyaEventDescription(program: ProgramSeed): string {
+  return [
+    ...program.aboutThePractice,
+    "",
+    "Benefits:",
+    ...program.benefits.map((benefit) => `\u2022 ${benefit}`),
+    "",
+    "Duration: 3 sessions / 2 hours.",
+    "27 June: 4.30 pm – 6.30 pm",
+    "28 June: 4.30 pm – 6.30 pm",
+    "29 June: 4.30 pm – 6.30 pm",
+  ].join("\n");
+}
+
+const suryaKriyaPaymentNote = "Payment details will be shared after registration.";
+
+const suryaKriyaEventTime = [
+  "27 June: 4.30 pm – 6.30 pm",
+  "28 June: 4.30 pm – 6.30 pm",
+  "29 June: 4.30 pm – 6.30 pm",
+  "",
+  "All 3 sessions are mandatory",
+].join("\n");
+
+const suryaKriyaSeed = programSeeds.find((p) => p.slug === "surya-kriya");
+
+export const placeholderEvents: YogaEvent[] = suryaKriyaSeed
+  ? [
+      {
+        _id: "placeholder-event-surya-kriya-saranda-jun-2026",
+        title: "Surya Kriya",
+        date: "2026-06-27T14:30:00.000Z",
+        endDate: "2026-06-29T16:30:00.000Z",
+        time: suryaKriyaEventTime,
+        location: "Rruga Skenderbeu 31, 9701, Saranda",
+        priceLabel: "150€",
+        paymentNote: suryaKriyaPaymentNote,
+        teacher: "Erlinda Mustafaraj",
+        ageRequirement: "14+",
+        category: "Workshop",
+        relatedProgram: { title: suryaKriyaSeed.title, slug: suryaKriyaSeed.slug },
+        description: buildSuryaKriyaEventDescription(suryaKriyaSeed),
+        registrationLink: "/contact",
+        whatsappEnabled: false,
+      },
+    ]
+  : [];
 export const placeholderPastEvents: PastEvent[] = [];
 export const placeholderRetreats: Retreat[] = [];
 

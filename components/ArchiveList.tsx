@@ -1,4 +1,4 @@
-import { formatDate } from "@/lib/utils";
+import { formatDateRange } from "@/lib/utils";
 import type { PastEvent } from "@/sanity/lib/types";
 
 export function ArchiveList({ events }: { events: PastEvent[] }) {
@@ -21,7 +21,9 @@ export function ArchiveList({ events }: { events: PastEvent[] }) {
                 {event.category}
               </span>
             ) : null}
-            <time dateTime={event.date}>{formatDate(event.date)}</time>
+            <time dateTime={event.date}>
+              {formatDateRange(event.date, event.endDate)}
+            </time>
           </div>
         </li>
       ))}

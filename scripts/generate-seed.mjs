@@ -580,6 +580,54 @@ docs.push({
   whatsappEnabled: true,
 });
 
+// Surya Kriya — Saranda intensive (27-29 June 2026)
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.anantahathayoga.com";
+
+const suryaKriyaProgram = programs.find((p) => p.slug === "surya-kriya");
+
+const suryaKriyaEventDescription = [
+  ...(suryaKriyaProgram?.aboutThePractice ?? []),
+  "",
+  "Benefits:",
+  ...(suryaKriyaProgram?.benefits ?? []).map((benefit) => `\u2022 ${benefit}`),
+  "",
+  "Duration: 3 sessions / 2 hours.",
+  "27 June: 4.30 pm – 6.30 pm",
+  "28 June: 4.30 pm – 6.30 pm",
+  "29 June: 4.30 pm – 6.30 pm",
+].join("\n");
+
+const suryaKriyaPaymentNote = "Payment details will be shared after registration.";
+
+const suryaKriyaEventTime = [
+  "27 June: 4.30 pm – 6.30 pm",
+  "28 June: 4.30 pm – 6.30 pm",
+  "29 June: 4.30 pm – 6.30 pm",
+  "",
+  "All 3 sessions are mandatory",
+].join("\n");
+
+docs.push({
+  _id: "event-surya-kriya-saranda-jun-2026",
+  _type: "event",
+  title: "Surya Kriya",
+  published: true,
+  date: "2026-06-27T14:30:00.000Z",
+  endDate: "2026-06-29T16:30:00.000Z",
+  time: suryaKriyaEventTime,
+  location: "Rruga Skenderbeu 31, 9701, Saranda",
+  priceLabel: "150€",
+  paymentNote: suryaKriyaPaymentNote,
+  teacher: "Erlinda Mustafaraj",
+  ageRequirement: "14+",
+  category: "Workshop",
+  relatedProgram: { _type: "reference", _ref: "program-surya-kriya" },
+  description: suryaKriyaEventDescription,
+  registrationLink: `${SITE_URL}/contact`,
+  whatsappEnabled: false,
+});
+
 mkdirSync(dirname(outPath), { recursive: true });
 writeFileSync(outPath, docs.map((d) => JSON.stringify(d)).join("\n") + "\n", "utf8");
 console.log(`Wrote ${docs.length} documents to ${outPath}`);

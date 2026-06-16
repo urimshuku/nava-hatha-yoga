@@ -179,7 +179,7 @@ export default async function HomePage() {
           <div className="mt-12">
             {events.length > 0 ? (
               <>
-                <MotionStagger className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <MotionStagger className="mx-auto flex max-w-4xl flex-col gap-6">
                   {events.slice(0, 3).map((event) => (
                     <MotionItem key={event._id} className="h-full">
                       <EventCard event={event} whatsappNumber={settings.whatsapp} />
