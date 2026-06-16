@@ -4,12 +4,12 @@ import { EventCard } from "@/components/cards/EventCard";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
-import { CTASection } from "@/components/ui/CTASection";
+import { ContactSection } from "@/components/ui/ContactSection";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { MotionItem, MotionStagger } from "@/components/ui/Motion";
 import { PageHero } from "@/components/ui/PageHero";
 import { buildMetadata } from "@/lib/seo";
-import { getSiteSettings, getUpcomingEvents } from "@/sanity/lib/fetch";
+import { getPrograms, getSiteSettings, getUpcomingEvents } from "@/sanity/lib/fetch";
 
 export const metadata: Metadata = buildMetadata({
   title: "Upcoming Events",
@@ -19,9 +19,10 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default async function EventsPage() {
-  const [events, settings] = await Promise.all([
+  const [events, settings, programs] = await Promise.all([
     getUpcomingEvents(),
     getSiteSettings(),
+    getPrograms(),
   ]);
 
   return (
@@ -59,11 +60,11 @@ export default async function EventsPage() {
         </Container>
       </Section>
 
-      <CTASection
+      <ContactSection
+        programs={programs.map((program) => program.title)}
+        email={settings.email}
         heading="Have a question about an event?"
-        body="Reach out and we'll be glad to help you find the right session and answer any questions."
-        ctaLabel="Contact us"
-        ctaHref="/contact"
+        description="Reach out and we'll be glad to help you find the right session and answer any questions. Please leave a message below."
       />
     </>
   );

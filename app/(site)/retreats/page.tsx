@@ -72,8 +72,7 @@ export default async function RetreatsPage() {
           <Section tone="cream">
             <Container>
               <MotionReveal className="mx-auto max-w-2xl rounded-2xl border border-border bg-ivory px-8 py-16 text-center shadow-soft sm:py-20">
-                <Ornament className="mx-auto" width="w-64" />
-                <p className="eyebrow mt-6">Coming Soon</p>
+                <p className="eyebrow">Coming Soon</p>
                 <h2 className="mt-4 text-display-sm text-balance">
                   Retreats are on their way
                 </h2>

@@ -283,12 +283,19 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
 
   if (status === "success") {
     return (
-      <div className="space-y-8 py-4 text-center">
-        <h2 className="font-heading text-3xl text-charcoal sm:text-4xl">Thank you!</h2>
-        <p className="mx-auto max-w-md text-lg leading-relaxed text-brown">
-          Your registration has been received. We will get back to you personally as soon
-          as we can. In the meantime, feel free to explore the practices we offer.
-        </p>
+      <div className="space-y-8 py-4 text-center font-heading">
+        <h2 className="text-3xl text-charcoal sm:text-4xl">Thank you!</h2>
+        <div className="mx-auto max-w-md space-y-6 text-lg leading-relaxed text-brown">
+          <p>
+            I look forward to welcoming you to the program and supporting you in establishing
+            a practice that can stay with you for a lifetime.
+          </p>
+          <div className="space-y-1">
+            <p>Pranam,</p>
+            <p>Erlinda Mustafaraj</p>
+            <p>Classical Hatha Yoga Teacher</p>
+          </div>
+        </div>
         <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button href="/programs">Explore programs</Button>
           <Button href="/" variant="secondary">
