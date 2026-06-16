@@ -269,11 +269,12 @@ export function EventCard({ event, whatsappNumber }: EventCardProps) {
         )}
 
         <div className="flex flex-wrap gap-3 sm:justify-end">
-          {event.registrationLink ? (
-            <Button href={event.registrationLink} size="sm">
-              Register
-            </Button>
-          ) : null}
+          <Button
+            href={`/register?event=${encodeURIComponent(event.title)}`}
+            size="sm"
+          >
+            Register
+          </Button>
           {event.whatsappEnabled !== false ? (
             <Button href={waHref} variant="secondary" size="sm">
               Register via WhatsApp
