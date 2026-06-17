@@ -9,7 +9,7 @@ Built with **Next.js (App Router)**, **TypeScript**, **Tailwind CSS**, and **San
 - Next.js 16 (App Router, Server Components first)
 - TypeScript
 - Tailwind CSS v3 (design tokens in `tailwind.config.ts`)
-- Sanity CMS v6 + `next-sanity` (embedded Studio at `/studio`)
+- Sanity CMS v6 + `next-sanity`
 - `next/font` (Cormorant Garamond + Inter)
 - Framer Motion (subtle animations only)
 
@@ -47,7 +47,7 @@ Use Node.js 20.9 or newer.
    ```
 
    - Site: [http://localhost:3000](http://localhost:3000)
-   - Studio (CMS): [http://localhost:3000/studio](http://localhost:3000/studio)
+   - Studio (CMS): deploy separately with `npm run studio:deploy`
 
 > The site renders with built-in placeholder content even before Sanity is
 > configured, so you can preview the design immediately.
@@ -64,7 +64,7 @@ npm run seed
 
 ## Editing content (for the client)
 
-Everything editable lives in the Studio (`/studio`):
+Everything editable lives in the Sanity Studio:
 
 - **Site Settings** — brand name, contact details, WhatsApp number, default SEO
 - **Home Page** — hero, sections, featured programs, calls to action
@@ -77,7 +77,7 @@ Everything editable lives in the Studio (`/studio`):
 ## Project structure
 
 ```
-app/            App Router routes (site pages, studio, api, sitemap, robots)
+app/            App Router routes (site pages, api, sitemap, robots)
 components/     Reusable UI, layout, card, content, and form components
 sanity/         Sanity client, schemas, queries, desk structure
 lib/            SEO helpers, constants, placeholders, utilities

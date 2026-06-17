@@ -1,16 +1,35 @@
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import localFont from "next/font/local";
 
-export const fontHeading = Cormorant_Garamond({
-  subsets: ["latin"],
+export const fontHeading = localFont({
+  src: [
+    {
+      path: "../assets/fonts/CormorantGaramond-Regular.woff",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../assets/fonts/CormorantGaramond-SemiBold.woff",
+      weight: "600",
+      style: "normal",
+    },
+  ],
   display: "swap",
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
   variable: "--font-heading",
 });
 
-export const fontBody = Inter({
-  subsets: ["latin"],
+export const fontBody = localFont({
+  src: [
+    {
+      path: "../assets/fonts/Inter-Regular.woff",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../assets/fonts/Inter-Medium.woff",
+      weight: "500",
+      style: "normal",
+    },
+  ],
   display: "swap",
-  weight: ["300", "400", "500", "600"],
   variable: "--font-body",
 });
