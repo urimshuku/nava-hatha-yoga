@@ -1,7 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -20,10 +19,18 @@ const fieldClass =
   "w-full rounded-lg border border-border-strong bg-ivory px-4 py-3 text-charcoal placeholder:text-brown/60 focus-visible:border-saffron focus-visible:outline-none";
 const labelClass = "mb-1.5 block text-sm font-medium text-charcoal";
 
+const SENT_DISPLAY_MS = 5000;
+
 export function ContactForm({ programs = [] }: ContactFormProps) {
-  const router = useRouter();
-  const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "sent" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+    };
+  }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -45,7 +52,14 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
         throw new Error(body.error ?? "Something went wrong. Please try again.");
       }
 
-      router.push("/thank-you");
+      setStatus("sent");
+      form.reset();
+
+      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+      resetTimerRef.current = setTimeout(() => {
+        setStatus("idle");
+        resetTimerRef.current = null;
+      }, SENT_DISPLAY_MS);
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Something went wrong.");
@@ -192,8 +206,16 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
         </p>
       ) : null}
 
-      <Button type="submit" size="lg" disabled={status === "submitting"}>
-        {status === "submitting" ? "Sending..." : "Send message"}
+      <Button
+        type="submit"
+        size="lg"
+        disabled={status === "submitting" || status === "sent"}
+      >
+        {status === "submitting"
+          ? "Sending..."
+          : status === "sent"
+            ? "Sent"
+            : "Send message"}
       </Button>
     </form>
   );
