@@ -19,7 +19,7 @@ const fieldClass =
   "w-full rounded-lg border border-border-strong bg-ivory px-4 py-3 text-charcoal placeholder:text-brown/60 focus-visible:border-saffron focus-visible:outline-none";
 const labelClass = "mb-1.5 block text-sm font-medium text-charcoal";
 
-const SENT_DISPLAY_MS = 5000;
+const SENT_DISPLAY_MS = 3000;
 
 export function ContactForm({ programs = [] }: ContactFormProps) {
   const [status, setStatus] = useState<"idle" | "submitting" | "sent" | "error">("idle");

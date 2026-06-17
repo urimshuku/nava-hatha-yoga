@@ -25,6 +25,10 @@ import {
   REFUND_POLICY_BULLETS,
   REFUND_POLICY_CONSENT_LABEL,
 } from "@/lib/register-content";
+import {
+  GUIDELINES_PDF_FILENAME,
+  GUIDELINES_PDF_URL,
+} from "@/lib/guidelines-pdf.constants";
 import { cn } from "@/lib/utils";
 
 interface RegistrationFormProps {
@@ -461,8 +465,8 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
               </label>
               <input
                 id="age"
-                type="number"
-                min={1}
+                type="text"
+                inputMode="numeric"
                 className={fieldClass}
                 value={form.age}
                 onChange={(e) => update("age", e.target.value)}
@@ -913,14 +917,23 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
           <div className="rounded-xl border border-border bg-cream/60 p-5">
             <p className="text-sm leading-relaxed text-charcoal">
               For the full guidelines on what to know before, during, and after the
-              program, please review the document here:{" "}
+              program, please{" "}
               <button
                 type="button"
                 onClick={() => setBeforeProgramOpen(true)}
                 className="text-saffron underline underline-offset-2 hover:text-saffron-hover focus-visible:outline-none"
               >
-                Click Here
-              </button>
+                read
+              </button>{" "}
+              or{" "}
+              <a
+                href={GUIDELINES_PDF_URL}
+                download={GUIDELINES_PDF_FILENAME}
+                className="text-saffron underline underline-offset-2 hover:text-saffron-hover focus-visible:outline-none"
+              >
+                download the PDF
+              </a>
+              .
             </p>
           </div>
         </div>

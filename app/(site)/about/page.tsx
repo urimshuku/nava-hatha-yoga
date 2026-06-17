@@ -54,20 +54,7 @@ export default async function AboutPage() {
         description="Know more about the teacher, Isha Hatha Yoga teacher training, Isha Yoga Center, Isha Foundation, and Sadhguru."
       />
 
-      <AboutHighlightCards
-        teacherBody={
-          <div className="space-y-6 font-heading">
-            <div className="space-y-4 italic">
-              <p>My name is Linda.</p>
-              <p>
-                What began as a personal journey, over 10 years of lived experience and teaching
-                at Isha Yoga Center in India, has naturally become a longing to share across the
-                world Classical Hatha Yoga in its purest form.
-              </p>
-            </div>
-          </div>
-        }
-      />
+      <AboutHighlightCards />
 
       {sections.map((section, index) => (
         <AboutSectionBlock

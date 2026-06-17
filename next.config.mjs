@@ -7,6 +7,7 @@ const projectRoot = dirname(fileURLToPath(import.meta.url));
 const nextConfig = {
   // Pin the file-tracing root to this project (avoids picking up parent lockfiles).
   outputFileTracingRoot: projectRoot,
+  serverExternalPackages: ["@pdf-lib/fontkit"],
   images: {
     remotePatterns: [
       {

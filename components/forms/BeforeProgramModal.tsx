@@ -1,24 +1,25 @@
 "use client";
 
-import { useEffect, type ComponentType, type SVGProps } from "react";
+import { useEffect } from "react";
 
+import {
+  BLOCK_ICONS,
+  IconGuidelines,
+  SECTION_ICONS,
+} from "@/lib/guideline-icons";
 import {
   BEFORE_PROGRAM_DOCUMENT,
   BEFORE_PROGRAM_TITLE,
   type GuidelineBlock,
 } from "@/lib/register-content";
+import {
+  GUIDELINES_PDF_FILENAME,
+  GUIDELINES_PDF_URL,
+} from "@/lib/guidelines-pdf.constants";
 
 interface BeforeProgramModalProps {
   open: boolean;
   onClose: () => void;
-}
-
-type IconProps = SVGProps<SVGSVGElement>;
-
-function iconClass(size: "lg" | "sm" = "lg") {
-  return size === "lg"
-    ? "h-6 w-6 shrink-0 text-clay"
-    : "h-5 w-5 shrink-0 text-clay";
 }
 
 function IconClose() {
@@ -33,262 +34,6 @@ function IconClose() {
     </svg>
   );
 }
-
-function IconGuidelines(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("lg")} aria-hidden="true" {...props}>
-      <path d="M7 4h10v16H7z" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M9 8h6M9 12h6M9 16h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconBeforeStart(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("lg")} aria-hidden="true" {...props}>
-      <path
-        d="M6.5 6.5 4.5 8.5 6.5 10.5 6.5 8.5H17A4 4 0 0 1 17 16.5H9"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function IconDuringSession(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("lg")} aria-hidden="true" {...props}>
-      <circle cx="7" cy="12" r="1.5" fill="currentColor" />
-      <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-      <circle cx="17" cy="12" r="1.5" fill="currentColor" />
-    </svg>
-  );
-}
-
-function IconAfterProgram(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("lg")} aria-hidden="true" {...props}>
-      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.4" />
-      <path
-        d="m8.5 12.5 2 2 5-5"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function IconStomach(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("sm")} aria-hidden="true" {...props}>
-      <path
-        d="M6 10c0-2.2 2.7-4 6-4s6 1.8 6 4c0 3.5-2.5 6-6 8-3.5-2-6-4.5-6-8Z"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinejoin="round"
-      />
-      <path d="M9 10h6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconClothing(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("sm")} aria-hidden="true" {...props}>
-      <path
-        d="M7.5 7Q9.5 10 12 10Q14.5 10 16.5 7L19 10.5L16.5 12.5V18Q16.5 19.75 15 19.75H9Q7.5 19.75 7.5 18V12.5L5 10.5L7.5 7Z"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function IconPunctuality(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("sm")} aria-hidden="true" {...props}>
-      <circle cx="12" cy="12" r="7.5" stroke="currentColor" strokeWidth="1.4" />
-      <path
-        d="M12 12V6.5"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function IconBelongings(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("sm")} aria-hidden="true" {...props}>
-      <path
-        d="M7 9V7.5A2.5 2.5 0 0 1 12 7.5 2.5 2.5 0 0 1 17 7.5V9"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-      <rect x="5" y="9" width="14" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M10 14h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconWater(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("sm")} aria-hidden="true" {...props}>
-      <path
-        d="M12 4.5c2.5 3.5 5 6.3 5 9a5 5 0 1 1-10 0c0-2.7 2.5-5.5 5-9Z"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function IconMindfulness(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("sm")} aria-hidden="true" {...props}>
-      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.4" />
-      <path
-        d="M5 12c1.5-3 4-4.5 7-4.5s5.5 1.5 7 4.5M5 12c1.5 3 4 4.5 7 4.5s5.5-1.5 7-4.5"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function IconQuestions(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("sm")} aria-hidden="true" {...props}>
-      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.4" />
-      <path
-        d="M9.5 9.2a2.7 2.7 0 0 1 4.6 1.9c0 1.7-2.1 2.4-2.1 3.9"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-      <circle cx="12" cy="17.2" r="0.8" fill="currentColor" />
-    </svg>
-  );
-}
-
-function IconSupport(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("sm")} aria-hidden="true" {...props}>
-      <circle cx="12" cy="12" r="7.5" stroke="currentColor" strokeWidth="1.4" />
-      <path
-        d="M12 8.5v7M8.5 12h7"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function IconConfidentiality(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("sm")} aria-hidden="true" {...props}>
-      <rect x="6" y="10" width="12" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
-      <path
-        d="M9 10V8a3 3 0 0 1 6 0v2"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-      <circle cx="12" cy="14.5" r="1" fill="currentColor" />
-    </svg>
-  );
-}
-
-function IconDignity(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("sm")} aria-hidden="true" {...props}>
-      <path
-        d="M12 19.5c-3.5-2.5-6.5-5-6.5-8.2a3.7 3.7 0 0 1 6.5-2.5 3.7 3.7 0 0 1 6.5 2.5c0 3.2-3 5.7-6.5 8.2Z"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function IconNoMusic(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("sm")} aria-hidden="true" {...props}>
-      <path
-        d="M9.5 16.5V7.5l7-2v9"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinejoin="round"
-      />
-      <circle cx="8" cy="16.5" r="1.8" stroke="currentColor" strokeWidth="1.4" />
-      <path d="m5 5 14 14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconTemperature(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("sm")} aria-hidden="true" {...props}>
-      <path
-        d="M10 4.5h4v11.8a3.2 3.2 0 1 1-4 0V4.5Z"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinejoin="round"
-      />
-      <circle cx="12" cy="17.8" r="2.2" stroke="currentColor" strokeWidth="1.4" />
-      <path
-        d="M12 8.5v5"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-      <path
-        d="M10.5 11h3M10.5 13.5h3"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function IconNutrition(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={iconClass("sm")} aria-hidden="true" {...props}>
-      <circle cx="12" cy="12" r="7.5" stroke="currentColor" strokeWidth="1.4" />
-      <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="1.4" />
-    </svg>
-  );
-}
-
-const SECTION_ICONS = [IconBeforeStart, IconDuringSession, IconAfterProgram];
-
-const BLOCK_ICONS: Record<string, ComponentType<IconProps>> = {
-  "Empty or slightly full stomach": IconStomach,
-  "Clothing & Accessories": IconClothing,
-  Punctuality: IconPunctuality,
-  "Shoes, Bags & Phones": IconBelongings,
-  Water: IconWater,
-  "Mindfulness in the Classroom": IconMindfulness,
-  Questions: IconQuestions,
-  "Accompaniment & Support": IconSupport,
-  "Confidentiality of the Practice": IconConfidentiality,
-  "Dignity of the Practice": IconDignity,
-  "No Music During Practice": IconNoMusic,
-  "Room Temperature": IconTemperature,
-  "Prana & Nutrition": IconNutrition,
-};
 
 function GuidelineBlockView({ block }: { block: GuidelineBlock }) {
   const BlockIcon = BLOCK_ICONS[block.heading] ?? IconGuidelines;
@@ -384,7 +129,7 @@ export function BeforeProgramModal({ open, onClose }: BeforeProgramModalProps) {
         <div className="overflow-y-auto px-6 py-6 sm:px-8">
           <div className="space-y-9">
             {BEFORE_PROGRAM_DOCUMENT.map((section, sectionIndex) => {
-              const SectionIcon = SECTION_ICONS[sectionIndex] ?? IconBeforeStart;
+              const SectionIcon = SECTION_ICONS[sectionIndex] ?? SECTION_ICONS[0];
               return (
                 <section
                   key={section.title}
@@ -405,6 +150,16 @@ export function BeforeProgramModal({ open, onClose }: BeforeProgramModalProps) {
               );
             })}
           </div>
+        </div>
+
+        <div className="border-t border-border bg-cream/60 px-6 py-4 sm:px-8">
+          <a
+            href={GUIDELINES_PDF_URL}
+            download={GUIDELINES_PDF_FILENAME}
+            className="text-sm font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover focus-visible:outline-none"
+          >
+            Download PDF
+          </a>
         </div>
       </div>
     </div>
