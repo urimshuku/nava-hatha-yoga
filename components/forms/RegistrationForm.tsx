@@ -298,6 +298,12 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
       if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       setStatus("error");
+      if (err instanceof TypeError) {
+        setSubmitError(
+          "We couldn't reach the server. Please check your connection and try again, or contact us directly.",
+        );
+        return;
+      }
       setSubmitError(err instanceof Error ? err.message : "Something went wrong.");
     }
   }

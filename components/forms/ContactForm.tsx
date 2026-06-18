@@ -69,6 +69,12 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
       }, SENT_DISPLAY_MS);
     } catch (err) {
       setStatus("error");
+      if (err instanceof TypeError) {
+        setError(
+          "We couldn't reach the server. Please check your connection and try again.",
+        );
+        return;
+      }
       setError(err instanceof Error ? err.message : "Something went wrong.");
     }
   }

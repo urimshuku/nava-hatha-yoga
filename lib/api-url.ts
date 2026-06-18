@@ -1,9 +1,8 @@
 /**
- * Build an absolute API URL on the canonical site host.
- * Ensures form POSTs reach the apex domain even if a visitor is on www.
+ * API path for client form POSTs. Uses a same-origin relative URL so submissions
+ * work whether the visitor is on www or the apex host (cross-origin POSTs are
+ * blocked by the browser and surface as "NetworkError when attempting to fetch").
  */
 export function apiUrl(path: string): string {
-  const base = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
-  if (!base) return path;
-  return `${base}${path.startsWith("/") ? path : `/${path}`}`;
+  return path.startsWith("/") ? path : `/${path}`;
 }
