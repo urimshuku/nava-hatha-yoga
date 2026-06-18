@@ -13,7 +13,6 @@ import {
   type GuidelineBlock,
 } from "@/lib/register-content";
 import {
-  GUIDELINES_PDF_FILENAME,
   GUIDELINES_PDF_URL,
 } from "@/lib/guidelines-pdf.constants";
 
@@ -155,7 +154,8 @@ export function BeforeProgramModal({ open, onClose }: BeforeProgramModalProps) {
         <div className="border-t border-border bg-cream/60 px-6 py-4 sm:px-8">
           <a
             href={GUIDELINES_PDF_URL}
-            download={GUIDELINES_PDF_FILENAME}
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-sm font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover focus-visible:outline-none"
           >
             Download PDF

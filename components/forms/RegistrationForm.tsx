@@ -46,7 +46,6 @@ import {
   REFUND_POLICY_CONSENT_LABEL,
 } from "@/lib/register-content";
 import {
-  GUIDELINES_PDF_FILENAME,
   GUIDELINES_PDF_URL,
 } from "@/lib/guidelines-pdf.constants";
 import { cn } from "@/lib/utils";
@@ -920,7 +919,8 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
               or{" "}
               <a
                 href={GUIDELINES_PDF_URL}
-                download={GUIDELINES_PDF_FILENAME}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-saffron underline underline-offset-2 hover:text-saffron-hover focus-visible:outline-none"
               >
                 download the PDF
