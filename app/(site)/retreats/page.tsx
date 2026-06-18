@@ -99,7 +99,7 @@ export default async function RetreatsPage() {
                 <h2 className="text-display-sm text-balance">
                   An invitation to go deeper
                 </h2>
-                <Ornament className="mt-8" width="w-80" />
+                <Ornament className="mt-8" />
               </MotionReveal>
               <MotionStagger className="mt-8 grid gap-4 sm:mt-12 sm:gap-6 md:grid-cols-3">
                 {EXPECTATIONS.map((item) => (

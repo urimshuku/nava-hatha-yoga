@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
  */
 export function Ornament({
   className,
-  width = "w-80",
+  width = "w-40 sm:w-80",
 }: {
   className?: string;
   width?: string;
