@@ -19,7 +19,7 @@ export function CTASection({
       <Container>
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-display-sm text-balance">{heading}</h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-brown sm:mt-5 sm:text-lg">
+          <p className="section-lead mx-auto mt-4 max-w-xl sm:mt-5">
             {body}
           </p>
           <div className="mt-6 flex justify-center sm:mt-8">

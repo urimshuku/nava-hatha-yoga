@@ -21,7 +21,7 @@ export default function ThankYouPage() {
             ॐ
           </span>
           <h1 className="mt-6 text-display text-balance">Thank you</h1>
-          <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-brown">
+          <p className="section-lead mx-auto mt-6 max-w-md">
             Your message has been received. We will get back to you personally as soon as
             we can. In the meantime, feel free to explore the practices we offer.
           </p>

@@ -26,7 +26,7 @@ export function PrivateSessionsSection() {
         <div className="grid items-center gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
           <MotionReveal>
             <h2 className="text-display-sm text-balance">Private Sessions</h2>
-            <p className="mt-4 max-w-md text-base leading-relaxed text-brown sm:mt-6 sm:text-lg">
+            <p className="section-lead mt-4 max-w-md sm:mt-6">
               Private sessions are available upon request. Depending on the needs of the
               individual, group, or organization, selected Classical Hatha Yoga practices can be
               offered in a focused setting.

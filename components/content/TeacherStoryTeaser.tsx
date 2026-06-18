@@ -29,7 +29,7 @@ export function TeacherStoryTeaser() {
           />
         </div>
 
-        <div className="mx-auto max-w-prose space-y-4 text-center font-heading text-lg leading-relaxed">
+        <div className="mx-auto max-w-prose space-y-3 text-center font-heading text-sm leading-relaxed sm:space-y-4 sm:text-lg">
           <p className="italic text-charcoal">{TEACHER_NAME_LINE}</p>
 
           {TEACHER_STORY_TEASER_PARAGRAPHS.map((paragraph) => (

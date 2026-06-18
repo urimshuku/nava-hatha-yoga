@@ -50,7 +50,7 @@ export default async function RetreatsPage() {
         <>
           <Section tone="cream">
             <Container>
-              <MotionStagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <MotionStagger className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
                 {retreats.map((retreat) => (
                   <MotionItem key={retreat._id} className="h-full">
                     <RetreatCard retreat={retreat} />
@@ -76,7 +76,7 @@ export default async function RetreatsPage() {
                 <h2 className="mt-4 text-display-sm text-balance">
                   Retreats are on their way
                 </h2>
-                <p className="mx-auto mt-5 max-w-md text-lg leading-relaxed text-brown">
+                <p className="section-lead mx-auto mt-4 max-w-md sm:mt-5">
                   We are carefully preparing immersive Classical Hatha Yoga retreats. If you
                   would like to be among the first to hear when dates are announced, please
                   register your interest.
@@ -101,14 +101,14 @@ export default async function RetreatsPage() {
                 </h2>
                 <Ornament className="mt-8" width="w-80" />
               </MotionReveal>
-              <MotionStagger className="mt-12 grid gap-6 md:grid-cols-3">
+              <MotionStagger className="mt-8 grid gap-4 sm:mt-12 sm:gap-6 md:grid-cols-3">
                 {EXPECTATIONS.map((item) => (
                   <MotionItem key={item.title} className="h-full">
-                    <div className="h-full rounded-xl border border-border bg-cream p-8 text-center">
-                      <h3 className="font-heading text-2xl text-charcoal">
+                    <div className="h-full rounded-xl border border-border bg-cream p-5 text-center sm:p-8">
+                      <h3 className="font-heading text-xl text-charcoal sm:text-2xl">
                         {item.title}
                       </h3>
-                      <p className="mt-3 leading-relaxed text-brown">{item.body}</p>
+                      <p className="mt-2 text-sm leading-relaxed text-brown sm:mt-3">{item.body}</p>
                     </div>
                   </MotionItem>
                 ))}

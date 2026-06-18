@@ -28,7 +28,7 @@ export function SectionHeading({
       {eyebrow ? <p className="eyebrow mb-3 sm:mb-4">{eyebrow}</p> : null}
       <h2 className="text-display-sm text-balance">{title}</h2>
       {description ? (
-        <p className="mt-3 text-base leading-relaxed text-brown sm:mt-5 sm:text-lg">{description}</p>
+        <p className="section-lead mt-3 sm:mt-5">{description}</p>
       ) : null}
     </div>
   );

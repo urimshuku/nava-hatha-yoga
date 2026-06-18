@@ -69,7 +69,7 @@ interface CMSRichTextProps {
 export function CMSRichText({ value, className }: CMSRichTextProps) {
   if (!value || value.length === 0) return null;
   return (
-    <div className={cn("text-base", className)}>
+    <div className={cn("prose-body", className)}>
       <PortableText value={value} components={components} />
     </div>
   );

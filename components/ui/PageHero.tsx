@@ -17,7 +17,7 @@ export function PageHero({ eyebrow, title, description, children }: PageHeroProp
           {eyebrow ? <p className="eyebrow mb-3 sm:mb-5">{eyebrow}</p> : null}
           <h1 className="text-display text-balance">{title}</h1>
           {description ? (
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-brown sm:mt-6 sm:text-lg">
+            <p className="section-lead mx-auto mt-4 max-w-2xl sm:mt-6">
               {description}
             </p>
           ) : null}

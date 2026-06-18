@@ -12,7 +12,6 @@ import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
 import { LocalProgramImage } from "@/components/ui/LocalProgramImage";
 import { LocalProgramSymbol } from "@/components/ui/LocalProgramSymbol";
-import { Ornament } from "@/components/ui/Ornament";
 import { buildMetadata } from "@/lib/seo";
 import { ensureTrailingPeriod } from "@/lib/utils";
 import {
@@ -52,7 +51,7 @@ function ProgramSection({
   return (
     <div className={first ? undefined : "mt-12 border-t border-border pt-10"}>
       <h2 className="font-heading text-2xl text-charcoal">{title}</h2>
-      <div className="mt-5">{children}</div>
+      <div className="prose-body mt-4 text-[#3a322a] sm:mt-5">{children}</div>
     </div>
   );
 }
@@ -178,7 +177,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
               <div className="mt-12 border-t border-border pt-10">
                 <div className="rounded-2xl border border-border bg-ivory p-6 shadow-soft sm:p-8">
                   <h2 className="font-heading text-2xl text-charcoal">{PROGRAM_MEDICAL_NOTICE_TITLE}</h2>
-                  <p className="mt-4 leading-relaxed text-[#3a322a]">{PROGRAM_MEDICAL_NOTICE}</p>
+                  <p className="prose-body mt-4 text-[#3a322a]">{PROGRAM_MEDICAL_NOTICE}</p>
                 </div>
               </div>
             </div>
@@ -231,7 +230,6 @@ export default async function ProgramDetailPage({ params }: PageProps) {
             <div className="text-center">
               <p className="eyebrow mb-4">Upcoming</p>
               <h2 className="text-display-sm">Sessions for {program.title}</h2>
-              <Ornament className="mt-7" width="w-16" />
             </div>
             <div className="mx-auto mt-12 flex max-w-4xl flex-col gap-6">
               {relatedEvents.slice(0, 3).map((event) => (

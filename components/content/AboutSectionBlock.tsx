@@ -60,11 +60,11 @@ export function AboutSectionBlock({
           <p className="eyebrow mb-4">About</p>
           <h2 className="text-display-sm text-balance">{title}</h2>
           {hasBody ? (
-            <div className="mt-8 text-lg [&_p]:leading-relaxed [&_p]:text-charcoal/90">
+            <div className="prose-body mt-6 sm:mt-8 sm:text-lg [&_p]:text-charcoal/90">
               <CMSRichText value={body} />
             </div>
           ) : (
-            <p className="mt-8 text-base leading-relaxed text-brown">
+            <p className="section-lead mt-6 sm:mt-8">
               Content for this section will be added soon.
             </p>
           )}

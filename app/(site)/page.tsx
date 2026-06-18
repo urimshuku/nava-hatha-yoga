@@ -116,7 +116,7 @@ export default async function HomePage() {
               </h2>
             </MotionReveal>
             <MotionReveal delay={0.1} className="max-w-prose">
-              <CMSRichText value={home.intro?.body} className="text-lg" />
+              <CMSRichText value={home.intro?.body} className="sm:text-lg" />
             </MotionReveal>
           </div>
           {introVideoId ? (

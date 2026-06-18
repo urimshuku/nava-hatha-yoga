@@ -49,8 +49,16 @@
   }
 
   .hero-subtitle {
-    @apply mx-auto max-w-2xl font-heading text-lg italic leading-relaxed text-brown sm:text-2xl;
+    @apply mx-auto max-w-2xl font-heading text-base italic leading-relaxed text-brown sm:text-2xl;
     font-weight: 400;
+  }
+
+  .section-lead {
+    @apply text-sm leading-relaxed text-brown sm:text-lg;
+  }
+
+  .prose-body {
+    @apply text-sm leading-relaxed sm:text-base;
   }
 }
 

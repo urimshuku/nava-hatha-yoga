@@ -49,7 +49,7 @@ export default async function RetreatDetailPage({ params }: PageProps) {
           <div className="mx-auto max-w-3xl text-center">
             <p className="eyebrow mb-3 sm:mb-5">Retreat</p>
             <h1 className="text-display text-balance">{retreat.title}</h1>
-            {meta ? <p className="mt-4 text-brown sm:mt-5">{meta}</p> : null}
+            {meta ? <p className="section-lead mt-4 sm:mt-5">{meta}</p> : null}
           </div>
         </Container>
       </section>
@@ -59,7 +59,7 @@ export default async function RetreatDetailPage({ params }: PageProps) {
           <div className="grid gap-12 lg:grid-cols-[1.4fr_0.6fr] lg:gap-16">
             <div>
               {retreat.description ? (
-                <p className="mb-8 text-lg leading-relaxed text-brown">
+                <p className="section-lead mb-6 sm:mb-8">
                   {retreat.description}
                 </p>
               ) : null}
