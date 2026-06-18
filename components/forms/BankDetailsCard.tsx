@@ -4,6 +4,7 @@ import { toPng } from "html-to-image";
 import { useRef, useState } from "react";
 
 import { BANK_DETAILS } from "@/lib/register-content";
+import { formBoxClass } from "@/components/forms/form-styles";
 import { cn } from "@/lib/utils";
 
 function IconShare() {
@@ -109,19 +110,16 @@ export function BankDetailsCard() {
   }
 
   return (
-    <div className="space-y-4">
-      <div
-        ref={cardRef}
-        className="rounded-xl border border-border bg-cream/60 p-5 sm:p-6"
-      >
-        <dl className="space-y-2.5">
+    <div className="space-y-3 sm:space-y-4">
+      <div ref={cardRef} className={cn(formBoxClass, "sm:p-6")}>
+        <dl className="space-y-2">
           {BANK_DETAILS.map((row) => (
             <div
               key={row.label}
               className="grid grid-cols-1 gap-0.5 sm:grid-cols-[12rem_1fr] sm:gap-4"
             >
-              <dt className="text-sm font-medium text-charcoal">{row.label}:</dt>
-              <dd className="break-words text-sm text-brown">{row.value}</dd>
+              <dt className="text-xs font-medium text-charcoal sm:text-sm">{row.label}:</dt>
+              <dd className="break-words text-xs text-brown sm:text-sm">{row.value}</dd>
             </div>
           ))}
         </dl>
@@ -133,7 +131,7 @@ export function BankDetailsCard() {
           onClick={handleShare}
           disabled={status === "saving"}
           className={cn(
-            "flex h-11 w-11 items-center justify-center rounded-full",
+            "flex h-10 w-10 items-center justify-center rounded-full sm:h-11 sm:w-11",
             "border border-border-strong bg-ivory text-charcoal transition-colors duration-300",
             "hover:bg-sand/60 hover:text-saffron focus-visible:outline-none",
             "disabled:pointer-events-none disabled:opacity-60",

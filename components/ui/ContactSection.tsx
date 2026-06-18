@@ -36,7 +36,7 @@ export function ContactSection({
           </p>
         </div>
 
-        <div className="mx-auto mt-6 max-w-2xl rounded-2xl border border-border bg-ivory p-4 shadow-soft sm:mt-10 sm:p-8">
+        <div className="mx-auto mt-5 max-w-2xl rounded-2xl border border-border bg-ivory p-3 shadow-soft sm:mt-10 sm:p-8">
           <ContactForm programs={programs} />
         </div>
       </Container>

@@ -3,6 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
+import {
+  formConsentLabelClass,
+  formErrorClass,
+  formFieldClass,
+  formGridClass,
+  formLabelClass,
+} from "@/components/forms/form-styles";
 import { cn } from "@/lib/utils";
 
 /**
@@ -15,9 +22,8 @@ interface ContactFormProps {
   programs?: string[];
 }
 
-const fieldClass =
-  "w-full rounded-lg border border-border-strong bg-ivory px-3.5 py-2.5 text-charcoal placeholder:text-brown/60 focus-visible:border-saffron focus-visible:outline-none sm:px-4 sm:py-3";
-const labelClass = "mb-1.5 block text-sm font-medium text-charcoal";
+const fieldClass = formFieldClass;
+const labelClass = formLabelClass;
 
 const SENT_DISPLAY_MS = 3000;
 
@@ -67,7 +73,7 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5" noValidate>
+    <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-5" noValidate>
       {/* Honeypot: hidden from users, catches bots. Keep for Netlify too. */}
       <div className="absolute left-[-9999px]" aria-hidden="true">
         <label htmlFor="company">Company (leave blank)</label>
@@ -80,7 +86,7 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
         />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+      <div className={formGridClass}>
         <div>
           <label htmlFor="fullName" className={labelClass}>
             Full name <span className="text-saffron">*</span>
@@ -109,7 +115,7 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+      <div className={formGridClass}>
         <div>
           <label htmlFor="phone" className={labelClass}>
             Phone <span className="text-saffron">*</span>
@@ -137,7 +143,7 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+      <div className={formGridClass}>
         <div>
           <label htmlFor="program" className={labelClass}>
             Program
@@ -173,22 +179,22 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
         <textarea
           id="message"
           name="message"
-          rows={5}
+          rows={4}
           required
           className={cn(fieldClass, "resize-y")}
         />
       </div>
 
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-2 sm:gap-3">
         <input
           id="consent"
           name="consent"
           type="checkbox"
           required
           value="yes"
-          className="mt-1 h-4 w-4 shrink-0 rounded border-border-strong text-saffron focus-visible:outline-none"
+          className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-border-strong text-saffron focus-visible:outline-none sm:h-4 sm:w-4"
         />
-        <label htmlFor="consent" className="text-sm leading-relaxed text-brown">
+        <label htmlFor="consent" className={formConsentLabelClass}>
           I consent to my details being used to respond to my enquiry, in line with the{" "}
           <a
             href="/privacy-policy"
@@ -201,14 +207,13 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
       </div>
 
       {error ? (
-        <p role="alert" className="text-sm text-saffron-hover">
+        <p role="alert" className={formErrorClass}>
           {error}
         </p>
       ) : null}
 
       <Button
         type="submit"
-        size="lg"
         disabled={status === "submitting" || status === "sent"}
       >
         {status === "submitting"

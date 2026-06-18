@@ -31,7 +31,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
 
       <Section tone="cream">
         <Container size="narrow">
-          <div className="rounded-2xl border border-border bg-ivory p-4 shadow-soft sm:p-8">
+          <div className="rounded-2xl border border-border bg-ivory p-3 shadow-soft sm:p-8">
             <RegistrationForm event={eventName} />
           </div>
         </Container>

@@ -38,8 +38,8 @@ export default async function ContactPage() {
       <Section tone="cream">
         <Container>
           <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr] lg:gap-16">
-            <div className="rounded-2xl border border-border bg-ivory p-4 shadow-soft sm:p-8">
-              <h2 className="mb-4 font-heading text-xl text-charcoal sm:mb-6 sm:text-2xl">
+            <div className="rounded-2xl border border-border bg-ivory p-3 shadow-soft sm:p-8">
+              <h2 className="mb-3 font-heading text-lg text-charcoal sm:mb-6 sm:text-2xl">
                 Send a message
               </h2>
               <ContactForm programs={programs.map((p) => p.title)} />

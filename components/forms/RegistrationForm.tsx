@@ -4,6 +4,26 @@ import { useState } from "react";
 
 import { BankDetailsCard } from "@/components/forms/BankDetailsCard";
 import { BeforeProgramModal } from "@/components/forms/BeforeProgramModal";
+import {
+  formBodyTextCharcoalClass,
+  formBodyTextClass,
+  formBoxClass,
+  formBulletItemClass,
+  formBulletListClass,
+  formCheckboxClass,
+  formChoiceLabelClass,
+  formConsentRowClass,
+  formErrorClass,
+  formFieldClass,
+  formGridClass,
+  formGuidelineTitleClass,
+  formHintClass,
+  formLabelClass,
+  formRadioClass,
+  formRadioLabelClass,
+  formSectionTitleClass,
+  formStackClass,
+} from "@/components/forms/form-styles";
 import { MedicalDisclaimerModal } from "@/components/forms/MedicalDisclaimerModal";
 import { Button } from "@/components/ui/Button";
 import {
@@ -35,9 +55,8 @@ interface RegistrationFormProps {
   event?: string;
 }
 
-const fieldClass =
-  "w-full rounded-lg border border-border-strong bg-ivory px-3.5 py-2.5 text-charcoal placeholder:text-brown/60 focus-visible:border-saffron focus-visible:outline-none sm:px-4 sm:py-3";
-const labelClass = "mb-1.5 block text-sm font-medium text-charcoal";
+const fieldClass = formFieldClass;
+const labelClass = formLabelClass;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -115,7 +134,7 @@ function Required() {
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
   return (
-    <p role="alert" className="mt-1.5 text-sm text-saffron-hover">
+    <p role="alert" className={formErrorClass}>
       {message}
     </p>
   );
@@ -287,9 +306,9 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
 
   if (status === "success") {
     return (
-      <div className="space-y-8 py-4 text-center font-heading">
-        <h2 className="text-3xl text-charcoal sm:text-4xl">Thank you!</h2>
-        <div className="mx-auto max-w-md space-y-6 text-lg leading-relaxed text-brown">
+      <div className="space-y-5 py-3 text-center font-heading sm:space-y-8 sm:py-4">
+        <h2 className="text-2xl text-charcoal sm:text-4xl">Thank you!</h2>
+        <div className="mx-auto max-w-md space-y-4 text-base leading-relaxed text-brown sm:space-y-6 sm:text-lg">
           <p>
             I look forward to welcoming you to the program and supporting you in establishing
             a practice that can stay with you for a lifetime.
@@ -322,7 +341,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
     />
     <form
       onSubmit={(e) => e.preventDefault()}
-      className="space-y-6 sm:space-y-8"
+      className="space-y-4 sm:space-y-8"
       noValidate
     >
       {/* Honeypot: hidden from users, catches bots. */}
@@ -345,9 +364,9 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
           <p className="eyebrow">
             Step {step + 1} of {STEPS.length}
           </p>
-          <p className="text-sm text-brown">{STEPS[step]}</p>
+          <p className="text-xs text-brown sm:text-sm">{STEPS[step]}</p>
         </div>
-        <div className="mt-3 flex gap-1.5" aria-hidden="true">
+        <div className="mt-2 flex gap-1 sm:mt-3 sm:gap-1.5" aria-hidden="true">
           {STEPS.map((label, i) => (
             <span
               key={label}
@@ -360,14 +379,14 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
         </div>
       </div>
 
-      <h2 className="font-heading text-2xl text-charcoal">{STEPS[step]}</h2>
+      <h2 className="font-heading text-xl text-charcoal sm:text-2xl">{STEPS[step]}</h2>
 
       {/* ---------------------------------------------------------------- */}
       {/* Step 1 — Personal Information                                     */}
       {/* ---------------------------------------------------------------- */}
       {step === 0 ? (
-        <div className="space-y-4 sm:space-y-5">
-          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+        <div className={formStackClass}>
+          <div className={formGridClass}>
             <div>
               <label htmlFor="fullName" className={labelClass}>
                 Full name <Required />
@@ -396,7 +415,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+          <div className={formGridClass}>
             <div>
               <label htmlFor="email" className={labelClass}>
                 Email <Required />
@@ -441,7 +460,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
             <FieldError message={errors.address} />
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+          <div className={formGridClass}>
             <div>
               <label htmlFor="gender" className={labelClass}>
                 Gender
@@ -488,12 +507,12 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
             />
           </div>
 
-          <fieldset className="rounded-xl border border-border bg-cream/60 p-5">
-            <legend className="px-2 text-sm font-medium text-charcoal">
+          <fieldset className={formBoxClass}>
+            <legend className="px-1.5 text-xs font-medium text-charcoal sm:px-2 sm:text-sm">
               Emergency contact
             </legend>
-            <div className="space-y-5">
-              <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+            <div className="space-y-3 sm:space-y-5">
+              <div className={formGridClass}>
                 <div>
                   <label htmlFor="emergencyName" className={labelClass}>
                     Full name <Required />
@@ -544,10 +563,10 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
       {/* Step 2 — Health-Related Information                               */}
       {/* ---------------------------------------------------------------- */}
       {step === 1 ? (
-        <div className="space-y-6">
-          <div className="space-y-3">
+        <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-2 sm:space-y-3">
             {HEALTH_INTRO.map((para) => (
-              <p key={para} className="text-sm leading-relaxed text-brown">
+              <p key={para} className={formBodyTextClass}>
                 {para}
               </p>
             ))}
@@ -557,34 +576,31 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
             <legend className={labelClass}>
               Health conditions <Required />
             </legend>
-            <div className="grid gap-2.5 sm:grid-cols-2">
+            <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5">
               {HEALTH_CONDITIONS.map((condition) => (
-                <label
-                  key={condition}
-                  className="flex items-start gap-3 text-sm leading-relaxed text-charcoal"
-                >
+                <label key={condition} className={formChoiceLabelClass}>
                   <input
                     type="checkbox"
-                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-border-strong text-saffron focus-visible:outline-none"
+                    className={formCheckboxClass}
                     checked={form.healthConditions.includes(condition)}
                     onChange={() => toggleCondition(condition)}
                   />
                   <span>{condition}</span>
                 </label>
               ))}
-              <label className="flex items-start gap-3 text-sm leading-relaxed text-charcoal">
+              <label className={formChoiceLabelClass}>
                 <input
                   type="checkbox"
-                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-border-strong text-saffron focus-visible:outline-none"
+                  className={formCheckboxClass}
                   checked={form.healthConditions.includes(OTHER_CONDITION)}
                   onChange={() => toggleCondition(OTHER_CONDITION)}
                 />
                 <span>Other</span>
               </label>
-              <label className="flex items-start gap-3 text-sm leading-relaxed text-charcoal">
+              <label className={formChoiceLabelClass}>
                 <input
                   type="checkbox"
-                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-border-strong text-saffron focus-visible:outline-none"
+                  className={formCheckboxClass}
                   checked={form.healthConditions.includes(
                     HEALTH_CONDITION_NOT_APPLICABLE,
                   )}
@@ -596,7 +612,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
               </label>
             </div>
             {form.healthConditions.includes(OTHER_CONDITION) ? (
-              <div className="mt-3">
+              <div className="mt-2 sm:mt-3">
                 <input
                   type="text"
                   placeholder="Please specify"
@@ -618,7 +634,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
             </label>
             <textarea
               id="healthDetails"
-              rows={4}
+              rows={3}
               className={cn(fieldClass, "resize-y")}
               value={form.healthDetails}
               onChange={(e) => update("healthDetails", e.target.value)}
@@ -630,12 +646,12 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
             <label htmlFor="majorSurgery" className={labelClass}>
               {MAJOR_SURGERY_QUESTION} <Required />
             </label>
-            <p className="mb-1.5 text-sm leading-relaxed text-brown">
+            <p className={formHintClass}>
               {MAJOR_SURGERY_HINT}
             </p>
             <textarea
               id="majorSurgery"
-              rows={3}
+              rows={2}
               className={cn(fieldClass, "resize-y")}
               value={form.majorSurgery}
               onChange={(e) => update("majorSurgery", e.target.value)}
@@ -645,17 +661,14 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
 
           <fieldset>
             <legend className={labelClass}>{PREGNANCY_LABEL}</legend>
-            <div className="flex gap-6">
+            <div className="flex gap-4 sm:gap-6">
               {["Yes", "No"].map((option) => (
-                <label
-                  key={option}
-                  className="flex items-center gap-2.5 text-sm text-charcoal"
-                >
+                <label key={option} className={formRadioLabelClass}>
                   <input
                     type="radio"
                     name="pregnant"
                     value={option}
-                    className="h-4 w-4 border-border-strong text-saffron focus-visible:outline-none"
+                    className={formRadioClass}
                     checked={form.pregnant === option}
                     onChange={(e) => update("pregnant", e.target.value)}
                   />
@@ -666,8 +679,8 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
             <FieldError message={errors.pregnant} />
           </fieldset>
 
-          <div className="rounded-xl border border-border bg-cream/60 p-5">
-            <p className="text-sm leading-relaxed text-charcoal">
+          <div className={formBoxClass}>
+            <p className={formBodyTextCharcoalClass}>
               {MEDICAL_DISCLAIMER_INTRO}{" "}
               <button
                 type="button"
@@ -677,27 +690,24 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
                 Click Here
               </button>
             </p>
-            <p className="mt-4 text-sm font-medium text-charcoal">
+            <p className="mt-3 text-xs font-medium text-charcoal sm:mt-4 sm:text-sm">
               By registering for the program, I confirm that:
             </p>
-            <ul className="mt-3 space-y-2">
+            <ul className={formBulletListClass}>
               {MEDICAL_DISCLAIMER_BULLETS.map((bullet) => (
-                <li
-                  key={bullet}
-                  className="flex gap-3 text-sm leading-relaxed text-brown"
-                >
+                <li key={bullet} className={formBulletItemClass}>
                   <span
                     aria-hidden="true"
-                    className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-clay"
+                    className="mt-[0.35rem] h-1.5 w-1.5 shrink-0 rounded-full bg-clay sm:mt-[0.45rem]"
                   />
                   <span>{bullet}</span>
                 </li>
               ))}
             </ul>
-            <label className="mt-4 flex items-start gap-3 text-sm leading-relaxed text-charcoal">
+            <label className={formConsentRowClass}>
               <input
                 type="checkbox"
-                className="mt-1 h-4 w-4 shrink-0 rounded border-border-strong text-saffron focus-visible:outline-none"
+                className={formCheckboxClass}
                 checked={form.medicalConsent}
                 onChange={(e) => update("medicalConsent", e.target.checked)}
               />
@@ -714,7 +724,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
       {/* Step 3 — Program-Related Information                              */}
       {/* ---------------------------------------------------------------- */}
       {step === 2 ? (
-        <div className="space-y-5">
+        <div className={formStackClass}>
           <div>
             <label htmlFor="howHeard" className={labelClass}>
               How did you come to know of this program? <Required />
@@ -736,7 +746,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
             </label>
             <textarea
               id="priorPractice"
-              rows={3}
+              rows={2}
               className={cn(fieldClass, "resize-y")}
               value={form.priorPractice}
               onChange={(e) => update("priorPractice", e.target.value)}
@@ -748,17 +758,14 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
             <legend className={labelClass}>
               Have you learnt any other Isha Yoga practices? <Required />
             </legend>
-            <div className="flex gap-6">
+            <div className="flex gap-4 sm:gap-6">
               {["Yes", "No"].map((option) => (
-                <label
-                  key={option}
-                  className="flex items-center gap-2.5 text-sm text-charcoal"
-                >
+                <label key={option} className={formRadioLabelClass}>
                   <input
                     type="radio"
                     name="otherIshaPractices"
                     value={option}
-                    className="h-4 w-4 border-border-strong text-saffron focus-visible:outline-none"
+                    className={formRadioClass}
                     checked={form.otherIshaPractices === option}
                     onChange={(e) =>
                       update("otherIshaPractices", e.target.value)
@@ -772,15 +779,12 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
           </fieldset>
 
           <div>
-            <label
-              htmlFor="otherIshaPracticesDetails"
-              className="mb-1.5 block text-sm leading-relaxed text-brown"
-            >
+            <label htmlFor="otherIshaPracticesDetails" className={formHintClass}>
               If yes, please give details below
             </label>
             <textarea
               id="otherIshaPracticesDetails"
-              rows={3}
+              rows={2}
               className={cn(fieldClass, "resize-y")}
               value={form.otherIshaPracticesDetails}
               onChange={(e) =>
@@ -795,27 +799,24 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
       {/* Step 4 — Agreement                                                */}
       {/* ---------------------------------------------------------------- */}
       {step === 3 ? (
-        <div className="space-y-6">
-          <div className="rounded-xl border border-border bg-cream/60 p-5">
-            <p className="text-sm font-medium text-charcoal">Refund Policy:</p>
-            <ul className="mt-3 space-y-2">
+        <div className="space-y-4 sm:space-y-6">
+          <div className={formBoxClass}>
+            <p className={formSectionTitleClass}>Refund Policy:</p>
+            <ul className={formBulletListClass}>
               {REFUND_POLICY_BULLETS.map((bullet) => (
-                <li
-                  key={bullet}
-                  className="flex gap-3 text-sm leading-relaxed text-brown"
-                >
+                <li key={bullet} className={formBulletItemClass}>
                   <span
                     aria-hidden="true"
-                    className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-clay"
+                    className="mt-[0.35rem] h-1.5 w-1.5 shrink-0 rounded-full bg-clay sm:mt-[0.45rem]"
                   />
                   <span>{bullet}</span>
                 </li>
               ))}
             </ul>
-            <label className="mt-4 flex items-start gap-3 text-sm leading-relaxed text-charcoal">
+            <label className={formConsentRowClass}>
               <input
                 type="checkbox"
-                className="mt-1 h-4 w-4 shrink-0 rounded border-border-strong text-saffron focus-visible:outline-none"
+                className={formCheckboxClass}
                 checked={form.refundConsent}
                 onChange={(e) => update("refundConsent", e.target.checked)}
               />
@@ -826,28 +827,23 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
             <FieldError message={errors.refundConsent} />
           </div>
 
-          <div className="rounded-xl border border-border bg-cream/60 p-5">
-            <p className="text-sm font-medium text-charcoal">
-              {PARTICIPANT_AGREEMENT_TITLE}
-            </p>
-            <ul className="mt-3 space-y-2">
+          <div className={formBoxClass}>
+            <p className={formSectionTitleClass}>{PARTICIPANT_AGREEMENT_TITLE}</p>
+            <ul className={formBulletListClass}>
               {AGREEMENT_BULLETS.map((bullet) => (
-                <li
-                  key={bullet}
-                  className="flex gap-3 text-sm leading-relaxed text-brown"
-                >
+                <li key={bullet} className={formBulletItemClass}>
                   <span
                     aria-hidden="true"
-                    className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-clay"
+                    className="mt-[0.35rem] h-1.5 w-1.5 shrink-0 rounded-full bg-clay sm:mt-[0.45rem]"
                   />
                   <span>{bullet}</span>
                 </li>
               ))}
             </ul>
-            <label className="mt-4 flex items-start gap-3 text-sm leading-relaxed text-charcoal">
+            <label className={formConsentRowClass}>
               <input
                 type="checkbox"
-                className="mt-1 h-4 w-4 shrink-0 rounded border-border-strong text-saffron focus-visible:outline-none"
+                className={formCheckboxClass}
                 checked={form.agreementConsent}
                 onChange={(e) => update("agreementConsent", e.target.checked)}
               />
@@ -871,51 +867,47 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
       {/* Step 6 — Before the Start of the Session                         */}
       {/* ---------------------------------------------------------------- */}
       {step === 5 ? (
-        <div className="space-y-6">
-          <div className="rounded-xl border border-border bg-cream/60 p-5 sm:p-6">
-            <h3 className="font-heading text-lg text-charcoal">
-              {BEFORE_SESSION_STOMACH.title}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-brown">
+        <div className="space-y-4 sm:space-y-6">
+          <div className={cn(formBoxClass, "sm:p-6")}>
+            <h3 className={formGuidelineTitleClass}>{BEFORE_SESSION_STOMACH.title}</h3>
+            <p className="mt-1.5 text-xs leading-snug text-brown sm:mt-2 sm:text-sm sm:leading-relaxed">
               {BEFORE_SESSION_STOMACH.intro}
             </p>
-            <p className="mt-4 text-sm font-medium text-charcoal">
+            <p className="mt-3 text-xs font-medium text-charcoal sm:mt-4 sm:text-sm">
               {BEFORE_SESSION_STOMACH.empty.heading}
             </p>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed text-brown">
+            <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-xs leading-snug text-brown sm:mt-2 sm:space-y-1 sm:pl-5 sm:text-sm sm:leading-relaxed">
               {BEFORE_SESSION_STOMACH.empty.items.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
-            <p className="mt-4 text-sm font-medium text-charcoal">
+            <p className="mt-3 text-xs font-medium text-charcoal sm:mt-4 sm:text-sm">
               {BEFORE_SESSION_STOMACH.light.heading}
             </p>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed text-brown">
+            <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-xs leading-snug text-brown sm:mt-2 sm:space-y-1 sm:pl-5 sm:text-sm sm:leading-relaxed">
               {BEFORE_SESSION_STOMACH.light.items.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
           </div>
 
-          <div className="rounded-xl border border-border bg-cream/60 p-5 sm:p-6">
-            <h3 className="font-heading text-lg text-charcoal">
-              {BEFORE_SESSION_CLOTHING.title}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-brown">
+          <div className={cn(formBoxClass, "sm:p-6")}>
+            <h3 className={formGuidelineTitleClass}>{BEFORE_SESSION_CLOTHING.title}</h3>
+            <p className="mt-1.5 text-xs leading-snug text-brown sm:mt-2 sm:text-sm sm:leading-relaxed">
               {BEFORE_SESSION_CLOTHING.intro}
             </p>
-            <p className="mt-4 text-sm font-medium text-charcoal">
+            <p className="mt-3 text-xs font-medium text-charcoal sm:mt-4 sm:text-sm">
               {BEFORE_SESSION_CLOTHING.heading}
             </p>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed text-brown">
+            <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-xs leading-snug text-brown sm:mt-2 sm:space-y-1 sm:pl-5 sm:text-sm sm:leading-relaxed">
               {BEFORE_SESSION_CLOTHING.items.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
           </div>
 
-          <div className="rounded-xl border border-border bg-cream/60 p-5">
-            <p className="text-sm leading-relaxed text-charcoal">
+          <div className={formBoxClass}>
+            <p className={formBodyTextCharcoalClass}>
               For the full guidelines on what to know before, during, and after the
               program, please{" "}
               <button
@@ -940,12 +932,12 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
       ) : null}
 
       {submitError ? (
-        <p role="alert" className="text-sm text-saffron-hover">
+        <p role="alert" className={formErrorClass}>
           {submitError}
         </p>
       ) : null}
 
-      <div className="flex items-center justify-between gap-3 border-t border-border pt-6">
+      <div className="flex items-center justify-between gap-2 border-t border-border pt-4 sm:gap-3 sm:pt-6">
         {step > 0 ? (
           <Button type="button" variant="secondary" onClick={goBack}>
             Back
@@ -957,7 +949,6 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
         {isLastStep ? (
           <Button
             type="button"
-            size="lg"
             disabled={status === "submitting"}
             onClick={handleFinish}
           >
