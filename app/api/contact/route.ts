@@ -17,6 +17,12 @@ interface ContactPayload {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+function deliveryErrorHeader(error: unknown): string {
+  const message = error instanceof Error ? error.message : "Unknown delivery error";
+
+  return message.replace(/[^\x20-\x7E]/g, " ").slice(0, 400);
+}
+
 export async function POST(request: Request) {
   let data: ContactPayload;
   try {
@@ -71,7 +77,12 @@ export async function POST(request: Request) {
     console.error("Failed to deliver contact submission:", error);
     return NextResponse.json(
       { error: "We couldn't send your message. Please try again or email us directly." },
-      { status: 500 },
+      {
+        status: 500,
+        headers: {
+          "X-Form-Delivery-Error": deliveryErrorHeader(error),
+        },
+      },
     );
   }
 

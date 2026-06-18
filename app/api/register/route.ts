@@ -33,6 +33,12 @@ interface RegisterPayload {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+function deliveryErrorHeader(error: unknown): string {
+  const message = error instanceof Error ? error.message : "Unknown delivery error";
+
+  return message.replace(/[^\x20-\x7E]/g, " ").slice(0, 400);
+}
+
 export async function POST(request: Request) {
   let data: RegisterPayload;
   try {
@@ -139,7 +145,12 @@ export async function POST(request: Request) {
         error:
           "We couldn't submit your registration. Please try again or contact us directly.",
       },
-      { status: 500 },
+      {
+        status: 500,
+        headers: {
+          "X-Form-Delivery-Error": deliveryErrorHeader(error),
+        },
+      },
     );
   }
 
