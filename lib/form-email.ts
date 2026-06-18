@@ -1,5 +1,7 @@
 import "server-only";
 
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+
 interface SendFormNotificationOptions {
   subject: string;
   replyTo: string;
@@ -23,8 +25,21 @@ function stripWrappingQuotes(value: string): string {
   return value;
 }
 
-function getRequiredEnv(name: string): string {
-  const value = stripWrappingQuotes(process.env[name]?.trim() ?? "");
+async function getCloudflareEnvValue(name: string): Promise<string | undefined> {
+  try {
+    const { env } = await getCloudflareContext({ async: true });
+    const value = (env as Record<string, unknown>)[name];
+
+    return typeof value === "string" ? value : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+async function getRequiredEnv(name: string): Promise<string> {
+  const rawValue =
+    (await getCloudflareEnvValue(name)) ?? process.env[name] ?? "";
+  const value = stripWrappingQuotes(rawValue.trim());
 
   if (!value) {
     throw new Error(`Missing required environment variable: ${name}`);
@@ -53,12 +68,12 @@ export async function sendFormNotification({
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${getRequiredEnv("RESEND_API_KEY")}`,
+      Authorization: `Bearer ${await getRequiredEnv("RESEND_API_KEY")}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: getRequiredEnv("RESEND_FROM_EMAIL"),
-      to: [getRequiredEnv("FORM_NOTIFICATION_EMAIL")],
+      from: await getRequiredEnv("RESEND_FROM_EMAIL"),
+      to: [await getRequiredEnv("FORM_NOTIFICATION_EMAIL")],
       subject,
       reply_to: [replyTo],
       text,
