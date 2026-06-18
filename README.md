@@ -10,7 +10,7 @@ Built with **Next.js (App Router)**, **TypeScript**, **Tailwind CSS**, and **San
 - TypeScript
 - Tailwind CSS v3 (design tokens in `tailwind.config.ts`)
 - Sanity CMS v6 + `next-sanity`
-- `next/font` (Cormorant Garamond + Inter)
+- `next/font` (Cormorant Garamond + Montserrat)
 - Framer Motion (subtle animations only)
 
 ## Getting started

@@ -1,5 +1,4 @@
 import { ProgramGrid } from "@/components/programs/ProgramGrid";
-import { SpecialProgramsReveal } from "@/components/programs/SpecialProgramsReveal";
 import type { ProgramListItem } from "@/sanity/lib/types";
 
 export function ProgramsListing({
@@ -15,7 +14,7 @@ export function ProgramsListing({
       <ProgramGrid programs={mainPrograms} />
 
       {specialPrograms.length > 0 ? (
-        <SpecialProgramsReveal>
+        <section className="mt-14 border-t border-border pt-12">
           <div className="mb-8 text-center">
             <p className="eyebrow mb-3">Special programs</p>
             <p className="mx-auto max-w-xl text-lg leading-relaxed text-brown">
@@ -23,7 +22,7 @@ export function ProgramsListing({
             </p>
           </div>
           <ProgramGrid programs={specialPrograms} />
-        </SpecialProgramsReveal>
+        </section>
       ) : null}
     </>
   );

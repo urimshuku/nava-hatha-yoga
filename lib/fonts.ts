@@ -18,18 +18,8 @@ export const fontHeading = localFont({
 });
 
 export const fontBody = localFont({
-  src: [
-    {
-      path: "../assets/fonts/Inter-Regular.woff",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "../assets/fonts/Inter-Medium.woff",
-      weight: "500",
-      style: "normal",
-    },
-  ],
+  src: "../assets/fonts/Montserrat[wght].ttf",
+  weight: "400 500",
   display: "swap",
   variable: "--font-body",
 });

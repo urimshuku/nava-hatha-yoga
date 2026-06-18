@@ -32,7 +32,7 @@ const config: Config = {
       },
       fontFamily: {
         heading: ["var(--font-heading)", "Cormorant Garamond", "serif"],
-        body: ["var(--font-body)", "Inter", "system-ui", "sans-serif"],
+        body: ["var(--font-body)", "Montserrat", "system-ui", "sans-serif"],
       },
       fontSize: {
         // Fluid display sizes for a spacious, premium feel
