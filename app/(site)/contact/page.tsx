@@ -67,7 +67,7 @@ export default async function ContactPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        WhatsApp{settings.phone ? `: ${settings.phone}` : ""}
+                        {settings.phone ?? "WhatsApp"}
                       </a>
                     </li>
                   ) : null}

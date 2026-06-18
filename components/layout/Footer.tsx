@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { FooterCertificationLogo } from "@/components/layout/FooterCertificationLogo";
 import { Container } from "@/components/layout/Container";
+import { Button } from "@/components/ui/Button";
 import {
   LEGAL_LINKS,
   NAV_LINKS,
@@ -17,6 +18,10 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
   const email = settings?.email;
   const phone = settings?.phone;
   const whatsapp = settings?.whatsapp;
+  const waMessage = "Hello, I'd like to know more about your classes.";
+  const waHref = whatsapp
+    ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(waMessage)}`
+    : whatsappLink(waMessage);
   const year = new Date().getFullYear();
 
   return (
@@ -65,11 +70,18 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
                     rel="noopener noreferrer"
                     className="hover:text-saffron"
                   >
-                    WhatsApp{phone ? `: ${phone}` : ""}
+                    {phone ?? "WhatsApp"}
                   </a>
                 </li>
               ) : null}
             </ul>
+            {whatsapp ? (
+              <div className="mt-6">
+                <Button href={waHref} variant="secondary">
+                  Message on WhatsApp
+                </Button>
+              </div>
+            ) : null}
           </div>
         </div>
 
