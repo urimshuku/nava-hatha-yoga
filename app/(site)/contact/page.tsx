@@ -5,7 +5,7 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
 import { PageHero } from "@/components/ui/PageHero";
-import { whatsappLink } from "@/lib/constants";
+import { instagramLink, whatsappLink } from "@/lib/constants";
 import { buildMetadata } from "@/lib/seo";
 import { getPrograms, getSiteSettings } from "@/sanity/lib/fetch";
 
@@ -80,9 +80,14 @@ export default async function ContactPage() {
                   Prefer WhatsApp? Reach out directly and we&apos;ll reply as soon as we
                   can.
                 </p>
-                <Button href={waHref} variant="secondary">
-                  Message on WhatsApp
-                </Button>
+                <div className="inline-grid gap-3">
+                  <Button href={waHref} variant="secondary" className="w-full px-4 py-2 text-sm">
+                    Message on WhatsApp
+                  </Button>
+                  <Button href={instagramLink()} variant="secondary" className="w-full px-4 py-2 text-sm">
+                    Connect on Instagram
+                  </Button>
+                </div>
               </div>
             </aside>
           </div>

@@ -479,7 +479,7 @@ function buildSessionSchedule(startDay: number, endDay: number, month: number) {
   const monthName = MONTH_NAMES[month - 1];
   const sessionLines: string[] = [];
   for (let day = startDay; day <= endDay; day++) {
-    sessionLines.push(`${day} ${monthName}: 4.30 pm – 6.30 pm`);
+    sessionLines.push(`${day} ${monthName}: 16:30 – 18:30`);
   }
   const sessionCount = endDay - startDay + 1;
   const time = [...sessionLines, "", `All ${sessionCount} sessions are mandatory`].join("\n");
@@ -547,17 +547,17 @@ const scheduledEvents: ScheduledEvent[] = [
     title: "Surya Kriya",
     year: 2026,
     month: 6,
-    startDay: 27,
-    endDay: 29,
+    startDay: 29,
+    endDay: 30,
     ageRequirement: "14+",
     priceLabel: "170€",
     schedule: {
       durationLabel: "3 sessions / 2 hours",
       sessionCount: 3,
       sessionLines: [
-        "27 June: 5.30 pm – 7.30 pm",
-        "28 June: 5.30 pm – 7.30 pm",
-        "29 June: 5.30 pm – 7.30 pm",
+        "29 June: 07:30 – 09:30",
+        "29 June: 17:30 – 19:30",
+        "30 June: 17:30 – 19:30",
       ],
     },
   },
@@ -567,10 +567,19 @@ const scheduledEvents: ScheduledEvent[] = [
     title: "Surya Kriya",
     year: 2026,
     month: 7,
-    startDay: 10,
+    startDay: 11,
     endDay: 12,
     ageRequirement: "14+",
     priceLabel: "170€",
+    schedule: {
+      durationLabel: "3 sessions / 2 hours",
+      sessionCount: 3,
+      sessionLines: [
+        "11 July: 07:30 – 09:30",
+        "11 July: 17:30 – 19:30",
+        "12 July: 17:30 – 19:30",
+      ],
+    },
   },
   {
     id: "surya-kriya-jul-2026-2",
@@ -609,8 +618,8 @@ const scheduledEvents: ScheduledEvent[] = [
     schedule: {
       durationLabel: "2 sessions / 1 hour 45 min",
       sessionLines: [
-        "22 August: 4.30 pm – 6.15 pm",
-        "23 August: 4.30 pm – 6.15 pm",
+        "22 August: 16:30 – 18:15",
+        "23 August: 16:30 – 18:15",
       ],
       sessionCount: 2,
     },
@@ -640,11 +649,11 @@ const scheduledEvents: ScheduledEvent[] = [
     schedule: {
       durationLabel: "5 sessions / 2 hours 15 min",
       sessionLines: [
-        "25 September: 4.30 pm – 6.45 pm",
-        "26 September: 8.00 am – 10.15 am",
-        "4.30 pm – 6.45 pm",
-        "27 September: 8.00 am – 10.15 am",
-        "4.30 pm – 6.45 pm",
+        "25 September: 16:30 – 18:45",
+        "26 September: 08:00 – 10:15",
+        "26 September: 16:30 – 18:45",
+        "27 September: 08:00 – 10:15",
+        "27 September: 16:30 – 18:45",
       ],
       sessionCount: 5,
     },

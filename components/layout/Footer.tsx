@@ -8,6 +8,7 @@ import {
   NAV_LINKS,
   SITE_NAME,
   SITE_TAGLINE,
+  instagramLink,
   whatsappLink,
 } from "@/lib/constants";
 import type { SiteSettings } from "@/sanity/lib/types";
@@ -91,13 +92,16 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
                 </li>
               ) : null}
             </ul>
-            {whatsapp ? (
-              <div className="mt-6">
-                <Button href={waHref} variant="secondary">
+            <div className="mt-6 inline-grid gap-3">
+              {whatsapp ? (
+                <Button href={waHref} variant="secondary" className="w-full px-4 py-2 text-sm">
                   Message on WhatsApp
                 </Button>
-              </div>
-            ) : null}
+              ) : null}
+              <Button href={instagramLink()} variant="secondary" className="w-full px-4 py-2 text-sm">
+                Connect on Instagram
+              </Button>
+            </div>
           </div>
         </div>
 

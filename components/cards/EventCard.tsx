@@ -9,6 +9,7 @@ import {
   eventLocationBadge,
   formatEventCalendarLine,
   formatEventDateBadge,
+  formatSessionTimingsTo24Hour,
 } from "@/lib/utils";
 import type { YogaEvent } from "@/sanity/lib/types";
 
@@ -101,8 +102,18 @@ function EventDetailRow({
   );
 }
 
+function isSessionDateLine(line: string): boolean {
+  return /^\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)(?:\s+\d{4})?:\s*.+$/i.test(
+    line,
+  );
+}
+
+function isSessionTimeLine(line: string): boolean {
+  return /^\d{1,2}:\d{2}\s*[–-]\s*\d{1,2}:\d{2}/.test(line);
+}
+
 function EventTimeBlock({ time }: { time: string }) {
-  const chunks = time.trim().split(/\n\s*\n/);
+  const chunks = formatSessionTimingsTo24Hour(time).trim().split(/\n\s*\n/);
   const schedulePart = chunks[0] ?? "";
   const mandatoryPart = chunks[1]?.trim();
 
@@ -110,14 +121,26 @@ function EventTimeBlock({ time }: { time: string }) {
   const dayGroups: DayGroup[] = [];
 
   for (const line of schedulePart.split("\n").map((entry) => entry.trim()).filter(Boolean)) {
-    const match = line.match(/^([^:]+):\s*(.+)$/);
-    if (match) {
-      dayGroups.push({ day: match[1].trim(), hours: [match[2].trim()] });
+    if (isSessionDateLine(line)) {
+      const match = line.match(
+        /^(\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)(?:\s+\d{4})?):\s*(.+)$/i,
+      );
+      if (!match) continue;
+
+      const day = match[1].trim();
+      const hours = match[2].trim();
+      const lastGroup = dayGroups[dayGroups.length - 1];
+
+      if (lastGroup?.day === day) {
+        lastGroup.hours.push(hours);
+      } else {
+        dayGroups.push({ day, hours: [hours] });
+      }
       continue;
     }
 
     const lastGroup = dayGroups[dayGroups.length - 1];
-    if (lastGroup) {
+    if (lastGroup && isSessionTimeLine(line)) {
       lastGroup.hours.push(line);
     }
   }

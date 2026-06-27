@@ -15,7 +15,15 @@ export const BRAND_LOGO = {
   height: 731,
 } as const;
 
-/** Symbol-only brand mark (header). */
+/** Combined header logo (symbol + wordmark). */
+export const BRAND_LOGO_HEADER = {
+  src: "/images/nava-hatha-yoga-header-logo.png",
+  alt: "Nava Hatha Yoga",
+  width: 1718,
+  height: 720,
+} as const;
+
+/** Symbol-only brand mark. */
 export const BRAND_LOGO_SYMBOL = {
   src: "/images/nava-logo-symbol.png",
   alt: "Nava Hatha Yoga",
@@ -23,7 +31,7 @@ export const BRAND_LOGO_SYMBOL = {
   height: 1024,
 } as const;
 
-/** Text wordmark (header, beside symbol). */
+/** Text wordmark (used to build header logo). */
 export const BRAND_LOGO_WORDMARK = {
   src: "/images/nava-hatha-yoga-wordmark.png",
   alt: "Nava Hatha Yoga",
@@ -59,12 +67,17 @@ export const CONTACT = {
   phone: "+355 69 939 1791",
   // Digits only (international format, no +, spaces, or symbols) for wa.me links
   whatsapp: "355699391791",
+  instagram: "navahathayoga",
   location: "Saranda, Albania",
 };
 
 export function whatsappLink(message?: string): string {
   const base = `https://wa.me/${CONTACT.whatsapp}`;
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
+}
+
+export function instagramLink(): string {
+  return `https://www.instagram.com/${CONTACT.instagram}/`;
 }
 
 export const NAV_LINKS = [

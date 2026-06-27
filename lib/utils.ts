@@ -207,6 +207,22 @@ export function eventCardSummary(description?: string | null, maxSentences = 3):
   return sentences.slice(0, maxSentences).join(" ");
 }
 
+/** Convert 12-hour session times (e.g. 5.30 pm) to 24-hour format (17:30). */
+export function formatSessionTimingsTo24Hour(text: string): string {
+  return text.replace(
+    /\b(\d{1,2})[.:](\d{2})\s*(am|pm)\b/gi,
+    (_, hourText, minutes, period) => {
+      let hour = Number.parseInt(hourText, 10);
+      const isPm = period.toLowerCase() === "pm";
+
+      if (isPm && hour !== 12) hour += 12;
+      if (!isPm && hour === 12) hour = 0;
+
+      return `${hour.toString().padStart(2, "0")}:${minutes}`;
+    },
+  );
+}
+
 /** Subtle, shared Framer Motion variants. Respects reduced-motion via CSS. */
 export const fadeUp = {
   hidden: { opacity: 0, y: 16 },
