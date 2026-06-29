@@ -173,6 +173,7 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
             <option value="Online Session">Online Session</option>
             <option value="One-on-One Session">One-on-One Session</option>
             <option value="Small-Group Session">Small-Group Session</option>
+            <option value="Yoga for Children">Yoga for Children</option>
             <option value="Corporate session">Corporate session</option>
             <option value="Retreats">Retreats</option>
             <option value="General enquiry">General enquiry</option>

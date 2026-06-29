@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
@@ -18,18 +20,44 @@ const IN_PERSON_OFFERINGS = [
     title: "Small-Group Session",
     body: "Gather friends, family, or colleagues for a private session. A focused environment that balances personalized attention with shared experience.",
   },
+] as const;
+
+const SPECIAL_OFFERINGS = [
+  {
+    title: "Yoga for Children",
+    body: "Age-appropriate Classical Hatha Yoga practices offered in a calm, supportive setting. Designed to support children's physical wellbeing, focus, and inner balance.",
+  },
   {
     title: "Corporate Session",
     body: "Bring ancient tools for clarity and balance into the workplace. Designed to combat stress and foster a vibrant, focused professional environment.",
   },
 ] as const;
 
-function OfferingCard({ title, body }: { title: string; body: string }) {
+function OfferingGroup({
+  title,
+  children,
+}: {
+  title?: string;
+  children: ReactNode;
+}) {
   return (
-    <article className="rounded-2xl border border-border-strong/60 bg-cream/70 px-5 py-5 shadow-soft sm:px-8 sm:py-7">
-      <h3 className="font-heading text-xl text-charcoal sm:text-2xl">{title}</h3>
+    <div className="overflow-hidden rounded-2xl border border-border-strong/60 bg-cream/70 shadow-soft">
+      {title ? (
+        <div className="border-b border-border-strong/40 px-5 py-4 sm:px-8 sm:py-5">
+          <h3 className="font-heading text-xl text-charcoal sm:text-2xl">{title}</h3>
+        </div>
+      ) : null}
+      <div className="divide-y divide-border-strong/40">{children}</div>
+    </div>
+  );
+}
+
+function OfferingItem({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="px-5 py-5 sm:px-8 sm:py-7">
+      <h4 className="font-heading text-xl text-charcoal sm:text-2xl">{title}</h4>
       <p className="mt-3 leading-relaxed text-brown sm:mt-4">{body}</p>
-    </article>
+    </div>
   );
 }
 
@@ -54,20 +82,33 @@ export function PrivateSessionsSection() {
 
           <MotionStagger className="grid gap-3 sm:gap-5">
             <MotionItem>
-              <OfferingCard title={ONLINE_OFFERING.title} body={ONLINE_OFFERING.body} />
+              <OfferingGroup title="Online and In-Person Session">
+                <OfferingItem
+                  title={ONLINE_OFFERING.title}
+                  body={ONLINE_OFFERING.body}
+                />
+                <OfferingItem
+                  title={IN_PERSON_OFFERINGS[0].title}
+                  body={IN_PERSON_OFFERINGS[0].body}
+                />
+                <OfferingItem
+                  title={IN_PERSON_OFFERINGS[1].title}
+                  body={IN_PERSON_OFFERINGS[1].body}
+                />
+              </OfferingGroup>
             </MotionItem>
 
             <MotionItem>
-              <p className="px-1 pt-1 font-heading text-lg text-charcoal sm:px-2 sm:text-xl">
-                In-Person Session
-              </p>
+              <OfferingGroup title="Special Offerings">
+                {SPECIAL_OFFERINGS.map((offering) => (
+                  <OfferingItem
+                    key={offering.title}
+                    title={offering.title}
+                    body={offering.body}
+                  />
+                ))}
+              </OfferingGroup>
             </MotionItem>
-
-            {IN_PERSON_OFFERINGS.map((offering) => (
-              <MotionItem key={offering.title}>
-                <OfferingCard title={offering.title} body={offering.body} />
-              </MotionItem>
-            ))}
           </MotionStagger>
         </div>
       </Container>
