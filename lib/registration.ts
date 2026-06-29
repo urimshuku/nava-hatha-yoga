@@ -1,4 +1,4 @@
-import { sendFormNotification } from "@/lib/form-email";
+import { persistAndNotify } from "@/lib/form-delivery";
 
 /**
  * Central event-registration submission module.
@@ -82,9 +82,11 @@ export async function deliverRegistration(
   const fullName = submission.fullName.replace(/\s+/g, " ").trim();
   const eventName = submission.event?.replace(/\s+/g, " ").trim();
 
-  await sendFormNotification({
+  await persistAndNotify({
+    type: "registration",
     subject: `New registration: ${eventName || "Program registration"} - ${fullName}`,
     replyTo: submission.email,
-    text: formatRegistration(submission),
+    body: formatRegistration(submission),
+    payload: submission,
   });
 }

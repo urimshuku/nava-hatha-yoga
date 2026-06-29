@@ -291,7 +291,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
       });
 
       if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(body.error ?? "Something went wrong. Please try again.");
       }
 

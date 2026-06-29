@@ -1,6 +1,8 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "main": ".open-next/worker.js",
+  // Custom worker entry: re-exports the OpenNext fetch handler and adds a
+  // scheduled() handler that retries any form emails that failed to send.
+  "main": "./custom-worker.ts",
   "name": "nava-hatha-yoga",
   "compatibility_date": "2026-06-17",
   "compatibility_flags": ["nodejs_compat"],
@@ -12,5 +14,20 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
+  },
+  // Durable store for form submissions (zero-loss guarantee).
+  // Create with: npx wrangler d1 create nava-hatha-yoga-forms
+  // then paste the returned database_id below.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "nava-hatha-yoga-forms",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // Retry pending form emails every 5 minutes.
+  "triggers": {
+    "crons": ["*/5 * * * *"]
   }
 }
