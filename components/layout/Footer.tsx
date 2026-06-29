@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { FooterCertificationLogo } from "@/components/layout/FooterCertificationLogo";
 import { Container } from "@/components/layout/Container";
-import { Button } from "@/components/ui/Button";
+import { SocialIconLinks } from "@/components/ui/SocialIconLinks";
 import {
   LEGAL_LINKS,
   NAV_LINKS,
@@ -92,16 +92,11 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
                 </li>
               ) : null}
             </ul>
-            <div className="mt-6 inline-grid gap-3">
-              {whatsapp ? (
-                <Button href={waHref} variant="secondary" className="w-full px-4 py-2 text-sm">
-                  Message on WhatsApp
-                </Button>
-              ) : null}
-              <Button href={instagramLink()} variant="secondary" className="w-full px-4 py-2 text-sm">
-                Connect on Instagram
-              </Button>
-            </div>
+            <SocialIconLinks
+              className="mt-6"
+              whatsappHref={whatsapp ? waHref : undefined}
+              instagramHref={instagramLink()}
+            />
           </div>
         </div>
 

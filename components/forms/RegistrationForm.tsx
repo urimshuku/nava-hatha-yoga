@@ -44,6 +44,7 @@ import {
   PREGNANCY_LABEL,
   REFUND_POLICY_BULLETS,
   REFUND_POLICY_CONSENT_LABEL,
+  SHOW_PAYMENT_DETAILS_STEP,
 } from "@/lib/register-content";
 import {
   GUIDELINES_PDF_URL,
@@ -65,7 +66,7 @@ const STEPS = [
   "Health-Related Information",
   "Program-Related Information",
   "Agreement",
-  "Payment Details",
+  ...(SHOW_PAYMENT_DETAILS_STEP ? (["Payment Details"] as const) : []),
   "Before the Start of the Session",
 ] as const;
 
@@ -309,6 +310,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
   }
 
   const isLastStep = step === STEPS.length - 1;
+  const currentStep = STEPS[step];
 
   if (status === "success") {
     return (
@@ -862,17 +864,14 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
         </div>
       ) : null}
 
-      {/* ---------------------------------------------------------------- */}
-      {/* Step 5 — Payment Details                                          */}
-      {/* ---------------------------------------------------------------- */}
-      {step === 4 ? (
+      {currentStep === "Payment Details" ? (
         <BankDetailsCard />
       ) : null}
 
       {/* ---------------------------------------------------------------- */}
-      {/* Step 6 — Before the Start of the Session                         */}
+      {/* Before the Start of the Session                                  */}
       {/* ---------------------------------------------------------------- */}
-      {step === 5 ? (
+      {currentStep === "Before the Start of the Session" ? (
         <div className="space-y-4 sm:space-y-6">
           <div className={cn(formBoxClass, "sm:p-6")}>
             <h3 className={formGuidelineTitleClass}>{BEFORE_SESSION_STOMACH.title}</h3>

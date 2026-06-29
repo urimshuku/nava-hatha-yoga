@@ -1,7 +1,12 @@
 import Image from "next/image";
 
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
-import { programImageObjectPositionClass, programImageSrc } from "@/lib/local-images";
+import {
+  programDesktopImageObjectPositionClass,
+  programDesktopImageSrc,
+  programImageObjectPositionClass,
+  programImageSrc,
+} from "@/lib/local-images";
 import { cn } from "@/lib/utils";
 
 type LocalProgramImageProps = {
@@ -28,9 +33,47 @@ export function LocalProgramImage({
   priority,
 }: LocalProgramImageProps) {
   const src = programImageSrc(slug);
+  const desktopSrc = programDesktopImageSrc(slug);
 
   if (!src) {
     return <ImagePlaceholder className={cn("h-full w-full", className)} />;
+  }
+
+  const imageClassName = cn("object-cover", className);
+
+  if (desktopSrc) {
+    return (
+      <>
+        <Image
+          src={desktopSrc}
+          alt={alt}
+          width={width}
+          height={height}
+          sizes={sizes}
+          priority={priority}
+          loading={priority ? undefined : "eager"}
+          fetchPriority={priority ? "high" : "auto"}
+          unoptimized
+          className={cn(
+            programDesktopImageObjectPositionClass(slug),
+            imageClassName,
+            "hidden lg:block",
+          )}
+        />
+        <Image
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          sizes={sizes}
+          priority={priority}
+          loading={priority ? undefined : "eager"}
+          fetchPriority={priority ? "high" : "auto"}
+          unoptimized
+          className={cn(programImageObjectPositionClass(slug), imageClassName, "lg:hidden")}
+        />
+      </>
+    );
   }
 
   return (
@@ -44,7 +87,7 @@ export function LocalProgramImage({
       loading={priority ? undefined : "eager"}
       fetchPriority={priority ? "high" : "auto"}
       unoptimized
-      className={cn(programImageObjectPositionClass(slug), "object-cover", className)}
+      className={cn(programImageObjectPositionClass(slug), imageClassName)}
     />
   );
 }

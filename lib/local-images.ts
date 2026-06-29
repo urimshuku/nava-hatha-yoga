@@ -12,6 +12,10 @@ const PROGRAM_IMAGES: Record<string, string> = {
   yogasanas: "/images/programs/yogasanas.webp",
 };
 
+const PROGRAM_DESKTOP_IMAGES: Partial<Record<string, string>> = {
+  yogasanas: "/images/programs/yogasanas-desktop.webp",
+};
+
 const PROGRAM_SYMBOLS: Record<string, string> = {};
 
 const ABOUT_SECTION_IMAGES: Record<string, string> = {
@@ -28,6 +32,10 @@ export function programImageSrc(slug: string): string | null {
   return PROGRAM_IMAGES[slug] ?? null;
 }
 
+export function programDesktopImageSrc(slug: string): string | null {
+  return PROGRAM_DESKTOP_IMAGES[slug] ?? null;
+}
+
 /** Crop anchor for object-cover program photos (Tailwind object-position utilities). */
 const PROGRAM_IMAGE_OBJECT_POSITION: Partial<Record<string, string>> = {
   angamardana: "object-[95%_center]",
@@ -35,11 +43,19 @@ const PROGRAM_IMAGE_OBJECT_POSITION: Partial<Record<string, string>> = {
   "shanmukhi-mudra": "object-[30%_center]",
   "surya-kriya": "object-[85%_center]",
   "surya-shakti": "object-[28%_center]",
-  yogasanas: "object-[22%_center]",
+  yogasanas: "object-center",
+};
+
+const PROGRAM_DESKTOP_IMAGE_OBJECT_POSITION: Partial<Record<string, string>> = {
+  yogasanas: "object-left",
 };
 
 export function programImageObjectPositionClass(slug: string): string {
   return PROGRAM_IMAGE_OBJECT_POSITION[slug] ?? "object-center";
+}
+
+export function programDesktopImageObjectPositionClass(slug: string): string {
+  return PROGRAM_DESKTOP_IMAGE_OBJECT_POSITION[slug] ?? programImageObjectPositionClass(slug);
 }
 
 export function programSymbolSrc(slug: string): string | null {

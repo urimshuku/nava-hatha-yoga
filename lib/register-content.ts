@@ -183,8 +183,10 @@ export const AGREEMENT_CONSENT_LABEL =
   "I have read and agree to the Participant Agreement & Consent Policy.";
 
 /* ------------------------------------------------------------------ */
-/* Step 5 — Payment Details                                            */
+/* Step 5 — Payment Details (optional; set to true to re-enable)       */
 /* ------------------------------------------------------------------ */
+
+export const SHOW_PAYMENT_DETAILS_STEP = false;
 
 export const BANK_DETAILS = [
   { label: "Account Holder Name", value: "Erlinda Mustafaraj" },
