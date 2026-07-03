@@ -32,7 +32,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4 md:items-stretch">
           <div className="flex max-w-sm min-w-0 flex-col lg:col-span-1">
             <div className="flex min-w-0 items-start gap-3 sm:gap-4">
-              <BrandLogo variant="symbol" decorative className="h-14 w-14 sm:h-16 sm:w-16" />
+              <BrandLogo variant="symbol" decorative className="h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem]" />
               <div className="min-w-0">
                 <p className="font-heading text-2xl text-charcoal">{brand}</p>
                 <p className="mt-3 text-sm leading-relaxed text-brown">{tagline}</p>

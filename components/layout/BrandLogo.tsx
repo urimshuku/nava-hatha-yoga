@@ -23,7 +23,7 @@ const SIZES_BY_VARIANT = {
   horizontal: "(max-width: 640px) 200px, 260px",
   full: "(max-width: 640px) 140px, 160px",
   header: "(max-width: 640px) 140px, 180px",
-  symbol: "(max-width: 640px) 56px, 64px",
+  symbol: "(max-width: 640px) 64px, 72px",
   wordmark: "(max-width: 640px) 84px, 108px",
 } as const;
 
