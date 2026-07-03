@@ -41,7 +41,7 @@ export function Header({ brandName = SITE_NAME }: { brandName?: string }) {
             variant="symbol"
             priority
             decorative
-            className="h-9 w-9 shrink-0 sm:h-11 sm:w-11"
+            className="h-11 w-11 shrink-0 sm:h-14 sm:w-14"
           />
           <span className="truncate font-heading text-lg tracking-wide text-charcoal transition-colors group-hover:text-saffron sm:text-xl">
             {brandName}
