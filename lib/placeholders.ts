@@ -21,6 +21,7 @@ import {
   SITE_NAME,
   SITE_TAGLINE,
 } from "@/lib/constants";
+import { sessionBoundaryFromSchedule } from "@/lib/event-boundary";
 import { getPlaceholderLegalPages } from "@/lib/legal-content";
 
 /** Build a minimal Portable Text block from plain paragraphs. */
@@ -576,8 +577,8 @@ const scheduledEvents: ScheduledEvent[] = [
       durationLabel: "3 sessions / 2 hours",
       sessionCount: 3,
       sessionLines: [
-        "11 July: 07:30 – 09:30",
         "11 July: 17:30 – 19:30",
+        "12 July: 07:30 – 09:30",
         "12 July: 17:30 – 19:30",
       ],
     },
@@ -588,11 +589,20 @@ const scheduledEvents: ScheduledEvent[] = [
     title: "Surya Kriya",
     year: 2026,
     month: 7,
-    startDay: 24,
+    startDay: 25,
     endDay: 26,
     ageRequirement: "14+",
     priceLabel: "150€",
     location: tiranaEventLocation,
+    schedule: {
+      durationLabel: "3 sessions / 2 hours",
+      sessionCount: 3,
+      sessionLines: [
+        "25 July: 17:30 – 19:30",
+        "26 July: 07:30 – 09:30",
+        "26 July: 17:30 – 19:30",
+      ],
+    },
   },
   {
     id: "surya-kriya-aug-2026",
@@ -661,18 +671,36 @@ const scheduledEvents: ScheduledEvent[] = [
   },
 ];
 
+function resolveEventDates(
+  event: ScheduledEvent,
+  time: string,
+): { date: string; endDate: string } {
+  if (event.date && event.endDate) {
+    return { date: event.date, endDate: event.endDate };
+  }
+
+  const fromSchedule = sessionBoundaryFromSchedule(time, event.year);
+  if (fromSchedule) return fromSchedule;
+
+  return {
+    date: toEventDate(event.year, event.month, event.startDay),
+    endDate: toEventDate(event.year, event.month, event.endDay, true),
+  };
+}
+
 export const placeholderEvents: YogaEvent[] = scheduledEvents.flatMap((event) => {
   const program = programSeeds.find((p) => p.slug === event.programSlug);
   if (!program) return [];
 
   const { sessionLines, sessionCount, time, durationLabel } = resolveEventSchedule(event);
+  const { date, endDate } = resolveEventDates(event, time);
 
   return [
     {
       _id: `placeholder-event-${event.id}`,
       title: event.title,
-      date: event.date ?? toEventDate(event.year, event.month, event.startDay),
-      endDate: event.endDate ?? toEventDate(event.year, event.month, event.endDay, true),
+      date,
+      endDate,
       time,
       location: event.location ?? eventLocation,
       priceLabel: event.priceLabel ?? program.priceLabel ?? getProgramPriceLabel(event.programSlug),

@@ -548,6 +548,109 @@ function toEventDate(year, month, day, endOfSession = false) {
   return new Date(Date.UTC(year, month - 1, day, hour, 30, 0, 0)).toISOString();
 }
 
+const EVENT_TIMEZONE = "Europe/Tirane";
+
+const MONTH_TO_INDEX = {
+  january: 0,
+  february: 1,
+  march: 2,
+  april: 3,
+  may: 4,
+  june: 5,
+  july: 6,
+  august: 7,
+  september: 8,
+  october: 9,
+  november: 10,
+  december: 11,
+};
+
+const SESSION_LINE_RE =
+  /^(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)(?:\s+(\d{4}))?\s*:\s*(\d{1,2}):(\d{2})\s*[–-]\s*(\d{1,2}):(\d{2})$/i;
+
+function zonedLocalToUtcMs(year, month, day, hour, minute, timeZone = EVENT_TIMEZONE) {
+  const utcGuess = Date.UTC(year, month - 1, day, hour, minute);
+  const dtf = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+  const parts = Object.fromEntries(
+    dtf
+      .formatToParts(new Date(utcGuess))
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, part.value]),
+  );
+
+  const reconstructed = Date.UTC(
+    Number(parts.year),
+    Number(parts.month) - 1,
+    Number(parts.day),
+    Number(parts.hour),
+    Number(parts.minute),
+    Number(parts.second ?? "0"),
+  );
+
+  return utcGuess - (reconstructed - utcGuess);
+}
+
+function parseSessionLine(match, defaultYear) {
+  const month = MONTH_TO_INDEX[match[2].toLowerCase()] + 1;
+  return {
+    year: match[3] ? Number(match[3]) : defaultYear,
+    month,
+    day: Number(match[1]),
+    startHour: Number(match[4]),
+    startMinute: Number(match[5]),
+    endHour: Number(match[6]),
+    endMinute: Number(match[7]),
+  };
+}
+
+function sessionBoundaryFromSchedule(time, defaultYear) {
+  let first = null;
+  let last = null;
+
+  for (const rawLine of time.split("\n")) {
+    const match = rawLine.trim().match(SESSION_LINE_RE);
+    if (!match) continue;
+
+    const parsed = parseSessionLine(match, defaultYear);
+    if (!first) first = parsed;
+    last = parsed;
+  }
+
+  if (!first || !last) return null;
+
+  return {
+    date: new Date(
+      zonedLocalToUtcMs(first.year, first.month, first.day, first.startHour, first.startMinute),
+    ).toISOString(),
+    endDate: new Date(
+      zonedLocalToUtcMs(last.year, last.month, last.day, last.endHour, last.endMinute),
+    ).toISOString(),
+  };
+}
+
+function resolveEventDates(event, time) {
+  if (event.date && event.endDate) {
+    return { date: event.date, endDate: event.endDate };
+  }
+
+  const fromSchedule = sessionBoundaryFromSchedule(time, event.year);
+  if (fromSchedule) return fromSchedule;
+
+  return {
+    date: toEventDate(event.year, event.month, event.startDay),
+    endDate: toEventDate(event.year, event.month, event.endDay, true),
+  };
+}
+
 function buildSessionSchedule(startDay, endDay, month) {
   const monthName = MONTH_NAMES[month - 1];
   const sessionLines = [];
@@ -621,8 +724,8 @@ const scheduledEvents = [
       durationLabel: "3 sessions / 2 hours",
       sessionCount: 3,
       sessionLines: [
-        "11 July: 07:30 – 09:30",
         "11 July: 17:30 – 19:30",
+        "12 July: 07:30 – 09:30",
         "12 July: 17:30 – 19:30",
       ],
     },
@@ -633,11 +736,20 @@ const scheduledEvents = [
     title: "Surya Kriya",
     year: 2026,
     month: 7,
-    startDay: 24,
+    startDay: 25,
     endDay: 26,
     ageRequirement: "14+",
     priceLabel: "150€",
     location: tiranaEventLocation,
+    schedule: {
+      durationLabel: "3 sessions / 2 hours",
+      sessionCount: 3,
+      sessionLines: [
+        "25 July: 17:30 – 19:30",
+        "26 July: 07:30 – 09:30",
+        "26 July: 17:30 – 19:30",
+      ],
+    },
   },
   {
     id: "surya-kriya-aug-2026",
@@ -709,14 +821,15 @@ const scheduledEvents = [
 scheduledEvents.forEach((event) => {
   const program = programs.find((p) => p.slug === event.programSlug);
   const { sessionLines, sessionCount, time, durationLabel } = resolveEventSchedule(event);
+  const { date, endDate } = resolveEventDates(event, time);
 
   docs.push({
     _id: `event-${event.id}`,
     _type: "event",
     title: event.title,
     published: true,
-    date: event.date ?? toEventDate(event.year, event.month, event.startDay),
-    endDate: event.endDate ?? toEventDate(event.year, event.month, event.endDay, true),
+    date,
+    endDate,
     time,
     location: event.location ?? eventLocation,
     priceLabel: event.priceLabel ?? programPriceLabel(event.programSlug, program?.priceLabel),

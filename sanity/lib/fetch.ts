@@ -1,4 +1,10 @@
 import { MAIN_PROGRAM_SLUGS } from "@/lib/constants";
+import {
+  eventEndTimestamp,
+  eventStartTimestamp,
+  isPastEvent,
+  isUpcomingEvent,
+} from "@/lib/event-boundary";
 
 import { client } from "./client";
 import { isSanityConfigured } from "../env";
@@ -33,6 +39,7 @@ const REVALIDATE = 60;
 type EventBoundary = {
   date: string;
   endDate?: string;
+  time?: string;
 };
 
 async function sanityFetch<T>(query: string, params: Record<string, unknown> = {}): Promise<T | null> {
@@ -53,34 +60,21 @@ function isEmpty(value: unknown): boolean {
   return false;
 }
 
-function dateTimeValue(value?: string): number | null {
-  if (!value) return null;
-  const time = Date.parse(value);
-  return Number.isFinite(time) ? time : null;
-}
-
-function eventStartTime(event: EventBoundary): number {
-  return dateTimeValue(event.date) ?? Number.POSITIVE_INFINITY;
-}
-
-function eventEndTime(event: EventBoundary): number {
-  return dateTimeValue(event.endDate) ?? eventStartTime(event);
-}
-
 function getUpcomingFrom<T extends EventBoundary>(events: T[]): T[] {
-  const now = Date.now();
-
   return [...events]
-    .filter((event) => eventEndTime(event) >= now)
-    .sort((a, b) => eventStartTime(a) - eventStartTime(b));
+    .filter((event) => isUpcomingEvent(event))
+    .sort((a, b) => eventStartTimestamp(a) - eventStartTimestamp(b));
 }
 
 function getPastFrom<T extends EventBoundary>(events: T[]): T[] {
-  const now = Date.now();
-
   return [...events]
-    .filter((event) => eventEndTime(event) < now)
-    .sort((a, b) => eventStartTime(b) - eventStartTime(a));
+    .filter((event) => isPastEvent(event))
+    .sort((a, b) => eventEndTimestamp(b) - eventEndTimestamp(a));
+}
+
+async function getAllEvents(): Promise<YogaEvent[]> {
+  const data = await sanityFetch<YogaEvent[]>(Q.allEventsQuery);
+  return data ?? placeholderEvents;
 }
 
 function toPastEvent(event: YogaEvent): PastEvent {
@@ -136,29 +130,23 @@ export async function getProgramBySlug(slug: string): Promise<Program | undefine
 }
 
 export async function getUpcomingEvents(): Promise<YogaEvent[]> {
-  const data = await sanityFetch<YogaEvent[]>(Q.upcomingEventsQuery);
-  return getUpcomingFrom(data ?? placeholderEvents);
+  return getUpcomingFrom(await getAllEvents());
 }
 
 export async function getUpcomingEventsByProgram(
   slug: string,
 ): Promise<YogaEvent[]> {
-  const data = await sanityFetch<YogaEvent[]>(Q.upcomingEventsByProgramQuery, {
-    slug,
-  });
-  if (data) return getUpcomingFrom(data);
+  const events = await getAllEvents();
   return getUpcomingFrom(
-    placeholderEvents.filter((event) => event.relatedProgram?.slug === slug),
+    events.filter((event) => event.relatedProgram?.slug === slug),
   );
 }
 
 export async function getPastEvents(): Promise<PastEvent[]> {
-  const data = await sanityFetch<PastEvent[]>(Q.pastEventsQuery);
-  if (data) return getPastFrom(data);
-
+  const events = await getAllEvents();
   return getPastFrom([
     ...placeholderPastEvents,
-    ...placeholderEvents.map(toPastEvent),
+    ...events.map(toPastEvent),
   ]);
 }
 

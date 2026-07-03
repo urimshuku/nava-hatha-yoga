@@ -93,6 +93,28 @@ export const programBySlugQuery = groq`
   }
 `;
 
+export const allEventsQuery = groq`
+  *[_type == "event" && published == true] | order(date asc){
+    _id,
+    title,
+    date,
+    endDate,
+    time,
+    location,
+    priceLabel,
+    paymentNote,
+    teacher,
+    ageRequirement,
+    category,
+    relatedProgram->{ title, "slug": slug.current },
+    description,
+    notes,
+    image${imageFields},
+    registrationLink,
+    whatsappEnabled
+  }
+`;
+
 export const upcomingEventsQuery = groq`
   *[_type == "event" && published == true && dateTime(coalesce(endDate, date)) >= dateTime(now())]
     | order(date asc){
