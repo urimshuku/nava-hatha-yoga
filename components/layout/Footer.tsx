@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { BrandLogo } from "@/components/layout/BrandLogo";
 import { FooterCertificationLogo } from "@/components/layout/FooterCertificationLogo";
 import { Container } from "@/components/layout/Container";
 import { SocialIconLinks } from "@/components/ui/SocialIconLinks";
@@ -30,9 +31,12 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
       <Container className="py-section-sm">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4 md:items-stretch">
           <div className="flex max-w-sm flex-col lg:col-span-1">
-            <div>
-              <p className="font-heading text-2xl text-charcoal">{brand}</p>
-              <p className="mt-3 text-sm leading-relaxed text-brown">{tagline}</p>
+            <div className="flex items-start gap-4">
+              <BrandLogo variant="symbol" decorative className="h-16 w-16 shrink-0 sm:h-[4.5rem] sm:w-[4.5rem]" />
+              <div>
+                <p className="font-heading text-2xl text-charcoal">{brand}</p>
+                <p className="mt-3 text-sm leading-relaxed text-brown">{tagline}</p>
+              </div>
             </div>
             <FooterCertificationLogo className="mt-8 md:mt-auto md:pt-10" />
           </div>

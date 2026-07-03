@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { BrandLogo } from "@/components/layout/BrandLogo";
 import { Button } from "@/components/ui/Button";
 import { NAV_LINKS, SITE_NAME } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -34,9 +35,17 @@ export function Header({ brandName = SITE_NAME }: { brandName?: string }) {
         <Link
           href="/"
           onClick={closeMenu}
-          className="font-heading text-lg tracking-wide text-charcoal sm:text-2xl"
+          className="group flex min-w-0 items-center gap-2.5 sm:gap-3"
         >
-          {brandName}
+          <BrandLogo
+            variant="symbol"
+            priority
+            decorative
+            className="h-9 w-9 shrink-0 sm:h-11 sm:w-11"
+          />
+          <span className="truncate font-heading text-lg tracking-wide text-charcoal transition-colors group-hover:text-saffron sm:text-xl">
+            {brandName}
+          </span>
         </Link>
 
         <div className="hidden items-center gap-8 lg:flex">
