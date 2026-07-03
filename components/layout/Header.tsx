@@ -35,13 +35,13 @@ export function Header({ brandName = SITE_NAME }: { brandName?: string }) {
         <Link
           href="/"
           onClick={closeMenu}
-          className="group flex min-w-0 items-center gap-2.5 sm:gap-3"
+          className="group flex min-w-0 max-w-[calc(100%-2.75rem)] items-center gap-2 sm:max-w-none sm:gap-3"
         >
           <BrandLogo
             variant="symbol"
             priority
             decorative
-            className="h-11 w-11 shrink-0 sm:h-14 sm:w-14"
+            className="h-9 w-9 sm:h-14 sm:w-14"
           />
           <span className="truncate font-heading text-lg tracking-wide text-charcoal transition-colors group-hover:text-saffron sm:text-xl">
             {brandName}

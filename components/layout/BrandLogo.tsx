@@ -23,7 +23,7 @@ const SIZES_BY_VARIANT = {
   horizontal: "(max-width: 640px) 200px, 260px",
   full: "(max-width: 640px) 140px, 160px",
   header: "(max-width: 640px) 140px, 180px",
-  symbol: "(max-width: 640px) 56px, 72px",
+  symbol: "(max-width: 640px) 48px, 64px",
   wordmark: "(max-width: 640px) 84px, 108px",
 } as const;
 
@@ -37,15 +37,18 @@ export function BrandLogo({
   const logo = LOGO_BY_VARIANT[variant];
 
   return (
-    <Image
-      src={logo.src}
-      alt={decorative ? "" : (alt ?? logo.alt)}
-      width={logo.width}
-      height={logo.height}
-      priority={priority}
-      sizes={SIZES_BY_VARIANT[variant]}
+    <span
+      className={cn("relative inline-block shrink-0", className)}
       aria-hidden={decorative || undefined}
-      className={cn("h-auto w-auto object-contain object-left", className)}
-    />
+    >
+      <Image
+        src={logo.src}
+        alt={decorative ? "" : (alt ?? logo.alt)}
+        fill
+        priority={priority}
+        sizes={SIZES_BY_VARIANT[variant]}
+        className="object-contain object-left"
+      />
+    </span>
   );
 }

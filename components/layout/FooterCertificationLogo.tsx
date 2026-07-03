@@ -22,7 +22,7 @@ export function FooterCertificationLogo({ className }: { className?: string }) {
       width={FOOTER_CERTIFICATION_LOGO.width}
       height={FOOTER_CERTIFICATION_LOGO.height}
       sizes="180px"
-      className={cn("h-auto w-full max-w-[180px] object-contain", className)}
+      className={cn("h-auto w-auto max-w-[8.75rem] object-contain sm:max-w-[11.25rem]", className)}
     />
   );
 }

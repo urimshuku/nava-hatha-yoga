@@ -30,10 +30,10 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
     <footer className="border-t border-border bg-ivory">
       <Container className="py-section-sm">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4 md:items-stretch">
-          <div className="flex max-w-sm flex-col lg:col-span-1">
-            <div className="flex items-start gap-4">
-              <BrandLogo variant="symbol" decorative className="h-16 w-16 shrink-0 sm:h-[4.5rem] sm:w-[4.5rem]" />
-              <div>
+          <div className="flex max-w-sm min-w-0 flex-col lg:col-span-1">
+            <div className="flex min-w-0 items-start gap-3 sm:gap-4">
+              <BrandLogo variant="symbol" decorative className="h-12 w-12 sm:h-16 sm:w-16" />
+              <div className="min-w-0">
                 <p className="font-heading text-2xl text-charcoal">{brand}</p>
                 <p className="mt-3 text-sm leading-relaxed text-brown">{tagline}</p>
               </div>
