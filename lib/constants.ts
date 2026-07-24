@@ -204,7 +204,23 @@ export const PROGRAM_ORDER: readonly string[] = [
   ...SPECIAL_PROGRAM_SLUGS,
 ];
 
-export function partitionProgramsByCategory<T extends { slug: string }>(programs: T[]) {
+export function partitionProgramsByCategory<
+  T extends { slug: string; category?: string },
+>(programs: T[]) {
+  // Prefer the CMS category when any program has one (list order comes from
+  // the CMS orderRank); otherwise fall back to the built-in slug lists.
+  if (programs.some((program) => program.category)) {
+    const isSpecial = (program: T) =>
+      program.category === "special" ||
+      (!program.category &&
+        (SPECIAL_PROGRAM_SLUGS as readonly string[]).includes(program.slug));
+
+    return {
+      main: programs.filter((program) => !isSpecial(program)),
+      special: programs.filter(isSpecial),
+    };
+  }
+
   const bySlug = new Map(programs.map((program) => [program.slug, program]));
 
   const main = MAIN_PROGRAM_SLUGS.map((slug) => bySlug.get(slug)).filter(

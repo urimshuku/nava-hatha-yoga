@@ -3,12 +3,24 @@ import type { SchemaTypeDefinition } from "sanity";
 import { aboutSection } from "./objects/aboutSection";
 import { blockContent } from "./objects/blockContent";
 import { ctaLink } from "./objects/ctaLink";
+import {
+  disclaimerItem,
+  disclaimerSection,
+} from "./objects/disclaimerContent";
+import {
+  guidelineBlock,
+  guidelineList,
+  guidelineSection,
+} from "./objects/guidelineContent";
 import { imageWithAlt } from "./objects/imageWithAlt";
 import { seo } from "./objects/seo";
 
 import { siteSettings } from "./siteSettings";
 import { homePage } from "./homePage";
 import { aboutPage } from "./aboutPage";
+import { contactPage } from "./contactPage";
+import { registerPage } from "./registerPage";
+import { retreatsPage } from "./retreatsPage";
 import { program } from "./program";
 import { event } from "./event";
 import { retreat } from "./retreat";
@@ -19,12 +31,20 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   aboutSection,
   blockContent,
   ctaLink,
+  disclaimerItem,
+  disclaimerSection,
+  guidelineBlock,
+  guidelineList,
+  guidelineSection,
   imageWithAlt,
   seo,
   // Documents
   siteSettings,
   homePage,
   aboutPage,
+  contactPage,
+  registerPage,
+  retreatsPage,
   program,
   event,
   retreat,

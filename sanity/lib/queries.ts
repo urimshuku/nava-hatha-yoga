@@ -13,6 +13,8 @@ export const siteSettingsQuery = groq`
     whatsapp,
     location,
     social[]{ label, url },
+    beforeProgramNotes,
+    medicalNotice,
     ${seoFields}
   }
 `;
@@ -31,7 +33,9 @@ export const homePageQuery = groq`
       _id,
       title,
       "slug": slug.current,
-      shortIntro
+      shortIntro,
+      category,
+      image${imageFields}
     },
     privateCorporate{ heading, body },
     aboutIntro{ eyebrow, heading, body, image${imageFields} },
@@ -44,6 +48,13 @@ export const aboutPageQuery = groq`
   *[_type == "aboutPage"][0]{
     title,
     intro,
+    teacherStory{
+      nameLine,
+      photo${imageFields},
+      teaser,
+      storyTitle,
+      story
+    },
     sections[]{
       title,
       body,
@@ -59,7 +70,9 @@ export const programsQuery = groq`
     _id,
     title,
     "slug": slug.current,
-    shortIntro
+    shortIntro,
+    category,
+    image${imageFields}
   }
 `;
 
@@ -68,7 +81,9 @@ export const featuredProgramsFallbackQuery = groq`
     _id,
     title,
     "slug": slug.current,
-    shortIntro
+    shortIntro,
+    category,
+    image${imageFields}
   }
 `;
 
@@ -82,12 +97,17 @@ export const programBySlugQuery = groq`
     title,
     "slug": slug.current,
     shortIntro,
+    category,
+    image${imageFields},
     whatIs,
     aboutThePractice,
     benefits,
+    beforeProgramTitle,
+    beforeProgramNotes,
     practiceIndependently,
     privateAndGroupSessions,
     videoUrl,
+    videoTitle,
     priceLabel,
     ${seoFields}
   }
@@ -218,5 +238,66 @@ export const legalPageQuery = groq`
     "slug": slug.current,
     body,
     ${seoFields}
+  }
+`;
+
+export const contactPageQuery = groq`
+  *[_type == "contactPage"][0]{
+    heroTitle,
+    heroDescription,
+    formHeading,
+    quickMessageBody,
+    whatsappPrefill,
+    ${seoFields}
+  }
+`;
+
+export const retreatsPageQuery = groq`
+  *[_type == "retreatsPage"][0]{
+    heroTitle,
+    heroDescription,
+    comingSoonHeading,
+    comingSoonBody,
+    expectationsHeading,
+    expectations[]{ title, body },
+    ${seoFields}
+  }
+`;
+
+export const registerPageQuery = groq`
+  *[_type == "registerPage"][0]{
+    healthIntro,
+    healthConditions,
+    healthDetailsLabel,
+    majorSurgeryQuestion,
+    majorSurgeryHint,
+    pregnancyLabel,
+    disclaimerTitle,
+    disclaimerDocument[]{
+      title,
+      intro,
+      items[]{ title, lead, points, contactName, contactEmail }
+    },
+    disclaimerBullets,
+    disclaimerConsentLabel,
+    refundPolicyBullets,
+    refundPolicyConsentLabel,
+    agreementTitle,
+    agreementBullets,
+    agreementConsentLabel,
+    beforeSessionBlocks[]{
+      heading,
+      paragraphs,
+      lists[]{ label, items }
+    },
+    guidelinesTitle,
+    guidelinesDocument[]{
+      title,
+      blocks[]{
+        heading,
+        paragraphs,
+        lists[]{ label, items }
+      }
+    }
   }
 `;

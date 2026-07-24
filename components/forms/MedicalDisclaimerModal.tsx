@@ -2,15 +2,13 @@
 
 import { useEffect } from "react";
 
-import {
-  MEDICAL_DISCLAIMER_DOCUMENT,
-  MEDICAL_DISCLAIMER_TITLE,
-  type DisclaimerItem,
-} from "@/lib/register-content";
+import type { DisclaimerItem, DisclaimerSection } from "@/lib/register-content";
 
 interface MedicalDisclaimerModalProps {
   open: boolean;
   onClose: () => void;
+  title: string;
+  document: readonly DisclaimerSection[];
 }
 
 function IconClose() {
@@ -128,7 +126,12 @@ function DisclaimerItemBlock({ item, index }: { item: DisclaimerItem; index: num
   );
 }
 
-export function MedicalDisclaimerModal({ open, onClose }: MedicalDisclaimerModalProps) {
+export function MedicalDisclaimerModal({
+  open,
+  onClose,
+  title,
+  document: disclaimerDocument,
+}: MedicalDisclaimerModalProps) {
   useEffect(() => {
     if (!open) return;
 
@@ -169,7 +172,7 @@ export function MedicalDisclaimerModal({ open, onClose }: MedicalDisclaimerModal
               id="disclaimer-title"
               className="font-heading text-2xl text-charcoal"
             >
-              {MEDICAL_DISCLAIMER_TITLE}
+              {title}
             </h2>
           </div>
           <button
@@ -184,7 +187,7 @@ export function MedicalDisclaimerModal({ open, onClose }: MedicalDisclaimerModal
 
         <div className="overflow-y-auto px-6 py-6 sm:px-8">
           <div className="space-y-9">
-            {MEDICAL_DISCLAIMER_DOCUMENT.map((section, sectionIndex) => {
+            {disclaimerDocument.map((section, sectionIndex) => {
               const SectionIcon = SECTION_ICONS[sectionIndex] ?? IconMedical;
               return (
               <section

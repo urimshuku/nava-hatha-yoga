@@ -6,23 +6,32 @@ import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/ui/PageHero";
 import { SocialIconLinks } from "@/components/ui/SocialIconLinks";
 import { instagramLink, whatsappLink } from "@/lib/constants";
+import { placeholderContactPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
-import { getPrograms, getSiteSettings } from "@/sanity/lib/fetch";
+import { getContactPage, getPrograms, getSiteSettings } from "@/sanity/lib/fetch";
 
-export const metadata: Metadata = buildMetadata({
-  title: "Contact",
-  description:
-    "Get in touch with Nava Hatha Yoga in Saranda, Albania. Classes are in-person and registration is handled personally.",
-  path: "/contact",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getContactPage();
+  return buildMetadata({
+    title: "Contact",
+    description:
+      "Get in touch with Nava Hatha Yoga in Saranda, Albania. Classes are in-person and registration is handled personally.",
+    seo: page.seo,
+    path: "/contact",
+  });
+}
 
 export default async function ContactPage() {
-  const [settings, programs] = await Promise.all([
+  const [settings, programs, page] = await Promise.all([
     getSiteSettings(),
     getPrograms(),
+    getContactPage(),
   ]);
 
-  const waMessage = "Hello, I'd like to know more about your classes.";
+  const waMessage =
+    page.whatsappPrefill?.trim() ||
+    placeholderContactPage.whatsappPrefill ||
+    "";
   const waHref = settings.whatsapp
     ? `https://wa.me/${settings.whatsapp}?text=${encodeURIComponent(waMessage)}`
     : whatsappLink(waMessage);
@@ -31,8 +40,10 @@ export default async function ContactPage() {
     <>
       <PageHero
         eyebrow="Contact"
-        title="Get in touch"
-        description="For questions regarding upcoming programs, private instruction, or general inquiries, please leave a message below."
+        title={page.heroTitle?.trim() || placeholderContactPage.heroTitle}
+        description={
+          page.heroDescription?.trim() || placeholderContactPage.heroDescription
+        }
       />
 
       <Section tone="cream">
@@ -40,7 +51,7 @@ export default async function ContactPage() {
           <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr] lg:gap-16">
             <div className="rounded-2xl border border-border bg-ivory p-3 shadow-soft sm:p-8">
               <h2 className="mb-3 font-heading text-lg text-charcoal sm:mb-6 sm:text-2xl">
-                Send a message
+                {page.formHeading?.trim() || placeholderContactPage.formHeading}
               </h2>
               <ContactForm programs={programs.map((p) => p.title)} />
             </div>
@@ -77,8 +88,8 @@ export default async function ContactPage() {
               <div>
                 <h2 className="eyebrow mb-4">Quick message</h2>
                 <p className="mb-4 text-sm leading-relaxed text-brown">
-                  Prefer WhatsApp? Reach out directly and we&apos;ll reply as soon as we
-                  can.
+                  {page.quickMessageBody?.trim() ||
+                    placeholderContactPage.quickMessageBody}
                 </p>
                 <SocialIconLinks
                   whatsappHref={settings.whatsapp ? waHref : undefined}

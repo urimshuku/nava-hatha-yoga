@@ -27,23 +27,12 @@ import {
 import { MedicalDisclaimerModal } from "@/components/forms/MedicalDisclaimerModal";
 import { Button } from "@/components/ui/Button";
 import {
-  AGREEMENT_BULLETS,
-  AGREEMENT_CONSENT_LABEL,
-  PARTICIPANT_AGREEMENT_TITLE,
-  BEFORE_SESSION_CLOTHING,
-  BEFORE_SESSION_STOMACH,
+  DEFAULT_REGISTER_CONTENT,
+  type RegisterContent,
+} from "@/lib/register-config";
+import {
   HEALTH_CONDITION_NOT_APPLICABLE,
-  HEALTH_CONDITIONS,
-  HEALTH_DETAILS_LABEL,
-  HEALTH_INTRO,
-  MAJOR_SURGERY_HINT,
-  MAJOR_SURGERY_QUESTION,
-  MEDICAL_DISCLAIMER_BULLETS,
-  MEDICAL_DISCLAIMER_CONSENT_LABEL,
   MEDICAL_DISCLAIMER_INTRO,
-  PREGNANCY_LABEL,
-  REFUND_POLICY_BULLETS,
-  REFUND_POLICY_CONSENT_LABEL,
   SHOW_PAYMENT_DETAILS_STEP,
 } from "@/lib/register-content";
 import {
@@ -54,6 +43,7 @@ import { apiUrl } from "@/lib/api-url";
 
 interface RegistrationFormProps {
   event?: string;
+  content?: RegisterContent;
 }
 
 const fieldClass = formFieldClass;
@@ -141,7 +131,10 @@ function FieldError({ message }: { message?: string }) {
   );
 }
 
-export function RegistrationForm({ event }: RegistrationFormProps) {
+export function RegistrationForm({
+  event,
+  content = DEFAULT_REGISTER_CONTENT,
+}: RegistrationFormProps) {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>(initialState);
   const [errors, setErrors] = useState<Errors>({});
@@ -343,10 +336,14 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
     <MedicalDisclaimerModal
       open={disclaimerOpen}
       onClose={() => setDisclaimerOpen(false)}
+      title={content.disclaimerTitle}
+      document={content.disclaimerDocument}
     />
     <BeforeProgramModal
       open={beforeProgramOpen}
       onClose={() => setBeforeProgramOpen(false)}
+      title={content.guidelinesTitle}
+      document={content.guidelinesDocument}
     />
     <form
       onSubmit={(e) => e.preventDefault()}
@@ -574,7 +571,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
       {step === 1 ? (
         <div className="space-y-4 sm:space-y-6">
           <div className="space-y-2 sm:space-y-3">
-            {HEALTH_INTRO.map((para) => (
+            {content.healthIntro.map((para) => (
               <p key={para} className={formBodyTextClass}>
                 {para}
               </p>
@@ -586,7 +583,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
               Health conditions <Required />
             </legend>
             <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5">
-              {HEALTH_CONDITIONS.map((condition) => (
+              {content.healthConditions.map((condition) => (
                 <label key={condition} className={formChoiceLabelClass}>
                   <input
                     type="checkbox"
@@ -639,7 +636,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
 
           <div>
             <label htmlFor="healthDetails" className={labelClass}>
-              {HEALTH_DETAILS_LABEL}
+              {content.healthDetailsLabel}
             </label>
             <textarea
               id="healthDetails"
@@ -653,10 +650,10 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
 
           <div>
             <label htmlFor="majorSurgery" className={labelClass}>
-              {MAJOR_SURGERY_QUESTION} <Required />
+              {content.majorSurgeryQuestion} <Required />
             </label>
             <p className={formHintClass}>
-              {MAJOR_SURGERY_HINT}
+              {content.majorSurgeryHint}
             </p>
             <textarea
               id="majorSurgery"
@@ -669,7 +666,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
           </div>
 
           <fieldset>
-            <legend className={labelClass}>{PREGNANCY_LABEL}</legend>
+            <legend className={labelClass}>{content.pregnancyLabel}</legend>
             <div className="flex gap-4 sm:gap-6">
               {["Yes", "No"].map((option) => (
                 <label key={option} className={formRadioLabelClass}>
@@ -703,7 +700,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
               By registering for the program, I confirm that:
             </p>
             <ul className={formBulletListClass}>
-              {MEDICAL_DISCLAIMER_BULLETS.map((bullet) => (
+              {content.disclaimerBullets.map((bullet) => (
                 <li key={bullet} className={formBulletItemClass}>
                   <span
                     aria-hidden="true"
@@ -721,7 +718,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
                 onChange={(e) => update("medicalConsent", e.target.checked)}
               />
               <span>
-                {MEDICAL_DISCLAIMER_CONSENT_LABEL} <Required />
+                {content.disclaimerConsentLabel} <Required />
               </span>
             </label>
             <FieldError message={errors.medicalConsent} />
@@ -812,7 +809,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
           <div className={formBoxClass}>
             <p className={formSectionTitleClass}>Refund Policy:</p>
             <ul className={formBulletListClass}>
-              {REFUND_POLICY_BULLETS.map((bullet) => (
+              {content.refundPolicyBullets.map((bullet) => (
                 <li key={bullet} className={formBulletItemClass}>
                   <span
                     aria-hidden="true"
@@ -830,16 +827,16 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
                 onChange={(e) => update("refundConsent", e.target.checked)}
               />
               <span>
-                {REFUND_POLICY_CONSENT_LABEL} <Required />
+                {content.refundPolicyConsentLabel} <Required />
               </span>
             </label>
             <FieldError message={errors.refundConsent} />
           </div>
 
           <div className={formBoxClass}>
-            <p className={formSectionTitleClass}>{PARTICIPANT_AGREEMENT_TITLE}</p>
+            <p className={formSectionTitleClass}>{content.agreementTitle}</p>
             <ul className={formBulletListClass}>
-              {AGREEMENT_BULLETS.map((bullet) => (
+              {content.agreementBullets.map((bullet) => (
                 <li key={bullet} className={formBulletItemClass}>
                   <span
                     aria-hidden="true"
@@ -857,7 +854,7 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
                 onChange={(e) => update("agreementConsent", e.target.checked)}
               />
               <span>
-                {AGREEMENT_CONSENT_LABEL} <Required />
+                {content.agreementConsentLabel} <Required />
               </span>
             </label>
             <FieldError message={errors.agreementConsent} />
@@ -874,43 +871,33 @@ export function RegistrationForm({ event }: RegistrationFormProps) {
       {/* ---------------------------------------------------------------- */}
       {currentStep === "Before the Start of the Session" ? (
         <div className="space-y-4 sm:space-y-6">
-          <div className={cn(formBoxClass, "sm:p-6")}>
-            <h3 className={formGuidelineTitleClass}>{BEFORE_SESSION_STOMACH.title}</h3>
-            <p className="mt-1.5 text-xs leading-snug text-brown sm:mt-2 sm:text-sm sm:leading-relaxed">
-              {BEFORE_SESSION_STOMACH.intro}
-            </p>
-            <p className="mt-3 text-xs font-medium text-charcoal sm:mt-4 sm:text-sm">
-              {BEFORE_SESSION_STOMACH.empty.heading}
-            </p>
-            <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-xs leading-snug text-brown sm:mt-2 sm:space-y-1 sm:pl-5 sm:text-sm sm:leading-relaxed">
-              {BEFORE_SESSION_STOMACH.empty.items.map((item) => (
-                <li key={item}>{item}</li>
+          {content.beforeSessionBlocks.map((block) => (
+            <div key={block.heading} className={cn(formBoxClass, "sm:p-6")}>
+              <h3 className={formGuidelineTitleClass}>{block.heading}</h3>
+              {block.paragraphs?.map((paragraph) => (
+                <p
+                  key={paragraph}
+                  className="mt-1.5 text-xs leading-snug text-brown sm:mt-2 sm:text-sm sm:leading-relaxed"
+                >
+                  {paragraph}
+                </p>
               ))}
-            </ul>
-            <p className="mt-3 text-xs font-medium text-charcoal sm:mt-4 sm:text-sm">
-              {BEFORE_SESSION_STOMACH.light.heading}
-            </p>
-            <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-xs leading-snug text-brown sm:mt-2 sm:space-y-1 sm:pl-5 sm:text-sm sm:leading-relaxed">
-              {BEFORE_SESSION_STOMACH.light.items.map((item) => (
-                <li key={item}>{item}</li>
+              {block.lists?.map((list) => (
+                <div key={list.label ?? list.items.join("|")}>
+                  {list.label ? (
+                    <p className="mt-3 text-xs font-medium text-charcoal sm:mt-4 sm:text-sm">
+                      {list.label}
+                    </p>
+                  ) : null}
+                  <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-xs leading-snug text-brown sm:mt-2 sm:space-y-1 sm:pl-5 sm:text-sm sm:leading-relaxed">
+                    {list.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
-          </div>
-
-          <div className={cn(formBoxClass, "sm:p-6")}>
-            <h3 className={formGuidelineTitleClass}>{BEFORE_SESSION_CLOTHING.title}</h3>
-            <p className="mt-1.5 text-xs leading-snug text-brown sm:mt-2 sm:text-sm sm:leading-relaxed">
-              {BEFORE_SESSION_CLOTHING.intro}
-            </p>
-            <p className="mt-3 text-xs font-medium text-charcoal sm:mt-4 sm:text-sm">
-              {BEFORE_SESSION_CLOTHING.heading}
-            </p>
-            <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-xs leading-snug text-brown sm:mt-2 sm:space-y-1 sm:pl-5 sm:text-sm sm:leading-relaxed">
-              {BEFORE_SESSION_CLOTHING.items.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
+            </div>
+          ))}
 
           <div className={formBoxClass}>
             <p className={formBodyTextCharcoalClass}>

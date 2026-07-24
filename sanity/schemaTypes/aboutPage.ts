@@ -25,6 +25,47 @@ export const aboutPage = defineType({
         "Optional short introduction shown below the page heading, before the main sections.",
     }),
     defineField({
+      name: "teacherStory",
+      title: "About the Teacher",
+      type: "object",
+      group: "content",
+      description:
+        "The teacher introduction shown at the top of the About page, with the full story in a pop-up.",
+      fields: [
+        defineField({
+          name: "nameLine",
+          title: "Introduction line",
+          type: "string",
+          description: "E.g. “My name is Linda.”",
+        }),
+        defineField({
+          name: "photo",
+          title: "Photo",
+          type: "imageWithAlt",
+        }),
+        defineField({
+          name: "teaser",
+          title: "Short introduction",
+          type: "array",
+          of: [{ type: "string" }],
+          description: "One or two short paragraphs shown before “Read My Full Story”.",
+        }),
+        defineField({
+          name: "storyTitle",
+          title: "Full story title",
+          type: "string",
+          description: "Title of the pop-up, e.g. “My Full Story”.",
+        }),
+        defineField({
+          name: "story",
+          title: "Full story",
+          type: "array",
+          of: [{ type: "text", rows: 3 }],
+          description: "The full story, paragraph by paragraph.",
+        }),
+      ],
+    }),
+    defineField({
       name: "sections",
       title: "Sections",
       type: "array",

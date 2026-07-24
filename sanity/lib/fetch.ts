@@ -11,18 +11,22 @@ import { isSanityConfigured } from "../env";
 import * as Q from "./queries";
 import type {
   AboutPage,
+  ContactPage,
   HomePage,
   LegalPage,
   PastEvent,
   Program,
   ProgramListItem,
+  RegisterPage,
   Retreat,
   RetreatListItem,
+  RetreatsPage,
   SiteSettings,
   YogaEvent,
 } from "./types";
 import {
   placeholderAboutPage,
+  placeholderContactPage,
   placeholderEvents,
   placeholderHomePage,
   placeholderLegalPages,
@@ -30,6 +34,7 @@ import {
   placeholderProgramBySlug,
   placeholderPrograms,
   placeholderRetreats,
+  placeholderRetreatsPage,
   placeholderSiteSettings,
 } from "@/lib/placeholders";
 
@@ -112,6 +117,10 @@ export async function getPrograms(): Promise<ProgramListItem[]> {
 
 export async function getFeaturedPrograms(): Promise<ProgramListItem[]> {
   const programs = await getPrograms();
+  // Prefer the CMS category when set; fall back to the built-in slug list.
+  if (programs.some((program) => program.category)) {
+    return programs.filter((program) => program.category === "main");
+  }
   const bySlug = new Map(programs.map((program) => [program.slug, program]));
   return MAIN_PROGRAM_SLUGS.flatMap((slug) => {
     const program = bySlug.get(slug);
@@ -168,4 +177,19 @@ export async function getRetreatBySlug(slug: string): Promise<Retreat | undefine
 export async function getLegalPage(slug: string): Promise<LegalPage | undefined> {
   const data = await sanityFetch<LegalPage | null>(Q.legalPageQuery, { slug });
   return data ?? placeholderLegalPages[slug];
+}
+
+export async function getContactPage(): Promise<ContactPage> {
+  const data = await sanityFetch<ContactPage>(Q.contactPageQuery);
+  return isEmpty(data) ? placeholderContactPage : (data as ContactPage);
+}
+
+export async function getRetreatsPage(): Promise<RetreatsPage> {
+  const data = await sanityFetch<RetreatsPage>(Q.retreatsPageQuery);
+  return isEmpty(data) ? placeholderRetreatsPage : (data as RetreatsPage);
+}
+
+/** Returns null when Sanity is not configured; callers fall back to code defaults. */
+export async function getRegisterPage(): Promise<RegisterPage | null> {
+  return sanityFetch<RegisterPage>(Q.registerPageQuery);
 }

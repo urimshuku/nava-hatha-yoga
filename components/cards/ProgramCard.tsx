@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { LocalProgramImage } from "@/components/ui/LocalProgramImage";
+import { ProgramImage } from "@/components/ui/ProgramImage";
 import type { ProgramListItem } from "@/sanity/lib/types";
 
 export function ProgramCard({ program }: { program: ProgramListItem }) {
@@ -10,8 +10,9 @@ export function ProgramCard({ program }: { program: ProgramListItem }) {
       className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-ivory shadow-soft transition-shadow duration-300 ease-calm hover:shadow-card"
     >
       <div className="aspect-[4/3] overflow-hidden">
-        <LocalProgramImage
+        <ProgramImage
           slug={program.slug}
+          image={program.image}
           alt={program.title}
           width={640}
           height={480}

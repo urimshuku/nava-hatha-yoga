@@ -1,5 +1,15 @@
 import type { StructureResolver } from "sanity/structure";
 
+/** Document types that must only ever have a single, fixed-ID document. */
+export const SINGLETON_TYPES = new Set([
+  "siteSettings",
+  "homePage",
+  "aboutPage",
+  "contactPage",
+  "registerPage",
+  "retreatsPage",
+]);
+
 /**
  * A friendly, grouped Studio for a non-technical client:
  * singletons (one-off pages) are separated from collections.
@@ -23,6 +33,24 @@ export const structure: StructureResolver = (S) =>
         .title("About Page")
         .id("aboutPage")
         .child(S.document().schemaType("aboutPage").documentId("aboutPage")),
+      S.listItem()
+        .title("Contact Page")
+        .id("contactPage")
+        .child(
+          S.document().schemaType("contactPage").documentId("contactPage"),
+        ),
+      S.listItem()
+        .title("Register Page")
+        .id("registerPage")
+        .child(
+          S.document().schemaType("registerPage").documentId("registerPage"),
+        ),
+      S.listItem()
+        .title("Retreats Page")
+        .id("retreatsPage")
+        .child(
+          S.document().schemaType("retreatsPage").documentId("retreatsPage"),
+        ),
       S.divider(),
       S.documentTypeListItem("program").title("Programs"),
       S.documentTypeListItem("event").title("Events"),

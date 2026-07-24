@@ -29,6 +29,9 @@ yarn-error.log*
 /dist
 sanity.cli.ts.timestamp-*
 
+# cloudflare
+/.wrangler/
+
 # typescript
 *.tsbuildinfo
 

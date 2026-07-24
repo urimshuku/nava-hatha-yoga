@@ -6,6 +6,7 @@ import { Section } from "@/components/layout/Section";
 import { TeacherStoryTeaser } from "@/components/content/TeacherStoryTeaser";
 import { MotionItem, MotionStagger } from "@/components/ui/Motion";
 import { MotionReveal } from "@/components/ui/MotionReveal";
+import type { ResolvedTeacherStory } from "@/lib/teacher-story";
 import { cn } from "@/lib/utils";
 
 function HighlightCard({
@@ -27,13 +28,17 @@ function HighlightCard({
   );
 }
 
-export function AboutHighlightCards() {
+export function AboutHighlightCards({
+  teacherStory,
+}: {
+  teacherStory?: ResolvedTeacherStory;
+}) {
   return (
     <Section tone="cream" size="small" className="border-b border-border">
       <Container>
         <MotionReveal className="text-center">
           <h2 className="text-display-sm text-balance">About the Teacher</h2>
-          <TeacherStoryTeaser />
+          <TeacherStoryTeaser story={teacherStory} />
         </MotionReveal>
 
         <MotionStagger className="mt-10 grid gap-3 sm:grid-cols-2">

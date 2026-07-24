@@ -16,6 +16,18 @@ const legalContent = JSON.parse(
 let keyCounter = 0;
 const key = () => `k${(keyCounter++).toString(36)}`;
 
+/**
+ * Reference a local file so `sanity dataset import` uploads it as an asset.
+ * Path is relative to the repository's public/ folder.
+ */
+function imageAsset(publicPath, alt) {
+  return {
+    _type: "imageWithAlt",
+    _sanityAsset: `image@file://${resolve(__dirname, "../public", publicPath)}`,
+    ...(alt ? { alt } : {}),
+  };
+}
+
 function blocks(...paragraphs) {
   return paragraphs.map((text) => ({
     _type: "block",
@@ -77,6 +89,55 @@ const PROGRAM_ORDER = [
   "eye-care-practices",
   "pavanamuktasana",
 ];
+
+const MAIN_PROGRAM_SLUGS = [
+  "surya-kriya",
+  "surya-shakti",
+  "yogasanas",
+  "angamardana",
+  "bhuta-shuddhi",
+];
+
+const PROGRAM_IMAGES = {
+  angamardana: "images/programs/angamardana.webp",
+  "bhastrika-kriya": "images/programs/bhastrika-kriya.jpg",
+  "bhuta-shuddhi": "images/programs/bhuta-shuddhi.webp",
+  "eye-care-practices": "images/programs/eye-care-practices.webp",
+  "jala-neti": "images/programs/jala-neti.jpg",
+  pavanamuktasana: "images/programs/pavanamuktasana.webp",
+  "shanmukhi-mudra": "images/programs/shanmukhi-mudra.webp",
+  "surya-kriya": "images/programs/surya-kriya.webp",
+  "surya-shakti": "images/programs/surya-shakti.webp",
+  thoppukarnam: "images/programs/thoppukarnam.webp",
+  yogasanas: "images/programs/yogasanas.webp",
+};
+
+const PROGRAM_VIDEO_TITLES = {
+  angamardana: "Sadhguru speaks on Angamardana",
+  "bhuta-shuddhi": "Bhuta Shuddhi — The Ultimate Cleansing",
+};
+
+const DEFAULT_BEFORE_PROGRAM_NOTES = [
+  "This practice does not require prior yoga experience.",
+];
+
+const PROGRAM_BEFORE_PROGRAM_NOTES = {
+  angamardana: [
+    "This practice does not require prior yoga experience.",
+    "Those who are pregnant, recovering from surgery, or managing chronic injuries should speak with the teacher before registering.",
+  ],
+  "eye-care-practices": [
+    "Must have learned any of the following programs such as: Surya Kriya, Surya Shakti, Yogasanas, Angamardana or full Upa-Yoga (not taught online or in Inner Engineering).",
+  ],
+  "jala-neti": [
+    "Must have learned any of the following programs such as: Surya Kriya, Surya Shakti, Yogasanas, Angamardana.",
+  ],
+};
+
+const PROGRAM_BEFORE_PROGRAM_TITLES = {
+  "eye-care-practices": "Pre-Requisite",
+  "jala-neti": "Pre-Requisite",
+};
 
 function programPriceLabel(slug, priceLabel) {
   if (priceLabel?.trim()) return priceLabel.trim();
@@ -391,20 +452,31 @@ const programDocs = programs.map((p) => ({
 }));
 
 programDocs.forEach((p, i) => {
+  const beforeNotes =
+    PROGRAM_BEFORE_PROGRAM_NOTES[p.slug] ?? DEFAULT_BEFORE_PROGRAM_NOTES;
+  const beforeTitle = PROGRAM_BEFORE_PROGRAM_TITLES[p.slug];
+  const imagePath = PROGRAM_IMAGES[p.slug];
+  const videoTitle = PROGRAM_VIDEO_TITLES[p.slug];
+
   docs.push({
     _id: `program-${p.slug}`,
     _type: "program",
     title: p.title,
     slug: { _type: "slug", current: p.slug },
     published: true,
+    category: MAIN_PROGRAM_SLUGS.includes(p.slug) ? "main" : "special",
     orderRank: (i + 1) * 10,
+    ...(imagePath ? { image: imageAsset(imagePath, p.title) } : {}),
     shortIntro: p.shortIntro,
     whatIs: blocks(...p.whatIs),
     aboutThePractice: blocks(...p.aboutThePractice),
     benefits: p.benefits,
+    ...(beforeTitle ? { beforeProgramTitle: beforeTitle } : {}),
+    beforeProgramNotes: beforeNotes,
     practiceIndependently: blocks(...p.practiceIndependently),
     privateAndGroupSessions: blocks(...p.privateAndGroupSessions),
     ...(p.videoUrl ? { videoUrl: p.videoUrl } : {}),
+    ...(videoTitle ? { videoTitle } : {}),
     priceLabel: programPriceLabel(p.slug, p.priceLabel),
   });
 });
@@ -420,6 +492,9 @@ docs.push({
   phone: "+355 69 939 1791",
   whatsapp: "355699391791",
   location: "Saranda, Albania",
+  beforeProgramNotes: DEFAULT_BEFORE_PROGRAM_NOTES,
+  medicalNotice:
+    "These practices are offered as complementary tools for wellbeing and inner balance. Please consult your physician if you have any medical condition or concern.",
 });
 
 docs.push({
@@ -471,10 +546,43 @@ docs.push({
   _id: "aboutPage",
   _type: "aboutPage",
   title: "Classical Hatha Yoga, taught with care.",
+  teacherStory: {
+    nameLine: "My name is Linda.",
+    photo: imageAsset(
+      "images/about/teacher-linda.png",
+      "Linda, Classical Hatha Yoga teacher at Nava Hatha Yoga",
+    ),
+    teaser: [
+      "What began as a personal journey, over 10 years of lived experience and teaching at Isha Yoga Center in India, has naturally become a longing to share across the world Classical Hatha Yoga in its purest form.",
+    ],
+    storyTitle: "My Full Story",
+    story: [
+      "Is there something more to life than simply getting through it?",
+      "This question has been with me for as long as I can remember and, in many ways, has shaped the course of my life.",
+      "While studying Mathematics and Physics, and later building a career in teaching and international infrastructure projects (World Bank, EBRD, EIB), I was always looking for something more—not more achievement or success, but a more balanced and deeper way of experiencing life.",
+      "That search led me through martial arts (karate, kung fu, tai chi), extensive travel, and the exploration of different traditions and philosophies. Looking for their roots eventually brought me to Yoga and its place of origin, India.",
+      "It was at the Isha Yoga Center in Coimbatore, South India, that I found the authentic and scientific approach I had been searching for. To immerse myself fully in it, I underwent over 1,750 hours of intensive Classical Hatha Yoga Teacher Training under Sadhguru Gurukulam.",
+      "What began as a personal exploration grew into nearly 10 years of full time volunteering, learning and living within the ashram environment alongside many volunteers, senior teachers and monks.",
+      "During this time, I had the privilege of offering the practices I had received and supporting more than 6,000 participants from around the world through programs such as Sadhanapada and Isha Health Solutions.",
+      "Over the years, I witnessed how these practices touched the lives of countless people, bringing in them greater balance, joy, and aliveness.",
+      "There is no greater fulfillment I have experienced than that.",
+      "Gradually, I realised that what I had been searching for was not somewhere else or sometime in the future, but a different way of experiencing life itself.",
+      "For this, these practices became the foundation I had been longing all along.",
+      "Today, ten years later, practicing them remains at the heart of my daily life—the transformation and their impact continues to shape the way I experience life every moment.",
+      "This is where my longing to share these tools with more and more people comes from.",
+      "Today, I continue to teach not because I believe everyone should follow the same path I did, but because I believe every human being deserves access to tools that help them experience more of life and more of themselves.",
+      "Not merely to get through life, but to live it more fully and allow what is best within them to find expression.",
+    ],
+  },
   sections: [
     {
       _type: "aboutSection",
+      _key: key(),
       title: "Isha Hatha Yoga Teacher Training",
+      image: imageAsset(
+        "images/about/isha-hatha-yoga-teacher-training.jpg",
+        "Isha Hatha Yoga Teacher Training",
+      ),
       body: blocks(
         "Isha Hatha Yoga School delivers classical Hatha Yoga in its full depth and dimension. It is Sadhguru's vision to offer this ancient science in all its purity and make it available to every individual. As a step towards realizing this vision, he has devised the Hatha Yoga Teacher Training Program. In this program, Hatha Yoga will be taught as a living experience in the most beautiful ashram setting of the Isha Yoga Center, India under the grace of a living master. Upon completion of the program, trainees will have the privilege and fulfillment of bringing this knowledge to many more people.",
       ),
@@ -485,14 +593,18 @@ docs.push({
     },
     {
       _type: "aboutSection",
+      _key: key(),
       title: "Isha Yoga Center",
+      image: imageAsset("images/about/isha-yoga-center.jpg", "Isha Yoga Center"),
       body: blocks(
         "Located at the foothills of the lush Velliangiri Mountains in Tamil Nadu, South India, the Isha Yoga Center is a sacred space for self-transformation dedicated to fostering inner transformation and creating an established state of wellbeing in individuals. The center offers all four major paths of yoga – kriya (energy), gnana (knowledge), karma (action), and bhakti (devotion), attracting people from all over the world. A large residential facility houses an active international community of monks, full-time volunteers, guests and visitors, making it a vibrant hub of spiritual growth and activity.",
       ),
     },
     {
       _type: "aboutSection",
+      _key: key(),
       title: "Isha Foundation",
+      image: imageAsset("images/about/isha-foundation.jpg", "Isha Foundation"),
       body: blocks(
         "Sadhguru's vision to transform the world has been unfolding over the past 30 years through programs designed to create an inclusive culture and establish global harmony. He established the Isha Foundation, an international non-profit service organization, through which he has offered powerful yoga programs that extend a rare opportunity for self-discovery, inner transformation, and empowerment for individuals to reach their full potential. He has initiated many large scale human service projects for rural upliftment, quality education for the poor, environmental stewardship and holistic health, which have impacted the lives of millions of people around the world, earning a special consultative status with the United Nations.",
         "Isha Foundation is run entirely by volunteers inspired by their own personal transformation. Sadhguru has emphasized that humanity now has the necessary capability and resources to address every problem on the planet; the only missing element is willingness. Sadhguru has kindled this willingness within millions of people to extend their heads, hands, and hearts toward the betterment of humanity.",
@@ -504,7 +616,9 @@ docs.push({
     },
     {
       _type: "aboutSection",
+      _key: key(),
       title: "Sadhguru",
+      image: imageAsset("images/about/sadhguru.jpg", "Sadhguru"),
       body: blocks(
         "Sadhguru is a yogi, mystic and visionary, and a prominent spiritual leader. An author, poet, and internationally-renowned speaker, Sadhguru's wit and piercing logic provoke and widen our perception of life. www.ishafoundation.org",
         "Yogi, mystic and visionary, Sadhguru is a spiritual master with a difference. An arresting blend of profundity and pragmatism, his life and work serve as a reminder that yoga is not an esoteric discipline from an outdated past, but a contemporary science, vitally relevant to our times. Probing, passionate and provocative, insightful, logical and unfailingly witty, Sadhguru's talks have earned him the reputation of a speaker and opinion-maker of international renown. With a celebratory engagement with life on all levels, Sadhguru's areas of active involvement encompass fields as diverse as architecture and visual design, poetry and painting, ecology and horticulture, music and sports. Sadhguru is also the founder of Isha Foundation, a non-profit organization which has been dedicated to the wellbeing of the individual and the world for the past three decades. Isha Foundation does not promote any particular ideology, religion, or race, but transmits inner sciences of universal appeal.",
@@ -523,6 +637,314 @@ legal.forEach((l) => {
     slug: { _type: "slug", current: l.slug },
     body: sectionsToBlocks(l.sections),
   });
+});
+
+docs.push({
+  _id: "contactPage",
+  _type: "contactPage",
+  heroTitle: "Get in touch",
+  heroDescription:
+    "For questions regarding upcoming programs, private instruction, or general inquiries, please leave a message below.",
+  formHeading: "Send a message",
+  quickMessageBody:
+    "Prefer WhatsApp? Reach out directly and we'll reply as soon as we can.",
+  whatsappPrefill: "Hello, I'd like to know more about your classes.",
+});
+
+docs.push({
+  _id: "retreatsPage",
+  _type: "retreatsPage",
+  heroTitle: "Immersive retreats",
+  heroDescription:
+    "Immersive weekends in quiet settings — devoted to Classical Hatha Yoga, sattvic meals and time in nature.",
+  comingSoonHeading: "Retreats are on their way",
+  comingSoonBody:
+    "We are carefully preparing immersive Classical Hatha Yoga retreats. If you would like to be among the first to hear when dates are announced, please register your interest.",
+  expectationsHeading: "An invitation to go deeper",
+  expectations: [
+    {
+      _key: key(),
+      title: "Immersive practice",
+      body: "Extended, unhurried time with the practices, away from the demands of everyday life.",
+    },
+    {
+      _key: key(),
+      title: "Calm surroundings",
+      body: "A quiet, supportive setting designed to help the body and mind settle.",
+    },
+    {
+      _key: key(),
+      title: "Guided learning",
+      body: "Careful, attentive guidance in the Classical Hatha Yoga practices, in their original form.",
+    },
+  ],
+});
+
+function guidelineList(label, items) {
+  return { _type: "guidelineList", _key: key(), label, items };
+}
+
+function guidelineBlock(heading, paragraphs, lists) {
+  return {
+    _type: "guidelineBlock",
+    _key: key(),
+    heading,
+    ...(paragraphs ? { paragraphs } : {}),
+    ...(lists ? { lists } : {}),
+  };
+}
+
+function guidelineSection(title, blocks) {
+  return { _type: "guidelineSection", _key: key(), title, blocks };
+}
+
+function disclaimerItem(title, { lead, points, contactName, contactEmail } = {}) {
+  return {
+    _type: "disclaimerItem",
+    _key: key(),
+    title,
+    ...(lead ? { lead } : {}),
+    ...(points ? { points } : {}),
+    ...(contactName ? { contactName } : {}),
+    ...(contactEmail ? { contactEmail } : {}),
+  };
+}
+
+function disclaimerSection(title, intro, items) {
+  return { _type: "disclaimerSection", _key: key(), title, intro, items };
+}
+
+docs.push({
+  _id: "registerPage",
+  _type: "registerPage",
+  healthIntro: [
+    "(Please indicate below if you currently or previously have had any physical or mental ailments. If not, select 'NOT APPLICABLE')",
+    "In case of any health condition, this information can help us to adapt the classes to your personal needs. This information is confidential. If required we can also discuss your personal needs in more detail on the phone.",
+  ],
+  healthConditions: [
+    "Any physical disabilities",
+    "Asthma/ Respiratory conditions",
+    "Allergy",
+    "Neck/ Back aches/ injuries",
+    "Joint-related issues",
+    "Ligament injuries",
+    "Spinal conditions",
+    "Bowel/ Bladder issues",
+    "Communicable disease",
+    "Chronic pain",
+    "Retinal detachment/ eye surgery",
+  ],
+  healthDetailsLabel:
+    "If you have selected any of the above conditions, please give details of the nature and duration of the condition and if you are currently undergoing any treatment.",
+  majorSurgeryQuestion: "Have you had any major surgery in the last six months?",
+  majorSurgeryHint:
+    "(If 'Yes', please give details of the nature and duration of the condition and if you are currently undergoing any treatment. Otherwise mention 'No' as your response)",
+  pregnancyLabel: "For women, are you currently pregnant?",
+  disclaimerTitle:
+    "Medical Acknowledgement and Liability Disclaimer and GDPR/Data Protection Consent",
+  disclaimerDocument: [
+    disclaimerSection(
+      "Medical Acknowledgment & Liability Disclaimer",
+      "I hereby acknowledge that I fully understand the risks associated with participating in the program.",
+      [
+        disclaimerItem("Personal Responsibility & Physical / Mental Health", {
+          points: [
+            "I understand that the program includes physical yoga practices which may involve stretching, movement, and stillness, and may aggravate existing injuries or physical or mental health conditions.",
+            "I confirm that I am physically and mentally fit to participate in this program.",
+            "I understand that it is my responsibility to consult a physician, psychologist, or other qualified healthcare professional before and during the program if needed, and to follow any advice provided.",
+          ],
+        }),
+        disclaimerItem("Self-Awareness & Personal Limits", {
+          points: [
+            "I agree to listen to my body and respect my physical and mental limits at all times.",
+            "I will stop or modify any practice if I experience discomfort, pain, or strain.",
+            "If I have any existing or acute mental health condition, I confirm that I have consulted a qualified professional and will follow their guidance.",
+          ],
+        }),
+        disclaimerItem("No Medical or Performance Guarantees", {
+          points: [
+            "I understand that participation in this yoga program does not constitute medical, psychological, or therapeutic treatment.",
+            "No guarantees or promises are made regarding outcomes, results, or experiences.",
+            "Any testimonials or shared experiences are for informational purposes only and do not represent guaranteed results.",
+          ],
+        }),
+        disclaimerItem("Liability Disclaimer", {
+          points: [
+            "I voluntarily assume full responsibility for any risks, injuries, or damages, known or unknown, that may arise from my participation.",
+            "I release the organizer from liability to the fullest extent permitted by law.",
+            "This does not exclude liability for damages resulting from injury to life, body, or health caused by gross negligence or intentional misconduct.",
+          ],
+        }),
+      ],
+    ),
+    disclaimerSection(
+      "GDPR / Data Protection Consent",
+      "Your privacy and personal data protection are important.",
+      [
+        disclaimerItem("Purpose of Data Processing", {
+          lead: "My personal data will be used only to:",
+          points: [
+            "Provide information about the yoga practices I have learned",
+            "Inform me about future workshops, sessions, events, or special offers",
+          ],
+        }),
+        disclaimerItem("Storage & Sharing", {
+          points: [
+            "My personal data will not be sold, shared, or transferred to third parties.",
+          ],
+        }),
+        disclaimerItem("Withdrawal & Deletion", {
+          points: [
+            "I understand that I may withdraw my consent at any time with effect for the future.",
+            "I have the right to request deletion of my personal data without any negative consequences.",
+          ],
+        }),
+        disclaimerItem("Data Controller Contact", {
+          lead: "The data controller responsible for processing is:",
+          contactName: "Erlinda Mustafaraj",
+          contactEmail: "info@navahathayoga.com",
+        }),
+      ],
+    ),
+  ],
+  disclaimerBullets: [
+    "I willingly undertake to attend the program in full;",
+    "I take full responsibility for my participation and release the organizers from any claims or liabilities;",
+    "I will not communicate the contents of the program, either directly or indirectly to anyone else.",
+    "We reserve the right to all the program images, videos, text and may use it to create awareness about other programs.",
+    "I confirm that all information provided by me is true and accurate and complete to the best of my knowledge.",
+  ],
+  disclaimerConsentLabel:
+    "I have read and agree to the Medical Acknowledgement and Liability Disclaimer and GDPR/Data Protection Consent",
+  refundPolicyBullets: [
+    "No shows or Drop out or Missed sessions - No refunds or carry forward to next program are possible.",
+    "No refunds for cancellations made within 7 days prior to the program start date.",
+    "Cancellations made between 8-14 days before the program are eligible for a 50% refund, minus a 10% administrative fee.",
+    "Cancellations made more than 14 days in advance are eligible for a full refund, minus a 10% administrative fee.",
+  ],
+  refundPolicyConsentLabel: "I have read and agree to the Refund Policy.",
+  agreementTitle: "Participant Agreement & Consent Policy",
+  agreementBullets: [
+    "I willingly undertake to attend the program in full;",
+    "I take full responsibility for my participation and release the organizers from any claims or liabilities;",
+    "I will not communicate the contents of the program, either directly or indirectly to anyone else.",
+    "I confirm that all information provided by me is true and accurate and complete to the best of my knowledge.",
+    "We reserve the right to all the program images, videos, text and may use it to create awareness about other programs.",
+  ],
+  agreementConsentLabel:
+    "I have read and agree to the Participant Agreement & Consent Policy.",
+  beforeSessionBlocks: [
+    guidelineBlock(
+      "Empty or slightly full stomach",
+      [
+        "Please only come to class with an empty stomach and only practice at home once you have learned the entire practice – unless the particular practice specifically requires only a slightly full stomach.",
+      ],
+      [
+        guidelineList("Empty stomach means:", [
+          "at least 4 hours after a meal",
+          "at least 2.5 hours after a snack",
+          "at least 1.5 hours after a drink (except water)",
+        ]),
+        guidelineList("Light stomach means:", [
+          "at least 2.5 hours after a meal",
+          "at least 1.5 hours after a drink (except water)",
+        ]),
+      ],
+    ),
+    guidelineBlock(
+      "Clothing & Accessories",
+      [
+        "For the practice of classical Hatha Yoga, it is most beneficial to wear comfortable, loose-fitting clothing made of organic cotton. Please avoid wearing metallic jewelry during the exercises if possible.",
+      ],
+      [
+        guidelineList("For the course you only need:", [
+          "a yoga mat",
+          "a yoga cushion, if needed and available",
+        ]),
+      ],
+    ),
+  ],
+  guidelinesTitle:
+    "Full Guidelines on What to Know Before, During and After the Program",
+  guidelinesDocument: [
+    guidelineSection("Before the Start of Classes", [
+      guidelineBlock(
+        "Empty or slightly full stomach",
+        [
+          "Please attend the class on an empty stomach. Once you have learned the practice in its entirety, these guidelines should also be followed during your home practice unless the particular practice specifically requires a light-stomach condition only.",
+        ],
+        [
+          guidelineList("Empty stomach means:", [
+            "at least 4 hours after a meal",
+            "at least 2.5 hours after a snack",
+            "at least 1.5 hours after a drink (except water)",
+          ]),
+          guidelineList("Light stomach means:", [
+            "at least 2.5 hours after a meal",
+            "at least 1.5 hours after a drink (except water)",
+          ]),
+        ],
+      ),
+      guidelineBlock(
+        "Clothing & Accessories",
+        [
+          "For the practice of Classical Hatha Yoga, it is most beneficial to wear comfortable, loose-fitting clothing made of organic cotton. Please avoid wearing metallic jewelry during the exercises, if possible.",
+        ],
+        [
+          guidelineList("For the course, you only need:", [
+            "a yoga mat",
+            "a yoga cushion, if needed to sit on the ground",
+          ]),
+        ],
+      ),
+    ]),
+    guidelineSection("During the Session", [
+      guidelineBlock("Punctuality", [
+        "The course begins and ends on time. Doors open 30 minutes before the start, giving you plenty of time to settle in.",
+        "Since each part of the practice builds on the previous one, participation after the course has started is unfortunately not possible.",
+      ]),
+      guidelineBlock("Shoes, Bags & Phones", [
+        "Please leave your shoes at the entrance and keep your personal belongings—including your cell phone—safely outside the practice room.",
+        "Make sure your phone is completely silent (no sound, no vibration) so we can practice together in a quiet atmosphere.",
+      ]),
+      guidelineBlock("Water", [
+        "You are welcome to drink water before and after your session.",
+        "Please refrain from drinking it during the session—unless you are participating in a prenatal yoga class, in which case special considerations apply.",
+      ]),
+      guidelineBlock("Mindfulness in the Classroom", [
+        "Please pay full attention to every step of the practice. All instructions are carefully structured and important, so that you can practice safely and effectively at home later.",
+        "We ask that you do not take notes during the class—you will receive all important information in writing at the end of the last session.",
+      ]),
+      guidelineBlock("Questions", [
+        "At the end of each course unit, there will be time to ask questions. If something is unclear and prevents you from continuing comfortably, please let me know immediately. Otherwise, we kindly ask that questions be kept until the end of the session.",
+      ]),
+    ]),
+    guidelineSection("After Completion of the Program", [
+      guidelineBlock("Accompaniment & Support", [
+        "Your learning does not end with the completion of the course. If questions arise during your practice, or if you need clarification, I am happy to support you.",
+        "Please feel free to contact me at any time – by email at info@navahathayoga.com or by WhatsApp at +355 69 939 1791.",
+      ]),
+      guidelineBlock("Confidentiality of the Practice", [
+        "The practices you learn will be taught in a specific way—as defined by Sadhguru. The content of each lesson is precisely defined and may not be altered or shared.",
+        "Please do not teach these practices yourself under any circumstances. A Classical Hatha Yoga teacher undergoes an intensive five-month training course at the Isha Yoga Center to become qualified.",
+        "As Sadhguru says: “A practice that can transform your life can also harm you if done incorrectly.” Therefore, it is crucial that it is taught only by certified teachers.",
+      ]),
+      guidelineBlock("Dignity of the Practice", [
+        "The practices should be performed with mindfulness and respect. Please do not talk during practice or during an asana, and do not slip into a posture carelessly.",
+        "Do not change any of the exercises – every movement, every sequence, has been consciously chosen and contributes to the effectiveness of the practice.",
+      ]),
+      guidelineBlock("No Music During Practice", [
+        "The practices are designed to direct your awareness inward. Therefore, please refrain from listening to music while practicing Classical Hatha Yoga.",
+      ]),
+      guidelineBlock("Room Temperature", [
+        "Please practice only in an environment with a temperature between 16–32 °C (60–89 °F). In this range, the practices can be fully effective.",
+      ]),
+      guidelineBlock("Prana & Nutrition", [
+        "A central aspect of this practice is raising the body's samat prana. To support this process, a balanced and conscious diet is recommended.",
+        "Foods and habits that promote clarity, vitality, and wellbeing naturally support the process and help maintain the benefits of the practice.",
+      ]),
+    ]),
+  ],
 });
 
 const SITE_URL =

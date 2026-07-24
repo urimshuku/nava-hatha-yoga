@@ -7,6 +7,7 @@ export const siteSettings = defineType({
   groups: [
     { name: "brand", title: "Brand", default: true },
     { name: "contact", title: "Contact" },
+    { name: "programs", title: "Program pages" },
     { name: "seo", title: "SEO" },
   ],
   fields: [
@@ -77,6 +78,23 @@ export const siteSettings = defineType({
           },
         },
       ],
+    }),
+    defineField({
+      name: "beforeProgramNotes",
+      title: "Default “Before the Program” notes",
+      type: "array",
+      group: "programs",
+      of: [{ type: "string" }],
+      description:
+        "Shown in the “Before the Program” section on every program page, unless a program provides its own notes.",
+    }),
+    defineField({
+      name: "medicalNotice",
+      title: "Medical notice",
+      type: "text",
+      rows: 3,
+      group: "programs",
+      description: "Shown in the “Medical Notice!” box on every program page.",
     }),
     defineField({
       name: "seo",

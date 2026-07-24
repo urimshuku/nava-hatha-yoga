@@ -7,10 +7,9 @@ import {
   IconGuidelines,
   SECTION_ICONS,
 } from "@/lib/guideline-icons";
-import {
-  BEFORE_PROGRAM_DOCUMENT,
-  BEFORE_PROGRAM_TITLE,
-  type GuidelineBlock,
+import type {
+  GuidelineBlock,
+  GuidelineSection,
 } from "@/lib/register-content";
 import {
   GUIDELINES_PDF_URL,
@@ -19,6 +18,8 @@ import {
 interface BeforeProgramModalProps {
   open: boolean;
   onClose: () => void;
+  title: string;
+  document: readonly GuidelineSection[];
 }
 
 function IconClose() {
@@ -73,7 +74,12 @@ function GuidelineBlockView({ block }: { block: GuidelineBlock }) {
   );
 }
 
-export function BeforeProgramModal({ open, onClose }: BeforeProgramModalProps) {
+export function BeforeProgramModal({
+  open,
+  onClose,
+  title,
+  document: guidelinesDocument,
+}: BeforeProgramModalProps) {
   useEffect(() => {
     if (!open) return;
 
@@ -113,7 +119,7 @@ export function BeforeProgramModal({ open, onClose }: BeforeProgramModalProps) {
             id="before-program-title"
             className="font-heading text-2xl text-charcoal"
           >
-            {BEFORE_PROGRAM_TITLE}
+            {title}
           </h2>
           <button
             type="button"
@@ -127,7 +133,7 @@ export function BeforeProgramModal({ open, onClose }: BeforeProgramModalProps) {
 
         <div className="overflow-y-auto px-6 py-6 sm:px-8">
           <div className="space-y-9">
-            {BEFORE_PROGRAM_DOCUMENT.map((section, sectionIndex) => {
+            {guidelinesDocument.map((section, sectionIndex) => {
               const SectionIcon = SECTION_ICONS[sectionIndex] ?? SECTION_ICONS[0];
               return (
                 <section

@@ -10,8 +10,8 @@ import { CMSRichText } from "@/components/content/CMSRichText";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
-import { LocalProgramImage } from "@/components/ui/LocalProgramImage";
 import { LocalProgramSymbol } from "@/components/ui/LocalProgramSymbol";
+import { ProgramImage } from "@/components/ui/ProgramImage";
 import { buildMetadata } from "@/lib/seo";
 import { ensureTrailingPeriod } from "@/lib/utils";
 import {
@@ -91,10 +91,22 @@ export default async function ProgramDetailPage({ params }: PageProps) {
   ]);
 
   const videoUrl = getProgramVideoUrl(program.slug, program.videoUrl);
-  const videoLink = videoUrl ? getProgramVideoLink(program.slug, program.title) : null;
+  const videoTitle =
+    program.videoTitle?.trim() ||
+    (videoUrl ? getProgramVideoLink(program.slug, program.title).title : null);
   const priceLabel = SHOW_PROGRAM_SIDEBAR_PRICE
     ? getProgramPriceLabel(program.slug, program.priceLabel)
     : null;
+
+  const beforeProgramTitle =
+    program.beforeProgramTitle?.trim() || getBeforeProgramTitle(program.slug);
+  const beforeProgramNotes =
+    program.beforeProgramNotes?.length
+      ? program.beforeProgramNotes
+      : settings.beforeProgramNotes?.length
+        ? settings.beforeProgramNotes
+        : getBeforeProgramNotes(program.slug);
+  const medicalNotice = settings.medicalNotice?.trim() || PROGRAM_MEDICAL_NOTICE;
 
   return (
     <>
@@ -157,7 +169,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
               ) : null}
 
               <ProgramSection
-                title={getBeforeProgramTitle(program.slug)}
+                title={beforeProgramTitle}
                 first={
                   !hasRichText(program.whatIs) &&
                   !hasRichText(program.aboutThePractice) &&
@@ -165,7 +177,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
                 }
               >
                 <div className="space-y-4 leading-relaxed text-[#3a322a]">
-                  {getBeforeProgramNotes(program.slug).map((note) => (
+                  {beforeProgramNotes.map((note) => (
                     <p key={note}>{note}</p>
                   ))}
                 </div>
@@ -182,7 +194,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
               <div className="mt-12 border-t border-border pt-10">
                 <div className="rounded-2xl border border-border bg-ivory p-6 shadow-soft sm:p-8">
                   <h2 className="font-heading text-2xl text-charcoal">{PROGRAM_MEDICAL_NOTICE_TITLE}</h2>
-                  <p className="prose-body mt-4 text-[#3a322a]">{PROGRAM_MEDICAL_NOTICE}</p>
+                  <p className="prose-body mt-4 text-[#3a322a]">{medicalNotice}</p>
                 </div>
               </div>
             </div>
@@ -190,17 +202,18 @@ export default async function ProgramDetailPage({ params }: PageProps) {
             <aside className="lg:sticky lg:top-28 lg:self-start">
               <div className="overflow-hidden rounded-xl border border-border bg-ivory shadow-soft">
                 <div className="overflow-hidden">
-                  <LocalProgramImage
+                  <ProgramImage
                     slug={program.slug}
+                    image={program.image}
                     alt={program.title}
                     sizes="(max-width: 1024px) 100vw, 33vw"
                     className="h-auto w-full"
                   />
                 </div>
-                {videoUrl && videoLink ? (
+                {videoUrl && videoTitle ? (
                   <ProgramWatchButton
                     href={videoUrl}
-                    ariaLabel={`Watch: ${videoLink.title}`}
+                    ariaLabel={`Watch: ${videoTitle}`}
                   />
                 ) : null}
                 {SHOW_PROGRAM_SIDEBAR_PRICE && priceLabel ? (

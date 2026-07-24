@@ -28,3 +28,22 @@ export const TEACHER_STORY_PARAGRAPHS = [
 export const TEACHER_STORY_TEASER_PARAGRAPHS = [
   "What began as a personal journey, over 10 years of lived experience and teaching at Isha Yoga Center in India, has naturally become a longing to share across the world Classical Hatha Yoga in its purest form.",
 ] as const;
+
+/** Fully-resolved teacher story content passed to the About page components. */
+export interface ResolvedTeacherStory {
+  nameLine: string;
+  photoSrc: string;
+  photoAlt: string;
+  teaser: string[];
+  storyTitle: string;
+  story: string[];
+}
+
+export const DEFAULT_TEACHER_STORY: ResolvedTeacherStory = {
+  nameLine: TEACHER_NAME_LINE,
+  photoSrc: TEACHER_PHOTO_SRC,
+  photoAlt: TEACHER_PHOTO_ALT,
+  teaser: [...TEACHER_STORY_TEASER_PARAGRAPHS],
+  storyTitle: TEACHER_STORY_TITLE,
+  story: [...TEACHER_STORY_PARAGRAPHS],
+};

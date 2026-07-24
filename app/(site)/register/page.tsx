@@ -4,7 +4,9 @@ import { RegistrationForm } from "@/components/forms/RegistrationForm";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/ui/PageHero";
+import { resolveRegisterContent } from "@/lib/register-config";
 import { buildMetadata } from "@/lib/seo";
+import { getRegisterPage } from "@/sanity/lib/fetch";
 
 export const metadata: Metadata = buildMetadata({
   title: "Register",
@@ -18,8 +20,12 @@ interface RegisterPageProps {
 }
 
 export default async function RegisterPage({ searchParams }: RegisterPageProps) {
-  const { event } = await searchParams;
+  const [{ event }, registerPage] = await Promise.all([
+    searchParams,
+    getRegisterPage(),
+  ]);
   const eventName = event?.trim() || undefined;
+  const content = resolveRegisterContent(registerPage);
 
   return (
     <>
@@ -32,7 +38,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
       <Section tone="cream">
         <Container size="narrow">
           <div className="rounded-2xl border border-border bg-ivory p-3 shadow-soft sm:p-8">
-            <RegistrationForm event={eventName} />
+            <RegistrationForm event={eventName} content={content} />
           </div>
         </Container>
       </Section>

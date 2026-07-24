@@ -2,27 +2,40 @@ import type { PortableTextBlock } from "@portabletext/types";
 
 import type {
   AboutPage,
+  ContactPage,
   HomePage,
   LegalPage,
   PastEvent,
   Program,
   ProgramListItem,
   Retreat,
+  RetreatsPage,
   SiteSettings,
   YogaEvent,
 } from "@/sanity/lib/types";
 import {
   CONTACT,
+  getBeforeProgramNotes,
+  getBeforeProgramTitle,
   getProgramPriceLabel,
   MAIN_PROGRAM_SLUGS,
+  PROGRAM_BEFORE_PROGRAM_NOTES,
+  PROGRAM_MEDICAL_NOTICE,
   PROGRAM_ORDER,
   programAfterProgramText,
   SITE_DESCRIPTION,
   SITE_NAME,
   SITE_TAGLINE,
+  SPECIAL_PROGRAM_SLUGS,
 } from "@/lib/constants";
 import { sessionBoundaryFromSchedule } from "@/lib/event-boundary";
 import { getPlaceholderLegalPages } from "@/lib/legal-content";
+import {
+  TEACHER_NAME_LINE,
+  TEACHER_STORY_PARAGRAPHS,
+  TEACHER_STORY_TEASER_PARAGRAPHS,
+  TEACHER_STORY_TITLE,
+} from "@/lib/teacher-story";
 
 /** Build a minimal Portable Text block from plain paragraphs. */
 export function blocks(...paragraphs: string[]): PortableTextBlock[] {
@@ -44,6 +57,8 @@ export const placeholderSiteSettings: SiteSettings = {
   whatsapp: CONTACT.whatsapp,
   location: CONTACT.location,
   social: [],
+  beforeProgramNotes: [...PROGRAM_BEFORE_PROGRAM_NOTES],
+  medicalNotice: PROGRAM_MEDICAL_NOTICE,
 };
 
 interface ProgramSeed {
@@ -356,6 +371,9 @@ export const placeholderPrograms: ProgramListItem[] = programSeeds.map((p) => ({
   title: p.title,
   slug: p.slug,
   shortIntro: p.shortIntro,
+  category: (SPECIAL_PROGRAM_SLUGS as readonly string[]).includes(p.slug)
+    ? "special"
+    : "main",
 }));
 
 export function placeholderProgramBySlug(slug: string): Program | undefined {
@@ -366,6 +384,11 @@ export function placeholderProgramBySlug(slug: string): Program | undefined {
     title: p.title,
     slug: p.slug,
     shortIntro: p.shortIntro,
+    category: (SPECIAL_PROGRAM_SLUGS as readonly string[]).includes(p.slug)
+      ? "special"
+      : "main",
+    beforeProgramTitle: getBeforeProgramTitle(p.slug),
+    beforeProgramNotes: [...getBeforeProgramNotes(p.slug)],
     whatIs: blocks(...p.whatIs),
     aboutThePractice: blocks(...p.aboutThePractice),
     benefits: p.benefits,
@@ -419,6 +442,12 @@ export const placeholderHomePage: HomePage = {
 
 export const placeholderAboutPage: AboutPage = {
   title: "Classical Hatha Yoga, taught with care.",
+  teacherStory: {
+    nameLine: TEACHER_NAME_LINE,
+    teaser: [...TEACHER_STORY_TEASER_PARAGRAPHS],
+    storyTitle: TEACHER_STORY_TITLE,
+    story: [...TEACHER_STORY_PARAGRAPHS],
+  },
   sections: [
     {
       title: "Isha Hatha Yoga Teacher Training",
@@ -722,6 +751,40 @@ export const placeholderEvents: YogaEvent[] = scheduledEvents.flatMap((event) =>
 });
 export const placeholderPastEvents: PastEvent[] = [];
 export const placeholderRetreats: Retreat[] = [];
+
+export const placeholderContactPage: ContactPage = {
+  heroTitle: "Get in touch",
+  heroDescription:
+    "For questions regarding upcoming programs, private instruction, or general inquiries, please leave a message below.",
+  formHeading: "Send a message",
+  quickMessageBody:
+    "Prefer WhatsApp? Reach out directly and we'll reply as soon as we can.",
+  whatsappPrefill: "Hello, I'd like to know more about your classes.",
+};
+
+export const placeholderRetreatsPage: RetreatsPage = {
+  heroTitle: "Immersive retreats",
+  heroDescription:
+    "Immersive weekends in quiet settings — devoted to Classical Hatha Yoga, sattvic meals and time in nature.",
+  comingSoonHeading: "Retreats are on their way",
+  comingSoonBody:
+    "We are carefully preparing immersive Classical Hatha Yoga retreats. If you would like to be among the first to hear when dates are announced, please register your interest.",
+  expectationsHeading: "An invitation to go deeper",
+  expectations: [
+    {
+      title: "Immersive practice",
+      body: "Extended, unhurried time with the practices, away from the demands of everyday life.",
+    },
+    {
+      title: "Calm surroundings",
+      body: "A quiet, supportive setting designed to help the body and mind settle.",
+    },
+    {
+      title: "Guided learning",
+      body: "Careful, attentive guidance in the Classical Hatha Yoga practices, in their original form.",
+    },
+  ],
+};
 
 export const placeholderLegalPages: Record<string, LegalPage> =
   getPlaceholderLegalPages();

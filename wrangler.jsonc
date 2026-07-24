@@ -8,6 +8,8 @@
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
     "NEXT_PUBLIC_SITE_URL": "https://navahathayoga.com",
+    "NEXT_PUBLIC_SANITY_PROJECT_ID": "zji6f648",
+    "NEXT_PUBLIC_SANITY_DATASET": "production",
     "RESEND_FROM_EMAIL": "Nava Hatha Yoga <info@navahathayoga.com>",
     "FORM_NOTIFICATION_EMAIL": "info@navahathayoga.com"
   },

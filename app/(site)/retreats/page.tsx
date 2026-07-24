@@ -9,41 +9,38 @@ import { MotionItem, MotionStagger } from "@/components/ui/Motion";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 import { Ornament } from "@/components/ui/Ornament";
 import { PageHero } from "@/components/ui/PageHero";
+import { placeholderRetreatsPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
-import { getRetreats } from "@/sanity/lib/fetch";
+import { getRetreats, getRetreatsPage } from "@/sanity/lib/fetch";
 
-export const metadata: Metadata = buildMetadata({
-  title: "Retreats",
-  description:
-    "Immersive Classical Hatha Yoga retreats from Nava Hatha Yoga — coming soon.",
-  path: "/retreats",
-});
-
-const EXPECTATIONS = [
-  {
-    title: "Immersive practice",
-    body: "Extended, unhurried time with the practices, away from the demands of everyday life.",
-  },
-  {
-    title: "Calm surroundings",
-    body: "A quiet, supportive setting designed to help the body and mind settle.",
-  },
-  {
-    title: "Guided learning",
-    body: "Careful, attentive guidance in the Classical Hatha Yoga practices, in their original form.",
-  },
-];
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getRetreatsPage();
+  return buildMetadata({
+    title: "Retreats",
+    description:
+      "Immersive Classical Hatha Yoga retreats from Nava Hatha Yoga — coming soon.",
+    seo: page.seo,
+    path: "/retreats",
+  });
+}
 
 export default async function RetreatsPage() {
-  const retreats = await getRetreats();
+  const [retreats, page] = await Promise.all([getRetreats(), getRetreatsPage()]);
   const hasRetreats = retreats.length > 0;
+
+  const expectations =
+    page.expectations?.filter((item) => item.title?.trim()) ??
+    placeholderRetreatsPage.expectations ??
+    [];
 
   return (
     <>
       <PageHero
         eyebrow="Retreats"
-        title="Immersive retreats"
-        description="Immersive weekends in quiet settings — devoted to Classical Hatha Yoga, sattvic meals and time in nature."
+        title={page.heroTitle?.trim() || placeholderRetreatsPage.heroTitle}
+        description={
+          page.heroDescription?.trim() || placeholderRetreatsPage.heroDescription
+        }
       />
 
       {hasRetreats ? (
@@ -74,12 +71,12 @@ export default async function RetreatsPage() {
               <MotionReveal className="mx-auto max-w-2xl rounded-2xl border border-border bg-ivory px-8 py-16 text-center shadow-soft sm:py-20">
                 <p className="eyebrow">Coming Soon</p>
                 <h2 className="mt-4 text-display-sm text-balance">
-                  Retreats are on their way
+                  {page.comingSoonHeading?.trim() ||
+                    placeholderRetreatsPage.comingSoonHeading}
                 </h2>
                 <p className="section-lead mx-auto mt-4 max-w-md sm:mt-5">
-                  We are carefully preparing immersive Classical Hatha Yoga retreats. If you
-                  would like to be among the first to hear when dates are announced, please
-                  register your interest.
+                  {page.comingSoonBody?.trim() ||
+                    placeholderRetreatsPage.comingSoonBody}
                 </p>
                 <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                   <Button href="/contact">Register your interest</Button>
@@ -97,12 +94,13 @@ export default async function RetreatsPage() {
               <MotionReveal className="text-center">
                 <p className="eyebrow mb-4">What to expect</p>
                 <h2 className="text-display-sm text-balance">
-                  An invitation to go deeper
+                  {page.expectationsHeading?.trim() ||
+                    placeholderRetreatsPage.expectationsHeading}
                 </h2>
                 <Ornament className="mt-8" />
               </MotionReveal>
               <MotionStagger className="mt-8 grid gap-4 sm:mt-12 sm:gap-6 md:grid-cols-3">
-                {EXPECTATIONS.map((item) => (
+                {expectations.map((item) => (
                   <MotionItem key={item.title} className="h-full">
                     <div className="h-full rounded-xl border border-border bg-cream p-5 text-center sm:p-8">
                       <h3 className="font-heading text-xl text-charcoal sm:text-2xl">

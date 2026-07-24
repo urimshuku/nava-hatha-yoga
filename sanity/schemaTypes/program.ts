@@ -34,11 +34,35 @@ export const program = defineType({
       initialValue: true,
     }),
     defineField({
+      name: "category",
+      title: "Category",
+      type: "string",
+      group: "content",
+      description:
+        "Core programs appear in the main list; special programs appear in the second list on the Programs page.",
+      options: {
+        list: [
+          { title: "Core program", value: "main" },
+          { title: "Special program", value: "special" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "main",
+    }),
+    defineField({
       name: "orderRank",
       title: "Order",
       type: "number",
       group: "content",
       description: "Lower numbers appear first. Leave blank to sort alphabetically.",
+    }),
+    defineField({
+      name: "image",
+      title: "Image",
+      type: "imageWithAlt",
+      group: "content",
+      description:
+        "Shown in the program page sidebar and on program cards. Falls back to the built-in image when empty.",
     }),
     defineField({
       name: "shortIntro",
@@ -88,11 +112,36 @@ export const program = defineType({
       description: "How this practice is offered in group and private settings.",
     }),
     defineField({
+      name: "beforeProgramTitle",
+      title: "“Before the Program” section title",
+      type: "string",
+      group: "content",
+      description:
+        "Optional. Overrides the default section title (e.g. “Pre-Requisite”). Leave blank to use “Before the Program”.",
+    }),
+    defineField({
+      name: "beforeProgramNotes",
+      title: "“Before the Program” notes",
+      type: "array",
+      group: "content",
+      of: [{ type: "string" }],
+      description:
+        "Optional. Overrides the default notes for this program (e.g. prerequisites). Leave empty to use the site-wide default from Site Settings.",
+    }),
+    defineField({
       name: "videoUrl",
       title: "Video URL",
       type: "url",
       group: "content",
       description: "Optional YouTube link shown in the program sidebar.",
+    }),
+    defineField({
+      name: "videoTitle",
+      title: "Video title",
+      type: "string",
+      group: "content",
+      description:
+        "Optional label for the video link (e.g. “Sadhguru speaks on Angamardana”). Defaults to “[Program] on YouTube”.",
     }),
     defineField({
       name: "priceLabel",

@@ -22,23 +22,32 @@ export interface SiteSettings {
   whatsapp?: string;
   location?: string;
   social?: { label?: string; url?: string }[];
+  beforeProgramNotes?: string[];
+  medicalNotice?: string;
   seo?: SeoFields;
 }
+
+export type ProgramCategory = "main" | "special";
 
 export interface ProgramListItem {
   _id: string;
   title: string;
   slug: string;
   shortIntro?: string;
+  category?: ProgramCategory;
+  image?: SanityImage;
 }
 
 export interface Program extends ProgramListItem {
   whatIs?: PortableTextBlock[];
   aboutThePractice?: PortableTextBlock[];
   benefits?: string[];
+  beforeProgramTitle?: string;
+  beforeProgramNotes?: string[];
   practiceIndependently?: PortableTextBlock[];
   privateAndGroupSessions?: PortableTextBlock[];
   videoUrl?: string;
+  videoTitle?: string;
   priceLabel?: string;
   seo?: SeoFields;
 }
@@ -50,9 +59,18 @@ export interface AboutSection {
   cta?: CtaLink;
 }
 
+export interface TeacherStory {
+  nameLine?: string;
+  photo?: SanityImage;
+  teaser?: string[];
+  storyTitle?: string;
+  story?: string[];
+}
+
 export interface AboutPage {
   title?: string;
   intro?: PortableTextBlock[];
+  teacherStory?: TeacherStory;
   sections?: AboutSection[];
   seo?: SeoFields;
 }
@@ -135,4 +153,74 @@ export interface LegalPage {
   slug?: string;
   body?: PortableTextBlock[];
   seo?: SeoFields;
+}
+
+export interface ContactPage {
+  heroTitle?: string;
+  heroDescription?: string;
+  formHeading?: string;
+  quickMessageBody?: string;
+  whatsappPrefill?: string;
+  seo?: SeoFields;
+}
+
+export interface RetreatsPage {
+  heroTitle?: string;
+  heroDescription?: string;
+  comingSoonHeading?: string;
+  comingSoonBody?: string;
+  expectationsHeading?: string;
+  expectations?: { title?: string; body?: string }[];
+  seo?: SeoFields;
+}
+
+export interface GuidelineListData {
+  label?: string;
+  items?: string[];
+}
+
+export interface GuidelineBlockData {
+  heading?: string;
+  paragraphs?: string[];
+  lists?: GuidelineListData[];
+}
+
+export interface GuidelineSectionData {
+  title?: string;
+  blocks?: GuidelineBlockData[];
+}
+
+export interface DisclaimerItemData {
+  title?: string;
+  lead?: string;
+  points?: string[];
+  contactName?: string;
+  contactEmail?: string;
+}
+
+export interface DisclaimerSectionData {
+  title?: string;
+  intro?: string;
+  items?: DisclaimerItemData[];
+}
+
+export interface RegisterPage {
+  healthIntro?: string[];
+  healthConditions?: string[];
+  healthDetailsLabel?: string;
+  majorSurgeryQuestion?: string;
+  majorSurgeryHint?: string;
+  pregnancyLabel?: string;
+  disclaimerTitle?: string;
+  disclaimerDocument?: DisclaimerSectionData[];
+  disclaimerBullets?: string[];
+  disclaimerConsentLabel?: string;
+  refundPolicyBullets?: string[];
+  refundPolicyConsentLabel?: string;
+  agreementTitle?: string;
+  agreementBullets?: string[];
+  agreementConsentLabel?: string;
+  beforeSessionBlocks?: GuidelineBlockData[];
+  guidelinesTitle?: string;
+  guidelinesDocument?: GuidelineSectionData[];
 }

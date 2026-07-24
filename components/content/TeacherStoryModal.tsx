@@ -2,14 +2,11 @@
 
 import { useEffect } from "react";
 
-import {
-  TEACHER_STORY_PARAGRAPHS,
-  TEACHER_STORY_TITLE,
-} from "@/lib/teacher-story";
-
 interface TeacherStoryModalProps {
   open: boolean;
   onClose: () => void;
+  title: string;
+  paragraphs: string[];
 }
 
 function IconClose() {
@@ -25,7 +22,12 @@ function IconClose() {
   );
 }
 
-export function TeacherStoryModal({ open, onClose }: TeacherStoryModalProps) {
+export function TeacherStoryModal({
+  open,
+  onClose,
+  title,
+  paragraphs,
+}: TeacherStoryModalProps) {
   useEffect(() => {
     if (!open) return;
 
@@ -62,7 +64,7 @@ export function TeacherStoryModal({ open, onClose }: TeacherStoryModalProps) {
       <div className="relative flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-border bg-ivory shadow-card">
         <div className="flex items-start justify-between gap-4 border-b border-border bg-cream/60 px-6 py-5 sm:px-8">
           <h2 id="teacher-story-title" className="font-heading text-2xl text-charcoal">
-            {TEACHER_STORY_TITLE}
+            {title}
           </h2>
           <button
             type="button"
@@ -76,7 +78,7 @@ export function TeacherStoryModal({ open, onClose }: TeacherStoryModalProps) {
 
         <div className="overflow-y-auto px-6 py-6 text-left sm:px-8">
           <div className="space-y-5 font-heading text-lg leading-relaxed text-brown">
-            {TEACHER_STORY_PARAGRAPHS.map((paragraph, index) => (
+            {paragraphs.map((paragraph, index) => (
               <p
                 key={paragraph}
                 className={index === 0 ? "italic text-charcoal" : undefined}
