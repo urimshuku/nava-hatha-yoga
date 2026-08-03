@@ -66,6 +66,7 @@ const PROGRAM_PRICE_LABELS = {
   angamardana: "300€",
   "bhastrika-kriya": "55€",
   "bhuta-shuddhi": "175€",
+  "childrens-program": "150€",
   "eye-care-practices": "55€",
   "jala-neti": "55€",
   pavanamuktasana: "55€",
@@ -84,6 +85,7 @@ const PROGRAM_ORDER = [
   "yogasanas",
   "angamardana",
   "bhuta-shuddhi",
+  "childrens-program",
   "bhastrika-kriya",
   "jala-neti",
   "thoppukarnam",
@@ -99,12 +101,14 @@ const MAIN_PROGRAM_SLUGS = [
   "yogasanas",
   "angamardana",
   "bhuta-shuddhi",
+  "childrens-program",
 ];
 
 const PROGRAM_IMAGES = {
   angamardana: "images/programs/angamardana.webp",
   "bhastrika-kriya": "images/programs/bhastrika-kriya.jpg",
   "bhuta-shuddhi": "images/programs/bhuta-shuddhi.webp",
+  "childrens-program": "images/programs/childrens-program.jpg",
   "eye-care-practices": "images/programs/eye-care-practices.webp",
   "jala-neti": "images/programs/jala-neti.jpg",
   pavanamuktasana: "images/programs/pavanamuktasana.webp",
@@ -227,6 +231,26 @@ const programs = [
     ],
     videoUrl: "https://youtu.be/hc9g8u77g24?si=pyriUm6aNl1XFLuq",
     priceLabel: "175€",
+  },
+  {
+    title: "Children's Program",
+    slug: "childrens-program",
+    priceLabel: "150€",
+    shortIntro:
+      "A unique possibility for every child to experience a joyful blossoming of their natural potential. The program introduces yoga to children, led through an exploration of fun, love and joy.",
+    body: [
+      "Children's Program introduces yoga through simple, life enhancing asanas and offers a unique possibility for every child to experience a joyful blossoming of their natural potential.",
+    ],
+    aboutThePractice: [
+      "Children's Program offers a unique possibility for every child to experience a joyful blossoming of their natural potential.",
+      "The program introduces simple yoga for children, led through an exploration of fun, love and joy, allowing each child to develop and live in optimal health and inner peace.",
+    ],
+    benefits: [
+      "Enhances concentration and memory, focus, and mind/body coordination.",
+      "Helps in preventing obesity, asthma, sinusitis and other chronic ailments.",
+      "Leads to wellbeing and the proper development of body and mind.",
+    ],
+    experiences: ["A grounded, balanced state", "Steady energy through the day"],
   },
   {
     title: "Eye Care Practices",
@@ -543,6 +567,7 @@ docs.push({
     videoUrl: "https://youtu.be/UIK3hR-NjYU",
   },
   featuredPrograms: [
+    { _type: "reference", _key: key(), _ref: "program-upa-yoga" },
     { _type: "reference", _key: key(), _ref: "program-surya-kriya" },
     { _type: "reference", _key: key(), _ref: "program-angamardana" },
     { _type: "reference", _key: key(), _ref: "program-yogasanas" },

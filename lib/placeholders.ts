@@ -158,6 +158,27 @@ export const programSeeds: ProgramSeed[] = [
     priceLabel: "175€",
   },
   {
+    title: "Children's Program",
+    slug: "childrens-program",
+    priceLabel: "150€",
+    shortIntro:
+      "A unique possibility for every child to experience a joyful blossoming of their natural potential. The program introduces yoga to children, led through an exploration of fun, love and joy.",
+    whatIs: [
+      "Children's Program introduces yoga through simple, life enhancing asanas and offers a unique possibility for every child to experience a joyful blossoming of their natural potential.",
+    ],
+    aboutThePractice: [
+      "Children's Program offers a unique possibility for every child to experience a joyful blossoming of their natural potential.",
+      "The program introduces simple yoga for children, led through an exploration of fun, love and joy, allowing each child to develop and live in optimal health and inner peace.",
+    ],
+    benefits: [
+      "Enhances concentration and memory, focus, and mind/body coordination.",
+      "Helps in preventing obesity, asthma, sinusitis and other chronic ailments.",
+      "Leads to wellbeing and the proper development of body and mind.",
+    ],
+    practiceIndependently: defaultAfterProgramText("Children's Program"),
+    privateAndGroupSessions: defaultPrivateAndGroupSessions("Children's Program"),
+  },
+  {
     title: "Eye Care Practices",
     slug: "eye-care-practices",
     shortIntro:

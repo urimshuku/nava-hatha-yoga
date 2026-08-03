@@ -190,6 +190,7 @@ export const MAIN_PROGRAM_SLUGS = [
   "yogasanas",
   "angamardana",
   "bhuta-shuddhi",
+  "childrens-program",
 ] as const;
 
 export const SPECIAL_PROGRAM_SLUGS = [
@@ -239,6 +240,7 @@ const PROGRAM_PRICE_LABELS: Record<string, string> = {
   angamardana: "300€",
   "bhastrika-kriya": "55€",
   "bhuta-shuddhi": "175€",
+  "childrens-program": "150€",
   "eye-care-practices": "55€",
   "jala-neti": "55€",
   pavanamuktasana: "55€",

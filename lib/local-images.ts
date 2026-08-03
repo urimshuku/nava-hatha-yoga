@@ -2,6 +2,7 @@ const PROGRAM_IMAGES: Record<string, string> = {
   angamardana: "/images/programs/angamardana.webp",
   "bhastrika-kriya": "/images/programs/bhastrika-kriya.jpg",
   "bhuta-shuddhi": "/images/programs/bhuta-shuddhi.webp",
+  "childrens-program": "/images/programs/childrens-program.jpg",
   "eye-care-practices": "/images/programs/eye-care-practices.webp",
   "jala-neti": "/images/programs/jala-neti.jpg",
   pavanamuktasana: "/images/programs/pavanamuktasana.webp",
