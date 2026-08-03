@@ -82,7 +82,7 @@ export function instagramLink(): string {
 
 export const NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "Programs", href: "/programs" },
+  { label: "Programs & Offerings", href: "/programs" },
   { label: "Retreats", href: "/retreats" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },

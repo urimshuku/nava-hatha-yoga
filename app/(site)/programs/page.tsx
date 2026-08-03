@@ -10,9 +10,9 @@ import { buildMetadata } from "@/lib/seo";
 import { getPrograms } from "@/sanity/lib/fetch";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Programs",
+  title: "Programs & Offerings",
   description:
-    "Explore the Classical Hatha Yoga programs offered at Nava Hatha Yoga, each taught in its original, traditional form.",
+    "Explore the Classical Hatha Yoga programs and offerings at Nava Hatha Yoga, each taught in its original, traditional form.",
   path: "/programs",
 });
 
@@ -23,7 +23,7 @@ export default async function ProgramsPage() {
   return (
     <>
       <PageHero
-        eyebrow="Programs"
+        eyebrow="Programs & Offerings"
         title="Classical Hatha Yoga practices"
         description="Core programs form the foundation of the practice. Special programs address specific needs and can be explored alongside them."
       />

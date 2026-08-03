@@ -131,7 +131,11 @@ export default async function HomePage() {
       </Section>
 
       {/* 2. What is Classical Hatha Yoga? */}
-      <Section tone="ivory" className="border-y border-border">
+      <Section
+        id="what-is-classical-hatha-yoga"
+        tone="ivory"
+        className="border-y border-border"
+      >
         <Container>
           <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
             <MotionReveal>
