@@ -43,13 +43,58 @@ export const event = defineType({
         "Optional. For multi-day events, the last day. The card shows a date range (e.g. 27-29 June 2026).",
     }),
     defineField({
+      name: "sessions",
+      title: "Session schedule",
+      type: "array",
+      group: "details",
+      description:
+        "Add one row per session. Each row becomes its own line on the event card (date + time).",
+      of: [
+        {
+          type: "object",
+          name: "session",
+          fields: [
+            defineField({
+              name: "day",
+              title: "Date",
+              type: "string",
+              description: "e.g. 14 August",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "hours",
+              title: "Time range",
+              type: "string",
+              description: "e.g. 16:30 – 18:30",
+              validation: (rule) => rule.required(),
+            }),
+          ],
+          preview: {
+            select: { day: "day", hours: "hours" },
+            prepare: ({ day, hours }) => ({
+              title: [day, hours].filter(Boolean).join(": ") || "Session",
+            }),
+          },
+        },
+      ],
+    }),
+    defineField({
+      name: "sessionNote",
+      title: "Schedule note",
+      type: "string",
+      group: "details",
+      description:
+        'Optional line under the schedule, e.g. "All 3 sessions are mandatory".',
+    }),
+    defineField({
       name: "time",
-      title: "Time / session schedule",
+      title: "Time (legacy free text)",
       type: "text",
       rows: 6,
       group: "details",
       description:
-        "One session per line. Example:\n14 August: 16:30 – 18:30\n15 August: 16:30 – 18:30\n16 August: 16:30 – 18:30\n\nAll 3 sessions are mandatory",
+        "Only used when Session schedule above is empty. Prefer adding sessions as separate rows instead. If you must use this field, put one session per line.",
+      hidden: ({ parent }) => Array.isArray(parent?.sessions) && parent.sessions.length > 0,
     }),
     defineField({
       name: "location",

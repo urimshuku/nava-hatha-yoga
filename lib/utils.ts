@@ -314,6 +314,35 @@ export function normalizeEventSessionSchedule(text: string): string {
   return normalized.replace(/\n{3,}/g, "\n\n").trim();
 }
 
+export type EventSessionInput = {
+  day?: string | null;
+  hours?: string | null;
+};
+
+/** Build the display schedule from structured CMS session rows (preferred). */
+export function composeEventTimeLabel(input: {
+  sessions?: EventSessionInput[] | null;
+  sessionNote?: string | null;
+  time?: string | null;
+}): string | undefined {
+  const sessionLines = (input.sessions ?? [])
+    .map((session) => {
+      const day = session.day?.trim();
+      const hours = session.hours?.trim();
+      if (!day || !hours) return null;
+      return `${day}: ${hours}`;
+    })
+    .filter((line): line is string => Boolean(line));
+
+  if (sessionLines.length > 0) {
+    const note = input.sessionNote?.trim();
+    return note ? [...sessionLines, "", note].join("\n") : sessionLines.join("\n");
+  }
+
+  const legacy = input.time?.trim();
+  return legacy || undefined;
+}
+
 /** Subtle, shared Framer Motion variants. Respects reduced-motion via CSS. */
 export const fadeUp = {
   hidden: { opacity: 0, y: 16 },

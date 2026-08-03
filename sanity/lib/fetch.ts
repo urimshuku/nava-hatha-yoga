@@ -5,6 +5,7 @@ import {
   isPastEvent,
   isUpcomingEvent,
 } from "@/lib/event-boundary";
+import { composeEventTimeLabel } from "@/lib/utils";
 
 import { client } from "./client";
 import { isSanityConfigured } from "../env";
@@ -47,6 +48,13 @@ type EventBoundary = {
   time?: string;
 };
 
+function withComposedEventTime(event: YogaEvent): YogaEvent {
+  return {
+    ...event,
+    time: composeEventTimeLabel(event) ?? event.time,
+  };
+}
+
 async function sanityFetch<T>(query: string, params: Record<string, unknown> = {}): Promise<T | null> {
   if (!isSanityConfigured) return null;
   try {
@@ -79,7 +87,8 @@ function getPastFrom<T extends EventBoundary>(events: T[]): T[] {
 
 async function getAllEvents(): Promise<YogaEvent[]> {
   const data = await sanityFetch<YogaEvent[]>(Q.allEventsQuery);
-  return data ?? placeholderEvents;
+  const events = data ?? placeholderEvents;
+  return events.map(withComposedEventTime);
 }
 
 function toPastEvent(event: YogaEvent): PastEvent {

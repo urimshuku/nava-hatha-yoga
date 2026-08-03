@@ -98,11 +98,18 @@ export interface HomePage {
 
 export type EventCategory = "Workshop" | "Retreat" | "Free Session";
 
+export interface EventSession {
+  day?: string;
+  hours?: string;
+}
+
 export interface YogaEvent {
   _id: string;
   title: string;
   date: string;
   endDate?: string;
+  sessions?: EventSession[];
+  sessionNote?: string;
   time?: string;
   location?: string;
   priceLabel?: string;
@@ -123,6 +130,8 @@ export interface PastEvent {
   title: string;
   date: string;
   endDate?: string;
+  sessions?: EventSession[];
+  sessionNote?: string;
   time?: string;
   location?: string;
   category?: EventCategory;

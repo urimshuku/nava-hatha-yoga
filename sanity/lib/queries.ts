@@ -113,13 +113,19 @@ export const programBySlugQuery = groq`
   }
 `;
 
+const eventSessionFields = `
+  sessions[]{ day, hours },
+  sessionNote,
+  time,
+`;
+
 export const allEventsQuery = groq`
   *[_type == "event" && published == true] | order(date asc){
     _id,
     title,
     date,
     endDate,
-    time,
+    ${eventSessionFields}
     location,
     priceLabel,
     paymentNote,
@@ -142,7 +148,7 @@ export const upcomingEventsQuery = groq`
     title,
     date,
     endDate,
-    time,
+    ${eventSessionFields}
     location,
     priceLabel,
     paymentNote,
@@ -167,7 +173,7 @@ export const upcomingEventsByProgramQuery = groq`
     title,
     date,
     endDate,
-    time,
+    ${eventSessionFields}
     location,
     priceLabel,
     paymentNote,
@@ -190,7 +196,7 @@ export const pastEventsQuery = groq`
     title,
     date,
     endDate,
-    time,
+    ${eventSessionFields}
     location,
     category,
     relatedProgram->{ title, "slug": slug.current }
