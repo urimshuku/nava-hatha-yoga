@@ -44,7 +44,7 @@ const PROGRAM_IMAGE_OBJECT_POSITION: Partial<Record<string, string>> = {
   "bhastrika-kriya": "object-left",
   "shanmukhi-mudra": "object-[30%_center]",
   "surya-kriya": "object-[85%_center]",
-  "surya-shakti": "object-[28%_center]",
+  "surya-shakti": "object-center",
   yogasanas: "object-center",
 };
 

@@ -20,7 +20,8 @@ interface RegisterPayload {
   healthDetails?: string;
   majorSurgery?: string;
   pregnant?: string;
-  howHeard?: string;
+  howHeard?: string[];
+  howHeardOther?: string;
   priorPractice?: string;
   otherIshaPractices?: string;
   otherIshaPracticesDetails?: string;
@@ -62,7 +63,10 @@ export async function POST(request: Request) {
   const healthDetails = data.healthDetails?.trim();
   const majorSurgery = data.majorSurgery?.trim();
   const pregnant = data.pregnant?.trim();
-  const howHeard = data.howHeard?.trim();
+  const howHeard = Array.isArray(data.howHeard)
+    ? data.howHeard.filter((item) => typeof item === "string" && item.trim())
+    : [];
+  const howHeardOther = data.howHeardOther?.trim();
   const priorPractice = data.priorPractice?.trim();
   const otherIshaPractices = data.otherIshaPractices?.trim();
   const healthConditions = Array.isArray(data.healthConditions)
@@ -78,7 +82,7 @@ export async function POST(request: Request) {
     !emergencyName ||
     !emergencyPhone ||
     !majorSurgery ||
-    !howHeard ||
+    (howHeard.length === 0 && !howHeardOther) ||
     !priorPractice ||
     !otherIshaPractices
   ) {
@@ -133,6 +137,7 @@ export async function POST(request: Request) {
       majorSurgery,
       pregnant,
       howHeard,
+      howHeardOther,
       priorPractice,
       otherIshaPractices,
       otherIshaPracticesDetails: data.otherIshaPracticesDetails?.trim(),

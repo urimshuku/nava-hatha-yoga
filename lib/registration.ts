@@ -33,7 +33,8 @@ export interface RegistrationSubmission {
   pregnant?: string;
 
   // Step 3 — Program-Related Information
-  howHeard: string;
+  howHeard: string[];
+  howHeardOther?: string;
   priorPractice: string;
   otherIshaPractices: string;
   otherIshaPracticesDetails?: string;
@@ -44,6 +45,8 @@ export interface RegistrationSubmission {
 export function formatRegistration(s: RegistrationSubmission): string {
   const conditions =
     s.healthConditions.length > 0 ? s.healthConditions.join(", ") : "-";
+  const howHeard =
+    s.howHeard.length > 0 ? s.howHeard.join(", ") : "-";
 
   return [
     `Event: ${s.event || "-"}`,
@@ -67,7 +70,8 @@ export function formatRegistration(s: RegistrationSubmission): string {
     `Currently pregnant: ${s.pregnant || "-"}`,
     "",
     "--- Program-Related Information ---",
-    `How they heard: ${s.howHeard}`,
+    `How they heard: ${howHeard}`,
+    `How they heard (other): ${s.howHeardOther || "-"}`,
     `Prior yoga/meditation practice: ${s.priorPractice}`,
     `Other Isha Yoga practices: ${s.otherIshaPractices}`,
     `Other Isha Yoga details: ${s.otherIshaPracticesDetails || "-"}`,

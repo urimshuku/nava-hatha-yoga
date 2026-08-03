@@ -62,6 +62,36 @@ const STEPS = [
 
 const OTHER_CONDITION = "Other";
 
+const HOW_HEARD_GROUPS: { heading: string; options: readonly string[] }[] = [
+  {
+    heading: "Personal",
+    options: [
+      "Friend or family recommendation",
+      "Another participant / past student",
+      "Another yoga teacher",
+    ],
+  },
+  {
+    heading: "Online / social",
+    options: [
+      "Instagram",
+      "Website (ishafoundation.org)",
+      "YouTube",
+      "Website (navahathayoga.com)",
+      "Facebook",
+    ],
+  },
+  {
+    heading: "Local / in person",
+    options: [
+      "Flyer / poster",
+      "Local community or group",
+      "Saw a class or practice in person",
+      "Yoga / wellness event or retreat",
+    ],
+  },
+];
+
 interface FormState {
   fullName: string;
   preferredName: string;
@@ -79,7 +109,8 @@ interface FormState {
   healthDetails: string;
   majorSurgery: string;
   pregnant: string;
-  howHeard: string;
+  howHeard: string[];
+  howHeardOther: string;
   priorPractice: string;
   otherIshaPractices: string;
   otherIshaPracticesDetails: string;
@@ -106,7 +137,8 @@ const initialState: FormState = {
   healthDetails: "",
   majorSurgery: "",
   pregnant: "",
-  howHeard: "",
+  howHeard: [],
+  howHeardOther: "",
   priorPractice: "",
   otherIshaPractices: "",
   otherIshaPracticesDetails: "",
@@ -163,6 +195,17 @@ export function RegistrationForm({
     );
   }
 
+  function toggleHowHeard(option: string) {
+    setForm((prev) => {
+      const has = prev.howHeard.includes(option);
+      const howHeard = has
+        ? prev.howHeard.filter((item) => item !== option)
+        : [...prev.howHeard, option];
+      return { ...prev, howHeard };
+    });
+    setErrors((prev) => (prev.howHeard ? { ...prev, howHeard: undefined } : prev));
+  }
+
   function validateStep(current: number): Errors {
     const next: Errors = {};
 
@@ -198,7 +241,8 @@ export function RegistrationForm({
     }
 
     if (current === 2) {
-      if (!form.howHeard.trim()) next.howHeard = "This field is required.";
+      if (form.howHeard.length === 0 && !form.howHeardOther.trim())
+        next.howHeard = "Please select at least one option or fill in Other.";
       if (!form.priorPractice.trim())
         next.priorPractice = "This field is required.";
       if (!form.otherIshaPractices)
@@ -267,6 +311,7 @@ export function RegistrationForm({
       majorSurgery: form.majorSurgery,
       pregnant: form.pregnant,
       howHeard: form.howHeard,
+      howHeardOther: form.howHeardOther,
       priorPractice: form.priorPractice,
       otherIshaPractices: form.otherIshaPractices,
       otherIshaPracticesDetails: form.otherIshaPracticesDetails,
@@ -731,19 +776,58 @@ export function RegistrationForm({
       {/* ---------------------------------------------------------------- */}
       {step === 2 ? (
         <div className={formStackClass}>
-          <div>
-            <label htmlFor="howHeard" className={labelClass}>
+          <fieldset>
+            <legend className={labelClass}>
               How did you come to know of this program? <Required />
-            </label>
-            <textarea
-              id="howHeard"
-              rows={2}
-              className={cn(fieldClass, "resize-y")}
-              value={form.howHeard}
-              onChange={(e) => update("howHeard", e.target.value)}
-            />
+            </legend>
+            <div className="space-y-4 sm:space-y-5">
+              {HOW_HEARD_GROUPS.map((group) => (
+                <div key={group.heading}>
+                  <p className="mb-2 text-sm font-medium text-charcoal">
+                    {group.heading}
+                  </p>
+                  <div
+                    className={
+                      group.heading === "Personal"
+                        ? "grid gap-2"
+                        : "grid gap-2 sm:grid-cols-2 sm:gap-2.5"
+                    }
+                  >
+                    {group.options.map((option) => (
+                      <label key={option} className={formChoiceLabelClass}>
+                        <input
+                          type="checkbox"
+                          className={formCheckboxClass}
+                          checked={form.howHeard.includes(option)}
+                          onChange={() => toggleHowHeard(option)}
+                        />
+                        <span>{option}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <div>
+                <label htmlFor="howHeardOther" className="mb-2 block text-sm font-medium text-charcoal">
+                  Other
+                </label>
+                <input
+                  id="howHeardOther"
+                  type="text"
+                  placeholder="Please specify"
+                  className={fieldClass}
+                  value={form.howHeardOther}
+                  onChange={(e) => {
+                    update("howHeardOther", e.target.value);
+                    setErrors((prev) =>
+                      prev.howHeard ? { ...prev, howHeard: undefined } : prev,
+                    );
+                  }}
+                />
+              </div>
+            </div>
             <FieldError message={errors.howHeard} />
-          </div>
+          </fieldset>
 
           <div>
             <label htmlFor="priorPractice" className={labelClass}>

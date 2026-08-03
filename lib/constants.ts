@@ -140,7 +140,7 @@ export const PROGRAM_AFTER_PROGRAM_TITLE = "After the Program";
 export function programAfterProgramText(title: string): readonly [string, string] {
   return [
     `${title} can be practised independently at home. Regular, consistent practice helps deepen the benefits and integrate the practice into daily life.`,
-    "Also, 40 days of practice support is available after the program.",
+    "Also, 40 days of practice support is available after the program - where applicable.",
   ];
 }
 
