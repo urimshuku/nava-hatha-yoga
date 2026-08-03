@@ -25,7 +25,7 @@ export const BRAND_LOGO_HEADER = {
 
 /** Symbol-only brand mark. */
 export const BRAND_LOGO_SYMBOL = {
-  src: "/images/nava-logo-symbol.png",
+  src: "/images/nava-logo-symbol-v2.png",
   alt: "Nava Hatha Yoga",
   width: 1024,
   height: 1024,

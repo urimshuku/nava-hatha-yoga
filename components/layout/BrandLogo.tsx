@@ -42,6 +42,7 @@ export function BrandLogo({
       aria-hidden={decorative || undefined}
     >
       <Image
+        key={logo.src}
         src={logo.src}
         alt={decorative ? "" : (alt ?? logo.alt)}
         fill
