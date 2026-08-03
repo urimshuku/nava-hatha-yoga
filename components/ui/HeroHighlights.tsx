@@ -50,31 +50,45 @@ const HIGHLIGHTS: { icon: ReactNode; text: string; lines?: string[] }[] = [
 
 export function HeroHighlights({ className }: { className?: string }) {
   return (
-    <ul
-      className={cn(
-        "mx-auto grid max-w-3xl gap-4 text-left sm:grid-cols-3 sm:gap-8 sm:text-center",
-        className,
-      )}
-    >
-      {HIGHLIGHTS.map((item) => (
-        <li
-          key={item.text}
-          className="flex items-center gap-3 sm:flex-col sm:gap-3"
+    <div className={cn("mx-auto max-w-3xl", className)}>
+      <ul className="grid gap-6 text-left sm:grid-cols-3 sm:gap-10 sm:text-center">
+        {HIGHLIGHTS.map((item) => (
+          <li
+            key={item.text}
+            className="flex items-center gap-3 sm:flex-col sm:gap-4"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border-strong bg-ivory/70 text-saffron">
+              {item.icon}
+            </span>
+            <span className="text-sm leading-snug text-brown sm:text-base">
+              {item.lines
+                ? item.lines.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))
+                : item.text}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-20 flex flex-col items-center sm:mt-28" aria-hidden="true">
+        <svg
+          viewBox="0 0 220 16"
+          className="h-4 w-32 text-saffron sm:w-44"
+          fill="none"
         >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border-strong bg-ivory/70 text-saffron">
-            {item.icon}
-          </span>
-          <span className="text-sm leading-snug text-brown">
-            {item.lines
-              ? item.lines.map((line) => (
-                  <span key={line} className="block">
-                    {line}
-                  </span>
-                ))
-              : item.text}
-          </span>
-        </li>
-      ))}
-    </ul>
+          <path
+            d="M4 11C18 11 24 4 36 4S54 11 73 11 91 4 110 4 129 11 147 11 165 4 184 4 202 11 216 11"
+            stroke="currentColor"
+            strokeWidth="1.25"
+            strokeLinecap="round"
+          />
+        </svg>
+        <p className="mt-6 text-center text-sm italic leading-snug text-brown sm:mt-8 sm:text-base">
+          “In balance. Life unfolds.”
+        </p>
+      </div>
+    </div>
   );
 }

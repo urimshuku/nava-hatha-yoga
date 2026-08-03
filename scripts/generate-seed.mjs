@@ -551,7 +551,7 @@ docs.push({
   _id: "homePage",
   _type: "homePage",
   hero: {
-    headline: "Classical Hatha Yoga",
+    headline: "Nava Classical Hatha Yoga",
     supportingText:
       "“Hatha Yoga is not body-bending business. It is about taking charge of the way you think, feel, and perceive life.” ― Sadhguru",
     primaryCta: { label: "View Upcoming Events", href: "/events" },

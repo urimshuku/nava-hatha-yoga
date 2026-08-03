@@ -445,7 +445,7 @@ export function placeholderProgramBySlug(slug: string): Program | undefined {
 
 export const placeholderHomePage: HomePage = {
   hero: {
-    headline: "Classical Hatha Yoga",
+    headline: "Nava Classical Hatha Yoga",
     supportingText:
       "“Hatha Yoga is not body-bending business. It is about taking charge of the way you think, feel, and perceive life.” ― Sadhguru",
     primaryCta: { label: "View Upcoming Events", href: "/events" },

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { FreeOfferingsSection } from "@/components/content/FreeOfferingsSection";
 import { PrivateSessionsSection } from "@/components/content/PrivateSessionsSection";
 import { EventCard } from "@/components/cards/EventCard";
 import { ProgramCard } from "@/components/cards/ProgramCard";
@@ -98,13 +99,21 @@ export default async function HomePage() {
         />
         <Container className="relative">
           <MotionReveal className="mx-auto max-w-3xl text-center">
-            <p className="eyebrow mb-4 sm:mb-6">{settings.brandName}</p>
             <h1 className="text-display text-balance">
-              {hero?.headline ?? "Classical Hatha Yoga"}
+              Nava Classical Hatha Yoga
             </h1>
-            {hero?.supportingText ? (
+            <p className="mt-3 text-base font-normal not-italic text-brown sm:mt-4 sm:text-xl">
+              Now in Albania, and Beyond.
+            </p>
+            {hero?.supportingText?.trim() ? (
               <p className="hero-subtitle mt-5 sm:mt-7">{hero.supportingText}</p>
-            ) : null}
+            ) : (
+              <p className="hero-subtitle mt-5 sm:mt-7">
+                “Hatha Yoga is not body-bending business. It is about taking
+                charge of the way you think, feel, and perceive life.” ―
+                Sadhguru
+              </p>
+            )}
             <div className="mt-6 flex flex-col items-center justify-center gap-2.5 sm:mt-10 sm:flex-row sm:gap-3">
               <Button href={hero?.primaryCta?.href ?? "/events"} size="lg">
                 {hero?.primaryCta?.label ?? "View Upcoming Events"}
@@ -122,7 +131,7 @@ export default async function HomePage() {
       </section>
 
       {/* Highlights */}
-      <Section tone="cream" size="small" className="border-t border-border">
+      <Section tone="cream" className="border-t border-border">
         <Container>
           <MotionReveal>
             <HeroHighlights />
@@ -224,6 +233,8 @@ export default async function HomePage() {
           </div>
         </Container>
       </Section>
+
+      <FreeOfferingsSection />
 
       <PrivateSessionsSection />
 

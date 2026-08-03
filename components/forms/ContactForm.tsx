@@ -41,7 +41,7 @@ const PREFERRED_LOCATIONS = [
 
 const INTERESTS_WITHOUT_SESSION_DETAILS = new Set([
   "Retreats",
-  "General enquiry",
+  "General Inquiry",
 ]);
 
 export function ContactForm({ programs = [] }: ContactFormProps) {
@@ -197,15 +197,13 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
             <option value="" disabled>
               Select an interest
             </option>
-            <option value="Online Session">Online Session</option>
             <option value="One-to-One Session">One-to-One Session</option>
-            <option value="Small-Group/Family Session">
-              Small-Group/Family Session
+            <option value="Small Group/Family Session">
+              Small Group/Family Session
             </option>
-            <option value="Yoga for Children">Yoga for Children</option>
             <option value="Corporate Session">Corporate Session</option>
             <option value="Retreats">Retreats</option>
-            <option value="General enquiry">General enquiry</option>
+            <option value="General Inquiry">General Inquiry</option>
           </select>
         </div>
       </div>
