@@ -9,6 +9,7 @@ const PROGRAM_IMAGES: Record<string, string> = {
   "surya-kriya": "/images/programs/surya-kriya.webp",
   "surya-shakti": "/images/programs/surya-shakti.webp",
   thoppukarnam: "/images/programs/thoppukarnam.webp",
+  "upa-yoga": "/images/programs/upa-yoga.jpg",
   yogasanas: "/images/programs/yogasanas.webp",
 };
 

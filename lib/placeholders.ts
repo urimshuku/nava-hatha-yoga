@@ -256,6 +256,29 @@ export const programSeeds: ProgramSeed[] = [
     privateAndGroupSessions: defaultPrivateAndGroupSessions("Shanmukhi Mudra"),
   },
   {
+    title: "Upa Yoga",
+    slug: "upa-yoga",
+    priceLabel: "150€",
+    videoUrl: "https://youtu.be/tVZcK9pjI9I?si=gePcv9RJXXMO2TGA",
+    shortIntro:
+      "A simple yet powerful system of practice that activates the joints, muscle and energy system.",
+    whatIs: [
+      "Upa-yoga is a simple yet powerful system of practices that activate the joints, muscles and energy system.",
+    ],
+    aboutThePractice: [
+      "Based on a sophisticated understanding of the body’s mechanics, Upa-yoga brings great ease to the whole system. It relieves physical stress and tiredness.",
+      "Upa-yoga activates this energy and also lubricates the joints, creating an instant sense of alertness and liveliness. It rejuvenates the body after a period of inactivity and negates the effects of jetlag and long travel.",
+    ],
+    benefits: [
+      "Relieves physical stress and tiredness.",
+      "Strengthens the joints and muscles.",
+      "Rejuvenates the body after periods of inactivity.",
+      "Negates the effects of jetlag and long travel.",
+    ],
+    practiceIndependently: defaultAfterProgramText("Upa Yoga"),
+    privateAndGroupSessions: defaultPrivateAndGroupSessions("Upa Yoga"),
+  },
+  {
     title: "Surya Kriya",
     slug: "surya-kriya",
     priceLabel: "150€",

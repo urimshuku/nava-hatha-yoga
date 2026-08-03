@@ -73,10 +73,12 @@ const PROGRAM_PRICE_LABELS = {
   "surya-kriya": "150€",
   "surya-shakti": "95€",
   thoppukarnam: "55€",
+  "upa-yoga": "150€",
   yogasanas: "220€",
 };
 
 const PROGRAM_ORDER = [
+  "upa-yoga",
   "surya-kriya",
   "surya-shakti",
   "yogasanas",
@@ -91,6 +93,7 @@ const PROGRAM_ORDER = [
 ];
 
 const MAIN_PROGRAM_SLUGS = [
+  "upa-yoga",
   "surya-kriya",
   "surya-shakti",
   "yogasanas",
@@ -109,6 +112,7 @@ const PROGRAM_IMAGES = {
   "surya-kriya": "images/programs/surya-kriya.webp",
   "surya-shakti": "images/programs/surya-shakti.webp",
   thoppukarnam: "images/programs/thoppukarnam.webp",
+  "upa-yoga": "images/programs/upa-yoga.jpg",
   yogasanas: "images/programs/yogasanas.webp",
 };
 
@@ -324,6 +328,28 @@ const programs = [
       "A sense of quiet and inwardness",
       "Reduced mental restlessness",
     ],
+  },
+  {
+    title: "Upa Yoga",
+    slug: "upa-yoga",
+    priceLabel: "150€",
+    videoUrl: "https://youtu.be/tVZcK9pjI9I?si=gePcv9RJXXMO2TGA",
+    shortIntro:
+      "A simple yet powerful system of practice that activates the joints, muscle and energy system.",
+    body: [
+      "Upa-yoga is a simple yet powerful system of practices that activate the joints, muscles and energy system.",
+    ],
+    aboutThePractice: [
+      "Based on a sophisticated understanding of the body’s mechanics, Upa-yoga brings great ease to the whole system. It relieves physical stress and tiredness.",
+      "Upa-yoga activates this energy and also lubricates the joints, creating an instant sense of alertness and liveliness. It rejuvenates the body after a period of inactivity and negates the effects of jetlag and long travel.",
+    ],
+    benefits: [
+      "Relieves physical stress and tiredness.",
+      "Strengthens the joints and muscles.",
+      "Rejuvenates the body after periods of inactivity.",
+      "Negates the effects of jetlag and long travel.",
+    ],
+    experiences: ["A grounded, balanced state", "Steady energy through the day"],
   },
   {
     title: "Surya Kriya",

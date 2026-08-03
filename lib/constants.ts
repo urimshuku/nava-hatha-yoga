@@ -163,6 +163,7 @@ const PROGRAM_VIDEO_LINKS: Record<string, { title: string }> = {
 /** Used when a program has no videoUrl in Sanity yet. */
 export const PROGRAM_VIDEO_URL_FALLBACKS: Record<string, string> = {
   "surya-shakti": "https://www.youtube.com/watch?v=OBds5NZ4PRs",
+  "upa-yoga": "https://youtu.be/tVZcK9pjI9I?si=gePcv9RJXXMO2TGA",
 };
 
 export function getProgramVideoUrl(slug: string, videoUrl?: string): string | undefined {
@@ -183,6 +184,7 @@ export const PROGRAM_DEFAULT_PRICE_LABEL = "Contact for details";
 export const SHOW_PROGRAM_SIDEBAR_PRICE = false;
 
 export const MAIN_PROGRAM_SLUGS = [
+  "upa-yoga",
   "surya-kriya",
   "surya-shakti",
   "yogasanas",
@@ -244,6 +246,7 @@ const PROGRAM_PRICE_LABELS: Record<string, string> = {
   "surya-kriya": "150€",
   "surya-shakti": "95€",
   thoppukarnam: "55€",
+  "upa-yoga": "150€",
   yogasanas: "220€",
 };
 
