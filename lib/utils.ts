@@ -277,6 +277,9 @@ export function eventCardSummary(description?: string | null, maxSentences = 3):
   return sentences.slice(0, maxSentences).join(" ");
 }
 
+const SESSION_MONTHS =
+  "January|February|March|April|May|June|July|August|September|October|November|December";
+
 /** Convert 12-hour session times (e.g. 5.30 pm) to 24-hour format (17:30). */
 export function formatSessionTimingsTo24Hour(text: string): string {
   return text.replace(
@@ -291,6 +294,24 @@ export function formatSessionTimingsTo24Hour(text: string): string {
       return `${hour.toString().padStart(2, "0")}:${minutes}`;
     },
   );
+}
+
+/**
+ * Normalize CMS session schedules so each date/time is on its own line.
+ * Handles pasted single-line values where newlines were stripped
+ * (e.g. "19:306 September" → "19:30\\n6 September").
+ */
+export function normalizeEventSessionSchedule(text: string): string {
+  let normalized = formatSessionTimingsTo24Hour(text).replace(/\r\n?/g, "\n").trim();
+
+  normalized = normalized.replace(
+    new RegExp(`(?<=\\d{2})\\s*(?=\\d{1,2}\\s+(?:${SESSION_MONTHS})\\b)`, "gi"),
+    "\n",
+  );
+
+  normalized = normalized.replace(/(?<=\S)\s*(?=All\s+\d+\s+sessions\b)/gi, "\n\n");
+
+  return normalized.replace(/\n{3,}/g, "\n\n").trim();
 }
 
 /** Subtle, shared Framer Motion variants. Respects reduced-motion via CSS. */

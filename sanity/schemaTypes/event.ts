@@ -44,10 +44,12 @@ export const event = defineType({
     }),
     defineField({
       name: "time",
-      title: "Time (display label)",
-      type: "string",
+      title: "Time / session schedule",
+      type: "text",
+      rows: 6,
       group: "details",
-      description: "E.g. '7:00 - 8:30 AM'. Optional, for display only.",
+      description:
+        "One session per line. Example:\n14 August: 16:30 – 18:30\n15 August: 16:30 – 18:30\n16 August: 16:30 – 18:30\n\nAll 3 sessions are mandatory",
     }),
     defineField({
       name: "location",

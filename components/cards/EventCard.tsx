@@ -10,7 +10,7 @@ import {
   formatEventCalendarLine,
   formatEventDateBadge,
   formatRegistrationEventLabel,
-  formatSessionTimingsTo24Hour,
+  normalizeEventSessionSchedule,
 } from "@/lib/utils";
 import type { YogaEvent } from "@/sanity/lib/types";
 
@@ -114,9 +114,12 @@ function isSessionTimeLine(line: string): boolean {
 }
 
 function EventTimeBlock({ time }: { time: string }) {
-  const chunks = formatSessionTimingsTo24Hour(time).trim().split(/\n\s*\n/);
-  const schedulePart = chunks[0] ?? "";
-  const mandatoryPart = chunks[1]?.trim();
+  const normalized = normalizeEventSessionSchedule(time);
+  const mandatoryMatch = normalized.match(/\n\s*(All\s+\d+\s+sessions\b[^\n]*)/i);
+  const mandatoryPart = mandatoryMatch?.[1]?.trim();
+  const schedulePart = mandatoryMatch
+    ? normalized.slice(0, mandatoryMatch.index).trim()
+    : normalized;
 
   type DayGroup = { day: string; hours: string[] };
   const dayGroups: DayGroup[] = [];
@@ -147,7 +150,7 @@ function EventTimeBlock({ time }: { time: string }) {
   }
 
   if (dayGroups.length === 0) {
-    return <span className="whitespace-pre-line leading-relaxed">{time}</span>;
+    return <span className="whitespace-pre-line leading-relaxed">{normalized}</span>;
   }
 
   return (

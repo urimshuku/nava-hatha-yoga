@@ -1,3 +1,5 @@
+import { normalizeEventSessionSchedule } from "@/lib/utils";
+
 /** Event archive boundaries use Albania local time (where sessions take place). */
 export const EVENT_TIMEZONE = "Europe/Tirane";
 
@@ -108,7 +110,7 @@ export function sessionBoundaryFromSchedule(
   let first: ReturnType<typeof parseSessionLine> | null = null;
   let last: ReturnType<typeof parseSessionLine> | null = null;
 
-  for (const rawLine of time.split("\n")) {
+  for (const rawLine of normalizeEventSessionSchedule(time).split("\n")) {
     const match = rawLine.trim().match(SESSION_LINE_RE);
     if (!match) continue;
 
@@ -147,7 +149,7 @@ function lastSessionEndFromTimeField(
 
   let lastEnd: number | null = null;
 
-  for (const rawLine of time.split("\n")) {
+  for (const rawLine of normalizeEventSessionSchedule(time).split("\n")) {
     const match = rawLine.trim().match(SESSION_LINE_RE);
     if (!match) continue;
 
