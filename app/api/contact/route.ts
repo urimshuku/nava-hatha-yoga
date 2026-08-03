@@ -9,6 +9,8 @@ interface ContactPayload {
   program?: string;
   interest?: string;
   preferredTime?: string;
+  preferredLocation?: string;
+  preferredLocationOther?: string;
   message?: string;
   consent?: string;
   /** Honeypot: should always be empty for real users. */
@@ -39,11 +41,21 @@ export async function POST(request: Request) {
   const fullName = data.fullName?.trim();
   const email = data.email?.trim();
   const phone = data.phone?.trim();
+  const interest = data.interest?.trim();
   const message = data.message?.trim();
+  const preferredLocation = data.preferredLocation?.trim();
+  const preferredLocationOther = data.preferredLocationOther?.trim();
 
-  if (!fullName || !email || !phone || !message) {
+  if (!fullName || !email || !phone || !interest || !message) {
     return NextResponse.json(
       { error: "Please complete all required fields." },
+      { status: 400 },
+    );
+  }
+
+  if (preferredLocation === "Other" && !preferredLocationOther) {
+    return NextResponse.json(
+      { error: "Please specify your preferred location." },
       { status: 400 },
     );
   }
@@ -68,8 +80,10 @@ export async function POST(request: Request) {
       email,
       phone,
       program: data.program?.trim(),
-      interest: data.interest?.trim(),
+      interest,
       preferredTime: data.preferredTime?.trim(),
+      preferredLocation,
+      preferredLocationOther,
       message,
       submittedAt: new Date().toISOString(),
     });

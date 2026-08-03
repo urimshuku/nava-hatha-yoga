@@ -28,16 +28,44 @@ const labelClass = formLabelClass;
 
 const SENT_DISPLAY_MS = 3000;
 
+const PREFERRED_LOCATIONS = [
+  "Tirana",
+  "Saranda",
+  "Vlora",
+  "Gjirokaster",
+  "Korca",
+  "Corfu",
+  "Prishtina",
+  "Other",
+] as const;
+
+const INTERESTS_WITHOUT_SESSION_DETAILS = new Set([
+  "Retreats",
+  "General enquiry",
+]);
+
 export function ContactForm({ programs = [] }: ContactFormProps) {
   const [status, setStatus] = useState<"idle" | "submitting" | "sent" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [interest, setInterest] = useState("");
+  const [preferredLocation, setPreferredLocation] = useState("");
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showSessionDetails =
+    interest !== "" && !INTERESTS_WITHOUT_SESSION_DETAILS.has(interest);
 
   useEffect(() => {
     return () => {
       if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
     };
   }, []);
+
+  function handleInterestChange(value: string) {
+    setInterest(value);
+    if (value === "" || INTERESTS_WITHOUT_SESSION_DETAILS.has(value)) {
+      setPreferredLocation("");
+    }
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -46,6 +74,22 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
 
     const form = event.currentTarget;
     const data = Object.fromEntries(new FormData(form).entries());
+
+    if (!data.interest || String(data.interest).trim() === "") {
+      setStatus("error");
+      setError("Please select an interest.");
+      return;
+    }
+
+    if (
+      showSessionDetails &&
+      data.preferredLocation === "Other" &&
+      !(typeof data.preferredLocationOther === "string" && data.preferredLocationOther.trim())
+    ) {
+      setStatus("error");
+      setError("Please specify your preferred location.");
+      return;
+    }
 
     try {
       const res = await fetch(apiUrl("/api/contact"), {
@@ -61,6 +105,8 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
 
       setStatus("sent");
       form.reset();
+      setInterest("");
+      setPreferredLocation("");
 
       if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
       resetTimerRef.current = setTimeout(() => {
@@ -137,39 +183,20 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
           />
         </div>
         <div>
-          <label htmlFor="preferredTime" className={labelClass}>
-            Preferred date / time
-          </label>
-          <input
-            id="preferredTime"
-            name="preferredTime"
-            type="text"
-            placeholder="e.g. Weekday mornings"
-            className={fieldClass}
-          />
-        </div>
-      </div>
-
-      <div className={formGridClass}>
-        <div>
-          <label htmlFor="program" className={labelClass}>
-            Program
-          </label>
-          <select id="program" name="program" className={fieldClass} defaultValue="">
-            <option value="">Select a program (optional)</option>
-            {programs.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
           <label htmlFor="interest" className={labelClass}>
-            Interest
+            Interest <span className="text-saffron">*</span>
           </label>
-          <select id="interest" name="interest" className={fieldClass} defaultValue="">
-            <option value="">Select an interest (optional)</option>
+          <select
+            id="interest"
+            name="interest"
+            className={fieldClass}
+            value={interest}
+            onChange={(e) => handleInterestChange(e.target.value)}
+            required
+          >
+            <option value="" disabled>
+              Select an interest
+            </option>
             <option value="Online Session">Online Session</option>
             <option value="One-on-One Session">One-on-One Session</option>
             <option value="Small-Group Session">Small-Group Session</option>
@@ -180,6 +207,77 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
           </select>
         </div>
       </div>
+
+      {showSessionDetails ? (
+        <>
+          <div className={formGridClass}>
+            <div>
+              <label htmlFor="program" className={labelClass}>
+                Program
+              </label>
+              <select id="program" name="program" className={fieldClass} defaultValue="">
+                <option value="">Select a program (optional)</option>
+                {programs.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="preferredTime" className={labelClass}>
+                Preferred date / time
+              </label>
+              <input
+                id="preferredTime"
+                name="preferredTime"
+                type="text"
+                placeholder="e.g. Weekday mornings"
+                className={fieldClass}
+              />
+            </div>
+          </div>
+
+          <div className={formGridClass}>
+            <div>
+              <label htmlFor="preferredLocation" className={labelClass}>
+                Preferred location
+              </label>
+              <select
+                id="preferredLocation"
+                name="preferredLocation"
+                className={fieldClass}
+                value={preferredLocation}
+                onChange={(e) => setPreferredLocation(e.target.value)}
+              >
+                <option value="">Select a location (optional)</option>
+                {PREFERRED_LOCATIONS.map((location) => (
+                  <option key={location} value={location}>
+                    {location}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {preferredLocation === "Other" ? (
+              <div>
+                <label htmlFor="preferredLocationOther" className={labelClass}>
+                  Please specify <span className="text-saffron">*</span>
+                </label>
+                <input
+                  id="preferredLocationOther"
+                  name="preferredLocationOther"
+                  type="text"
+                  required
+                  placeholder="Your preferred location"
+                  className={fieldClass}
+                />
+              </div>
+            ) : (
+              <div className="hidden sm:block" aria-hidden="true" />
+            )}
+          </div>
+        </>
+      ) : null}
 
       <div>
         <label htmlFor="message" className={labelClass}>

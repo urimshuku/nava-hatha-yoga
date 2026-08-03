@@ -13,8 +13,10 @@ export interface ContactSubmission {
   email: string;
   phone?: string;
   program?: string;
-  interest?: string;
+  interest: string;
   preferredTime?: string;
+  preferredLocation?: string;
+  preferredLocationOther?: string;
   message: string;
   submittedAt: string;
 }
@@ -27,6 +29,8 @@ export function formatSubmission(s: ContactSubmission): string {
     `Program: ${s.program || "-"}`,
     `Interest: ${s.interest || "-"}`,
     `Preferred time: ${s.preferredTime || "-"}`,
+    `Preferred location: ${s.preferredLocation || "-"}`,
+    `Preferred location (other): ${s.preferredLocationOther || "-"}`,
     "",
     "Message:",
     s.message,
