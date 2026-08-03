@@ -56,7 +56,7 @@ export default async function ContactPage() {
               <ContactForm programs={programs.map((p) => p.title)} />
             </div>
 
-            <aside className="space-y-6 sm:space-y-8">
+            <aside className="space-y-10 sm:space-y-12">
               <div>
                 <h2 className="eyebrow mb-4">Contact details</h2>
                 <ul className="space-y-3 text-charcoal/90">
@@ -83,6 +83,24 @@ export default async function ContactPage() {
                     </li>
                   ) : null}
                 </ul>
+              </div>
+
+              <div>
+                <h2 className="eyebrow mb-4">Teaching locations</h2>
+                <div className="space-y-4 text-sm leading-relaxed text-brown">
+                  <div>
+                    <p className="mb-1 font-medium text-charcoal">
+                      Main teaching locations
+                    </p>
+                    <p>Tirana, Saranda.</p>
+                  </div>
+                  <div>
+                    <p className="mb-1 font-medium text-charcoal">
+                      Other teaching locations upon request
+                    </p>
+                    <p>Vlora, Gjirokaster, Korca, Corfu, Prishtina.</p>
+                  </div>
+                </div>
               </div>
 
               <div>

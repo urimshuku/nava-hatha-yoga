@@ -10,9 +10,9 @@ import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
 import { ContactSection } from "@/components/ui/ContactSection";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { HeroHighlights } from "@/components/ui/HeroHighlights";
 import { MotionItem, MotionStagger } from "@/components/ui/Motion";
 import { MotionReveal } from "@/components/ui/MotionReveal";
-import { Ornament } from "@/components/ui/Ornament";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import {
   getFeaturedPrograms,
@@ -117,11 +117,18 @@ export default async function HomePage() {
                 {hero?.secondaryCta?.label ?? "Explore Programs"}
               </Button>
             </div>
-
-            <Ornament className="mt-8 sm:mt-14" />
           </MotionReveal>
         </Container>
       </section>
+
+      {/* Highlights */}
+      <Section tone="cream" size="small" className="border-t border-border">
+        <Container>
+          <MotionReveal>
+            <HeroHighlights />
+          </MotionReveal>
+        </Container>
+      </Section>
 
       {/* 2. What is Classical Hatha Yoga? */}
       <Section tone="ivory" className="border-y border-border">
