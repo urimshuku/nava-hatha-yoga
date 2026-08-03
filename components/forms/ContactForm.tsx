@@ -198,10 +198,12 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
               Select an interest
             </option>
             <option value="Online Session">Online Session</option>
-            <option value="One-on-One Session">One-on-One Session</option>
-            <option value="Small-Group Session">Small-Group Session</option>
+            <option value="One-to-One Session">One-to-One Session</option>
+            <option value="Small-Group/Family Session">
+              Small-Group/Family Session
+            </option>
             <option value="Yoga for Children">Yoga for Children</option>
-            <option value="Corporate session">Corporate session</option>
+            <option value="Corporate Session">Corporate Session</option>
             <option value="Retreats">Retreats</option>
             <option value="General enquiry">General enquiry</option>
           </select>
