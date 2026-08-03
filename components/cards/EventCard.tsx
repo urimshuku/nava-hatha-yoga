@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 
+import { IconWhatsApp } from "@/components/ui/BrandIcons";
 import { Button } from "@/components/ui/Button";
 import { whatsappLink } from "@/lib/constants";
 import { programSymbolSrc } from "@/lib/local-images";
@@ -315,6 +316,7 @@ export function EventCard({ event, whatsappNumber }: EventCardProps) {
           </Button>
           {event.whatsappEnabled !== false ? (
             <Button href={waHref} variant="secondary" size="sm">
+              <IconWhatsApp className="h-4 w-4 text-[#25D366]" />
               Register via WhatsApp
             </Button>
           ) : null}
