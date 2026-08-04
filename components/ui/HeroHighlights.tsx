@@ -85,7 +85,7 @@ export function HeroHighlights({ className }: { className?: string }) {
             strokeLinecap="round"
           />
         </svg>
-        <p className="mt-6 text-center text-sm italic leading-snug text-brown sm:mt-8 sm:text-base">
+        <p className="mt-6 text-center text-[0.6875rem] italic leading-snug text-brown sm:mt-8 sm:text-base">
           “In balance. Life unfolds.”
         </p>
       </div>

@@ -99,7 +99,7 @@ export default async function HomePage() {
         />
         <Container className="relative">
           <MotionReveal className="mx-auto max-w-3xl text-center">
-            <h1 className="text-display text-balance">
+            <h1 className="text-balance text-[1.5rem] leading-[1.1] tracking-tight sm:text-display">
               Nava Classical Hatha Yoga
             </h1>
             <p className="mt-3 text-base font-normal not-italic text-brown sm:mt-4 sm:text-xl">

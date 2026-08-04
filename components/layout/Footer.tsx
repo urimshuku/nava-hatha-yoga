@@ -36,16 +36,18 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
               <BrandLogo
                 variant="symbol"
                 decorative
-                className="-ml-2 h-16 w-16 sm:-ml-2.5 sm:h-[4.5rem] sm:w-[4.5rem]"
+                className="-ml-2 h-12 w-12"
               />
               <div className="min-w-0">
-                <p className="font-heading text-2xl text-charcoal">{brand}</p>
-                <p className="mt-1 text-sm leading-relaxed text-brown">
+                <p className="font-heading text-lg leading-tight text-charcoal">
+                  {brand}
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-brown">
                   {tagline}
                 </p>
               </div>
             </div>
-            <FooterCertificationLogo className="max-w-[7.5rem]" />
+            <FooterCertificationLogo className="mt-3 shrink-0" />
           </div>
 
           <div className="mt-8 grid grid-cols-2 gap-6">
@@ -120,11 +122,13 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
               <BrandLogo
                 variant="symbol"
                 decorative
-                className="-ml-1.5 h-16 w-16 sm:-ml-2 sm:h-[4.5rem] sm:w-[4.5rem]"
+                className="-ml-1.5 h-16 w-16 lg:-ml-2 lg:h-[4.5rem] lg:w-[4.5rem]"
               />
               <div className="min-w-0">
-                <p className="font-heading text-2xl text-charcoal">{brand}</p>
-                <p className="mt-2 text-sm leading-relaxed text-brown">
+                <p className="font-heading text-xl leading-tight text-charcoal lg:text-2xl">
+                  {brand}
+                </p>
+                <p className="mt-1.5 text-xs leading-relaxed text-brown lg:mt-2 lg:text-sm">
                   {tagline}
                 </p>
               </div>
