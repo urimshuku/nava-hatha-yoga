@@ -16,9 +16,9 @@ import { getRetreats, getRetreatsPage } from "@/sanity/lib/fetch";
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getRetreatsPage();
   return buildMetadata({
-    title: "Retreats",
+    title: "Retreats & Partner Programs",
     description:
-      "Immersive Classical Hatha Yoga retreats from Nava Hatha Yoga — coming soon.",
+      "Immersive Classical Hatha Yoga retreats and partner programs from Nava Hatha Yoga — coming soon.",
     seo: page.seo,
     path: "/retreats",
   });
@@ -36,7 +36,7 @@ export default async function RetreatsPage() {
   return (
     <>
       <PageHero
-        eyebrow="Retreats"
+        eyebrow="Retreats & Partner Programs"
         title={page.heroTitle?.trim() || placeholderRetreatsPage.heroTitle}
         description={
           page.heroDescription?.trim() || placeholderRetreatsPage.heroDescription

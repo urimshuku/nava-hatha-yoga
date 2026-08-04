@@ -29,13 +29,104 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
   return (
     <footer className="border-t border-border bg-ivory">
       <Container className="py-section-sm">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4 md:items-stretch">
-          <div className="flex max-w-sm min-w-0 flex-col lg:col-span-1">
+        {/* Phone-only layout */}
+        <div className="md:hidden">
+          <div className="flex items-start justify-between gap-4">
             <div className="flex min-w-0 items-start gap-3 sm:gap-4">
-              <BrandLogo variant="symbol" decorative className="h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem]" />
+              <BrandLogo
+                variant="symbol"
+                decorative
+                className="-ml-2 h-16 w-16 sm:-ml-2.5 sm:h-[4.5rem] sm:w-[4.5rem]"
+              />
               <div className="min-w-0">
                 <p className="font-heading text-2xl text-charcoal">{brand}</p>
-                <p className="mt-3 text-sm leading-relaxed text-brown">{tagline}</p>
+                <p className="mt-1 text-sm leading-relaxed text-brown">
+                  {tagline}
+                </p>
+              </div>
+            </div>
+            <FooterCertificationLogo className="max-w-[7.5rem]" />
+          </div>
+
+          <div className="mt-8 grid grid-cols-2 gap-6">
+            <div>
+              <h2 className="eyebrow mb-4">Explore</h2>
+              <ul className="space-y-2.5 text-sm">
+                {NAV_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-charcoal/80 transition-colors hover:text-saffron"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h2 className="eyebrow mb-4">Legal</h2>
+              <ul className="space-y-2.5 text-sm">
+                {LEGAL_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-charcoal/80 transition-colors hover:text-saffron"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <h2 className="eyebrow mb-4">Contact</h2>
+            <ul className="space-y-2.5 text-sm text-charcoal/80">
+              {email ? (
+                <li>
+                  <a href={`mailto:${email}`} className="hover:text-saffron">
+                    {email}
+                  </a>
+                </li>
+              ) : null}
+              {whatsapp ? (
+                <li>
+                  <a
+                    href={waHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-saffron"
+                  >
+                    {phone ?? "WhatsApp"}
+                  </a>
+                </li>
+              ) : null}
+            </ul>
+            <SocialIconLinks
+              className="mt-6"
+              whatsappHref={whatsapp ? waHref : undefined}
+              instagramHref={instagramLink()}
+            />
+          </div>
+        </div>
+
+        {/* Tablet/desktop — original layout */}
+        <div className="hidden gap-10 md:grid md:grid-cols-2 md:items-stretch lg:grid-cols-4">
+          <div className="flex max-w-sm min-w-0 flex-col lg:col-span-1">
+            <div className="flex min-w-0 items-start gap-3 sm:gap-4">
+              <BrandLogo
+                variant="symbol"
+                decorative
+                className="-ml-1.5 h-16 w-16 sm:-ml-2 sm:h-[4.5rem] sm:w-[4.5rem]"
+              />
+              <div className="min-w-0">
+                <p className="font-heading text-2xl text-charcoal">{brand}</p>
+                <p className="mt-2 text-sm leading-relaxed text-brown">
+                  {tagline}
+                </p>
               </div>
             </div>
             <FooterCertificationLogo className="mt-8 md:mt-auto md:pt-10" />

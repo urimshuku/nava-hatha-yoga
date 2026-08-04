@@ -91,7 +91,7 @@ export default async function HomePage() {
   return (
     <>
       {/* 1. Hero */}
-      <section className="relative overflow-hidden bg-cream pb-12 pt-10 sm:pb-section sm:pt-20 md:pt-44">
+      <section className="relative overflow-hidden bg-cream pb-24 pt-20 sm:pb-32 sm:pt-36 md:pb-section md:pt-44">
         <div
           className="pointer-events-none absolute inset-0"
           style={HERO_GLOW}
@@ -114,24 +114,31 @@ export default async function HomePage() {
                 Sadhguru
               </p>
             )}
-            <div className="mt-6 flex flex-col items-center justify-center gap-2.5 sm:mt-10 sm:flex-row sm:gap-3">
-              <Button href={hero?.primaryCta?.href ?? "/events"} size="lg">
-                {hero?.primaryCta?.label ?? "View Upcoming Events"}
-              </Button>
-              <Button
-                href={hero?.secondaryCta?.href ?? "/programs"}
-                variant="secondary"
-                size="lg"
-              >
-                {hero?.secondaryCta?.label ?? "Explore Programs"}
-              </Button>
+            <div className="mt-6 flex justify-center sm:mt-10">
+              <div className="grid w-max max-w-full grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3">
+                <Button
+                  href={hero?.primaryCta?.href ?? "/events"}
+                  size="lg"
+                  className="w-full whitespace-nowrap px-5 sm:px-6"
+                >
+                  {hero?.primaryCta?.label ?? "View Upcoming Events"}
+                </Button>
+                <Button
+                  href={hero?.secondaryCta?.href ?? "/programs"}
+                  variant="secondary"
+                  size="lg"
+                  className="w-full whitespace-nowrap px-5 sm:px-6"
+                >
+                  {hero?.secondaryCta?.label ?? "Explore Programs"}
+                </Button>
+              </div>
             </div>
           </MotionReveal>
         </Container>
       </section>
 
       {/* Highlights */}
-      <Section tone="cream" className="border-t border-border">
+      <Section tone="ivory" className="border-y border-border">
         <Container>
           <MotionReveal>
             <HeroHighlights />
@@ -142,7 +149,7 @@ export default async function HomePage() {
       {/* 2. What is Classical Hatha Yoga? */}
       <Section
         id="what-is-classical-hatha-yoga"
-        tone="ivory"
+        tone="cream"
         className="border-y border-border"
       >
         <Container>

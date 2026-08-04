@@ -51,11 +51,11 @@ const HIGHLIGHTS: { icon: ReactNode; text: string; lines?: string[] }[] = [
 export function HeroHighlights({ className }: { className?: string }) {
   return (
     <div className={cn("mx-auto max-w-3xl", className)}>
-      <ul className="grid gap-6 text-left sm:grid-cols-3 sm:gap-10 sm:text-center">
+      <ul className="grid gap-14 text-center sm:grid-cols-3 sm:gap-12">
         {HIGHLIGHTS.map((item) => (
           <li
             key={item.text}
-            className="flex items-center gap-3 sm:flex-col sm:gap-4"
+            className="flex flex-col items-center gap-3 sm:gap-4"
           >
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border-strong bg-ivory/70 text-saffron">
               {item.icon}

@@ -48,7 +48,7 @@ export function Header({ brandName = SITE_NAME }: { brandName?: string }) {
           </span>
         </Link>
 
-        <div className="hidden items-center gap-8 lg:flex">
+        <div className="hidden items-center gap-8 xl:flex">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
@@ -68,7 +68,7 @@ export function Header({ brandName = SITE_NAME }: { brandName?: string }) {
 
         <button
           type="button"
-          className="flex h-10 w-10 items-center justify-center rounded-full text-charcoal lg:hidden"
+          className="flex h-10 w-10 items-center justify-center rounded-full text-charcoal xl:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -97,7 +97,7 @@ export function Header({ brandName = SITE_NAME }: { brandName?: string }) {
       </nav>
 
       {open ? (
-        <div className="border-t border-border bg-cream lg:hidden">
+        <div className="border-t border-border bg-cream xl:hidden">
           <div className="flex flex-col gap-0.5 px-4 py-3">
             {NAV_LINKS.map((link) => (
               <Link
