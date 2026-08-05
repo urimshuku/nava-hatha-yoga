@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { FreeOfferingsSection } from "@/components/content/FreeOfferingsSection";
 import { PrivateSessionsSection } from "@/components/content/PrivateSessionsSection";
 import { ProgramsListing } from "@/components/programs/ProgramsListing";
 import { Container } from "@/components/layout/Container";
@@ -33,6 +34,8 @@ export default async function ProgramsPage() {
           <ProgramsListing mainPrograms={main} specialPrograms={special} />
         </Container>
       </Section>
+
+      <FreeOfferingsSection />
 
       <PrivateSessionsSection />
     </>

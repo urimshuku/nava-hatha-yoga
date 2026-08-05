@@ -80,7 +80,7 @@ function FreeOfferingCard({
 
 export function FreeOfferingsSection() {
   return (
-    <Section tone="cream" size="small">
+    <Section tone="cream" size="small" className="border-t border-border">
       <Container>
         <MotionReveal className="mb-8 text-center sm:mb-10">
           <p className="eyebrow mb-3">Free offerings</p>

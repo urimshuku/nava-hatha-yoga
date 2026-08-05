@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { FreeOfferingsSection } from "@/components/content/FreeOfferingsSection";
 import { PrivateSessionsSection } from "@/components/content/PrivateSessionsSection";
 import { EventCard } from "@/components/cards/EventCard";
 import { ProgramCard } from "@/components/cards/ProgramCard";
@@ -240,8 +239,6 @@ export default async function HomePage() {
           </div>
         </Container>
       </Section>
-
-      <FreeOfferingsSection />
 
       <PrivateSessionsSection />
 
