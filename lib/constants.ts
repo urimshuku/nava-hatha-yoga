@@ -130,6 +130,13 @@ export function getBeforeProgramNotes(slug: string): readonly string[] {
 }
 
 /** Shown below After the Program on every program detail page. */
+export const PROGRAM_BONUS_TITLE = "Bonus";
+
+export const PROGRAM_BONUS_ITEMS = ["One free review session."] as const;
+
+export const PROGRAM_DISCOUNT_NOTE =
+  "For those in need, discount is possible!";
+
 export const PROGRAM_MEDICAL_NOTICE_TITLE = "Medical Notice!";
 
 export const PROGRAM_MEDICAL_NOTICE =

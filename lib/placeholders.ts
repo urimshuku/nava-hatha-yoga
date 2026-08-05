@@ -730,6 +730,15 @@ const scheduledEvents: ScheduledEvent[] = [
     ageRequirement: "14+",
     priceLabel: "150€",
     location: tiranaEventLocation,
+    schedule: {
+      durationLabel: "3 sessions / 2 hours",
+      sessionCount: 3,
+      sessionLines: [
+        "12 September: 17:30 – 19:30",
+        "13 September: 17:30 – 19:30",
+        "13 September: 19:30 – 21:30",
+      ],
+    },
   },
   {
     id: "yogasanas-sep-2026",

@@ -16,6 +16,9 @@ import { buildMetadata } from "@/lib/seo";
 import { ensureTrailingPeriod } from "@/lib/utils";
 import {
   PROGRAM_AFTER_PROGRAM_TITLE,
+  PROGRAM_BONUS_ITEMS,
+  PROGRAM_BONUS_TITLE,
+  PROGRAM_DISCOUNT_NOTE,
   PROGRAM_MEDICAL_NOTICE,
   PROGRAM_MEDICAL_NOTICE_TITLE,
   getBeforeProgramNotes,
@@ -177,9 +180,21 @@ export default async function ProgramDetailPage({ params }: PageProps) {
                 }
               >
                 <div className="space-y-4 leading-relaxed text-[#3a322a]">
-                  {beforeProgramNotes.map((note) => (
-                    <p key={note}>{note}</p>
-                  ))}
+                  {beforeProgramNotes.map((note) => {
+                    const isExperienceNote =
+                      note === "This practice does not require prior yoga experience.";
+                    return (
+                      <p key={note}>
+                        {isExperienceNote ? (
+                          <mark className="rounded-sm bg-[#FBF6F0] px-1 py-0.5 text-inherit underline">
+                            {note}
+                          </mark>
+                        ) : (
+                          note
+                        )}
+                      </p>
+                    );
+                  })}
                 </div>
               </ProgramSection>
 
@@ -191,8 +206,21 @@ export default async function ProgramDetailPage({ params }: PageProps) {
                 </div>
               </ProgramSection>
 
-              <div className="mt-12 border-t border-border pt-10">
+              <div className="mt-12 space-y-6 border-t border-border pt-10">
                 <div className="rounded-2xl border border-border bg-ivory p-6 shadow-soft sm:p-8">
+                  <h2 className="font-heading text-2xl text-charcoal">
+                    {PROGRAM_BONUS_TITLE}
+                  </h2>
+                  <ul className="prose-body mt-4 list-disc space-y-2 pl-5 text-[#3a322a]">
+                    {PROGRAM_BONUS_ITEMS.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <p className="prose-body mt-4 text-[#3a322a]">
+                    {PROGRAM_DISCOUNT_NOTE}
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-border bg-[#F4F8F3] p-6 shadow-soft sm:p-8">
                   <h2 className="font-heading text-2xl text-charcoal">{PROGRAM_MEDICAL_NOTICE_TITLE}</h2>
                   <p className="prose-body mt-4 text-[#3a322a]">{medicalNotice}</p>
                 </div>
