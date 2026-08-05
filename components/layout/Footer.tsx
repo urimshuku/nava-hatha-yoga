@@ -47,10 +47,10 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
                 </p>
               </div>
             </div>
-            <FooterCertificationLogo className="mt-3 shrink-0" />
+            <FooterCertificationLogo className="mt-2 shrink-0" />
           </div>
 
-          <div className="mt-8 grid grid-cols-2 gap-6">
+          <div className="mt-8 grid grid-cols-2 gap-x-24 gap-y-6">
             <div>
               <h2 className="eyebrow mb-4">Explore</h2>
               <ul className="space-y-2.5 text-sm">
@@ -67,7 +67,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
               </ul>
             </div>
 
-            <div>
+            <div className="ml-3">
               <h2 className="eyebrow mb-4">Legal</h2>
               <ul className="space-y-2.5 text-sm">
                 {LEGAL_LINKS.map((link) => (

@@ -21,9 +21,9 @@ export function FooterCertificationLogo({ className }: { className?: string }) {
       alt={FOOTER_CERTIFICATION_LOGO.alt}
       width={FOOTER_CERTIFICATION_LOGO.width}
       height={FOOTER_CERTIFICATION_LOGO.height}
-      sizes="(max-width: 767px) 132px, (max-width: 1023px) 152px, 180px"
+      sizes="(max-width: 767px) 144px, (max-width: 1023px) 152px, 180px"
       className={cn(
-        "h-auto w-auto max-w-[8.25rem] object-contain md:max-w-[9.5rem] lg:max-w-[11.25rem]",
+        "h-auto w-auto max-w-[9rem] object-contain md:max-w-[9.5rem] lg:max-w-[11.25rem]",
         className,
       )}
     />
