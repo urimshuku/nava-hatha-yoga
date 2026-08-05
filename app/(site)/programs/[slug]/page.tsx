@@ -23,6 +23,7 @@ import {
   PROGRAM_MEDICAL_NOTICE_TITLE,
   getBeforeProgramNotes,
   getBeforeProgramTitle,
+  getProgramIntensity,
   getProgramPriceLabel,
   getProgramVideoLink,
   getProgramVideoUrl,
@@ -110,6 +111,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
         ? settings.beforeProgramNotes
         : getBeforeProgramNotes(program.slug);
   const medicalNotice = settings.medicalNotice?.trim() || PROGRAM_MEDICAL_NOTICE;
+  const intensity = getProgramIntensity(program.slug);
 
   return (
     <>
@@ -134,7 +136,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
       <Section tone="cream">
         <Container>
           <div className="grid gap-12 lg:grid-cols-[1.4fr_0.6fr] lg:gap-16">
-            <div>
+            <div className="order-2 lg:order-1">
               {hasRichText(program.whatIs) ? (
                 <ProgramSection title={programWhatIsSectionTitle(program.title)} first>
                   <CMSRichText value={program.whatIs} />
@@ -227,7 +229,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
               </div>
             </div>
 
-            <aside className="lg:sticky lg:top-28 lg:self-start">
+            <aside className="order-1 lg:sticky lg:top-28 lg:order-2 lg:self-start">
               <div className="overflow-hidden rounded-xl border border-border bg-ivory shadow-soft">
                 <div className="overflow-hidden">
                   <ProgramImage
@@ -243,6 +245,14 @@ export default async function ProgramDetailPage({ params }: PageProps) {
                     href={videoUrl}
                     ariaLabel={`Watch: ${videoTitle}`}
                   />
+                ) : null}
+                {intensity ? (
+                  <div className="flex h-14 items-center justify-center border-b border-border px-6">
+                    <p className="text-center text-sm text-charcoal">
+                      <span className="text-brown">Intensity:</span>{" "}
+                      <span className="font-medium">{intensity}</span>
+                    </p>
+                  </div>
                 ) : null}
                 {SHOW_PROGRAM_SIDEBAR_PRICE && priceLabel ? (
                 <div className="flex h-14 items-center justify-center border-b border-border px-6">

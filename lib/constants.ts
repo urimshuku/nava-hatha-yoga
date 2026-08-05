@@ -190,6 +190,24 @@ export const PROGRAM_DEFAULT_PRICE_LABEL = "Contact for details";
 /** Set to true to show price in the program detail sidebar. */
 export const SHOW_PROGRAM_SIDEBAR_PRICE = false;
 
+export type ProgramIntensity = "Low" | "Medium" | "High";
+
+export const PROGRAM_INTENSITY_BY_SLUG: Partial<
+  Record<string, ProgramIntensity>
+> = {
+  "surya-kriya": "Medium",
+  yogasanas: "Medium",
+  angamardana: "High",
+  "surya-shakti": "Medium",
+  "upa-yoga": "Low",
+  "childrens-program": "Low",
+};
+
+export function getProgramIntensity(slug?: string | null): ProgramIntensity | null {
+  if (!slug) return null;
+  return PROGRAM_INTENSITY_BY_SLUG[slug] ?? null;
+}
+
 export const MAIN_PROGRAM_SLUGS = [
   "upa-yoga",
   "surya-kriya",

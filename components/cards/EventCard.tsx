@@ -47,15 +47,6 @@ function IconPin() {
   );
 }
 
-function IconUser() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 shrink-0 text-clay" aria-hidden="true">
-      <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M5 20a7 7 0 0 1 14 0" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function IconAge() {
   return (
     <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 shrink-0 text-clay" aria-hidden="true">
@@ -250,11 +241,6 @@ export function EventCard({ event, whatsappNumber }: EventCardProps) {
             {event.ageRequirement ? (
               <EventDetailRow icon={<IconAge />} label="Age">
                 Age: {event.ageRequirement}
-              </EventDetailRow>
-            ) : null}
-            {event.teacher ? (
-              <EventDetailRow icon={<IconUser />} label="Teacher">
-                Taught by {event.teacher}
               </EventDetailRow>
             ) : null}
           </div>
