@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 import { IconWhatsApp } from "@/components/ui/BrandIcons";
 import { Button } from "@/components/ui/Button";
-import { whatsappLink } from "@/lib/constants";
+import { getProgramIntensity, whatsappLink } from "@/lib/constants";
 import { programSymbolSrc } from "@/lib/local-images";
 import {
   eventCardSummary,
@@ -47,12 +47,29 @@ function IconPin() {
   );
 }
 
+function IconIntensity() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 shrink-0 text-clay" aria-hidden="true">
+      <path d="M6 16v2M12 11v7M18 6v12" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function IconAge() {
   return (
     <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 shrink-0 text-clay" aria-hidden="true">
       <rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" strokeWidth="1.4" />
       <circle cx="12" cy="10" r="2" stroke="currentColor" strokeWidth="1.4" />
       <path d="M8 16h8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconExperience() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 shrink-0 text-clay" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M8 12.5 10.5 15 16 9.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -179,6 +196,7 @@ export function EventCard({ event, whatsappNumber }: EventCardProps) {
   const registrationEvent = formatRegistrationEventLabel(event);
   const programSlug = event.relatedProgram?.slug;
   const symbolSrc = programSlug ? programSymbolSrc(programSlug) : null;
+  const intensity = getProgramIntensity(programSlug);
 
   return (
     <article className="overflow-hidden rounded-xl border border-border bg-ivory shadow-soft transition-shadow duration-300 ease-calm hover:shadow-card">
@@ -242,6 +260,16 @@ export function EventCard({ event, whatsappNumber }: EventCardProps) {
               <EventDetailRow icon={<IconAge />} label="Age">
                 Age: {event.ageRequirement}
               </EventDetailRow>
+            ) : null}
+            {intensity ? (
+              <>
+                <EventDetailRow icon={<IconIntensity />} label="Intensity">
+                  Intensity: {intensity}
+                </EventDetailRow>
+                <EventDetailRow icon={<IconExperience />} label="Experience">
+                  No prior yoga experience required!
+                </EventDetailRow>
+              </>
             ) : null}
           </div>
 
