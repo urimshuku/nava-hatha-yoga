@@ -17,12 +17,20 @@ export const aboutPage = defineType({
       initialValue: "Classical Hatha Yoga, taught with care.",
     }),
     defineField({
-      name: "intro",
+      name: "heroDescription",
       title: "Page introduction",
+      type: "text",
+      rows: 3,
+      group: "content",
+      description: "Short text shown below the page title.",
+    }),
+    defineField({
+      name: "intro",
+      title: "Optional rich introduction",
       type: "blockContent",
       group: "content",
       description:
-        "Optional short introduction shown below the page heading, before the main sections.",
+        "Optional longer introduction shown below the hero, before the teacher section.",
     }),
     defineField({
       name: "teacherStory",
@@ -64,6 +72,32 @@ export const aboutPage = defineType({
           description: "The full story, paragraph by paragraph.",
         }),
       ],
+    }),
+    defineField({
+      name: "highlightCards",
+      title: "Teacher highlight cards",
+      type: "array",
+      group: "content",
+      description: "The two cards under “About the Teacher” (training + certification).",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "eyebrow", title: "Eyebrow", type: "string" },
+            { name: "title", title: "Title", type: "string" },
+            { name: "stat", title: "Stat / emphasis line", type: "string" },
+            { name: "body", title: "Body", type: "text", rows: 4 },
+            {
+              name: "showCertificationLogo",
+              title: "Show certification logo",
+              type: "boolean",
+              initialValue: false,
+            },
+          ],
+          preview: { select: { title: "title", subtitle: "eyebrow" } },
+        },
+      ],
+      validation: (rule) => rule.max(2),
     }),
     defineField({
       name: "sections",

@@ -110,8 +110,19 @@ export default async function ProgramDetailPage({ params }: PageProps) {
       : settings.beforeProgramNotes?.length
         ? settings.beforeProgramNotes
         : getBeforeProgramNotes(program.slug);
+  const medicalNoticeTitle =
+    settings.medicalNoticeTitle?.trim() || PROGRAM_MEDICAL_NOTICE_TITLE;
   const medicalNotice = settings.medicalNotice?.trim() || PROGRAM_MEDICAL_NOTICE;
-  const intensity = getProgramIntensity(program.slug);
+  const bonusTitle = settings.bonusTitle?.trim() || PROGRAM_BONUS_TITLE;
+  const bonusItems =
+    settings.bonusItems?.filter((item) => item.trim()).length
+      ? settings.bonusItems.filter((item) => item.trim())
+      : [...PROGRAM_BONUS_ITEMS];
+  const discountNote = settings.discountNote?.trim() || PROGRAM_DISCOUNT_NOTE;
+  const intensity =
+    program.intensity ?? getProgramIntensity(program.slug);
+  const hasAfterProgram = hasRichText(program.practiceIndependently);
+  const hasSidebarSessions = hasRichText(program.privateAndGroupSessions);
 
   return (
     <>
@@ -201,29 +212,33 @@ export default async function ProgramDetailPage({ params }: PageProps) {
               </ProgramSection>
 
               <ProgramSection title={PROGRAM_AFTER_PROGRAM_TITLE}>
-                <div className="space-y-4 leading-relaxed text-[#3a322a]">
-                  {programAfterProgramText(program.title).map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
-                </div>
+                {hasAfterProgram ? (
+                  <CMSRichText value={program.practiceIndependently} />
+                ) : (
+                  <div className="space-y-4 leading-relaxed text-[#3a322a]">
+                    {programAfterProgramText(program.title).map((paragraph) => (
+                      <p key={paragraph}>{paragraph}</p>
+                    ))}
+                  </div>
+                )}
               </ProgramSection>
 
               <div className="mt-12 space-y-6 border-t border-border pt-10">
                 <div className="rounded-2xl border border-border bg-ivory p-6 shadow-soft sm:p-8">
                   <h2 className="font-heading text-2xl text-charcoal">
-                    {PROGRAM_BONUS_TITLE}
+                    {bonusTitle}
                   </h2>
                   <ul className="prose-body mt-4 list-disc space-y-2 pl-5 text-[#3a322a]">
-                    {PROGRAM_BONUS_ITEMS.map((item) => (
+                    {bonusItems.map((item) => (
                       <li key={item}>{item}</li>
                     ))}
                   </ul>
-                  <p className="prose-body mt-4 text-[#3a322a]">
-                    {PROGRAM_DISCOUNT_NOTE}
-                  </p>
+                  <p className="prose-body mt-4 text-[#3a322a]">{discountNote}</p>
                 </div>
                 <div className="rounded-2xl border border-border bg-[#F4F8F3] p-6 shadow-soft sm:p-8">
-                  <h2 className="font-heading text-2xl text-charcoal">{PROGRAM_MEDICAL_NOTICE_TITLE}</h2>
+                  <h2 className="font-heading text-2xl text-charcoal">
+                    {medicalNoticeTitle}
+                  </h2>
                   <p className="prose-body mt-4 text-[#3a322a]">{medicalNotice}</p>
                 </div>
               </div>
@@ -263,11 +278,18 @@ export default async function ProgramDetailPage({ params }: PageProps) {
                 </div>
                 ) : null}
                 <div className="space-y-4 p-6">
-                  {programSidebarCtaText(program.title).map((paragraph) => (
-                    <p key={paragraph} className="text-sm leading-relaxed text-brown">
-                      {paragraph}
-                    </p>
-                  ))}
+                  {hasSidebarSessions ? (
+                    <CMSRichText
+                      value={program.privateAndGroupSessions}
+                      className="text-sm leading-relaxed text-brown"
+                    />
+                  ) : (
+                    programSidebarCtaText(program.title).map((paragraph) => (
+                      <p key={paragraph} className="text-sm leading-relaxed text-brown">
+                        {paragraph}
+                      </p>
+                    ))
+                  )}
 
                   <Button href="/events" className="w-full">
                     View upcoming events
@@ -295,6 +317,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
                   key={event._id}
                   event={event}
                   whatsappNumber={settings.whatsapp}
+                  experienceNote={settings.eventExperienceNote}
                 />
               ))}
             </div>

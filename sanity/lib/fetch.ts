@@ -13,11 +13,13 @@ import * as Q from "./queries";
 import type {
   AboutPage,
   ContactPage,
+  EventsPage,
   HomePage,
   LegalPage,
   PastEvent,
   Program,
   ProgramListItem,
+  ProgramsPage,
   RegisterPage,
   Retreat,
   RetreatListItem,
@@ -29,11 +31,13 @@ import {
   placeholderAboutPage,
   placeholderContactPage,
   placeholderEvents,
+  placeholderEventsPage,
   placeholderHomePage,
   placeholderLegalPages,
   placeholderPastEvents,
   placeholderProgramBySlug,
   placeholderPrograms,
+  placeholderProgramsPage,
   placeholderRetreats,
   placeholderRetreatsPage,
   placeholderSiteSettings,
@@ -191,6 +195,16 @@ export async function getLegalPage(slug: string): Promise<LegalPage | undefined>
 export async function getContactPage(): Promise<ContactPage> {
   const data = await sanityFetch<ContactPage>(Q.contactPageQuery);
   return isEmpty(data) ? placeholderContactPage : (data as ContactPage);
+}
+
+export async function getProgramsPage(): Promise<ProgramsPage> {
+  const data = await sanityFetch<ProgramsPage>(Q.programsPageQuery);
+  return isEmpty(data) ? placeholderProgramsPage : (data as ProgramsPage);
+}
+
+export async function getEventsPage(): Promise<EventsPage> {
+  const data = await sanityFetch<EventsPage>(Q.eventsPageQuery);
+  return isEmpty(data) ? placeholderEventsPage : (data as EventsPage);
 }
 
 export async function getRetreatsPage(): Promise<RetreatsPage> {

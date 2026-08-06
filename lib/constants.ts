@@ -80,6 +80,24 @@ export function instagramLink(): string {
   return `https://www.instagram.com/${CONTACT.instagram}/`;
 }
 
+/** Prefer a matching CMS social URL; fall back to the built-in Instagram handle. */
+export function socialLink(
+  social: { label?: string; url?: string }[] | undefined,
+  label: string,
+  fallback?: string,
+): string | undefined {
+  const match = social?.find(
+    (item) => item.label?.toLowerCase() === label.toLowerCase() && item.url?.trim(),
+  );
+  return match?.url?.trim() || fallback;
+}
+
+export function resolveInstagramHref(
+  social?: { label?: string; url?: string }[],
+): string {
+  return socialLink(social, "Instagram", instagramLink()) ?? instagramLink();
+}
+
 export const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Programs & Offerings", href: "/programs" },

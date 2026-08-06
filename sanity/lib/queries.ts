@@ -14,7 +14,12 @@ export const siteSettingsQuery = groq`
     location,
     social[]{ label, url },
     beforeProgramNotes,
+    bonusTitle,
+    bonusItems,
+    discountNote,
+    medicalNoticeTitle,
     medicalNotice,
+    eventExperienceNote,
     ${seoFields}
   }
 `;
@@ -23,22 +28,41 @@ export const homePageQuery = groq`
   *[_type == "homePage"][0]{
     hero{
       headline,
+      subtitle,
       supportingText,
       primaryCta{ label, href },
       secondaryCta{ label, href },
       image${imageFields}
     },
+    highlights{
+      items[]{ text, lines },
+      closingQuote
+    },
     intro{ eyebrow, heading, body, videoUrl },
+    featuredProgramsSection{ eyebrow, title, description, ctaLabel },
     featuredPrograms[]->{
       _id,
       title,
       "slug": slug.current,
       shortIntro,
       category,
+      intensity,
       image${imageFields}
     },
-    privateCorporate{ heading, body },
-    aboutIntro{ eyebrow, heading, body, image${imageFields} },
+    upcomingEventsSection{
+      eyebrow,
+      title,
+      description,
+      emptyTitle,
+      emptyDescription,
+      ctaLabel
+    },
+    privateCorporate{
+      heading,
+      lead,
+      offerings[]{ title, body },
+      cta{ label, href }
+    },
     finalCta{ heading, body, cta{ label, href } },
     ${seoFields}
   }
@@ -47,6 +71,7 @@ export const homePageQuery = groq`
 export const aboutPageQuery = groq`
   *[_type == "aboutPage"][0]{
     title,
+    heroDescription,
     intro,
     teacherStory{
       nameLine,
@@ -54,6 +79,13 @@ export const aboutPageQuery = groq`
       teaser,
       storyTitle,
       story
+    },
+    highlightCards[]{
+      eyebrow,
+      title,
+      stat,
+      body,
+      showCertificationLogo
     },
     sections[]{
       title,
@@ -72,17 +104,7 @@ export const programsQuery = groq`
     "slug": slug.current,
     shortIntro,
     category,
-    image${imageFields}
-  }
-`;
-
-export const featuredProgramsFallbackQuery = groq`
-  *[_type == "program" && published == true] | order(orderRank asc, title asc)[0...6]{
-    _id,
-    title,
-    "slug": slug.current,
-    shortIntro,
-    category,
+    intensity,
     image${imageFields}
   }
 `;
@@ -98,6 +120,7 @@ export const programBySlugQuery = groq`
     "slug": slug.current,
     shortIntro,
     category,
+    intensity,
     image${imageFields},
     whatIs,
     aboutThePractice,
@@ -132,74 +155,12 @@ export const allEventsQuery = groq`
     teacher,
     ageRequirement,
     category,
-    relatedProgram->{ title, "slug": slug.current },
+    relatedProgram->{ title, "slug": slug.current, intensity },
     description,
     notes,
     image${imageFields},
     registrationLink,
     whatsappEnabled
-  }
-`;
-
-export const upcomingEventsQuery = groq`
-  *[_type == "event" && published == true && dateTime(coalesce(endDate, date)) >= dateTime(now())]
-    | order(date asc){
-    _id,
-    title,
-    date,
-    endDate,
-    ${eventSessionFields}
-    location,
-    priceLabel,
-    paymentNote,
-    teacher,
-    ageRequirement,
-    category,
-    relatedProgram->{ title, "slug": slug.current },
-    description,
-    notes,
-    image${imageFields},
-    registrationLink,
-    whatsappEnabled
-  }
-`;
-
-export const upcomingEventsByProgramQuery = groq`
-  *[_type == "event" && published == true
-    && dateTime(coalesce(endDate, date)) >= dateTime(now())
-    && relatedProgram->slug.current == $slug]
-    | order(date asc){
-    _id,
-    title,
-    date,
-    endDate,
-    ${eventSessionFields}
-    location,
-    priceLabel,
-    paymentNote,
-    teacher,
-    ageRequirement,
-    category,
-    relatedProgram->{ title, "slug": slug.current },
-    description,
-    notes,
-    image${imageFields},
-    registrationLink,
-    whatsappEnabled
-  }
-`;
-
-export const pastEventsQuery = groq`
-  *[_type == "event" && published == true && dateTime(coalesce(endDate, date)) < dateTime(now())]
-    | order(date desc){
-    _id,
-    title,
-    date,
-    endDate,
-    ${eventSessionFields}
-    location,
-    category,
-    relatedProgram->{ title, "slug": slug.current }
   }
 `;
 
@@ -254,18 +215,61 @@ export const contactPageQuery = groq`
     formHeading,
     quickMessageBody,
     whatsappPrefill,
+    teachingLocations{
+      mainHeading,
+      mainLocations,
+      otherHeading,
+      otherLocations
+    },
+    ${seoFields}
+  }
+`;
+
+export const programsPageQuery = groq`
+  *[_type == "programsPage"][0]{
+    heroEyebrow,
+    heroTitle,
+    heroDescription,
+    freeOfferings{
+      eyebrow,
+      lead,
+      items[]{ title, description }
+    },
+    ${seoFields}
+  }
+`;
+
+export const eventsPageQuery = groq`
+  *[_type == "eventsPage"][0]{
+    heroEyebrow,
+    heroTitle,
+    heroDescription,
+    emptyTitle,
+    emptyDescription,
+    contactHeading,
+    contactDescription,
     ${seoFields}
   }
 `;
 
 export const retreatsPageQuery = groq`
   *[_type == "retreatsPage"][0]{
+    heroEyebrow,
     heroTitle,
     heroDescription,
     comingSoonHeading,
     comingSoonBody,
     expectationsHeading,
     expectations[]{ title, body },
+    listingCta{ heading, body, cta{ label, href } },
+    partnerPrograms{
+      heading,
+      intro,
+      collaborateHeading,
+      collaborateItems,
+      closing,
+      whatsappPrefill
+    },
     ${seoFields}
   }
 `;

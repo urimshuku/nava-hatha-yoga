@@ -22,6 +22,7 @@ import {
   getUpcomingEvents,
 } from "@/sanity/lib/fetch";
 import { SPECIAL_PROGRAM_SLUGS } from "@/lib/constants";
+import { placeholderHomePage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
 import { getYouTubeVideoId } from "@/lib/youtube";
 
@@ -83,9 +84,18 @@ export default async function HomePage() {
   const featured = rawFeatured.filter((program) => !specialProgramSlugs.has(program.slug));
 
   const hero = home.hero;
+  const featuredSection =
+    home.featuredProgramsSection ?? placeholderHomePage.featuredProgramsSection;
+  const eventsSection =
+    home.upcomingEventsSection ?? placeholderHomePage.upcomingEventsSection;
   const introVideoId = home.intro?.videoUrl
     ? getYouTubeVideoId(home.intro.videoUrl)
     : null;
+
+  const contactHeading =
+    home.finalCta?.heading?.trim() || placeholderHomePage.finalCta?.heading;
+  const contactBody =
+    home.finalCta?.body?.trim() || placeholderHomePage.finalCta?.body;
 
   return (
     <>
@@ -99,18 +109,20 @@ export default async function HomePage() {
         <Container className="relative">
           <MotionReveal className="mx-auto max-w-3xl text-center">
             <h1 className="text-balance text-[1.75rem] leading-[1.1] tracking-tight sm:text-display">
-              Nava Classical Hatha Yoga
+              {hero?.headline?.trim() ||
+                placeholderHomePage.hero?.headline ||
+                "Nava Classical Hatha Yoga"}
             </h1>
             <p className="mt-3 text-sm font-normal not-italic text-brown sm:mt-4 sm:text-xl">
-              Now in Albania, and Beyond.
+              {hero?.subtitle?.trim() ||
+                placeholderHomePage.hero?.subtitle ||
+                "Now in Albania, and Beyond."}
             </p>
             {hero?.supportingText?.trim() ? (
               <p className="hero-subtitle mt-5 sm:mt-7">{hero.supportingText}</p>
             ) : (
               <p className="hero-subtitle mt-5 sm:mt-7">
-                “Hatha Yoga is not body-bending business. It is about taking
-                charge of the way you think, feel, and perceive life.” ―
-                Sadhguru
+                {placeholderHomePage.hero?.supportingText}
               </p>
             )}
             <div className="mt-6 flex justify-center sm:mt-10">
@@ -140,7 +152,10 @@ export default async function HomePage() {
       <Section tone="ivory" className="border-y border-border">
         <Container>
           <MotionReveal>
-            <HeroHighlights />
+            <HeroHighlights
+              items={home.highlights?.items}
+              closingQuote={home.highlights?.closingQuote}
+            />
           </MotionReveal>
         </Container>
       </Section>
@@ -182,9 +197,15 @@ export default async function HomePage() {
         <Container>
           <MotionReveal>
             <SectionHeading
-              eyebrow="Programs"
-              title="Practices offered in their traditional form"
-              description="Each program is a complete practice within the Classical Hatha Yoga system."
+              eyebrow={featuredSection?.eyebrow ?? "Programs"}
+              title={
+                featuredSection?.title ??
+                "Practices offered in their traditional form"
+              }
+              description={
+                featuredSection?.description ??
+                "Each program is a complete practice within the Classical Hatha Yoga system."
+              }
             />
           </MotionReveal>
           <MotionStagger className="mt-8 grid gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
@@ -196,7 +217,7 @@ export default async function HomePage() {
           </MotionStagger>
           <div className="mt-6 sm:mt-10">
             <Button href="/programs" variant="secondary">
-              View all programs
+              {featuredSection?.ctaLabel ?? "View all programs"}
             </Button>
           </div>
         </Container>
@@ -207,9 +228,12 @@ export default async function HomePage() {
         <Container>
           <MotionReveal>
             <SectionHeading
-              eyebrow="Events"
-              title="Upcoming events"
-              description="All classes are currently held in person in Saranda, Albania."
+              eyebrow={eventsSection?.eyebrow ?? "Events"}
+              title={eventsSection?.title ?? "Upcoming events"}
+              description={
+                eventsSection?.description ??
+                "All classes are currently held in person in Saranda, Albania."
+              }
             />
           </MotionReveal>
           <div className="mt-8 sm:mt-12">
@@ -218,20 +242,29 @@ export default async function HomePage() {
                 <MotionStagger className="mx-auto flex max-w-4xl flex-col gap-4 sm:gap-6">
                   {events.slice(0, 3).map((event) => (
                     <MotionItem key={event._id} className="h-full">
-                      <EventCard event={event} whatsappNumber={settings.whatsapp} />
+                      <EventCard
+                        event={event}
+                        whatsappNumber={settings.whatsapp}
+                        experienceNote={settings.eventExperienceNote}
+                      />
                     </MotionItem>
                   ))}
                 </MotionStagger>
                 <div className="mt-6 sm:mt-10">
                   <Button href="/events" variant="secondary">
-                    See all upcoming events
+                    {eventsSection?.ctaLabel ?? "See all upcoming events"}
                   </Button>
                 </div>
               </>
             ) : (
               <EmptyState
-                title="New events are being scheduled"
-                description="There are no events listed right now. Please check back soon or get in touch to register your interest."
+                title={
+                  eventsSection?.emptyTitle ?? "New events are being scheduled"
+                }
+                description={
+                  eventsSection?.emptyDescription ??
+                  "There are no events listed right now. Please check back soon or get in touch to register your interest."
+                }
               >
                 <Button href="/contact">Register your interest</Button>
               </EmptyState>
@@ -240,12 +273,38 @@ export default async function HomePage() {
         </Container>
       </Section>
 
-      <PrivateSessionsSection />
+      <PrivateSessionsSection
+        heading={home.privateCorporate?.heading}
+        lead={home.privateCorporate?.lead}
+        offerings={home.privateCorporate?.offerings}
+        cta={home.privateCorporate?.cta}
+      />
 
       {/* 6. Contact */}
       <ContactSection
         programs={programs.map((program) => program.title)}
         email={settings.email}
+        heading={contactHeading}
+        description={
+          contactBody ? (
+            <>
+              {contactBody}
+              {settings.email ? (
+                <>
+                  {" "}
+                  Or email us at{" "}
+                  <a
+                    href={`mailto:${settings.email}`}
+                    className="text-saffron underline underline-offset-2 hover:text-saffron-hover"
+                  >
+                    {settings.email}
+                  </a>
+                  .
+                </>
+              ) : null}
+            </>
+          ) : undefined
+        }
       />
     </>
   );

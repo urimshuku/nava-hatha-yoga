@@ -23,11 +23,17 @@ export interface SiteSettings {
   location?: string;
   social?: { label?: string; url?: string }[];
   beforeProgramNotes?: string[];
+  bonusTitle?: string;
+  bonusItems?: string[];
+  discountNote?: string;
+  medicalNoticeTitle?: string;
   medicalNotice?: string;
+  eventExperienceNote?: string;
   seo?: SeoFields;
 }
 
 export type ProgramCategory = "main" | "special";
+export type ProgramIntensity = "Low" | "Medium" | "High";
 
 export interface ProgramListItem {
   _id: string;
@@ -35,6 +41,7 @@ export interface ProgramListItem {
   slug: string;
   shortIntro?: string;
   category?: ProgramCategory;
+  intensity?: ProgramIntensity;
   image?: SanityImage;
 }
 
@@ -67,30 +74,68 @@ export interface TeacherStory {
   story?: string[];
 }
 
+export interface AboutHighlightCard {
+  eyebrow?: string;
+  title?: string;
+  stat?: string;
+  body?: string;
+  showCertificationLogo?: boolean;
+}
+
 export interface AboutPage {
   title?: string;
+  heroDescription?: string;
   intro?: PortableTextBlock[];
   teacherStory?: TeacherStory;
+  highlightCards?: AboutHighlightCard[];
   sections?: AboutSection[];
   seo?: SeoFields;
+}
+
+export interface HighlightItem {
+  text?: string;
+  lines?: string[];
+}
+
+export interface OfferingItem {
+  title?: string;
+  body?: string;
 }
 
 export interface HomePage {
   hero?: {
     headline?: string;
+    subtitle?: string;
     supportingText?: string;
     primaryCta?: CtaLink;
     secondaryCta?: CtaLink;
     image?: SanityImage;
   };
+  highlights?: {
+    items?: HighlightItem[];
+    closingQuote?: string;
+  };
   intro?: { eyebrow?: string; heading?: string; body?: PortableTextBlock[]; videoUrl?: string };
-  featuredPrograms?: ProgramListItem[];
-  privateCorporate?: { heading?: string; body?: PortableTextBlock[] };
-  aboutIntro?: {
+  featuredProgramsSection?: {
     eyebrow?: string;
+    title?: string;
+    description?: string;
+    ctaLabel?: string;
+  };
+  featuredPrograms?: ProgramListItem[];
+  upcomingEventsSection?: {
+    eyebrow?: string;
+    title?: string;
+    description?: string;
+    emptyTitle?: string;
+    emptyDescription?: string;
+    ctaLabel?: string;
+  };
+  privateCorporate?: {
     heading?: string;
-    body?: PortableTextBlock[];
-    image?: SanityImage;
+    lead?: string;
+    offerings?: OfferingItem[];
+    cta?: CtaLink;
   };
   finalCta?: { heading?: string; body?: string; cta?: CtaLink };
   seo?: SeoFields;
@@ -117,7 +162,7 @@ export interface YogaEvent {
   teacher?: string;
   ageRequirement?: string;
   category?: EventCategory;
-  relatedProgram?: { title?: string; slug?: string } | null;
+  relatedProgram?: { title?: string; slug?: string; intensity?: ProgramIntensity } | null;
   description?: string;
   notes?: string[];
   image?: SanityImage;
@@ -135,7 +180,7 @@ export interface PastEvent {
   time?: string;
   location?: string;
   category?: EventCategory;
-  relatedProgram?: { title?: string; slug?: string } | null;
+  relatedProgram?: { title?: string; slug?: string; intensity?: ProgramIntensity } | null;
 }
 
 export interface RetreatListItem {
@@ -170,16 +215,60 @@ export interface ContactPage {
   formHeading?: string;
   quickMessageBody?: string;
   whatsappPrefill?: string;
+  teachingLocations?: {
+    mainHeading?: string;
+    mainLocations?: string;
+    otherHeading?: string;
+    otherLocations?: string;
+  };
+  seo?: SeoFields;
+}
+
+export interface FreeOfferingItem {
+  title?: string;
+  description?: string;
+}
+
+export interface ProgramsPage {
+  heroEyebrow?: string;
+  heroTitle?: string;
+  heroDescription?: string;
+  freeOfferings?: {
+    eyebrow?: string;
+    lead?: string;
+    items?: FreeOfferingItem[];
+  };
+  seo?: SeoFields;
+}
+
+export interface EventsPage {
+  heroEyebrow?: string;
+  heroTitle?: string;
+  heroDescription?: string;
+  emptyTitle?: string;
+  emptyDescription?: string;
+  contactHeading?: string;
+  contactDescription?: string;
   seo?: SeoFields;
 }
 
 export interface RetreatsPage {
+  heroEyebrow?: string;
   heroTitle?: string;
   heroDescription?: string;
   comingSoonHeading?: string;
   comingSoonBody?: string;
   expectationsHeading?: string;
   expectations?: { title?: string; body?: string }[];
+  listingCta?: { heading?: string; body?: string; cta?: CtaLink };
+  partnerPrograms?: {
+    heading?: string;
+    intro?: string[];
+    collaborateHeading?: string;
+    collaborateItems?: string[];
+    closing?: string[];
+    whatsappPrefill?: string;
+  };
   seo?: SeoFields;
 }
 

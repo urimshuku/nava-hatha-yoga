@@ -4,6 +4,7 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { MotionItem, MotionStagger } from "@/components/ui/Motion";
 import { MotionReveal } from "@/components/ui/MotionReveal";
+import type { FreeOfferingItem } from "@/sanity/lib/types";
 
 const iconProps = {
   viewBox: "0 0 24 24",
@@ -35,22 +36,18 @@ function IconGift() {
   );
 }
 
-const FREE_OFFERINGS: {
-  title: string;
-  description: string;
-  icon: ReactNode;
-}[] = [
+const DEFAULT_ICONS: ReactNode[] = [<IconSun key="sun" />, <IconGift key="gift" />];
+
+const DEFAULT_ITEMS: FreeOfferingItem[] = [
   {
     title: "Learn About Classical Hatha Yoga",
     description:
       "Discover what Classical Hatha Yoga is, how it works with the body and energy system, and why it is offered in its traditional form.",
-    icon: <IconSun />,
   },
   {
     title: "Online Resources",
     description:
       "Explore free resources to deepen your understanding of the practices and the wider Classical Hatha Yoga tradition.",
-    icon: <IconGift />,
   },
 ];
 
@@ -78,20 +75,39 @@ function FreeOfferingCard({
   );
 }
 
-export function FreeOfferingsSection() {
+type FreeOfferingsSectionProps = {
+  eyebrow?: string;
+  lead?: string;
+  items?: FreeOfferingItem[];
+};
+
+export function FreeOfferingsSection({
+  eyebrow,
+  lead,
+  items,
+}: FreeOfferingsSectionProps = {}) {
+  const offerings =
+    items?.filter((item) => item.title?.trim() && item.description?.trim()) ?? [];
+  const resolved = offerings.length > 0 ? offerings : DEFAULT_ITEMS;
+
   return (
     <Section tone="cream" size="small" className="border-t border-border">
       <Container>
         <MotionReveal className="mb-8 text-center sm:mb-10">
-          <p className="eyebrow mb-3">Free offerings</p>
+          <p className="eyebrow mb-3">{eyebrow?.trim() || "Free offerings"}</p>
           <p className="section-lead mx-auto max-w-xl">
-            Open resources to begin exploring Classical Hatha Yoga.
+            {lead?.trim() ||
+              "Open resources to begin exploring Classical Hatha Yoga."}
           </p>
         </MotionReveal>
         <MotionStagger className="mx-auto grid max-w-3xl gap-6 sm:grid-cols-2">
-          {FREE_OFFERINGS.map((offering) => (
+          {resolved.map((offering, index) => (
             <MotionItem key={offering.title}>
-              <FreeOfferingCard {...offering} />
+              <FreeOfferingCard
+                title={offering.title ?? ""}
+                description={offering.description ?? ""}
+                icon={DEFAULT_ICONS[index % DEFAULT_ICONS.length]}
+              />
             </MotionItem>
           ))}
         </MotionStagger>

@@ -98,6 +98,21 @@ export const program = defineType({
         "Use careful language (e.g. 'may support', 'is designed to support').",
     }),
     defineField({
+      name: "intensity",
+      title: "Intensity",
+      type: "string",
+      group: "content",
+      options: {
+        list: [
+          { title: "Low", value: "Low" },
+          { title: "Medium", value: "Medium" },
+          { title: "High", value: "High" },
+        ],
+        layout: "radio",
+      },
+      description: "Shown in the program sidebar and on related event cards.",
+    }),
+    defineField({
       name: "practiceIndependently",
       title: "After the Program",
       type: "blockContent",
@@ -109,7 +124,8 @@ export const program = defineType({
       title: "Private and Group Sessions",
       type: "blockContent",
       group: "content",
-      description: "How this practice is offered in group and private settings.",
+      description:
+        "How this practice is offered in group and private settings. Shown in the program sidebar.",
     }),
     defineField({
       name: "beforeProgramTitle",

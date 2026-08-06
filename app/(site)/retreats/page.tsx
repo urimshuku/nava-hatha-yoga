@@ -19,6 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     title: "Retreats & Partner Programs",
     description:
+      page.heroDescription?.trim() ||
       "Immersive Classical Hatha Yoga retreats and partner programs from Nava Hatha Yoga — coming soon.",
     seo: page.seo,
     path: "/retreats",
@@ -38,12 +39,19 @@ export default async function RetreatsPage() {
     placeholderRetreatsPage.expectations ??
     [];
 
+  const listingCta = page.listingCta ?? placeholderRetreatsPage.listingCta;
+
   return (
     <>
       <PageHero
-        eyebrow="Retreats & Partner Programs"
-        title={placeholderRetreatsPage.heroTitle}
-        description={placeholderRetreatsPage.heroDescription}
+        eyebrow={
+          page.heroEyebrow?.trim() || placeholderRetreatsPage.heroEyebrow
+        }
+        title={page.heroTitle?.trim() || placeholderRetreatsPage.heroTitle || ""}
+        description={
+          page.heroDescription?.trim() ||
+          placeholderRetreatsPage.heroDescription
+        }
       />
 
       {hasRetreats ? (
@@ -60,15 +68,19 @@ export default async function RetreatsPage() {
             </Container>
           </Section>
           <CTASection
-            heading="Questions about a retreat?"
-            body="Reach out and we'll be glad to share more details and help you decide if it's right for you."
-            ctaLabel="Contact us"
-            ctaHref="/contact"
+            heading={
+              listingCta?.heading ?? "Questions about a retreat?"
+            }
+            body={
+              listingCta?.body ??
+              "Reach out and we'll be glad to share more details and help you decide if it's right for you."
+            }
+            ctaLabel={listingCta?.cta?.label ?? "Contact us"}
+            ctaHref={listingCta?.cta?.href ?? "/contact"}
           />
         </>
       ) : (
         <>
-          {/* Premium "Coming Soon" state */}
           <Section tone="cream">
             <Container>
               <MotionReveal className="mx-auto max-w-2xl rounded-2xl border border-border bg-ivory px-8 py-16 text-center shadow-soft sm:py-20">
@@ -91,7 +103,6 @@ export default async function RetreatsPage() {
             </Container>
           </Section>
 
-          {/* What to expect — keeps the page considered, not empty */}
           <Section tone="ivory" className="border-t border-border">
             <Container>
               <MotionReveal className="text-center">
@@ -109,7 +120,9 @@ export default async function RetreatsPage() {
                       <h3 className="font-heading text-xl text-charcoal sm:text-2xl">
                         {item.title}
                       </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-brown sm:mt-3">{item.body}</p>
+                      <p className="mt-2 text-sm leading-relaxed text-brown sm:mt-3">
+                        {item.body}
+                      </p>
                     </div>
                   </MotionItem>
                 ))}
@@ -119,7 +132,10 @@ export default async function RetreatsPage() {
         </>
       )}
 
-      <PartnerProgramsSection whatsappNumber={settings.whatsapp} />
+      <PartnerProgramsSection
+        whatsappNumber={settings.whatsapp}
+        content={page.partnerPrograms}
+      />
     </>
   );
 }

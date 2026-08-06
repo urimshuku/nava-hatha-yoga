@@ -5,7 +5,7 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/ui/PageHero";
 import { SocialIconLinks } from "@/components/ui/SocialIconLinks";
-import { instagramLink, whatsappLink } from "@/lib/constants";
+import { resolveInstagramHref, whatsappLink } from "@/lib/constants";
 import { placeholderContactPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
 import { getContactPage, getPrograms, getSiteSettings } from "@/sanity/lib/fetch";
@@ -15,6 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     title: "Contact",
     description:
+      page.heroDescription?.trim() ||
       "Get in touch with Nava Hatha Yoga in Saranda, Albania. Classes are in-person and registration is handled personally.",
     seo: page.seo,
     path: "/contact",
@@ -35,6 +36,9 @@ export default async function ContactPage() {
   const waHref = settings.whatsapp
     ? `https://wa.me/${settings.whatsapp}?text=${encodeURIComponent(waMessage)}`
     : whatsappLink(waMessage);
+
+  const locations =
+    page.teachingLocations ?? placeholderContactPage.teachingLocations;
 
   return (
     <>
@@ -90,15 +94,21 @@ export default async function ContactPage() {
                 <div className="space-y-4 text-sm leading-relaxed text-brown">
                   <div>
                     <p className="mb-1 font-medium text-charcoal">
-                      Main teaching locations
+                      {locations?.mainHeading || "Main teaching locations"}
                     </p>
-                    <p>Tirana, Saranda.</p>
+                    <p>
+                      {locations?.mainLocations || "Tirana, Saranda."}
+                    </p>
                   </div>
                   <div>
                     <p className="mb-1 font-medium text-charcoal">
-                      Other teaching locations upon request
+                      {locations?.otherHeading ||
+                        "Other teaching locations upon request"}
                     </p>
-                    <p>Vlora, Gjirokaster, Korca, Corfu, Prishtina.</p>
+                    <p>
+                      {locations?.otherLocations ||
+                        "Vlora, Gjirokaster, Korca, Corfu, Prishtina."}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -111,7 +121,7 @@ export default async function ContactPage() {
                 </p>
                 <SocialIconLinks
                   whatsappHref={settings.whatsapp ? waHref : undefined}
-                  instagramHref={instagramLink()}
+                  instagramHref={resolveInstagramHref(settings.social)}
                 />
               </div>
             </aside>

@@ -18,6 +18,7 @@ import type { YogaEvent } from "@/sanity/lib/types";
 interface EventCardProps {
   event: YogaEvent;
   whatsappNumber?: string;
+  experienceNote?: string;
 }
 
 function IconCalendar() {
@@ -184,7 +185,11 @@ function EventTimeBlock({ time }: { time: string }) {
   );
 }
 
-export function EventCard({ event, whatsappNumber }: EventCardProps) {
+export function EventCard({
+  event,
+  whatsappNumber,
+  experienceNote,
+}: EventCardProps) {
   const waMessage = `Hello, I'd like to register for "${event.title}".`;
   const waHref = whatsappNumber
     ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(waMessage)}`
@@ -196,7 +201,10 @@ export function EventCard({ event, whatsappNumber }: EventCardProps) {
   const registrationEvent = formatRegistrationEventLabel(event);
   const programSlug = event.relatedProgram?.slug;
   const symbolSrc = programSlug ? programSymbolSrc(programSlug) : null;
-  const intensity = getProgramIntensity(programSlug);
+  const intensity =
+    event.relatedProgram?.intensity ?? getProgramIntensity(programSlug);
+  const experienceLabel =
+    experienceNote?.trim() || "No prior yoga experience required!";
 
   return (
     <article className="overflow-hidden rounded-xl border border-border bg-ivory shadow-soft transition-shadow duration-300 ease-calm hover:shadow-card">
@@ -267,7 +275,7 @@ export function EventCard({ event, whatsappNumber }: EventCardProps) {
                   Intensity: {intensity}
                 </EventDetailRow>
                 <EventDetailRow icon={<IconExperience />} label="Experience">
-                  No prior yoga experience required!
+                  {experienceLabel}
                 </EventDetailRow>
               </>
             ) : null}

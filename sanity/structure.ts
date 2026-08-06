@@ -7,6 +7,8 @@ export const SINGLETON_TYPES = new Set([
   "aboutPage",
   "contactPage",
   "registerPage",
+  "programsPage",
+  "eventsPage",
   "retreatsPage",
 ]);
 
@@ -33,6 +35,16 @@ export const structure: StructureResolver = (S) =>
         .title("About Page")
         .id("aboutPage")
         .child(S.document().schemaType("aboutPage").documentId("aboutPage")),
+      S.listItem()
+        .title("Programs Page")
+        .id("programsPage")
+        .child(
+          S.document().schemaType("programsPage").documentId("programsPage"),
+        ),
+      S.listItem()
+        .title("Events Page")
+        .id("eventsPage")
+        .child(S.document().schemaType("eventsPage").documentId("eventsPage")),
       S.listItem()
         .title("Contact Page")
         .id("contactPage")

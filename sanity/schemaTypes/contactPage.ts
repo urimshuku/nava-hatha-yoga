@@ -47,6 +47,18 @@ export const contactPage = defineType({
       description: "The message that opens pre-typed when someone taps the WhatsApp link.",
     }),
     defineField({
+      name: "teachingLocations",
+      title: "Teaching locations",
+      type: "object",
+      group: "content",
+      fields: [
+        { name: "mainHeading", title: "Main locations heading", type: "string" },
+        { name: "mainLocations", title: "Main locations", type: "string" },
+        { name: "otherHeading", title: "Other locations heading", type: "string" },
+        { name: "otherLocations", title: "Other locations", type: "string" },
+      ],
+    }),
+    defineField({
       name: "seo",
       title: "SEO",
       type: "seo",

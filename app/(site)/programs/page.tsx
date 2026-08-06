@@ -7,26 +7,42 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/ui/PageHero";
 import { partitionProgramsByCategory } from "@/lib/constants";
+import { placeholderHomePage, placeholderProgramsPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
-import { getPrograms } from "@/sanity/lib/fetch";
+import { getHomePage, getPrograms, getProgramsPage } from "@/sanity/lib/fetch";
 
-export const metadata: Metadata = buildMetadata({
-  title: "Programs & Offerings",
-  description:
-    "Explore the Classical Hatha Yoga programs and offerings at Nava Hatha Yoga, each taught in its original, traditional form.",
-  path: "/programs",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getProgramsPage();
+  return buildMetadata({
+    title: "Programs & Offerings",
+    description:
+      page.heroDescription?.trim() ||
+      "Explore the Classical Hatha Yoga programs and offerings at Nava Hatha Yoga, each taught in its original, traditional form.",
+    seo: page.seo,
+    path: "/programs",
+  });
+}
 
 export default async function ProgramsPage() {
-  const programs = await getPrograms();
+  const [programs, page, home] = await Promise.all([
+    getPrograms(),
+    getProgramsPage(),
+    getHomePage(),
+  ]);
   const { main, special } = partitionProgramsByCategory(programs);
+  const free = page.freeOfferings ?? placeholderProgramsPage.freeOfferings;
+  const privateSessions =
+    home.privateCorporate ?? placeholderHomePage.privateCorporate;
 
   return (
     <>
       <PageHero
-        eyebrow="Programs & Offerings"
-        title="Classical Hatha Yoga practices"
-        description="Core programs form the foundation of the practice. Special programs address specific needs, and free offerings provide open resources to begin exploring Classical Hatha Yoga."
+        eyebrow={page.heroEyebrow?.trim() || placeholderProgramsPage.heroEyebrow}
+        title={page.heroTitle?.trim() || placeholderProgramsPage.heroTitle || ""}
+        description={
+          page.heroDescription?.trim() ||
+          placeholderProgramsPage.heroDescription
+        }
       />
 
       <Section tone="cream">
@@ -35,9 +51,18 @@ export default async function ProgramsPage() {
         </Container>
       </Section>
 
-      <FreeOfferingsSection />
+      <FreeOfferingsSection
+        eyebrow={free?.eyebrow}
+        lead={free?.lead}
+        items={free?.items}
+      />
 
-      <PrivateSessionsSection />
+      <PrivateSessionsSection
+        heading={privateSessions?.heading}
+        lead={privateSessions?.lead}
+        offerings={privateSessions?.offerings}
+        cta={privateSessions?.cta}
+      />
     </>
   );
 }

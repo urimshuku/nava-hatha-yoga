@@ -9,7 +9,7 @@ import {
   NAV_LINKS,
   SITE_NAME,
   SITE_TAGLINE,
-  instagramLink,
+  resolveInstagramHref,
   whatsappLink,
 } from "@/lib/constants";
 import type { SiteSettings } from "@/sanity/lib/types";
@@ -20,6 +20,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
   const email = settings?.email;
   const phone = settings?.phone;
   const whatsapp = settings?.whatsapp;
+  const instagramHref = resolveInstagramHref(settings?.social);
   const waMessage = "Hello, I'd like to know more about your classes.";
   const waHref = whatsapp
     ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(waMessage)}`
@@ -110,7 +111,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
             <SocialIconLinks
               className="mt-6"
               whatsappHref={whatsapp ? waHref : undefined}
-              instagramHref={instagramLink()}
+              instagramHref={instagramHref}
             />
           </div>
         </div>
@@ -194,7 +195,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
             <SocialIconLinks
               className="mt-6"
               whatsappHref={whatsapp ? waHref : undefined}
-              instagramHref={instagramLink()}
+              instagramHref={instagramHref}
             />
           </div>
         </div>

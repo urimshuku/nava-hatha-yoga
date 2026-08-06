@@ -10,6 +10,13 @@ export const retreatsPage = defineType({
   ],
   fields: [
     defineField({
+      name: "heroEyebrow",
+      title: "Hero eyebrow",
+      type: "string",
+      group: "content",
+      initialValue: "Retreats & Partner Programs",
+    }),
+    defineField({
       name: "heroTitle",
       title: "Page title",
       type: "string",
@@ -58,6 +65,51 @@ export const retreatsPage = defineType({
             defineField({ name: "body", title: "Text", type: "text", rows: 3 }),
           ],
           preview: { select: { title: "title", subtitle: "body" } },
+        },
+      ],
+    }),
+    defineField({
+      name: "listingCta",
+      title: "Retreats list CTA",
+      type: "object",
+      group: "content",
+      description: "Shown below the retreat cards when retreats are published.",
+      fields: [
+        { name: "heading", title: "Heading", type: "string" },
+        { name: "body", title: "Body", type: "text", rows: 2 },
+        { name: "cta", title: "Button", type: "ctaLink" },
+      ],
+    }),
+    defineField({
+      name: "partnerPrograms",
+      title: "Partner Programs",
+      type: "object",
+      group: "content",
+      fields: [
+        { name: "heading", title: "Heading", type: "string" },
+        {
+          name: "intro",
+          title: "Introduction paragraphs",
+          type: "array",
+          of: [{ type: "text", rows: 3 }],
+        },
+        { name: "collaborateHeading", title: "Collaborate heading", type: "string" },
+        {
+          name: "collaborateItems",
+          title: "Collaborate list",
+          type: "array",
+          of: [{ type: "string" }],
+        },
+        {
+          name: "closing",
+          title: "Closing paragraphs",
+          type: "array",
+          of: [{ type: "text", rows: 2 }],
+        },
+        {
+          name: "whatsappPrefill",
+          title: "WhatsApp pre-filled message",
+          type: "string",
         },
       ],
     }),

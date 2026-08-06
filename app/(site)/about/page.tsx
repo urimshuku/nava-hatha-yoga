@@ -3,8 +3,12 @@ import type { ReactNode } from "react";
 
 import { AboutHighlightCards } from "@/components/content/AboutHighlightCards";
 import { AboutSectionBlock } from "@/components/content/AboutSectionBlock";
+import { CMSRichText } from "@/components/content/CMSRichText";
+import { Container } from "@/components/layout/Container";
+import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/ui/PageHero";
 import { ABOUT_PAGE_HERO_TITLE } from "@/lib/constants";
+import { placeholderAboutPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
 import {
   DEFAULT_TEACHER_STORY,
@@ -56,6 +60,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({
     title: "About",
     description:
+      about.heroDescription?.trim() ||
       "About Nava Hatha Yoga — Classical Hatha Yoga taught in its original form in Saranda, Albania.",
     seo: about.seo,
     path: "/about",
@@ -66,16 +71,34 @@ export default async function AboutPage() {
   const about = await getAboutPage();
   const sections = about.sections ?? [];
   const teacherStory = resolveTeacherStory(about.teacherStory);
+  const heroDescription =
+    about.heroDescription?.trim() ||
+    placeholderAboutPage.heroDescription ||
+    "";
+  const hasIntro = Boolean(about.intro && about.intro.length > 0);
 
   return (
     <>
       <PageHero
         eyebrow="About"
         title={<AboutPageHeroTitle title={about.title} />}
-        description="Know more about the teacher, Isha Hatha Yoga teacher training, Isha Yoga Center, Isha Foundation, and Sadhguru."
+        description={heroDescription}
       />
 
-      <AboutHighlightCards teacherStory={teacherStory} />
+      {hasIntro ? (
+        <Section tone="ivory" size="small" className="border-b border-border">
+          <Container>
+            <div className="mx-auto max-w-2xl">
+              <CMSRichText value={about.intro} className="sm:text-lg" />
+            </div>
+          </Container>
+        </Section>
+      ) : null}
+
+      <AboutHighlightCards
+        teacherStory={teacherStory}
+        cards={about.highlightCards}
+      />
 
       {sections.map((section, index) => (
         <AboutSectionBlock

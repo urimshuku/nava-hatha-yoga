@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
+import type { HighlightItem } from "@/sanity/lib/types";
 
 const iconProps = {
   viewBox: "0 0 24 24",
@@ -38,39 +39,66 @@ function IconInfinity() {
   );
 }
 
-const HIGHLIGHTS: { icon: ReactNode; text: string; lines?: string[] }[] = [
-  { icon: <IconTriangle />, text: "Ancient yogic tools for modern life." },
-  { icon: <IconSun />, text: "Practices for balance, clarity and well-being." },
+const DEFAULT_ICONS: ReactNode[] = [
+  <IconTriangle key="triangle" />,
+  <IconSun key="sun" />,
+  <IconInfinity key="infinity" />,
+];
+
+const DEFAULT_ITEMS: HighlightItem[] = [
+  { text: "Ancient yogic tools for modern life." },
+  { text: "Practices for balance, clarity and well-being." },
   {
-    icon: <IconInfinity />,
     text: "Learn once. Practise for a lifetime.",
     lines: ["Learn once.", "Practise for a lifetime."],
   },
 ];
 
-export function HeroHighlights({ className }: { className?: string }) {
+const DEFAULT_CLOSING = "“In balance. Life unfolds.”";
+
+type HeroHighlightsProps = {
+  className?: string;
+  items?: HighlightItem[];
+  closingQuote?: string;
+};
+
+export function HeroHighlights({
+  className,
+  items,
+  closingQuote,
+}: HeroHighlightsProps) {
+  const highlights =
+    items?.filter((item) => item.text?.trim() || item.lines?.length)?.length
+      ? items.filter((item) => item.text?.trim() || item.lines?.length)
+      : DEFAULT_ITEMS;
+  const quote = closingQuote?.trim() || DEFAULT_CLOSING;
+
   return (
     <div className={cn("mx-auto max-w-3xl", className)}>
       <ul className="grid gap-14 text-center sm:grid-cols-3 sm:gap-12">
-        {HIGHLIGHTS.map((item) => (
-          <li
-            key={item.text}
-            className="flex flex-col items-center gap-3 sm:gap-4"
-          >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border-strong bg-ivory/70 text-saffron">
-              {item.icon}
-            </span>
-            <span className="text-sm leading-snug text-brown sm:text-base">
-              {item.lines
-                ? item.lines.map((line) => (
-                    <span key={line} className="block">
-                      {line}
-                    </span>
-                  ))
-                : item.text}
-            </span>
-          </li>
-        ))}
+        {highlights.map((item, index) => {
+          const key = item.text ?? item.lines?.join(" ") ?? String(index);
+          const lines = item.lines?.filter((line) => line.trim());
+          return (
+            <li
+              key={key}
+              className="flex flex-col items-center gap-3 sm:gap-4"
+            >
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border-strong bg-ivory/70 text-saffron">
+                {DEFAULT_ICONS[index % DEFAULT_ICONS.length]}
+              </span>
+              <span className="text-sm leading-snug text-brown sm:text-base">
+                {lines?.length
+                  ? lines.map((line) => (
+                      <span key={line} className="block">
+                        {line}
+                      </span>
+                    ))
+                  : item.text}
+              </span>
+            </li>
+          );
+        })}
       </ul>
       <div className="mt-20 flex flex-col items-center sm:mt-28" aria-hidden="true">
         <svg
@@ -86,7 +114,7 @@ export function HeroHighlights({ className }: { className?: string }) {
           />
         </svg>
         <p className="mt-6 text-center text-[0.6875rem] italic leading-snug text-brown sm:mt-8 sm:text-base">
-          “In balance. Life unfolds.”
+          {quote}
         </p>
       </div>
     </div>

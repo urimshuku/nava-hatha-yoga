@@ -3,11 +3,13 @@ import type { PortableTextBlock } from "@portabletext/types";
 import type {
   AboutPage,
   ContactPage,
+  EventsPage,
   HomePage,
   LegalPage,
   PastEvent,
   Program,
   ProgramListItem,
+  ProgramsPage,
   Retreat,
   RetreatsPage,
   SiteSettings,
@@ -17,10 +19,15 @@ import {
   CONTACT,
   getBeforeProgramNotes,
   getBeforeProgramTitle,
+  getProgramIntensity,
   getProgramPriceLabel,
   MAIN_PROGRAM_SLUGS,
   PROGRAM_BEFORE_PROGRAM_NOTES,
+  PROGRAM_BONUS_ITEMS,
+  PROGRAM_BONUS_TITLE,
+  PROGRAM_DISCOUNT_NOTE,
   PROGRAM_MEDICAL_NOTICE,
+  PROGRAM_MEDICAL_NOTICE_TITLE,
   PROGRAM_ORDER,
   programAfterProgramText,
   SITE_DESCRIPTION,
@@ -56,9 +63,19 @@ export const placeholderSiteSettings: SiteSettings = {
   phone: CONTACT.phone,
   whatsapp: CONTACT.whatsapp,
   location: CONTACT.location,
-  social: [],
+  social: [
+    {
+      label: "Instagram",
+      url: `https://www.instagram.com/${CONTACT.instagram}/`,
+    },
+  ],
   beforeProgramNotes: [...PROGRAM_BEFORE_PROGRAM_NOTES],
+  bonusTitle: PROGRAM_BONUS_TITLE,
+  bonusItems: [...PROGRAM_BONUS_ITEMS],
+  discountNote: PROGRAM_DISCOUNT_NOTE,
+  medicalNoticeTitle: PROGRAM_MEDICAL_NOTICE_TITLE,
   medicalNotice: PROGRAM_MEDICAL_NOTICE,
+  eventExperienceNote: "No prior yoga experience required!",
 };
 
 interface ProgramSeed {
@@ -418,6 +435,7 @@ export const placeholderPrograms: ProgramListItem[] = programSeeds.map((p) => ({
   category: (SPECIAL_PROGRAM_SLUGS as readonly string[]).includes(p.slug)
     ? "special"
     : "main",
+  intensity: getProgramIntensity(p.slug) ?? undefined,
 }));
 
 export function placeholderProgramBySlug(slug: string): Program | undefined {
@@ -431,6 +449,7 @@ export function placeholderProgramBySlug(slug: string): Program | undefined {
     category: (SPECIAL_PROGRAM_SLUGS as readonly string[]).includes(p.slug)
       ? "special"
       : "main",
+    intensity: getProgramIntensity(p.slug) ?? undefined,
     beforeProgramTitle: getBeforeProgramTitle(p.slug),
     beforeProgramNotes: [...getBeforeProgramNotes(p.slug)],
     whatIs: blocks(...p.whatIs),
@@ -446,10 +465,22 @@ export function placeholderProgramBySlug(slug: string): Program | undefined {
 export const placeholderHomePage: HomePage = {
   hero: {
     headline: "Nava Classical Hatha Yoga",
+    subtitle: "Now in Albania, and Beyond.",
     supportingText:
       "“Hatha Yoga is not body-bending business. It is about taking charge of the way you think, feel, and perceive life.” ― Sadhguru",
     primaryCta: { label: "View Upcoming Events", href: "/events" },
     secondaryCta: { label: "Explore Programs", href: "/programs" },
+  },
+  highlights: {
+    items: [
+      { text: "Ancient yogic tools for modern life." },
+      { text: "Practices for balance, clarity and well-being." },
+      {
+        text: "Learn once. Practise for a lifetime.",
+        lines: ["Learn once.", "Practise for a lifetime."],
+      },
+    ],
+    closingQuote: "“In balance. Life unfolds.”",
   },
   intro: {
     eyebrow: "The Practice",
@@ -460,38 +491,77 @@ export const placeholderHomePage: HomePage = {
     ),
     videoUrl: "https://youtu.be/UIK3hR-NjYU",
   },
+  featuredProgramsSection: {
+    eyebrow: "Programs",
+    title: "Practices offered in their traditional form",
+    description:
+      "Each program is a complete practice within the Classical Hatha Yoga system.",
+    ctaLabel: "View all programs",
+  },
   featuredPrograms: MAIN_PROGRAM_SLUGS.flatMap((slug) => {
     const program = placeholderPrograms.find((p) => p.slug === slug);
     return program ? [program] : [];
   }),
-  privateCorporate: {
-    heading: "Private & Corporate Sessions",
-    body: blocks(
-      "Private and corporate sessions are available upon request. Depending on the needs of the individual, group, or organization, selected Classical Hatha Yoga practices can be offered in a focused setting.",
-    ),
+  upcomingEventsSection: {
+    eyebrow: "Events",
+    title: "Upcoming events",
+    description: "All classes are currently held in person in Saranda, Albania.",
+    emptyTitle: "New events are being scheduled",
+    emptyDescription:
+      "There are no events listed right now. Please check back soon or get in touch to register your interest.",
+    ctaLabel: "See all upcoming events",
   },
-  aboutIntro: {
-    eyebrow: "About",
-    heading: "A quiet, serious space for practice",
-    body: blocks(
-      "Nava Hatha Yoga is dedicated to offering Classical Hatha Yoga with sincerity and respect for the tradition. Classes are held in person in Saranda, Albania, and are open to both beginners and committed practitioners.",
-    ),
+  privateCorporate: {
+    heading: "Private Sessions",
+    lead:
+      "Private sessions are available upon request. Depending on the needs of the individual, group, or organization, selected Classical Hatha Yoga practices can be offered in a focused setting.",
+    offerings: [
+      {
+        title: "One-to-One Session",
+        body: "Highly personalized instruction tailored to your specific physical capabilities and wellbeing goals. Ideal for those seeking deeper refinement or specific health support.",
+      },
+      {
+        title: "Small-Group/Family Session",
+        body: "Gather friends, family, or colleagues for a private session. A focused environment that balances personalized attention with shared experience.",
+      },
+      {
+        title: "Corporate Session",
+        body: "Bring ancient tools for clarity and balance into the workplace. Designed to combat stress and foster a vibrant, focused professional environment.",
+      },
+    ],
+    cta: { label: "Request a private session", href: "/contact" },
   },
   finalCta: {
-    heading: "Begin your practice",
-    body: "Reach out to learn more, register your interest, or ask any questions. Classes are in-person and registration is handled personally.",
+    heading: "Connect with Us",
+    body: "For questions regarding upcoming programs, private instruction, or general inquiries, please leave a message below.",
     cta: { label: "Get in Touch", href: "/contact" },
   },
 };
 
 export const placeholderAboutPage: AboutPage = {
   title: "Classical Hatha Yoga, taught with care.",
+  heroDescription:
+    "Know more about the teacher, Isha Hatha Yoga teacher training, Isha Yoga Center, Isha Foundation, and Sadhguru.",
   teacherStory: {
     nameLine: TEACHER_NAME_LINE,
     teaser: [...TEACHER_STORY_TEASER_PARAGRAPHS],
     storyTitle: TEACHER_STORY_TITLE,
     story: [...TEACHER_STORY_PARAGRAPHS],
   },
+  highlightCards: [
+    {
+      eyebrow: "Teacher training",
+      title: "21 weeks teacher training",
+      stat: "1750+ hrs",
+      body: "Undergone more than 1750 hours of intense, rigorously structured, classical Hatha Yoga teacher training, and is equipped to guide participants safely and precisely, adapting each practice to individual needs.",
+    },
+    {
+      eyebrow: "Certification",
+      title: "Certified by Sadhguru Gurukulam",
+      body: "Drawing from this age-old tradition, Sadhguru Gurukulam is an initiative that is firmly rooted in timeless Yogic wisdom. Designed by Sadhguru, each program is delivered with the same precision and devotion that this tradition has preserved for millennia.",
+      showCertificationLogo: true,
+    },
+  ],
   sections: [
     {
       title: "Isha Hatha Yoga Teacher Training",
@@ -825,9 +895,52 @@ export const placeholderContactPage: ContactPage = {
   quickMessageBody:
     "Prefer WhatsApp? Reach out directly and we'll reply as soon as we can.",
   whatsappPrefill: "Hello, I'd like to know more about your classes.",
+  teachingLocations: {
+    mainHeading: "Main teaching locations",
+    mainLocations: "Tirana, Saranda.",
+    otherHeading: "Other teaching locations upon request",
+    otherLocations: "Vlora, Gjirokaster, Korca, Corfu, Prishtina.",
+  },
+};
+
+export const placeholderProgramsPage: ProgramsPage = {
+  heroEyebrow: "Programs & Offerings",
+  heroTitle: "Classical Hatha Yoga practices",
+  heroDescription:
+    "Core programs form the foundation of the practice. Special programs address specific needs, and free offerings provide open resources to begin exploring Classical Hatha Yoga.",
+  freeOfferings: {
+    eyebrow: "Free offerings",
+    lead: "Open resources to begin exploring Classical Hatha Yoga.",
+    items: [
+      {
+        title: "Learn About Classical Hatha Yoga",
+        description:
+          "Discover what Classical Hatha Yoga is, how it works with the body and energy system, and why it is offered in its traditional form.",
+      },
+      {
+        title: "Online Resources",
+        description:
+          "Explore free resources to deepen your understanding of the practices and the wider Classical Hatha Yoga tradition.",
+      },
+    ],
+  },
+};
+
+export const placeholderEventsPage: EventsPage = {
+  heroEyebrow: "Events",
+  heroTitle: "Upcoming events",
+  heroDescription:
+    "Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life.",
+  emptyTitle: "New events are being scheduled",
+  emptyDescription:
+    "There are no upcoming events listed right now. Please check back soon, or get in touch to register your interest and be notified.",
+  contactHeading: "Have a question about an event?",
+  contactDescription:
+    "Reach out and we'll be glad to help you find the right session and answer any questions. Please leave a message below.",
 };
 
 export const placeholderRetreatsPage: RetreatsPage = {
+  heroEyebrow: "Retreats & Partner Programs",
   heroTitle: "Immersive retreats & partner programs",
   heroDescription:
     "Immersive weekends in quiet settings, and collaborations with welcoming spaces — devoted to Classical Hatha Yoga, sattvic meals and time in nature.",
@@ -849,6 +962,30 @@ export const placeholderRetreatsPage: RetreatsPage = {
       body: "Careful, attentive guidance in the Classical Hatha Yoga practices, in their original form.",
     },
   ],
+  listingCta: {
+    heading: "Questions about a retreat?",
+    body: "Reach out and we'll be glad to share more details and help you decide if it's right for you.",
+    cta: { label: "Contact us", href: "/contact" },
+  },
+  partnerPrograms: {
+    heading: "Partner Programs",
+    intro: [
+      "NAVA collaborates with hotels, guesthouses, retreat venues and other welcoming spaces to enrich the experience of their guests through Classical Hatha Yoga.",
+      "These programs offer people an opportunity to pause, reconnect and experience greater balance during their stay. They may include an introductory session, a workshop or a series of practices shaped around the place, its atmosphere and the needs of the guests.",
+      "Each collaboration is created with care, supporting rest, renewal and a deeper connection with oneself and the surrounding environment.",
+    ],
+    collaborateHeading: "Two Ways to Collaborate",
+    collaborateItems: [
+      "Partners can introduce their guests to existing NAVA programs.",
+      "Partners can host a specially arranged yoga experience at their own venue.",
+    ],
+    closing: [
+      "Each collaboration is thoughtfully planned to suit the setting and enrich the guests' stay.",
+      "Contact NAVA to explore which option would best suit your guests and your space.",
+    ],
+    whatsappPrefill:
+      "Hello, I'd like to explore a Partner Program collaboration with NAVA.",
+  },
 };
 
 export const placeholderLegalPages: Record<string, LegalPage> =

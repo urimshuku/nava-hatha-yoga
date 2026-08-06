@@ -20,6 +20,8 @@ import { homePage } from "./homePage";
 import { aboutPage } from "./aboutPage";
 import { contactPage } from "./contactPage";
 import { registerPage } from "./registerPage";
+import { programsPage } from "./programsPage";
+import { eventsPage } from "./eventsPage";
 import { retreatsPage } from "./retreatsPage";
 import { program } from "./program";
 import { event } from "./event";
@@ -44,6 +46,8 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   aboutPage,
   contactPage,
   registerPage,
+  programsPage,
+  eventsPage,
   retreatsPage,
   program,
   event,
