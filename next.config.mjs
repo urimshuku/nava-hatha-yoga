@@ -8,7 +8,19 @@ const nextConfig = {
   // Pin the file-tracing root to this project (avoids picking up parent lockfiles).
   outputFileTracingRoot: projectRoot,
   serverExternalPackages: ["@pdf-lib/fontkit"],
+  // Legacy dynamic OG route URL → static asset (avoids 404 after removing ImageResponse).
+  async redirects() {
+    return [
+      {
+        source: "/opengraph-image",
+        destination: "/images/og-default.png",
+        permanent: true,
+      },
+    ];
+  },
   images: {
+    loader: "custom",
+    loaderFile: "./image-loader.ts",
     remotePatterns: [
       {
         protocol: "https",

@@ -1,11 +1,10 @@
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import {
-  programDesktopImageObjectPositionClass,
   programDesktopImageSrc,
-  programImageObjectPositionClass,
   programImageSrc,
+  programPictureObjectPositionClass,
 } from "@/lib/local-images";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +21,9 @@ type LocalProgramImageProps = {
 /**
  * Program photos live in /public/images/programs/{slug}.jpg (or .png / .webp).
  * Not managed in Sanity — add files locally when ready.
+ *
+ * Uses next/image for responsive srcset + Cloudflare resizing. Art-directed
+ * desktop/mobile variants use <picture> so only one asset downloads.
  */
 export function LocalProgramImage({
   slug,
@@ -39,40 +41,36 @@ export function LocalProgramImage({
     return <ImagePlaceholder className={cn("h-full w-full", className)} />;
   }
 
-  const imageClassName = cn("object-cover", className);
+  const imageClassName = cn(
+    "object-cover",
+    programPictureObjectPositionClass(slug),
+    className,
+  );
 
   if (desktopSrc) {
+    const common = {
+      alt,
+      width,
+      height,
+      sizes,
+      ...(priority ? { priority: true as const } : {}),
+    };
+    const {
+      props: { srcSet: desktopSrcSet, sizes: desktopSizes },
+    } = getImageProps({ ...common, src: desktopSrc });
+    const { props: mobileProps } = getImageProps({ ...common, src });
+
     return (
-      <>
-        <Image
-          src={desktopSrc}
-          alt={alt}
-          width={width}
-          height={height}
-          sizes={sizes}
-          priority={priority}
-          loading={priority ? undefined : "eager"}
-          fetchPriority={priority ? "high" : "auto"}
-          unoptimized
-          className={cn(
-            programDesktopImageObjectPositionClass(slug),
-            imageClassName,
-            "hidden lg:block",
-          )}
+      <picture>
+        <source
+          media="(min-width: 1024px)"
+          srcSet={desktopSrcSet}
+          sizes={desktopSizes}
         />
-        <Image
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          sizes={sizes}
-          priority={priority}
-          loading={priority ? undefined : "eager"}
-          fetchPriority={priority ? "high" : "auto"}
-          unoptimized
-          className={cn(programImageObjectPositionClass(slug), imageClassName, "lg:hidden")}
-        />
-      </>
+        {/* alt is provided via getImageProps (mobileProps.alt) */}
+        {/* eslint-disable-next-line jsx-a11y/alt-text */}
+        <img {...mobileProps} className={imageClassName} />
+      </picture>
     );
   }
 
@@ -84,10 +82,7 @@ export function LocalProgramImage({
       height={height}
       sizes={sizes}
       priority={priority}
-      loading={priority ? undefined : "eager"}
-      fetchPriority={priority ? "high" : "auto"}
-      unoptimized
-      className={cn(programImageObjectPositionClass(slug), imageClassName)}
+      className={imageClassName}
     />
   );
 }

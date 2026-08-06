@@ -61,7 +61,7 @@ export default async function RetreatsPage() {
               <MotionStagger className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
                 {retreats.map((retreat) => (
                   <MotionItem key={retreat._id} className="h-full">
-                    <RetreatCard retreat={retreat} />
+                    <RetreatCard retreat={retreat} headingLevel={2} />
                   </MotionItem>
                 ))}
               </MotionStagger>

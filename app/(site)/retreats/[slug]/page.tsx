@@ -3,13 +3,18 @@ import { notFound } from "next/navigation";
 
 import { CMSRichText } from "@/components/content/CMSRichText";
 import { Gallery } from "@/components/content/Gallery";
+import { JsonLd } from "@/components/JsonLd";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
 import { SanityImage } from "@/components/ui/SanityImage";
 import { buildMetadata } from "@/lib/seo";
+import {
+  buildBreadcrumbJsonLd,
+  buildRetreatEventJsonLd,
+} from "@/lib/structured-data";
 import { formatDate } from "@/lib/utils";
-import { getRetreatBySlug, getRetreatSlugs } from "@/sanity/lib/fetch";
+import { getRetreatBySlug, getRetreatSlugs, getSiteSettings } from "@/sanity/lib/fetch";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -34,7 +39,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function RetreatDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const retreat = await getRetreatBySlug(slug);
+  const [retreat, settings] = await Promise.all([
+    getRetreatBySlug(slug),
+    getSiteSettings(),
+  ]);
 
   if (!retreat) notFound();
 
@@ -42,8 +50,20 @@ export default async function RetreatDetailPage({ params }: PageProps) {
     .filter(Boolean)
     .join(" · ");
 
+  const retreatEvent = buildRetreatEventJsonLd(retreat, settings);
+
   return (
     <>
+      <JsonLd
+        data={[
+          buildBreadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Retreats", path: "/retreats" },
+            { name: retreat.title, path: `/retreats/${retreat.slug}` },
+          ]),
+          ...(retreatEvent ? [retreatEvent] : []),
+        ]}
+      />
       <section className="border-b border-border bg-ivory pb-10 pt-10 sm:pb-section-sm sm:pt-16 md:pt-40">
         <Container>
           <div className="mx-auto max-w-3xl text-center">

@@ -10,13 +10,13 @@ export function ProgramsListing({
 }) {
   return (
     <>
-      <p className="eyebrow mb-8">Main programs</p>
+      <h2 className="eyebrow mb-8">Main programs</h2>
       <ProgramGrid programs={mainPrograms} />
 
       {specialPrograms.length > 0 ? (
         <section className="mt-14 border-t border-border pt-12">
           <div className="mb-8 text-center">
-            <p className="eyebrow mb-3">Special programs</p>
+            <h2 className="eyebrow mb-3">Special programs</h2>
             <p className="section-lead mx-auto max-w-xl">
               Practices that support specific aspects of health and wellbeing.
             </p>

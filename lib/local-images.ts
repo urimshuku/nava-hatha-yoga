@@ -60,6 +60,15 @@ export function programDesktopImageObjectPositionClass(slug: string): string {
   return PROGRAM_DESKTOP_IMAGE_OBJECT_POSITION[slug] ?? programImageObjectPositionClass(slug);
 }
 
+/**
+ * Object-position for a single <picture> img that switches sources at lg.
+ * Uses explicit Tailwind classes so the JIT compiler keeps them.
+ */
+export function programPictureObjectPositionClass(slug: string): string {
+  if (slug === "yogasanas") return "object-center lg:object-left";
+  return programImageObjectPositionClass(slug);
+}
+
 export function programSymbolSrc(slug: string): string | null {
   return PROGRAM_SYMBOLS[slug] ?? null;
 }

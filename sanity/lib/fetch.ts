@@ -141,9 +141,26 @@ export async function getFeaturedPrograms(): Promise<ProgramListItem[]> {
   });
 }
 
+export type SlugEntry = {
+  slug: string;
+  _updatedAt?: string;
+};
+
+export async function getProgramSlugEntries(): Promise<SlugEntry[]> {
+  const data = await sanityFetch<SlugEntry[]>(Q.programSlugsQuery);
+  if (isEmpty(data)) {
+    return placeholderPrograms.map((p) => ({ slug: p.slug }));
+  }
+  return (data as Array<{ slug?: string; _updatedAt?: string }>)
+    .filter((entry): entry is SlugEntry => Boolean(entry?.slug))
+    .map((entry) => ({
+      slug: entry.slug,
+      _updatedAt: entry._updatedAt,
+    }));
+}
+
 export async function getProgramSlugs(): Promise<string[]> {
-  const data = await sanityFetch<string[]>(Q.programSlugsQuery);
-  return isEmpty(data) ? placeholderPrograms.map((p) => p.slug) : (data as string[]);
+  return (await getProgramSlugEntries()).map((entry) => entry.slug);
 }
 
 export async function getProgramBySlug(slug: string): Promise<Program | undefined> {
@@ -177,9 +194,19 @@ export async function getRetreats(): Promise<RetreatListItem[]> {
   return data ?? placeholderRetreats;
 }
 
+export async function getRetreatSlugEntries(): Promise<SlugEntry[]> {
+  const data = await sanityFetch<SlugEntry[]>(Q.retreatSlugsQuery);
+  if (!data) return [];
+  return data
+    .filter((entry): entry is SlugEntry => Boolean(entry?.slug))
+    .map((entry) => ({
+      slug: entry.slug,
+      _updatedAt: entry._updatedAt,
+    }));
+}
+
 export async function getRetreatSlugs(): Promise<string[]> {
-  const data = await sanityFetch<string[]>(Q.retreatSlugsQuery);
-  return data ?? [];
+  return (await getRetreatSlugEntries()).map((entry) => entry.slug);
 }
 
 export async function getRetreatBySlug(slug: string): Promise<Retreat | undefined> {

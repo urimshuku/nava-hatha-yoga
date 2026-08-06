@@ -5,6 +5,7 @@ import { EventCard } from "@/components/cards/EventCard";
 import { ProgramCard } from "@/components/cards/ProgramCard";
 import { CMSRichText } from "@/components/content/CMSRichText";
 import { YouTubeEmbed } from "@/components/content/YouTubeEmbed";
+import { JsonLd } from "@/components/JsonLd";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
@@ -21,15 +22,24 @@ import {
   getSiteSettings,
   getUpcomingEvents,
 } from "@/sanity/lib/fetch";
-import { SPECIAL_PROGRAM_SLUGS } from "@/lib/constants";
+import { SITE_NAME, SPECIAL_PROGRAM_SLUGS } from "@/lib/constants";
 import { placeholderHomePage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
+import { buildEventsJsonLd } from "@/lib/structured-data";
 import { getYouTubeVideoId } from "@/lib/youtube";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [home, settings] = await Promise.all([getHomePage(), getSiteSettings()]);
+  const brandName = settings.brandName?.trim() || SITE_NAME;
+  const cmsTitle = home.seo?.title?.trim() || settings.seo?.title?.trim();
+  const absoluteTitle = cmsTitle
+    ? cmsTitle.includes(brandName)
+      ? cmsTitle
+      : `${cmsTitle} · ${brandName}`
+    : `Classical Hatha Yoga in Saranda, Albania · ${brandName}`;
 
-  return buildMetadata({
+  const metadata = buildMetadata({
+    title: "Classical Hatha Yoga in Saranda, Albania",
     description:
       home.hero?.supportingText ??
       settings.description ??
@@ -39,8 +49,23 @@ export async function generateMetadata(): Promise<Metadata> {
       description: home.seo?.description ?? settings.seo?.description,
     },
     path: "/",
-    siteName: settings.brandName,
+    siteName: brandName,
   });
+
+  // Absolute title avoids OpenNext dropping an empty/undefined <title> and
+  // matches the intended SERP/document title exactly.
+  return {
+    ...metadata,
+    title: { absolute: absoluteTitle },
+    openGraph: {
+      ...metadata.openGraph,
+      title: absoluteTitle,
+    },
+    twitter: {
+      ...metadata.twitter,
+      title: absoluteTitle,
+    },
+  };
 }
 
 const HERO_GLOW = {
@@ -99,6 +124,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd data={buildEventsJsonLd(events.slice(0, 3), settings)} />
       {/* 1. Hero */}
       <section className="relative overflow-hidden bg-cream pb-24 pt-20 sm:pb-32 sm:pt-36 md:pb-section md:pt-44">
         <div
@@ -107,7 +133,7 @@ export default async function HomePage() {
           aria-hidden="true"
         />
         <Container className="relative">
-          <MotionReveal className="mx-auto max-w-3xl text-center">
+          <div className="mx-auto max-w-3xl text-center">
             <h1 className="text-balance text-[1.75rem] leading-[1.1] tracking-tight sm:text-display">
               {hero?.headline?.trim() ||
                 placeholderHomePage.hero?.headline ||
@@ -144,7 +170,7 @@ export default async function HomePage() {
                 </Button>
               </div>
             </div>
-          </MotionReveal>
+          </div>
         </Container>
       </section>
 

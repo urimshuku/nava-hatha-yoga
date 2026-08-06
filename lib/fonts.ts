@@ -18,7 +18,7 @@ export const fontHeading = localFont({
 });
 
 export const fontBody = localFont({
-  src: "../assets/fonts/Montserrat[wght].ttf",
+  src: "../assets/fonts/Montserrat[wght].woff2",
   weight: "400 500",
   display: "swap",
   variable: "--font-body",

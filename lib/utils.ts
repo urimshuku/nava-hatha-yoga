@@ -343,19 +343,3 @@ export function composeEventTimeLabel(input: {
   return legacy || undefined;
 }
 
-/** Subtle, shared Framer Motion variants. Respects reduced-motion via CSS. */
-export const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
-  },
-};
-
-export const stagger = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.08 },
-  },
-};

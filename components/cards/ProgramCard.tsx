@@ -1,9 +1,19 @@
 import Link from "next/link";
+import type { ElementType } from "react";
 
 import { ProgramImage } from "@/components/ui/ProgramImage";
 import type { ProgramListItem } from "@/sanity/lib/types";
 
-export function ProgramCard({ program }: { program: ProgramListItem }) {
+export function ProgramCard({
+  program,
+  headingLevel = 3,
+}: {
+  program: ProgramListItem;
+  /** Use 2 on listing pages without a section h2; keep 3 under an existing h2. */
+  headingLevel?: 2 | 3;
+}) {
+  const TitleTag = `h${headingLevel}` as ElementType;
+
   return (
     <Link
       href={`/programs/${program.slug}`}
@@ -21,7 +31,9 @@ export function ProgramCard({ program }: { program: ProgramListItem }) {
         />
       </div>
       <div className="flex flex-1 flex-col p-4 sm:p-6">
-        <h3 className="font-heading text-xl text-charcoal sm:text-2xl">{program.title}</h3>
+        <TitleTag className="font-heading text-xl text-charcoal sm:text-2xl">
+          {program.title}
+        </TitleTag>
         {program.shortIntro ? (
           <p className="mt-1.5 line-clamp-3 text-sm leading-relaxed text-brown sm:mt-2">
             {program.shortIntro}
@@ -29,7 +41,10 @@ export function ProgramCard({ program }: { program: ProgramListItem }) {
         ) : null}
         <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-saffron sm:mt-4">
           Learn more
-          <span aria-hidden="true" className="transition-transform duration-300 ease-calm group-hover:translate-x-1">
+          <span
+            aria-hidden="true"
+            className="transition-transform duration-300 ease-calm group-hover:translate-x-1"
+          >
             &rarr;
           </span>
         </span>

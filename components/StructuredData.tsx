@@ -1,4 +1,4 @@
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/constants";
+import { buildOrganizationJsonLd } from "@/lib/structured-data";
 import type { SiteSettings } from "@/sanity/lib/types";
 
 /**
@@ -6,27 +6,7 @@ import type { SiteSettings } from "@/sanity/lib/types";
  * Rendered once site-wide.
  */
 export function StructuredData({ settings }: { settings?: SiteSettings }) {
-  const socialUrls = settings?.social
-    ?.map((link) => link.url)
-    .filter((url): url is string => Boolean(url));
-
-  const data = {
-    "@context": "https://schema.org",
-    "@type": "HealthAndBeautyBusiness",
-    name: settings?.brandName || SITE_NAME,
-    description: settings?.description || SITE_DESCRIPTION,
-    url: SITE_URL,
-    ...(settings?.email ? { email: settings.email } : {}),
-    ...(settings?.phone ? { telephone: settings.phone } : {}),
-    ...(socialUrls?.length ? { sameAs: socialUrls } : {}),
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Saranda",
-      addressCountry: "AL",
-    },
-    areaServed: settings?.location || "Saranda, Albania",
-    knowsAbout: "Classical Hatha Yoga",
-  };
+  const data = buildOrganizationJsonLd(settings);
 
   return (
     <script

@@ -7,12 +7,18 @@ import type { ReactNode } from "react";
 import { EventCard } from "@/components/cards/EventCard";
 import { ProgramWatchButton } from "@/components/content/ProgramYouTubeSection";
 import { CMSRichText } from "@/components/content/CMSRichText";
+import { JsonLd } from "@/components/JsonLd";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
 import { LocalProgramSymbol } from "@/components/ui/LocalProgramSymbol";
 import { ProgramImage } from "@/components/ui/ProgramImage";
 import { buildMetadata } from "@/lib/seo";
+import {
+  buildBreadcrumbJsonLd,
+  buildCourseJsonLd,
+  buildEventsJsonLd,
+} from "@/lib/structured-data";
 import { ensureTrailingPeriod } from "@/lib/utils";
 import {
   PROGRAM_AFTER_PROGRAM_TITLE,
@@ -126,6 +132,17 @@ export default async function ProgramDetailPage({ params }: PageProps) {
 
   return (
     <>
+      <JsonLd
+        data={[
+          buildCourseJsonLd(program, settings),
+          buildBreadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Programs", path: "/programs" },
+            { name: program.title, path: `/programs/${program.slug}` },
+          ]),
+          ...buildEventsJsonLd(relatedEvents.slice(0, 3), settings),
+        ]}
+      />
       <section className="border-b border-border bg-ivory pb-10 pt-10 sm:pb-section-sm sm:pt-16 md:pt-40">
         <Container>
           <div className="mx-auto max-w-3xl text-center">

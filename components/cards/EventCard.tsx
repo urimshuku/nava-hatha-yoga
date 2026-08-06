@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { ReactNode } from "react";
+import type { ElementType, ReactNode } from "react";
 
 import { IconWhatsApp } from "@/components/ui/BrandIcons";
 import { Button } from "@/components/ui/Button";
@@ -19,6 +19,8 @@ interface EventCardProps {
   event: YogaEvent;
   whatsappNumber?: string;
   experienceNote?: string;
+  /** Use 2 on /events (under page h1); keep 3 under an existing section h2. */
+  headingLevel?: 2 | 3;
 }
 
 function IconCalendar() {
@@ -189,7 +191,9 @@ export function EventCard({
   event,
   whatsappNumber,
   experienceNote,
+  headingLevel = 3,
 }: EventCardProps) {
+  const TitleTag = `h${headingLevel}` as ElementType;
   const waMessage = `Hello, I'd like to register for "${event.title}".`;
   const waHref = whatsappNumber
     ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(waMessage)}`
@@ -243,7 +247,9 @@ export function EventCard({
               className="h-7 w-7 shrink-0 object-contain opacity-90"
             />
           ) : null}
-          <h3 className="font-heading text-xl text-charcoal sm:text-[1.75rem]">{event.title}</h3>
+          <TitleTag className="font-heading text-xl text-charcoal sm:text-[1.75rem]">
+            {event.title}
+          </TitleTag>
         </div>
 
         {summary ? (

@@ -110,7 +110,10 @@ export const programsQuery = groq`
 `;
 
 export const programSlugsQuery = groq`
-  *[_type == "program" && published == true && defined(slug.current)].slug.current
+  *[_type == "program" && published == true && defined(slug.current)]{
+    "slug": slug.current,
+    "_updatedAt": _updatedAt
+  }
 `;
 
 export const programBySlugQuery = groq`
@@ -178,7 +181,10 @@ export const retreatsQuery = groq`
 `;
 
 export const retreatSlugsQuery = groq`
-  *[_type == "retreat" && published == true && defined(slug.current)].slug.current
+  *[_type == "retreat" && published == true && defined(slug.current)]{
+    "slug": slug.current,
+    "_updatedAt": _updatedAt
+  }
 `;
 
 export const retreatBySlugQuery = groq`

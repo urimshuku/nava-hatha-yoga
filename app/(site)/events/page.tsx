@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { EventCard } from "@/components/cards/EventCard";
+import { JsonLd } from "@/components/JsonLd";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
@@ -10,6 +11,7 @@ import { MotionItem, MotionStagger } from "@/components/ui/Motion";
 import { PageHero } from "@/components/ui/PageHero";
 import { placeholderEventsPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
+import { buildEventsJsonLd } from "@/lib/structured-data";
 import {
   getEventsPage,
   getPrograms,
@@ -41,6 +43,7 @@ export default async function EventsPage() {
 
   return (
     <>
+      <JsonLd data={buildEventsJsonLd(events, settings)} />
       <PageHero
         eyebrow={page.heroEyebrow?.trim() || placeholderEventsPage.heroEyebrow}
         title={page.heroTitle?.trim() || placeholderEventsPage.heroTitle || ""}
@@ -59,6 +62,7 @@ export default async function EventsPage() {
                     event={event}
                     whatsappNumber={settings.whatsapp}
                     experienceNote={settings.eventExperienceNote}
+                    headingLevel={2}
                   />
                 </MotionItem>
               ))}
