@@ -26,7 +26,7 @@ export default async function ProgramsPage() {
       <PageHero
         eyebrow="Programs & Offerings"
         title="Classical Hatha Yoga practices"
-        description="Core programs form the foundation of the practice. Special programs address specific needs and can be explored alongside them."
+        description="Core programs form the foundation of the practice. Special programs address specific needs, and free offerings provide open resources to begin exploring Classical Hatha Yoga."
       />
 
       <Section tone="cream">

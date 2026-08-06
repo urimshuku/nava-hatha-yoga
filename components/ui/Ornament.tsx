@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Nava celestial divider — sun, tapering rules, and inward crescents.
+ * Nava decorative divider — gentle wave rule.
  * Uses the brand SVG asset. Decorative only.
  */
 export function Ornament({
   className,
-  width = "w-52 sm:w-80",
+  width = "w-52 sm:w-72",
 }: {
   className?: string;
   width?: string;
@@ -20,8 +20,8 @@ export function Ornament({
       <img
         src="/images/nava-divider.svg"
         alt=""
-        width={1507}
-        height={245}
+        width={360}
+        height={28}
         className={cn("h-auto max-w-full", width)}
         decoding="async"
       />

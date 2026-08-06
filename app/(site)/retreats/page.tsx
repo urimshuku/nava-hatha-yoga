@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { RetreatCard } from "@/components/cards/RetreatCard";
+import { PartnerProgramsSection } from "@/components/content/PartnerProgramsSection";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
@@ -11,7 +12,7 @@ import { Ornament } from "@/components/ui/Ornament";
 import { PageHero } from "@/components/ui/PageHero";
 import { placeholderRetreatsPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
-import { getRetreats, getRetreatsPage } from "@/sanity/lib/fetch";
+import { getRetreats, getRetreatsPage, getSiteSettings } from "@/sanity/lib/fetch";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getRetreatsPage();
@@ -25,7 +26,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RetreatsPage() {
-  const [retreats, page] = await Promise.all([getRetreats(), getRetreatsPage()]);
+  const [retreats, page, settings] = await Promise.all([
+    getRetreats(),
+    getRetreatsPage(),
+    getSiteSettings(),
+  ]);
   const hasRetreats = retreats.length > 0;
 
   const expectations =
@@ -37,10 +42,8 @@ export default async function RetreatsPage() {
     <>
       <PageHero
         eyebrow="Retreats & Partner Programs"
-        title={page.heroTitle?.trim() || placeholderRetreatsPage.heroTitle}
-        description={
-          page.heroDescription?.trim() || placeholderRetreatsPage.heroDescription
-        }
+        title={placeholderRetreatsPage.heroTitle}
+        description={placeholderRetreatsPage.heroDescription}
       />
 
       {hasRetreats ? (
@@ -115,6 +118,8 @@ export default async function RetreatsPage() {
           </Section>
         </>
       )}
+
+      <PartnerProgramsSection whatsappNumber={settings.whatsapp} />
     </>
   );
 }

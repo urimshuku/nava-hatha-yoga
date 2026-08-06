@@ -828,9 +828,9 @@ export const placeholderContactPage: ContactPage = {
 };
 
 export const placeholderRetreatsPage: RetreatsPage = {
-  heroTitle: "Immersive retreats",
+  heroTitle: "Immersive retreats & partner programs",
   heroDescription:
-    "Immersive weekends in quiet settings — devoted to Classical Hatha Yoga, sattvic meals and time in nature.",
+    "Immersive weekends in quiet settings, and collaborations with welcoming spaces — devoted to Classical Hatha Yoga, sattvic meals and time in nature.",
   comingSoonHeading: "Retreats are on their way",
   comingSoonBody:
     "We are carefully preparing immersive Classical Hatha Yoga retreats. If you would like to be among the first to hear when dates are announced, please register your interest.",

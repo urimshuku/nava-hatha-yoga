@@ -14,7 +14,7 @@ export const retreatsPage = defineType({
       title: "Page title",
       type: "string",
       group: "content",
-      initialValue: "Immersive retreats",
+      initialValue: "Immersive retreats & partner programs",
     }),
     defineField({
       name: "heroDescription",
