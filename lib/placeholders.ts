@@ -784,10 +784,19 @@ const scheduledEvents: ScheduledEvent[] = [
     title: "Surya Kriya",
     year: 2026,
     month: 9,
-    startDay: 4,
+    startDay: 5,
     endDay: 6,
     ageRequirement: "14+",
     priceLabel: "150€",
+    schedule: {
+      durationLabel: "3 sessions / 2 hours",
+      sessionCount: 3,
+      sessionLines: [
+        "5 September: 17:30 – 19:30",
+        "6 September: 07:30 – 09:30",
+        "6 September: 17:30 – 19:30",
+      ],
+    },
   },
   {
     id: "surya-kriya-tirana-sep-2026",
@@ -805,8 +814,8 @@ const scheduledEvents: ScheduledEvent[] = [
       sessionCount: 3,
       sessionLines: [
         "12 September: 17:30 – 19:30",
+        "13 September: 07:30 – 09:30",
         "13 September: 17:30 – 19:30",
-        "13 September: 19:30 – 21:30",
       ],
     },
   },

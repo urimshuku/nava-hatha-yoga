@@ -51,7 +51,7 @@ export const ABOUT_PAGE_HERO_TITLE =
 
 /** Footer certification badge (local file only). */
 export const FOOTER_CERTIFICATION_LOGO = {
-  src: "/images/Sadhguru_Gurukulam_Logo.avif",
+  src: "/images/Sadhguru_Gurukulam_Logo.webp",
   alt: "Isha Hatha Yoga Certified Teacher",
   width: 512,
   height: 135,

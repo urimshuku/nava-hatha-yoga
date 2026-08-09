@@ -28,7 +28,7 @@ const ABOUT_SECTION_IMAGES: Record<string, string> = {
   "teacher-linda": "/images/about/teacher-linda.png",
 };
 
-const FOOTER_CERTIFICATION_LOGO_SRC = "/images/Sadhguru_Gurukulam_Logo.avif";
+const FOOTER_CERTIFICATION_LOGO_SRC = "/images/Sadhguru_Gurukulam_Logo.webp";
 
 export function programImageSrc(slug: string): string | null {
   return PROGRAM_IMAGES[slug] ?? null;

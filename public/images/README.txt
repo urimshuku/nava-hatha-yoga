@@ -3,12 +3,14 @@ Local images (not managed in Sanity)
 
 Footer certification logo
 -------------------------
-Save your badge as ONE of:
+Active file (wired in lib/local-images.ts):
 
-  Sadhguru_Gurukulam_Logo.avif
-  Sadhguru_Gurukulam_Logo.png
-  Sadhguru_Gurukulam_Logo.jpg
   Sadhguru_Gurukulam_Logo.webp
+
+Do not use .avif for this badge: Cloudflare Image Transformations returns
+HTTP 415 when AVIF is used as a transform *source* (raw AVIF still serves).
+
+Original AVIF may remain on disk as a rebuild source only.
 
 Program photos
 --------------

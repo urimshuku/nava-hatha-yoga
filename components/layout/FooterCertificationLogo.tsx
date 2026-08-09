@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * Isha Hatha Yoga certified teacher badge — local file only.
- * Place at: public/images/Sadhguru_Gurukulam_Logo.avif (or .png / .webp)
+ * Place at: public/images/Sadhguru_Gurukulam_Logo.webp (or .png)
  */
 export function FooterCertificationLogo({ className }: { className?: string }) {
   const src = footerCertificationLogoSrc();
