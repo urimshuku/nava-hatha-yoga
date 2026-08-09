@@ -258,7 +258,7 @@ export function EventCard({
           </p>
         ) : null}
 
-        <dl className="mt-4 grid gap-4 sm:mt-5 sm:grid-cols-2 sm:gap-8">
+        <div className="mt-4 grid gap-4 sm:mt-5 sm:grid-cols-2 sm:gap-8">
           <div className="space-y-2.5 sm:space-y-3">
             {event.date ? (
               <EventDetailRow icon={<IconCalendar />} label="Date">
@@ -294,7 +294,7 @@ export function EventCard({
               </EventDetailRow>
             </div>
           ) : null}
-        </dl>
+        </div>
 
         {event.notes && event.notes.length > 0 ? (
           <div className="mt-4 rounded-lg border border-border/70 bg-cream/60 px-3.5 py-3 sm:mt-5 sm:px-5 sm:py-3.5">

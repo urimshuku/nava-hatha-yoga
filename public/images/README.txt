@@ -14,19 +14,12 @@ Original AVIF may remain on disk as a rebuild source only.
 
 Program photos
 --------------
-Save each program image in the programs/ folder using the program slug as the filename:
+Save each program image in the programs/ folder using the program slug as the filename
+(prefer .webp; .jpg / .png also work):
 
-  programs/angamardana.jpg
-  programs/bhastrika-kriya.jpg
-  programs/bhuta-shuddhi.jpg
-  programs/eye-care-practices.jpg
-  programs/jala-neti.jpg
-  programs/pavanamuktasana.jpg
-  programs/shanmukhi-mudra.jpg
-  programs/surya-kriya.jpg
-  programs/surya-shakti.jpg
-  programs/thoppukarnam.jpg
-  programs/yogasanas.jpg
+  programs/angamardana.webp
+  programs/bhastrika-kriya.webp
+  …
 
 About page photos
 -----------------
@@ -36,6 +29,10 @@ Save each about section image in the about/ folder using a slug derived from the
   about/isha-yoga-center.jpg
   about/isha-hatha-yoga-teacher-training.jpg
   about/isha-foundation.jpg
+  about/teacher-linda.webp
+
+Brand logos (wired in lib/constants.ts) use optimized .webp sources at display-appropriate sizes.
+Original PNGs may remain on disk as rebuild sources only.
 
 Supported formats: .webp, .jpg, .jpeg, .png, .avif
 

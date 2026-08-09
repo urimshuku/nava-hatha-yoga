@@ -1,6 +1,6 @@
 const PROGRAM_IMAGES: Record<string, string> = {
   angamardana: "/images/programs/angamardana.webp",
-  "bhastrika-kriya": "/images/programs/bhastrika-kriya.jpg",
+  "bhastrika-kriya": "/images/programs/bhastrika-kriya.webp",
   "bhuta-shuddhi": "/images/programs/bhuta-shuddhi.webp",
   "childrens-program": "/images/programs/childrens-program.jpg",
   "eye-care-practices": "/images/programs/eye-care-practices.webp",
@@ -25,7 +25,7 @@ const ABOUT_SECTION_IMAGES: Record<string, string> = {
   "isha-hatha-yoga-teacher-training": "/images/about/isha-hatha-yoga-teacher-training.jpg",
   "isha-yoga-center": "/images/about/isha-yoga-center.jpg",
   sadhguru: "/images/about/sadhguru.jpg",
-  "teacher-linda": "/images/about/teacher-linda.png",
+  "teacher-linda": "/images/about/teacher-linda.webp",
 };
 
 const FOOTER_CERTIFICATION_LOGO_SRC = "/images/Sadhguru_Gurukulam_Logo.webp";

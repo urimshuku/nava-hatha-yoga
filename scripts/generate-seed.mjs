@@ -115,7 +115,7 @@ const MAIN_PROGRAM_SLUGS = [
 
 const PROGRAM_IMAGES = {
   angamardana: "images/programs/angamardana.webp",
-  "bhastrika-kriya": "images/programs/bhastrika-kriya.jpg",
+  "bhastrika-kriya": "images/programs/bhastrika-kriya.webp",
   "bhuta-shuddhi": "images/programs/bhuta-shuddhi.webp",
   "childrens-program": "images/programs/childrens-program.jpg",
   "eye-care-practices": "images/programs/eye-care-practices.webp",
@@ -663,7 +663,7 @@ docs.push({
   teacherStory: {
     nameLine: "My name is Linda.",
     photo: imageAsset(
-      "images/about/teacher-linda.png",
+      "images/about/teacher-linda.webp",
       "Linda, Classical Hatha Yoga teacher at Nava Hatha Yoga",
     ),
     teaser: [

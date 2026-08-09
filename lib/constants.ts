@@ -9,42 +9,42 @@ export const SITE_TAGLINE = "In balance, life unfolds.";
 
 /** Horizontal brand logo (with wordmark). */
 export const BRAND_LOGO = {
-  src: "/images/nava-hatha-yoga-logo.png",
+  src: "/images/nava-hatha-yoga-logo.webp",
   alt: "Nava Hatha Yoga",
-  width: 1024,
-  height: 731,
+  width: 520,
+  height: 371,
 } as const;
 
 /** Combined header logo (symbol + wordmark). */
 export const BRAND_LOGO_HEADER = {
-  src: "/images/nava-hatha-yoga-header-logo.png",
+  src: "/images/nava-hatha-yoga-header-logo.webp",
   alt: "Nava Hatha Yoga",
-  width: 1718,
-  height: 720,
+  width: 400,
+  height: 168,
 } as const;
 
 /** Symbol-only brand mark. */
 export const BRAND_LOGO_SYMBOL = {
-  src: "/images/nava-logo-symbol-v2.png",
+  src: "/images/nava-logo-symbol-v2.webp",
   alt: "Nava Hatha Yoga",
-  width: 1024,
-  height: 1024,
+  width: 256,
+  height: 256,
 } as const;
 
 /** Text wordmark (used to build header logo). */
 export const BRAND_LOGO_WORDMARK = {
-  src: "/images/nava-hatha-yoga-wordmark.png",
+  src: "/images/nava-hatha-yoga-wordmark.webp",
   alt: "Nava Hatha Yoga",
-  width: 1024,
-  height: 323,
+  width: 256,
+  height: 81,
 } as const;
 
 /** Full vertical brand logo (footer). */
 export const BRAND_LOGO_FULL = {
-  src: "/images/nava-hatha-yoga-logo-full.png",
+  src: "/images/nava-hatha-yoga-logo-full.webp",
   alt: "Nava Hatha Yoga",
-  width: 1024,
-  height: 1024,
+  width: 320,
+  height: 320,
 } as const;
 export const ABOUT_PAGE_HERO_TITLE =
   "Classical Hatha Yoga, taught with care.";

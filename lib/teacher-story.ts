@@ -2,7 +2,7 @@ export const TEACHER_NAME_LINE = "My name is Linda.";
 
 export const TEACHER_STORY_TITLE = "My Full Story";
 
-export const TEACHER_PHOTO_SRC = "/images/about/teacher-linda.png";
+export const TEACHER_PHOTO_SRC = "/images/about/teacher-linda.webp";
 export const TEACHER_PHOTO_ALT =
   "Linda, Classical Hatha Yoga teacher at Nava Hatha Yoga";
 

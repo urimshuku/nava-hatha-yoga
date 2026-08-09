@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
@@ -84,13 +85,20 @@ function loadYouTubeAPI(): Promise<void> {
   return youtubeApiPromise;
 }
 
+/**
+ * Click-to-load YouTube embed: shows a static thumbnail until the visitor
+ * interacts, then loads the iframe API and starts playback.
+ */
 export function YouTubeEmbed({ videoId, title = "YouTube video", className }: YouTubeEmbedProps) {
   const reactId = useId().replace(/:/g, "");
   const playerElementId = `yt-player-${reactId}`;
+  const [activated, setActivated] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const playerRef = useRef<YTPlayer | null>(null);
 
   useEffect(() => {
+    if (!activated) return;
+
     let cancelled = false;
 
     async function setup() {
@@ -107,6 +115,7 @@ export function YouTubeEmbed({ videoId, title = "YouTube video", className }: Yo
           rel: 0,
           modestbranding: 1,
           playsinline: 1,
+          autoplay: 1,
         },
         events: {
           onStateChange: (event) => {
@@ -125,7 +134,7 @@ export function YouTubeEmbed({ videoId, title = "YouTube video", className }: Yo
       playerRef.current?.destroy();
       playerRef.current = null;
     };
-  }, [playerElementId, videoId]);
+  }, [activated, playerElementId, videoId]);
 
   return (
     <div
@@ -134,14 +143,38 @@ export function YouTubeEmbed({ videoId, title = "YouTube video", className }: Yo
         className,
       )}
     >
-      <div id={playerElementId} className="h-full w-full" title={title} />
-      {!isPlaying ? (
-        <div
-          className="pointer-events-none absolute inset-0 z-10 bg-black/50"
-          style={OVERLAY_MASK_STYLE}
-          aria-hidden="true"
-        />
-      ) : null}
+      {activated ? (
+        <>
+          <div id={playerElementId} className="h-full w-full" title={title} />
+          {!isPlaying ? (
+            <div
+              className="pointer-events-none absolute inset-0 z-10 bg-black/50"
+              style={OVERLAY_MASK_STYLE}
+              aria-hidden="true"
+            />
+          ) : null}
+        </>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setActivated(true)}
+          className="absolute inset-0 z-10 block h-full w-full cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-saffron"
+          aria-label={`Play video: ${title}`}
+        >
+          <Image
+            src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
+            alt=""
+            fill
+            sizes="(max-width: 768px) 100vw, 720px"
+            className="object-cover"
+          />
+          <span
+            className="pointer-events-none absolute inset-0 bg-black/50"
+            style={OVERLAY_MASK_STYLE}
+            aria-hidden="true"
+          />
+        </button>
+      )}
     </div>
   );
 }

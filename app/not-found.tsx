@@ -1,20 +1,35 @@
-import Link from "next/link";
+import type { Metadata } from "next";
 
-export default function NotFound() {
+import { NotFoundContent } from "@/components/content/NotFoundContent";
+import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { getSiteSettings } from "@/sanity/lib/fetch";
+
+export const metadata: Metadata = {
+  title: "Page not found",
+  robots: { index: false, follow: false },
+};
+
+/**
+ * Global not-found (unknown URLs outside a matching segment).
+ * Mirrors site chrome so lost visitors still get header/footer navigation.
+ */
+export default async function RootNotFound() {
+  const settings = await getSiteSettings();
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-cream px-6 text-center">
-      <p className="eyebrow mb-5">Page not found</p>
-      <h1 className="text-display">This page rests elsewhere</h1>
-      <p className="section-lead mx-auto mt-5 max-w-md">
-        The page you are looking for could not be found. It may have moved, or the link may
-        be incomplete.
-      </p>
-      <Link
-        href="/"
-        className="mt-8 inline-flex items-center justify-center rounded-full bg-saffron px-7 py-3 text-sm font-medium text-ivory transition-colors hover:bg-saffron-hover"
+    <>
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-saffron focus:px-5 focus:py-2.5 focus:text-sm focus:font-medium focus:text-ivory"
       >
-        Return home
-      </Link>
-    </main>
+        Skip to content
+      </a>
+      <Header brandName={settings.brandName} />
+      <main id="main" className="min-h-screen bg-cream">
+        <NotFoundContent />
+      </main>
+      <Footer settings={settings} />
+    </>
   );
 }

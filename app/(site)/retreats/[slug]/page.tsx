@@ -14,6 +14,7 @@ import {
   buildRetreatEventJsonLd,
 } from "@/lib/structured-data";
 import { formatDate } from "@/lib/utils";
+import { urlForImage } from "@/sanity/lib/image";
 import { getRetreatBySlug, getRetreatSlugs, getSiteSettings } from "@/sanity/lib/fetch";
 
 interface PageProps {
@@ -29,11 +30,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const retreat = await getRetreatBySlug(slug);
   if (!retreat) return buildMetadata({ title: "Retreat", path: `/retreats/${slug}` });
+
+  const ogUrl = urlForImage(retreat.image)?.width(1200).height(630).fit("crop").url();
+
   return buildMetadata({
     title: retreat.title,
     description: retreat.description,
     seo: retreat.seo,
     path: `/retreats/${retreat.slug}`,
+    image: ogUrl
+      ? { url: ogUrl, width: 1200, height: 630, alt: retreat.title }
+      : undefined,
   });
 }
 
@@ -88,7 +95,7 @@ export default async function RetreatDetailPage({ params }: PageProps) {
               {retreat.gallery && retreat.gallery.length > 0 ? (
                 <div className="mt-12 border-t border-border pt-10">
                   <h2 className="mb-5 font-heading text-2xl text-charcoal">Gallery</h2>
-                  <Gallery images={retreat.gallery} />
+                  <Gallery images={retreat.gallery} title={retreat.title} />
                 </div>
               ) : null}
 

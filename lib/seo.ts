@@ -10,6 +10,13 @@ export const DEFAULT_OG_IMAGE = {
   height: 630,
 } as const;
 
+export type OgImageInput = {
+  url: string;
+  width?: number;
+  height?: number;
+  alt?: string;
+};
+
 interface BuildMetadataArgs {
   title?: string;
   description?: string;
@@ -18,6 +25,43 @@ interface BuildMetadataArgs {
   path?: string;
   noIndex?: boolean;
   siteName?: string;
+  /** Optional page-specific Open Graph / Twitter image (absolute or site-relative URL). */
+  image?: OgImageInput | string;
+}
+
+function resolveOgImage(
+  image: OgImageInput | string | undefined,
+  ogTitle: string,
+): {
+  url: string;
+  width: number;
+  height: number;
+  alt: string;
+} {
+  if (!image) {
+    return { ...DEFAULT_OG_IMAGE, alt: ogTitle };
+  }
+
+  if (typeof image === "string") {
+    const url = image.startsWith("http") ? image : new URL(image, SITE_URL).toString();
+    return {
+      url,
+      width: DEFAULT_OG_IMAGE.width,
+      height: DEFAULT_OG_IMAGE.height,
+      alt: ogTitle,
+    };
+  }
+
+  const url = image.url.startsWith("http")
+    ? image.url
+    : new URL(image.url, SITE_URL).toString();
+
+  return {
+    url,
+    width: image.width ?? DEFAULT_OG_IMAGE.width,
+    height: image.height ?? DEFAULT_OG_IMAGE.height,
+    alt: image.alt ?? ogTitle,
+  };
 }
 
 /**
@@ -30,6 +74,7 @@ export function buildMetadata({
   path = "/",
   noIndex = false,
   siteName = SITE_NAME,
+  image,
 }: BuildMetadataArgs = {}): Metadata {
   const resolvedTitle = seo?.title || title;
   const resolvedDescription = seo?.description || description || SITE_DESCRIPTION;
@@ -38,15 +83,13 @@ export function buildMetadata({
   const ogTitle = resolvedTitle
     ? `${resolvedTitle} · ${siteName}`
     : `${siteName} · Classical Hatha Yoga`;
-  const ogImage = {
-    ...DEFAULT_OG_IMAGE,
-    alt: ogTitle,
-  };
+  const ogImage = resolveOgImage(image, ogTitle);
 
   return {
     title: resolvedTitle,
     description: resolvedDescription,
-    alternates: { canonical },
+    // Avoid mixed signals: noindex pages should not self-canonicalize.
+    alternates: noIndex ? undefined : { canonical },
     robots: noIndex ? { index: false, follow: false } : { index: true, follow: true },
     openGraph: {
       type: "website",
@@ -61,7 +104,7 @@ export function buildMetadata({
       card: "summary_large_image",
       title: ogTitle,
       description: resolvedDescription,
-      images: [DEFAULT_OG_IMAGE.url],
+      images: [ogImage.url],
     },
   };
 }

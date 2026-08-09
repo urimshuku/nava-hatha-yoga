@@ -13,7 +13,7 @@ export const imageWithAlt = defineType({
       description:
         "Describe the image for screen readers and search engines (e.g. 'A practitioner in a seated posture').",
       validation: (rule) =>
-        rule.warning("Add alt text to keep the site accessible."),
+        rule.required().error("Add alt text describing the image for accessibility and SEO."),
     }),
   ],
 });

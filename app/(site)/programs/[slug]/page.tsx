@@ -20,6 +20,8 @@ import {
   buildEventsJsonLd,
 } from "@/lib/structured-data";
 import { ensureTrailingPeriod } from "@/lib/utils";
+import { programImageSrc } from "@/lib/local-images";
+import { urlForImage } from "@/sanity/lib/image";
 import {
   PROGRAM_AFTER_PROGRAM_TITLE,
   PROGRAM_BONUS_ITEMS,
@@ -81,11 +83,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const program = await getProgramBySlug(slug);
   if (!program) return buildMetadata({ title: "Program", path: `/programs/${slug}` });
+
+  const sanityOg = urlForImage(program.image)?.width(1200).height(630).fit("crop").url();
+  const localOg = programImageSrc(program.slug);
+
   return buildMetadata({
     title: program.title,
     description: program.shortIntro,
     seo: program.seo,
     path: `/programs/${program.slug}`,
+    image: sanityOg
+      ? { url: sanityOg, width: 1200, height: 630, alt: program.title }
+      : localOg
+        ? { url: localOg, width: 1200, height: 630, alt: program.title }
+        : undefined,
   });
 }
 
