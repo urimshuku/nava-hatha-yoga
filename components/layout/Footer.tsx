@@ -53,7 +53,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
 
           <div className="mt-8 grid grid-cols-2 gap-x-24 gap-y-6">
             <div>
-              <h2 className="eyebrow mb-4">Explore</h2>
+              <p className="eyebrow mb-4">Explore</p>
               <ul className="space-y-2.5 text-sm">
                 {NAV_LINKS.map((link) => (
                   <li key={link.href}>
@@ -69,7 +69,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
             </div>
 
             <div className="ml-3">
-              <h2 className="eyebrow mb-4">Legal</h2>
+              <p className="eyebrow mb-4">Legal</p>
               <ul className="space-y-2.5 text-sm">
                 {LEGAL_LINKS.map((link) => (
                   <li key={link.href}>
@@ -86,7 +86,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
           </div>
 
           <div className="mt-8">
-            <h2 className="eyebrow mb-4">Contact</h2>
+            <p className="eyebrow mb-4">Contact</p>
             <ul className="space-y-2.5 text-sm text-charcoal/80">
               {email ? (
                 <li>
@@ -138,7 +138,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
           </div>
 
           <div>
-            <h2 className="eyebrow mb-4">Explore</h2>
+            <p className="eyebrow mb-4">Explore</p>
             <ul className="space-y-2.5 text-sm">
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
@@ -154,7 +154,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
           </div>
 
           <div>
-            <h2 className="eyebrow mb-4">Legal</h2>
+            <p className="eyebrow mb-4">Legal</p>
             <ul className="space-y-2.5 text-sm">
               {LEGAL_LINKS.map((link) => (
                 <li key={link.href}>
@@ -170,7 +170,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
           </div>
 
           <div>
-            <h2 className="eyebrow mb-4">Contact</h2>
+            <p className="eyebrow mb-4">Contact</p>
             <ul className="space-y-2.5 text-sm text-charcoal/80">
               {email ? (
                 <li>
