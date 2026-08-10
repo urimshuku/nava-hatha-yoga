@@ -74,6 +74,7 @@ const HERO_GLOW = {
 };
 
 const DEFAULT_INTRO_HEADING = "What is Classical Hatha Yoga?";
+const DEFAULT_INTRO_VIDEO_TITLE = "The Incredible Power of Classical Hatha Yoga";
 
 export const revalidate = 60;
 
@@ -139,11 +140,11 @@ export default async function HomePage() {
                 placeholderHomePage.hero?.headline ||
                 "Nava Classical Hatha Yoga"}
             </h1>
-            <p className="mt-3 text-sm font-normal not-italic text-brown sm:mt-4 sm:text-xl">
-              {hero?.subtitle?.trim() ||
-                placeholderHomePage.hero?.subtitle ||
-                "Now in Albania, and Beyond."}
-            </p>
+            {hero?.subtitle?.trim() || placeholderHomePage.hero?.subtitle?.trim() ? (
+              <p className="mt-3 text-sm font-normal not-italic text-brown sm:mt-4 sm:text-xl">
+                {hero?.subtitle?.trim() || placeholderHomePage.hero?.subtitle}
+              </p>
+            ) : null}
             {hero?.supportingText?.trim() ? (
               <p className="hero-subtitle mt-5 sm:mt-7">{hero.supportingText}</p>
             ) : (
@@ -210,7 +211,7 @@ export default async function HomePage() {
             <MotionReveal delay={0.15} className="mt-8 sm:mt-12">
               <YouTubeEmbed
                 videoId={introVideoId}
-                title={home.intro?.heading ?? DEFAULT_INTRO_HEADING}
+                title={DEFAULT_INTRO_VIDEO_TITLE}
                 className="mx-auto max-w-3xl"
               />
             </MotionReveal>

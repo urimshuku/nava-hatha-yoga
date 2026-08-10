@@ -21,7 +21,7 @@ export const homePage = defineType({
           name: "subtitle",
           title: "Subtitle",
           type: "string",
-          description: 'e.g. "Now in Albania, and Beyond."',
+          description: "Optional line under the headline (leave empty for headline only).",
         },
         { name: "supportingText", title: "Supporting text", type: "text", rows: 3 },
         { name: "primaryCta", title: "Primary button", type: "ctaLink" },
