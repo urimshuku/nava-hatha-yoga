@@ -12,15 +12,14 @@ import { Ornament } from "@/components/ui/Ornament";
 import { PageHero } from "@/components/ui/PageHero";
 import { placeholderRetreatsPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
+import { PHASE1_RETREATS_SEO } from "@/lib/seo-phase1";
 import { getRetreats, getRetreatsPage, getSiteSettings } from "@/sanity/lib/fetch";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getRetreatsPage();
   return buildMetadata({
-    title: "Retreats & Partner Programs",
-    description:
-      page.heroDescription?.trim() ||
-      "Immersive Classical Hatha Yoga retreats and partner programs from Nava Hatha Yoga — coming soon.",
+    title: PHASE1_RETREATS_SEO.title,
+    description: PHASE1_RETREATS_SEO.description,
     seo: page.seo,
     path: "/retreats",
   });
@@ -47,10 +46,15 @@ export default async function RetreatsPage() {
         eyebrow={
           page.heroEyebrow?.trim() || placeholderRetreatsPage.heroEyebrow
         }
-        title={page.heroTitle?.trim() || placeholderRetreatsPage.heroTitle || ""}
+        title={
+          page.heroTitle?.trim() ||
+          placeholderRetreatsPage.heroTitle ||
+          PHASE1_RETREATS_SEO.heroTitle
+        }
         description={
           page.heroDescription?.trim() ||
-          placeholderRetreatsPage.heroDescription
+          placeholderRetreatsPage.heroDescription ||
+          PHASE1_RETREATS_SEO.heroDescription
         }
       />
 

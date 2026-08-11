@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { PrivateSessionsSection } from "@/components/content/PrivateSessionsSection";
 import { EventCard } from "@/components/cards/EventCard";
@@ -25,6 +26,7 @@ import {
 import { SITE_NAME, SPECIAL_PROGRAM_SLUGS } from "@/lib/constants";
 import { placeholderHomePage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
+import { PHASE1_HOME_SEO } from "@/lib/seo-phase1";
 import { buildEventsJsonLd } from "@/lib/structured-data";
 import { getYouTubeVideoId } from "@/lib/youtube";
 
@@ -36,14 +38,11 @@ export async function generateMetadata(): Promise<Metadata> {
     ? cmsTitle.includes(brandName)
       ? cmsTitle
       : `${cmsTitle} · ${brandName}`
-    : `Classical Hatha Yoga in Saranda, Albania · ${brandName}`;
+    : `${PHASE1_HOME_SEO.title} · ${brandName}`;
 
   const metadata = buildMetadata({
-    title: "Classical Hatha Yoga in Saranda, Albania",
-    description:
-      home.hero?.supportingText ??
-      settings.description ??
-      undefined,
+    title: PHASE1_HOME_SEO.title,
+    description: PHASE1_HOME_SEO.description,
     seo: {
       title: home.seo?.title ?? settings.seo?.title,
       description: home.seo?.description ?? settings.seo?.description,
@@ -205,6 +204,52 @@ export default async function HomePage() {
             </MotionReveal>
             <MotionReveal delay={0.1} className="max-w-prose">
               <CMSRichText value={home.intro?.body} className="sm:text-lg" />
+              <p className="mt-6 text-base leading-relaxed text-brown sm:text-lg">
+                These practices are offered in Albania, based in Saranda, and taught
+                in their traditional form. Begin with{" "}
+                <Link
+                  href="/programs/upa-yoga"
+                  className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
+                >
+                  Upa Yoga
+                </Link>
+                , explore{" "}
+                <Link
+                  href="/programs/surya-kriya"
+                  className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
+                >
+                  Surya Kriya
+                </Link>
+                ,{" "}
+                <Link
+                  href="/programs/yogasanas"
+                  className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
+                >
+                  Yogasanas
+                </Link>
+                ,{" "}
+                <Link
+                  href="/programs/angamardana"
+                  className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
+                >
+                  Angamardana
+                </Link>
+                , or{" "}
+                <Link
+                  href="/programs/bhuta-shuddhi"
+                  className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
+                >
+                  Bhuta Shuddhi
+                </Link>
+                — or{" "}
+                <Link
+                  href="/about"
+                  className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
+                >
+                  meet the teacher
+                </Link>
+                .
+              </p>
             </MotionReveal>
           </div>
           {introVideoId ? (
@@ -231,7 +276,7 @@ export default async function HomePage() {
               }
               description={
                 featuredSection?.description ??
-                "Each program is a complete practice within the Classical Hatha Yoga system."
+                "Each program is a complete practice within the Classical Hatha Yoga system, taught as intended. Explore a practice and register your interest for upcoming sessions."
               }
             />
           </MotionReveal>

@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/Button";
 import { LocalProgramSymbol } from "@/components/ui/LocalProgramSymbol";
 import { ProgramImage } from "@/components/ui/ProgramImage";
 import { buildMetadata } from "@/lib/seo";
+import { PHASE1_PROGRAM_SEO } from "@/lib/seo-phase1";
 import {
   buildBreadcrumbJsonLd,
   buildCourseJsonLd,
@@ -87,9 +88,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const sanityOg = urlForImage(program.image)?.width(1200).height(630).fit("crop").url();
   const localOg = programImageSrc(program.slug);
 
+  const phase1 = PHASE1_PROGRAM_SEO[program.slug];
+
   return buildMetadata({
-    title: program.title,
-    description: program.shortIntro,
+    title: phase1?.title ?? program.title,
+    description: phase1?.description ?? program.shortIntro,
     seo: program.seo,
     path: `/programs/${program.slug}`,
     image: sanityOg
@@ -140,6 +143,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
     program.intensity ?? getProgramIntensity(program.slug);
   const hasAfterProgram = hasRichText(program.practiceIndependently);
   const hasSidebarSessions = hasRichText(program.privateAndGroupSessions);
+  const phase1 = PHASE1_PROGRAM_SEO[program.slug];
 
   return (
     <>
@@ -167,6 +171,11 @@ export default async function ProgramDetailPage({ params }: PageProps) {
             <h1 className="text-display text-balance">{program.title}</h1>
             {program.shortIntro ? (
               <p className="hero-subtitle mt-4 sm:mt-6">{program.shortIntro}</p>
+            ) : null}
+            {phase1?.contextLine ? (
+              <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-brown sm:mt-5 sm:text-base">
+                {phase1.contextLine}
+              </p>
             ) : null}
           </div>
         </Container>
@@ -325,6 +334,23 @@ export default async function ProgramDetailPage({ params }: PageProps) {
                   <Button href="/contact" variant="secondary" className="w-full">
                     Register interest
                   </Button>
+                  {phase1?.related?.length ? (
+                    <p className="pt-2 text-sm leading-relaxed text-brown">
+                      Related:{" "}
+                      {phase1.related.map((item, index) => (
+                        <span key={item.href}>
+                          {index > 0 ? ", " : null}
+                          <Link
+                            href={item.href}
+                            className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
+                          >
+                            {item.label}
+                          </Link>
+                        </span>
+                      ))}
+                      .
+                    </p>
+                  ) : null}
                 </div>
               </div>
             </aside>

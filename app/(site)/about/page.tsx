@@ -6,10 +6,12 @@ import { AboutSectionBlock } from "@/components/content/AboutSectionBlock";
 import { CMSRichText } from "@/components/content/CMSRichText";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
+import { CTASection } from "@/components/ui/CTASection";
 import { PageHero } from "@/components/ui/PageHero";
 import { ABOUT_PAGE_HERO_TITLE } from "@/lib/constants";
 import { placeholderAboutPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
+import { PHASE1_ABOUT_SEO } from "@/lib/seo-phase1";
 import {
   DEFAULT_TEACHER_STORY,
   type ResolvedTeacherStory,
@@ -58,10 +60,8 @@ function AboutPageHeroTitle({ title }: { title?: string }): ReactNode {
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutPage();
   return buildMetadata({
-    title: "About",
-    description:
-      about.heroDescription?.trim() ||
-      "About Nava Hatha Yoga — Classical Hatha Yoga taught in its original form in Saranda, Albania.",
+    title: PHASE1_ABOUT_SEO.title,
+    description: PHASE1_ABOUT_SEO.description,
     seo: about.seo,
     path: "/about",
   });
@@ -111,6 +111,13 @@ export default async function AboutPage() {
           tone={index % 2 === 0 ? "cream" : "ivory"}
         />
       ))}
+
+      <CTASection
+        heading="Explore the practices"
+        body="Discover Classical Hatha Yoga programs taught as intended, or register your interest for upcoming sessions in Albania."
+        ctaLabel="View programs"
+        ctaHref="/programs"
+      />
     </>
   );
 }

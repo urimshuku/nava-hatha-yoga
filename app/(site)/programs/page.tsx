@@ -9,15 +9,14 @@ import { PageHero } from "@/components/ui/PageHero";
 import { partitionProgramsByCategory } from "@/lib/constants";
 import { placeholderHomePage, placeholderProgramsPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
+import { PHASE1_PROGRAMS_PAGE_SEO } from "@/lib/seo-phase1";
 import { getHomePage, getPrograms, getProgramsPage } from "@/sanity/lib/fetch";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getProgramsPage();
   return buildMetadata({
-    title: "Programs & Offerings",
-    description:
-      page.heroDescription?.trim() ||
-      "Explore the Classical Hatha Yoga programs and offerings at Nava Hatha Yoga, each taught in its original, traditional form.",
+    title: PHASE1_PROGRAMS_PAGE_SEO.title,
+    description: PHASE1_PROGRAMS_PAGE_SEO.description,
     seo: page.seo,
     path: "/programs",
   });
@@ -38,10 +37,15 @@ export default async function ProgramsPage() {
     <>
       <PageHero
         eyebrow={page.heroEyebrow?.trim() || placeholderProgramsPage.heroEyebrow}
-        title={page.heroTitle?.trim() || placeholderProgramsPage.heroTitle || ""}
+        title={
+          page.heroTitle?.trim() ||
+          placeholderProgramsPage.heroTitle ||
+          PHASE1_PROGRAMS_PAGE_SEO.heroTitle
+        }
         description={
           page.heroDescription?.trim() ||
-          placeholderProgramsPage.heroDescription
+          placeholderProgramsPage.heroDescription ||
+          PHASE1_PROGRAMS_PAGE_SEO.heroDescription
         }
       />
 
