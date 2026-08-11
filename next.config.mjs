@@ -18,6 +18,14 @@ const nextConfig = {
       },
     ];
   },
+  // Static metadata icons are emitted as /icon.png and /apple-icon.png; keep the
+  // short /icon and /apple-icon paths working (manifest + crawlers) via rewrite.
+  async rewrites() {
+    return [
+      { source: "/icon", destination: "/icon.png" },
+      { source: "/apple-icon", destination: "/apple-icon.png" },
+    ];
+  },
   images: {
     loader: "custom",
     loaderFile: "./image-loader.ts",
