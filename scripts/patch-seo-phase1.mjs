@@ -13,7 +13,7 @@ const client = getCliClient({ apiVersion: "2024-10-01" });
 const HOME = {
   title: "Classical Hatha Yoga in Albania",
   description:
-    "Authentic Classical Hatha Yoga in Albania — traditional practices taught as intended in Saranda, for clarity, balance, and inner transformation.",
+    "Authentic Classical Hatha Yoga in Albania — traditional practices taught as intended in Saranda & Tirana, for clarity, balance, and inner transformation.",
 };
 
 const PROGRAMS_PAGE = {

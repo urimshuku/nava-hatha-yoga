@@ -547,7 +547,7 @@ docs.push({
   brandName: "Nava Hatha Yoga",
   tagline: "In balance, life unfolds.",
   description:
-    "Nava Hatha Yoga offers Classical Hatha Yoga in Saranda, Albania — practices taught in their traditional form to support clarity, balance, and inner stability. Classes are in-person.",
+    "Nava Hatha Yoga offers Classical Hatha Yoga in Saranda & Tirana, Albania — practices taught in their traditional form to support clarity, balance, and inner stability. Classes are in-person.",
   email: "info@navahathayoga.com",
   phone: "+355 69 939 1791",
   whatsapp: "355699391791",
@@ -617,7 +617,7 @@ docs.push({
   upcomingEventsSection: {
     eyebrow: "Events",
     title: "Upcoming events",
-    description: "All classes are currently held in person in Saranda, Albania.",
+    description: "Classes are held in person in Saranda and Tirana, Albania.",
     emptyTitle: "New events are being scheduled",
     emptyDescription:
       "There are no events listed right now. Please check back soon or get in touch to register your interest.",

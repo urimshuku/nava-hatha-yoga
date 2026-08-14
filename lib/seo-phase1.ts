@@ -5,7 +5,7 @@
 export const PHASE1_HOME_SEO = {
   title: "Classical Hatha Yoga in Albania",
   description:
-    "Authentic Classical Hatha Yoga in Albania — traditional practices taught as intended in Saranda, for clarity, balance, and inner transformation.",
+    "Authentic Classical Hatha Yoga in Albania — traditional practices taught as intended in Saranda & Tirana, for clarity, balance, and inner transformation.",
 } as const;
 
 export const PHASE1_PROGRAMS_PAGE_SEO = {

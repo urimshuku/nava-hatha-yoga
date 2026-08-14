@@ -304,7 +304,7 @@ export default async function HomePage() {
               title={eventsSection?.title ?? "Upcoming events"}
               description={
                 eventsSection?.description ??
-                "All classes are currently held in person in Saranda, Albania."
+                "Classes are held in person in Saranda and Tirana, Albania."
               }
             />
           </MotionReveal>

@@ -504,7 +504,7 @@ export const placeholderHomePage: HomePage = {
   upcomingEventsSection: {
     eyebrow: "Events",
     title: "Upcoming events",
-    description: "All classes are currently held in person in Saranda, Albania.",
+    description: "Classes are held in person in Saranda and Tirana, Albania.",
     emptyTitle: "New events are being scheduled",
     emptyDescription:
       "There are no events listed right now. Please check back soon or get in touch to register your interest.",
