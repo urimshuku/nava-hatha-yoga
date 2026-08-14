@@ -23,6 +23,8 @@ export const aboutPage = defineType({
       rows: 3,
       group: "content",
       description: "Short text shown below the page title.",
+      initialValue:
+        "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended, based in Saranda & Tirana.",
     }),
     defineField({
       name: "intro",

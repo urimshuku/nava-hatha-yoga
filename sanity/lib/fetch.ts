@@ -189,9 +189,25 @@ export async function getPastEvents(): Promise<PastEvent[]> {
   ]);
 }
 
-export async function getRetreats(): Promise<RetreatListItem[]> {
+function withDateBoundary<T extends { date?: string }>(
+  item: T,
+): T & EventBoundary {
+  return { ...item, date: item.date ?? "" };
+}
+
+async function getAllPublishedRetreats(): Promise<RetreatListItem[]> {
   const data = await sanityFetch<RetreatListItem[]>(Q.retreatsQuery);
   return data ?? placeholderRetreats;
+}
+
+export async function getRetreats(): Promise<RetreatListItem[]> {
+  return getUpcomingFrom(
+    (await getAllPublishedRetreats()).map(withDateBoundary),
+  );
+}
+
+export async function getPastRetreats(): Promise<RetreatListItem[]> {
+  return getPastFrom((await getAllPublishedRetreats()).map(withDateBoundary));
 }
 
 export async function getRetreatSlugEntries(): Promise<SlugEntry[]> {

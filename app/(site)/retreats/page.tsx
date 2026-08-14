@@ -25,6 +25,8 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
+export const revalidate = 60;
+
 export default async function RetreatsPage() {
   const [retreats, page, settings] = await Promise.all([
     getRetreats(),
@@ -69,6 +71,11 @@ export default async function RetreatsPage() {
                   </MotionItem>
                 ))}
               </MotionStagger>
+              <div className="mt-8 text-center sm:mt-12">
+                <Button href="/retreats/archive" variant="ghost">
+                  View past retreats &rarr;
+                </Button>
+              </div>
             </Container>
           </Section>
           <CTASection

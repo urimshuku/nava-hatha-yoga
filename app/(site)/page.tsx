@@ -205,7 +205,7 @@ export default async function HomePage() {
             <MotionReveal delay={0.1} className="max-w-prose">
               <CMSRichText value={home.intro?.body} className="sm:text-lg" />
               <p className="mt-6 text-base leading-relaxed text-brown sm:text-lg">
-                These practices are offered in Albania, based in Saranda, and taught
+                These practices are offered in Albania, based in Saranda & Tirana, and taught
                 in their traditional form. Begin with{" "}
                 <Link
                   href="/programs/upa-yoga"

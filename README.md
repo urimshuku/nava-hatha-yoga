@@ -71,7 +71,8 @@ Everything editable lives in the Sanity Studio:
 - **About Page** — teacher story and training background
 - **Programs** — add/edit/reorder programs, each with its own detail page
 - **Events** — upcoming events appear automatically; past events move to the archive
-- **Retreats** — CMS-ready (currently shown as "Coming Soon")
+- **Retreats Page** — hero, Coming Soon copy, and partner-program text for `/retreats` (not the retreats themselves)
+- **Retreats** — duplicate **Retreat template**, set dates, turn Published on, then click Publish. It appears on `/retreats` until the end date, then moves to `/retreats/archive`. Coming Soon shows when none are upcoming. Open **How to add a retreat** in Studio for the full steps.
 - **Legal Pages** — Terms, Privacy, Cookie policy
 
 ## Project structure
@@ -120,6 +121,6 @@ you're on Node 20.9+ and delete `node_modules` + `package-lock.json`, then
 
 ## Notes
 
-- All classes are currently **in-person only**. Retreats are "coming soon".
+- All classes are currently **in-person only**. Upcoming retreats appear from the CMS; `/retreats` shows Coming Soon when none are listed.
 - No online payments — registration is handled manually / in person.
 - Light-only visual system; restrained, accessible, responsive.

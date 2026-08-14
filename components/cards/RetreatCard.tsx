@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ElementType } from "react";
 
 import { SanityImage } from "@/components/ui/SanityImage";
-import { formatDate } from "@/lib/utils";
+import { formatDateRange } from "@/lib/utils";
 import type { RetreatListItem } from "@/sanity/lib/types";
 
 export function RetreatCard({
@@ -34,11 +34,7 @@ export function RetreatCard({
         {retreat.date || retreat.location ? (
           <p className="mb-1 text-[10px] uppercase tracking-wide text-brown sm:mb-2 sm:text-xs">
             {[
-              formatDate(retreat.date, {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              }),
+              formatDateRange(retreat.date, retreat.endDate),
               retreat.location,
             ]
               .filter(Boolean)

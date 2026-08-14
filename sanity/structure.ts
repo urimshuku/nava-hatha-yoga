@@ -1,5 +1,7 @@
 import type { StructureResolver } from "sanity/structure";
 
+import { RetreatHowTo } from "./components/RetreatHowTo";
+
 /** Document types that must only ever have a single, fixed-ID document. */
 export const SINGLETON_TYPES = new Set([
   "siteSettings",
@@ -66,6 +68,23 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
       S.documentTypeListItem("program").title("Programs"),
       S.documentTypeListItem("event").title("Events"),
+      S.listItem()
+        .title("How to add a retreat")
+        .id("retreat-how-to")
+        .child(
+          S.component(RetreatHowTo)
+            .id("retreat-how-to-pane")
+            .title("How to add a retreat"),
+        ),
+      S.listItem()
+        .title("Retreat template")
+        .id("retreat-test-preview")
+        .schemaType("retreat")
+        .child(
+          S.document()
+            .schemaType("retreat")
+            .documentId("retreat-test-preview"),
+        ),
       S.documentTypeListItem("retreat").title("Retreats"),
       S.divider(),
       S.documentTypeListItem("legalPage").title("Legal Pages"),

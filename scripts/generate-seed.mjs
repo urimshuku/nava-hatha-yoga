@@ -658,7 +658,7 @@ docs.push({
   _type: "aboutPage",
   title: "Classical Hatha Yoga, taught with care.",
   heroDescription:
-    "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended, based in Saranda.",
+    "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended, based in Saranda & Tirana.",
   teacherStory: {
     nameLine: "My name is Linda.",
     photo: imageAsset(

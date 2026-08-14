@@ -32,9 +32,9 @@ export const PHASE1_RETREATS_SEO = {
 export const PHASE1_ABOUT_SEO = {
   title: "Classical Hatha Yoga Teacher in Albania",
   description:
-    "Meet the Classical Hatha Yoga teacher behind Nava Hatha Yoga in Albania — certified training, traditional practices taught as intended, based in Saranda.",
+    "Meet the Classical Hatha Yoga teacher behind Nava Hatha Yoga in Albania — certified training, traditional practices taught as intended, based in Saranda & Tirana.",
   heroDescription:
-    "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended, based in Saranda.",
+    "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended, based in Saranda & Tirana.",
 } as const;
 
 export type Phase1ProgramSeo = {
@@ -52,7 +52,7 @@ export const PHASE1_PROGRAM_SEO: Record<string, Phase1ProgramSeo> = {
     description:
       "Learn Surya Kriya in Albania — a classical inner energy process taught in its traditional form, for balance, clarity, and inner stability.",
     contextLine:
-      "Surya Kriya is offered in Albania through Nava Hatha Yoga, based in Saranda, and taught in its traditional form.",
+      "Surya Kriya is offered in Albania through Nava Hatha Yoga, based in Saranda & Tirana, and taught in its traditional form.",
     related: [
       { href: "/programs/upa-yoga", label: "Upa Yoga" },
       { href: "/programs/yogasanas", label: "Yogasanas" },
@@ -63,7 +63,7 @@ export const PHASE1_PROGRAM_SEO: Record<string, Phase1ProgramSeo> = {
     description:
       "Learn Angamardana in Albania — a classical yogic system for mastery over the body, taught in its traditional form to build strength, vitality, and readiness for Hatha Yoga.",
     contextLine:
-      "Angamardana is offered in Albania through Nava Hatha Yoga, based in Saranda, and taught in its traditional form.",
+      "Angamardana is offered in Albania through Nava Hatha Yoga, based in Saranda & Tirana, and taught in its traditional form.",
     related: [
       { href: "/programs/yogasanas", label: "Yogasanas" },
       { href: "/programs/upa-yoga", label: "Upa Yoga" },
@@ -74,7 +74,7 @@ export const PHASE1_PROGRAM_SEO: Record<string, Phase1ProgramSeo> = {
     description:
       "Practice classical Yogasanas in Albania — traditional Hatha Yoga postures taught as intended, to transform body and mind toward lasting wellbeing.",
     contextLine:
-      "Yogasanas are offered in Albania through Nava Hatha Yoga, based in Saranda, and taught in their traditional form.",
+      "Yogasanas are offered in Albania through Nava Hatha Yoga, based in Saranda & Tirana, and taught in their traditional form.",
     related: [
       { href: "/programs/upa-yoga", label: "Upa Yoga" },
       { href: "/programs/angamardana", label: "Angamardana" },
@@ -85,7 +85,7 @@ export const PHASE1_PROGRAM_SEO: Record<string, Phase1ProgramSeo> = {
     description:
       "Learn Upa Yoga in Albania — a simple, powerful Classical Hatha practice that activates the joints, muscles, and energy system, taught in its traditional form.",
     contextLine:
-      "Upa Yoga is offered in Albania through Nava Hatha Yoga, based in Saranda, and taught in its traditional form — a natural starting point for many practitioners.",
+      "Upa Yoga is offered in Albania through Nava Hatha Yoga, based in Saranda & Tirana, and taught in its traditional form — a natural starting point for many practitioners.",
     related: [
       { href: "/programs/surya-kriya", label: "Surya Kriya" },
       { href: "/programs/yogasanas", label: "Yogasanas" },
@@ -96,7 +96,7 @@ export const PHASE1_PROGRAM_SEO: Record<string, Phase1ProgramSeo> = {
     description:
       "Bhuta Shuddhi in Albania — a classical process of elemental purification, taught in its traditional form to support deep inner cleansing and transformation.",
     contextLine:
-      "Bhuta Shuddhi is offered in Albania through Nava Hatha Yoga, based in Saranda, and taught in its traditional form.",
+      "Bhuta Shuddhi is offered in Albania through Nava Hatha Yoga, based in Saranda & Tirana, and taught in its traditional form.",
     related: [
       { href: "/programs/yogasanas", label: "Yogasanas" },
       { href: "/about", label: "About the teacher" },

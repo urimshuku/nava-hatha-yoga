@@ -9,7 +9,6 @@ import { Section } from "@/components/layout/Section";
 import { CTASection } from "@/components/ui/CTASection";
 import { PageHero } from "@/components/ui/PageHero";
 import { ABOUT_PAGE_HERO_TITLE } from "@/lib/constants";
-import { placeholderAboutPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
 import { PHASE1_ABOUT_SEO } from "@/lib/seo-phase1";
 import {
@@ -57,6 +56,17 @@ function AboutPageHeroTitle({ title }: { title?: string }): ReactNode {
   return text;
 }
 
+function resolveAboutHeroDescription(cms?: string): string {
+  const trimmed = cms?.trim();
+  if (
+    !trimmed ||
+    (/based in Saranda/i.test(trimmed) && !/Tirana/i.test(trimmed))
+  ) {
+    return PHASE1_ABOUT_SEO.heroDescription;
+  }
+  return trimmed;
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const about = await getAboutPage();
   return buildMetadata({
@@ -71,10 +81,7 @@ export default async function AboutPage() {
   const about = await getAboutPage();
   const sections = about.sections ?? [];
   const teacherStory = resolveTeacherStory(about.teacherStory);
-  const heroDescription =
-    about.heroDescription?.trim() ||
-    placeholderAboutPage.heroDescription ||
-    "";
+  const heroDescription = resolveAboutHeroDescription(about.heroDescription);
   const hasIntro = Boolean(about.intro && about.intro.length > 0);
 
   return (

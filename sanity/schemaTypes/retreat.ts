@@ -4,6 +4,8 @@ export const retreat = defineType({
   name: "retreat",
   title: "Retreat",
   type: "document",
+  description:
+    "Add an upcoming retreat by duplicating Retreat template (not Retreats Page). Change the dates and copy, turn Published on, then click Publish. It appears on /retreats until the end date, then moves to Past Retreats. Keep the template Unpublished so the site stays on Coming Soon until a real retreat is ready.",
   groups: [
     { name: "content", title: "Content", default: true },
     { name: "media", title: "Media" },
@@ -31,15 +33,34 @@ export const retreat = defineType({
       title: "Published",
       type: "boolean",
       group: "content",
-      description:
-        "Turn off while a retreat is still being planned. Retreats are 'coming soon' until published.",
-      initialValue: false,
+      description: "Turn off to hide this retreat from the website.",
+      initialValue: true,
     }),
     defineField({
       name: "date",
       title: "Date",
       type: "datetime",
       group: "content",
+      description:
+        "When the retreat starts. After the end date it moves to Past Retreats.",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "endDate",
+      title: "End date",
+      type: "datetime",
+      group: "content",
+      description:
+        "Last day and time of the retreat. Needed so a multi-day retreat is not archived on day one. Use the closing time of the last day.",
+      validation: (rule) =>
+        rule.required().custom((endDate, context) => {
+          const start = (context.document as { date?: string } | undefined)?.date;
+          if (!endDate || !start) return true;
+          if (new Date(endDate).getTime() < new Date(start).getTime()) {
+            return "End date must be on or after the start date.";
+          }
+          return true;
+        }),
     }),
     defineField({
       name: "location",
@@ -101,16 +122,29 @@ export const retreat = defineType({
     }),
   ],
   preview: {
-    select: { title: "title", date: "date", media: "image", published: "published" },
-    prepare: ({ title, date, media, published }) => ({
-      title,
-      subtitle: [
-        published ? "Published" : "Coming soon",
-        date ? new Date(date).toLocaleDateString("en-GB") : null,
-      ]
-        .filter(Boolean)
-        .join(" · "),
-      media,
-    }),
+    select: {
+      title: "title",
+      date: "date",
+      endDate: "endDate",
+      media: "image",
+      published: "published",
+    },
+    prepare: ({ title, date, endDate, media, published }) => {
+      const end = endDate ?? date;
+      const isPast = end ? new Date(end).getTime() < Date.now() : false;
+      const status = published ? (isPast ? "Past" : "Upcoming") : "Hidden";
+      const startLabel = date ? new Date(date).toLocaleDateString("en-GB") : null;
+      const endLabel = endDate ? new Date(endDate).toLocaleDateString("en-GB") : null;
+      const range =
+        startLabel && endLabel && endLabel !== startLabel
+          ? `${startLabel} – ${endLabel}`
+          : startLabel;
+
+      return {
+        title,
+        subtitle: [status, range].filter(Boolean).join(" · "),
+        media,
+      };
+    },
   },
 });

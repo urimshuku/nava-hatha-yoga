@@ -188,6 +188,7 @@ export interface RetreatListItem {
   title: string;
   slug: string;
   date?: string;
+  endDate?: string;
   location?: string;
   priceLabel?: string;
   description?: string;

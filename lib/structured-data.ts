@@ -6,7 +6,7 @@ import {
   SITE_URL,
   getProgramPriceLabel,
 } from "@/lib/constants";
-import { eventEndTimestamp, eventStartTimestamp } from "@/lib/event-boundary";
+import { eventEndTimestamp, eventStartTimestamp, isPastEvent } from "@/lib/event-boundary";
 import { programImageSrc } from "@/lib/local-images";
 import { formatRegistrationEventLabel } from "@/lib/utils";
 import { urlForImage } from "@/sanity/lib/image";
@@ -234,6 +234,11 @@ export function buildRetreatEventJsonLd(
   const startMs = Date.parse(retreat.date);
   if (!Number.isFinite(startMs)) return null;
 
+  const endMs = eventEndTimestamp({
+    date: retreat.date,
+    endDate: retreat.endDate,
+  });
+  const past = isPastEvent({ date: retreat.date, endDate: retreat.endDate });
   const imageBuilder = urlForImage(retreat.image);
   const imageUrl = imageBuilder
     ? imageBuilder.width(1200).height(630).url()
@@ -247,8 +252,13 @@ export function buildRetreatEventJsonLd(
     name: retreat.title,
     ...(retreat.description ? { description: retreat.description } : {}),
     startDate: new Date(startMs).toISOString(),
+    ...(Number.isFinite(endMs) && endMs !== Number.POSITIVE_INFINITY
+      ? { endDate: toIsoDateTime(endMs) }
+      : {}),
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    eventStatus: "https://schema.org/EventScheduled",
+    eventStatus: past
+      ? "https://schema.org/EventCompleted"
+      : "https://schema.org/EventScheduled",
     location: placeFromLocation(retreat.location),
     image: [imageUrl],
     url,

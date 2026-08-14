@@ -4,6 +4,8 @@ export const retreatsPage = defineType({
   name: "retreatsPage",
   title: "Retreats Page",
   type: "document",
+  description:
+    "Intro copy for /retreats (hero, Coming Soon, partner programs). Add actual retreats under Retreats, not here.",
   groups: [
     { name: "content", title: "Content", default: true },
     { name: "seo", title: "SEO" },
@@ -36,7 +38,7 @@ export const retreatsPage = defineType({
       title: "“Coming soon” heading",
       type: "string",
       group: "content",
-      description: "Shown while there are no published retreats.",
+      description: "Shown when there are no upcoming retreats.",
     }),
     defineField({
       name: "comingSoonBody",
@@ -44,7 +46,7 @@ export const retreatsPage = defineType({
       type: "text",
       rows: 4,
       group: "content",
-      description: "Shown while there are no published retreats.",
+      description: "Shown when there are no upcoming retreats.",
     }),
     defineField({
       name: "expectationsHeading",
@@ -73,7 +75,7 @@ export const retreatsPage = defineType({
       title: "Retreats list CTA",
       type: "object",
       group: "content",
-      description: "Shown below the retreat cards when retreats are published.",
+      description: "Shown below the retreat cards when upcoming retreats are listed.",
       fields: [
         { name: "heading", title: "Heading", type: "string" },
         { name: "body", title: "Body", type: "text", rows: 2 },

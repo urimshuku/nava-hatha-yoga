@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { CMSRichText } from "@/components/content/CMSRichText";
@@ -8,12 +9,13 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
 import { SanityImage } from "@/components/ui/SanityImage";
+import { isPastEvent } from "@/lib/event-boundary";
 import { buildMetadata } from "@/lib/seo";
 import {
   buildBreadcrumbJsonLd,
   buildRetreatEventJsonLd,
 } from "@/lib/structured-data";
-import { formatDate } from "@/lib/utils";
+import { formatDateRange } from "@/lib/utils";
 import { urlForImage } from "@/sanity/lib/image";
 import { getRetreatBySlug, getRetreatSlugs, getSiteSettings } from "@/sanity/lib/fetch";
 
@@ -25,6 +27,8 @@ export async function generateStaticParams() {
   const slugs = await getRetreatSlugs();
   return slugs.map((slug) => ({ slug }));
 }
+
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -53,7 +57,12 @@ export default async function RetreatDetailPage({ params }: PageProps) {
 
   if (!retreat) notFound();
 
-  const meta = [formatDate(retreat.date), retreat.location, retreat.priceLabel]
+  const past = isPastEvent({
+    date: retreat.date ?? "",
+    endDate: retreat.endDate,
+  });
+  const dateLabel = formatDateRange(retreat.date, retreat.endDate);
+  const meta = [dateLabel, retreat.location, retreat.priceLabel]
     .filter(Boolean)
     .join(" · ");
 
@@ -74,9 +83,22 @@ export default async function RetreatDetailPage({ params }: PageProps) {
       <section className="border-b border-border bg-ivory pb-10 pt-10 sm:pb-section-sm sm:pt-16 md:pt-40">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <p className="eyebrow mb-3 sm:mb-5">Retreat</p>
+            <p className="eyebrow mb-3 sm:mb-5">
+              {past ? "Past retreat" : "Retreat"}
+            </p>
             <h1 className="text-display text-balance">{retreat.title}</h1>
             {meta ? <p className="section-lead mt-4 sm:mt-5">{meta}</p> : null}
+            {past ? (
+              <p className="mt-4 text-sm text-brown sm:mt-5">
+                This retreat has taken place.{" "}
+                <Link
+                  href="/retreats/archive"
+                  className="text-charcoal underline decoration-border-strong underline-offset-4 transition-colors hover:text-saffron"
+                >
+                  View past retreats
+                </Link>
+              </p>
+            ) : null}
           </div>
         </Container>
       </section>
@@ -125,11 +147,11 @@ export default async function RetreatDetailPage({ params }: PageProps) {
                 </div>
                 <div className="space-y-4 p-6">
                   <dl className="space-y-3 text-sm">
-                    {retreat.date ? (
+                    {dateLabel ? (
                       <div className="flex justify-between gap-4 border-b border-border pb-3">
                         <dt className="text-brown">Dates</dt>
                         <dd className="text-right font-medium text-charcoal">
-                          {formatDate(retreat.date)}
+                          {dateLabel}
                         </dd>
                       </div>
                     ) : null}
@@ -150,14 +172,14 @@ export default async function RetreatDetailPage({ params }: PageProps) {
                       </div>
                     ) : null}
                   </dl>
-                  {retreat.registrationLink ? (
-                    <Button href={retreat.registrationLink} className="w-full">
+                  {!past ? (
+                    <Button
+                      href={retreat.registrationLink || "/contact"}
+                      className="w-full"
+                    >
                       Register
                     </Button>
                   ) : null}
-                  <Button href="/contact" variant="secondary" className="w-full">
-                    Enquire
-                  </Button>
                 </div>
               </div>
             </aside>
