@@ -1,33 +1,31 @@
-import type { ReactNode } from "react";
-
-import { FooterCertificationLogo } from "@/components/layout/FooterCertificationLogo";
+import { TeacherStoryTeaser } from "@/components/content/TeacherStoryTeaser";
+import { InfiniteCardCarousel } from "@/components/content/InfiniteCardCarousel";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
-import { TeacherStoryTeaser } from "@/components/content/TeacherStoryTeaser";
-import { MotionItem, MotionStagger } from "@/components/ui/Motion";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 import { placeholderAboutPage } from "@/lib/placeholders";
 import type { ResolvedTeacherStory } from "@/lib/teacher-story";
-import { cn } from "@/lib/utils";
 import type { AboutHighlightCard } from "@/sanity/lib/types";
 
-function HighlightCard({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <article
-      className={cn(
-        "h-full rounded-2xl border border-border bg-ivory px-6 py-7 font-heading not-italic shadow-soft sm:px-7 sm:py-8",
-        className,
-      )}
-    >
-      {children}
-    </article>
-  );
+const DEFAULT_RIBBON_TITLES = [
+  "1750+ hours of teacher training (Sadhguru Gurukulam India)",
+  "10 years of living/volunteering/teaching in the ashram",
+  "6000+ participants supported",
+];
+
+function ribbonTitlesFrom(cards?: AboutHighlightCard[]) {
+  const fromCms = cards
+    ?.map((card) => card.title?.trim())
+    .filter((title): title is string => Boolean(title));
+  if (fromCms && fromCms.length >= 3) return fromCms;
+
+  const fromPlaceholders = placeholderAboutPage.highlightCards
+    ?.map((card) => card.title?.trim())
+    .filter((title): title is string => Boolean(title));
+
+  return fromPlaceholders?.length
+    ? fromPlaceholders
+    : DEFAULT_RIBBON_TITLES;
 }
 
 type AboutHighlightCardsProps = {
@@ -39,10 +37,7 @@ export function AboutHighlightCards({
   teacherStory,
   cards,
 }: AboutHighlightCardsProps) {
-  const resolved =
-    cards?.filter((card) => card.title?.trim() || card.body?.trim()).length
-      ? cards.filter((card) => card.title?.trim() || card.body?.trim())
-      : (placeholderAboutPage.highlightCards ?? []);
+  const titles = ribbonTitlesFrom(cards);
 
   return (
     <Section tone="cream" size="small" className="border-b border-border">
@@ -51,41 +46,13 @@ export function AboutHighlightCards({
           <h2 className="text-display-sm text-balance">About the Teacher</h2>
           <TeacherStoryTeaser story={teacherStory} />
         </MotionReveal>
-
-        <MotionStagger className="mt-10 grid gap-3 sm:grid-cols-2">
-          {resolved.map((card) => (
-            <MotionItem key={`${card.eyebrow}-${card.title}`} className="h-full">
-              <HighlightCard>
-                {card.eyebrow ? <p className="eyebrow">{card.eyebrow}</p> : null}
-                {card.title ? (
-                  <p className="mt-2 text-lg text-charcoal sm:text-xl">{card.title}</p>
-                ) : null}
-                {card.stat ? (
-                  <p className="mt-2 font-heading text-3xl leading-none text-charcoal sm:text-4xl">
-                    {card.stat}
-                  </p>
-                ) : null}
-                {card.showCertificationLogo ? (
-                  <div className="mt-6">
-                    <FooterCertificationLogo className="max-w-[170px]" />
-                  </div>
-                ) : null}
-                {card.body ? (
-                  <p
-                    className={cn(
-                      "text-base leading-relaxed text-brown sm:text-[1.05rem]",
-                      card.showCertificationLogo || card.stat ? "mt-6" : "mt-4",
-                      card.stat && !card.showCertificationLogo ? "mt-4" : undefined,
-                    )}
-                  >
-                    {card.body}
-                  </p>
-                ) : null}
-              </HighlightCard>
-            </MotionItem>
-          ))}
-        </MotionStagger>
       </Container>
+
+      <InfiniteCardCarousel
+        className="mt-10"
+        label="Teacher training and experience"
+        items={titles}
+      />
     </Section>
   );
 }

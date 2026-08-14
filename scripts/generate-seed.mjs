@@ -388,7 +388,7 @@ const programs = [
     title: "Surya Kriya",
     slug: "surya-kriya",
     priceLabel: "150€",
-    videoUrl: "https://youtu.be/_wq-OiPk-pU?si=qrktHL8oppvDoS7N",
+    videoUrl: "https://youtu.be/NUI3zYJKKL0?si=YPYQkmbBBo0KkYvg",
     shortIntro:
       "\"Surya\" means \"sun,\" and \"kriya\" means \"inner energy process.\" Surya Kriya activates the solar plexus to raise the samat prana, or solar heat, in the system.",
     body: [
@@ -690,17 +690,15 @@ docs.push({
   highlightCards: [
     {
       _key: key(),
-      eyebrow: "Teacher training",
-      title: "21 weeks teacher training",
-      stat: "1750+ hrs",
-      body: "Undergone more than 1750 hours of intense, rigorously structured, classical Hatha Yoga teacher training, and is equipped to guide participants safely and precisely, adapting each practice to individual needs.",
+      title: "1750+ hours of teacher training (Sadhguru Gurukulam India)",
     },
     {
       _key: key(),
-      eyebrow: "Certification",
-      title: "Certified by Sadhguru Gurukulam",
-      body: "Drawing from this age-old tradition, Sadhguru Gurukulam is an initiative that is firmly rooted in timeless Yogic wisdom. Designed by Sadhguru, each program is delivered with the same precision and devotion that this tradition has preserved for millennia.",
-      showCertificationLogo: true,
+      title: "10 years of living/volunteering/teaching in the ashram",
+    },
+    {
+      _key: key(),
+      title: "6000+ participants supported",
     },
   ],
   sections: [

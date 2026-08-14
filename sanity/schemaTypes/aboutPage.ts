@@ -78,7 +78,8 @@ export const aboutPage = defineType({
       title: "Teacher highlight cards",
       type: "array",
       group: "content",
-      description: "The two cards under “About the Teacher” (training + certification).",
+      description:
+        "Titles shown in the infinite ribbon under “About the Teacher”.",
       of: [
         {
           type: "object",
@@ -97,7 +98,7 @@ export const aboutPage = defineType({
           preview: { select: { title: "title", subtitle: "eyebrow" } },
         },
       ],
-      validation: (rule) => rule.max(2),
+      validation: (rule) => rule.max(12),
     }),
     defineField({
       name: "sections",
