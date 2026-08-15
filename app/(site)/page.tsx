@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PrivateSessionsSection } from "@/components/content/PrivateSessionsSection";
 import { EventCard } from "@/components/cards/EventCard";
@@ -203,60 +202,23 @@ export default async function HomePage() {
               </h2>
             </MotionReveal>
             <MotionReveal delay={0.1} className="max-w-prose">
-              <CMSRichText value={home.intro?.body} className="sm:text-lg" />
-              <p className="mt-6 text-base leading-relaxed text-brown sm:text-lg">
-                These practices are offered in Albania, based in Saranda & Tirana, and taught
-                in their traditional form. Begin with{" "}
-                <Link
-                  href="/programs/upa-yoga"
-                  className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
-                >
-                  Upa Yoga
-                </Link>
-                , explore{" "}
-                <Link
-                  href="/programs/surya-kriya"
-                  className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
-                >
-                  Surya Kriya
-                </Link>
-                ,{" "}
-                <Link
-                  href="/programs/yogasanas"
-                  className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
-                >
-                  Yogasanas
-                </Link>
-                ,{" "}
-                <Link
-                  href="/programs/angamardana"
-                  className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
-                >
-                  Angamardana
-                </Link>
-                , or{" "}
-                <Link
-                  href="/programs/bhuta-shuddhi"
-                  className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
-                >
-                  Bhuta Shuddhi
-                </Link>
-                — or{" "}
-                <Link
-                  href="/about"
-                  className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
-                >
-                  meet the teacher
-                </Link>
-                .
-              </p>
+              <CMSRichText
+                value={
+                  home.intro?.body?.length
+                    ? home.intro.body
+                    : placeholderHomePage.intro?.body
+                }
+                className="sm:text-lg"
+              />
             </MotionReveal>
           </div>
           {introVideoId ? (
             <MotionReveal delay={0.15} className="mt-8 sm:mt-12">
               <YouTubeEmbed
                 videoId={introVideoId}
-                title={DEFAULT_INTRO_VIDEO_TITLE}
+                title={
+                  home.intro?.videoTitle?.trim() || DEFAULT_INTRO_VIDEO_TITLE
+                }
                 className="mx-auto max-w-3xl"
               />
             </MotionReveal>

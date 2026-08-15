@@ -109,7 +109,11 @@ export function buildOrganizationJsonLd(settings?: SiteSettings): JsonLd {
       addressCountry: "AL",
     },
     geo: SARANDA_GEO,
-    areaServed: settings?.location || CONTACT.location,
+    areaServed: [
+      { "@type": "Country", name: "Albania" },
+      { "@type": "City", name: "Saranda" },
+      { "@type": "City", name: "Tirana" },
+    ],
     knowsAbout: "Classical Hatha Yoga",
   };
 }
@@ -200,6 +204,7 @@ export function buildCourseJsonLd(
     "@type": "Course",
     name: program.title,
     description:
+      program.seo?.description ||
       program.shortIntro ||
       `${program.title} — Classical Hatha Yoga program at ${settings?.brandName || SITE_NAME}.`,
     url,
@@ -209,6 +214,20 @@ export function buildCourseJsonLd(
       "@id": ORG_ID,
       name: settings?.brandName || SITE_NAME,
       sameAs: SITE_URL,
+    },
+    hasCourseInstance: {
+      "@type": "CourseInstance",
+      name: program.title,
+      courseMode: "https://schema.org/Onsite",
+      location: {
+        "@type": "Place",
+        name: settings?.location || CONTACT.location,
+        address: {
+          "@type": "PostalAddress",
+          addressCountry: "AL",
+          addressLocality: "Saranda",
+        },
+      },
     },
     ...(offer
       ? {

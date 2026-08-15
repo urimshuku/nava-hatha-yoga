@@ -81,6 +81,12 @@ export const homePage = defineType({
           type: "url",
           description: "Optional video shown below the intro text.",
         },
+        {
+          name: "videoTitle",
+          title: "Video title",
+          type: "string",
+          description: "Accessible title for the intro video.",
+        },
       ],
     }),
     defineField({

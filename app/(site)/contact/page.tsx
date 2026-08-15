@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { ContactForm } from "@/components/forms/ContactForm";
 import { Container } from "@/components/layout/Container";
@@ -8,15 +9,14 @@ import { SocialIconLinks } from "@/components/ui/SocialIconLinks";
 import { resolveInstagramHref, whatsappLink } from "@/lib/constants";
 import { placeholderContactPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
+import { PHASE1_CONTACT_SEO } from "@/lib/seo-phase1";
 import { getContactPage, getPrograms, getSiteSettings } from "@/sanity/lib/fetch";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getContactPage();
   return buildMetadata({
-    title: "Contact",
-    description:
-      page.heroDescription?.trim() ||
-      "Get in touch with Nava Hatha Yoga in Saranda, Albania. Classes are in-person and registration is handled personally.",
+    title: PHASE1_CONTACT_SEO.title,
+    description: PHASE1_CONTACT_SEO.description,
     seo: page.seo,
     path: "/contact",
   });
@@ -46,7 +46,9 @@ export default async function ContactPage() {
         eyebrow="Contact"
         title={page.heroTitle?.trim() || placeholderContactPage.heroTitle}
         description={
-          page.heroDescription?.trim() || placeholderContactPage.heroDescription
+          page.heroDescription?.trim() ||
+          placeholderContactPage.heroDescription ||
+          PHASE1_CONTACT_SEO.heroDescription
         }
       />
 
@@ -107,9 +109,25 @@ export default async function ContactPage() {
                     </p>
                     <p>
                       {locations?.otherLocations ||
-                        "Vlora, Gjirokaster, Korca, Corfu, Prishtina."}
+                        "Vlorë, Gjirokastër, Korçë, Corfu, Prishtina."}
                     </p>
                   </div>
+                  <p className="pt-2">
+                    <Link
+                      href="/programs"
+                      className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
+                    >
+                      Explore programs
+                    </Link>
+                    {" · "}
+                    <Link
+                      href="/events"
+                      className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
+                    >
+                      See upcoming events
+                    </Link>
+                    .
+                  </p>
                 </div>
               </div>
 

@@ -53,6 +53,8 @@ export interface Program extends ProgramListItem {
   beforeProgramNotes?: string[];
   practiceIndependently?: PortableTextBlock[];
   privateAndGroupSessions?: PortableTextBlock[];
+  contextLine?: string;
+  relatedPrograms?: CtaLink[];
   videoUrl?: string;
   videoTitle?: string;
   priceLabel?: string;
@@ -84,11 +86,13 @@ export interface AboutHighlightCard {
 
 export interface AboutPage {
   title?: string;
+  heroEyebrow?: string;
   heroDescription?: string;
   intro?: PortableTextBlock[];
   teacherStory?: TeacherStory;
   highlightCards?: AboutHighlightCard[];
   sections?: AboutSection[];
+  finalCta?: { heading?: string; body?: string; cta?: CtaLink };
   seo?: SeoFields;
 }
 
@@ -115,7 +119,13 @@ export interface HomePage {
     items?: HighlightItem[];
     closingQuote?: string;
   };
-  intro?: { eyebrow?: string; heading?: string; body?: PortableTextBlock[]; videoUrl?: string };
+  intro?: {
+    eyebrow?: string;
+    heading?: string;
+    body?: PortableTextBlock[];
+    videoUrl?: string;
+    videoTitle?: string;
+  };
   featuredProgramsSection?: {
     eyebrow?: string;
     title?: string;

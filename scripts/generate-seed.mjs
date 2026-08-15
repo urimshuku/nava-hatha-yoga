@@ -38,6 +38,32 @@ function blocks(...paragraphs) {
   }));
 }
 
+function linkedParagraph(parts) {
+  const markDefs = [];
+  const children = [];
+  for (const part of parts) {
+    if (typeof part === "string") {
+      children.push({ _type: "span", _key: key(), text: part, marks: [] });
+      continue;
+    }
+    const markKey = key();
+    markDefs.push({ _type: "link", _key: markKey, href: part.href });
+    children.push({
+      _type: "span",
+      _key: key(),
+      text: part.text,
+      marks: [markKey],
+    });
+  }
+  return {
+    _type: "block",
+    _key: key(),
+    style: "normal",
+    markDefs,
+    children,
+  };
+}
+
 function sectionsToBlocks(sections) {
   return sections.map((section) => ({
     _type: "block",
@@ -85,6 +111,178 @@ const PROGRAM_INTENSITY = {
   "surya-shakti": "Medium",
   "upa-yoga": "Low",
   "childrens-program": "Low",
+};
+
+const PROGRAM_CONTEXT = {
+  "surya-kriya": {
+    contextLine:
+      "Surya Kriya is offered in Albania through Nava Hatha Yoga. Teaching is based in Saranda, with sessions also held in Tirana when scheduled.",
+    related: [
+      { label: "Upa Yoga", href: "/programs/upa-yoga" },
+      { label: "Yogasanas", href: "/programs/yogasanas" },
+    ],
+    seo: {
+      title: "Learn Surya Kriya in Albania",
+      description:
+        "Learn Surya Kriya in Albania — a traditional inner energy process for balance and inner stability, taught in Saranda, with sessions in Tirana when scheduled.",
+    },
+  },
+  angamardana: {
+    contextLine:
+      "Angamardana is offered in Albania through Nava Hatha Yoga, with teaching based in Saranda and Tirana, and taught in its traditional form.",
+    related: [
+      { label: "Yogasanas", href: "/programs/yogasanas" },
+      { label: "Upa Yoga", href: "/programs/upa-yoga" },
+    ],
+    seo: {
+      title: "Learn Angamardana in Albania",
+      description:
+        "Learn Angamardana in Albania — a classical yogic system for mastery over the body, taught as intended, with teaching based in Saranda and Tirana.",
+    },
+  },
+  yogasanas: {
+    contextLine:
+      "Yogasanas are offered in Albania through Nava Hatha Yoga, with teaching based in Saranda and Tirana, and taught in their traditional form.",
+    related: [
+      { label: "Upa Yoga", href: "/programs/upa-yoga" },
+      { label: "Angamardana", href: "/programs/angamardana" },
+    ],
+    seo: {
+      title: "Classical Yogasanas in Albania",
+      description:
+        "Practice classical Yogasanas in Albania — traditional Hatha Yoga postures taught as intended, with teaching based in Saranda and Tirana.",
+    },
+  },
+  "upa-yoga": {
+    contextLine:
+      "Upa Yoga is offered in Albania through Nava Hatha Yoga, with teaching based in Saranda and Tirana, and taught in its traditional form — a natural starting point for many practitioners.",
+    related: [
+      { label: "Surya Kriya", href: "/programs/surya-kriya" },
+      { label: "Yogasanas", href: "/programs/yogasanas" },
+    ],
+    seo: {
+      title: "Learn Upa Yoga in Albania",
+      description:
+        "Learn Upa Yoga in Albania — a simple, powerful Classical Hatha practice taught as intended, with teaching based in Saranda and Tirana.",
+    },
+  },
+  "bhuta-shuddhi": {
+    contextLine:
+      "Bhuta Shuddhi is offered in Albania through Nava Hatha Yoga, with teaching based in Saranda and Tirana, and taught in its traditional form.",
+    related: [
+      { label: "Yogasanas", href: "/programs/yogasanas" },
+      { label: "About the teacher", href: "/about" },
+    ],
+    seo: {
+      title: "Bhuta Shuddhi in Albania",
+      description:
+        "Bhuta Shuddhi in Albania — a classical process of elemental purification, taught as intended, with teaching based in Saranda and Tirana.",
+    },
+  },
+  "surya-shakti": {
+    contextLine:
+      "Surya Shakti is offered in Albania through Nava Hatha Yoga, with teaching based in Saranda and Tirana, and taught in its traditional form.",
+    related: [
+      { label: "Surya Kriya", href: "/programs/surya-kriya" },
+      { label: "Upa Yoga", href: "/programs/upa-yoga" },
+    ],
+    seo: {
+      title: "Learn Surya Shakti in Albania",
+      description:
+        "Learn Surya Shakti in Albania — a classical dynamic sun practice taught in its traditional form, with teaching based in Saranda and Tirana.",
+    },
+  },
+  "childrens-program": {
+    contextLine:
+      "The Children's Program is offered in Albania through Nava Hatha Yoga, with teaching based in Saranda and Tirana.",
+    related: [
+      { label: "Upa Yoga", href: "/programs/upa-yoga" },
+      { label: "All programs", href: "/programs" },
+    ],
+    seo: {
+      title: "Children's Program in Albania",
+      description:
+        "A Classical Hatha Yoga program for children in Albania, taught as intended, with teaching based in Saranda and Tirana.",
+    },
+  },
+  "bhastrika-kriya": {
+    contextLine:
+      "Bhastrika Kriya is offered in Albania through Nava Hatha Yoga, with teaching based in Saranda and Tirana.",
+    related: [
+      { label: "Jala Neti", href: "/programs/jala-neti" },
+      { label: "Upa Yoga", href: "/programs/upa-yoga" },
+    ],
+    seo: {
+      title: "Bhastrika Kriya in Albania",
+      description:
+        "Learn Bhastrika Kriya in Albania — a classical yogic breathing process taught in its traditional form, with teaching based in Saranda and Tirana.",
+    },
+  },
+  "jala-neti": {
+    contextLine:
+      "Jala Neti is offered in Albania through Nava Hatha Yoga, with teaching based in Saranda and Tirana.",
+    related: [
+      { label: "Bhastrika Kriya", href: "/programs/bhastrika-kriya" },
+      { label: "Surya Kriya", href: "/programs/surya-kriya" },
+    ],
+    seo: {
+      title: "Jala Neti in Albania",
+      description:
+        "Learn Jala Neti in Albania — a classical nasal cleansing practice taught in its traditional form, with teaching based in Saranda and Tirana.",
+    },
+  },
+  thoppukarnam: {
+    contextLine:
+      "Thoppukarnam is offered in Albania through Nava Hatha Yoga, with teaching based in Saranda and Tirana.",
+    related: [
+      { label: "Upa Yoga", href: "/programs/upa-yoga" },
+      { label: "Children's Program", href: "/programs/childrens-program" },
+    ],
+    seo: {
+      title: "Thoppukarnam in Albania",
+      description:
+        "Learn Thoppukarnam in Albania — a classical practice for neurological vitality, taught in its traditional form, with teaching based in Saranda and Tirana.",
+    },
+  },
+  "shanmukhi-mudra": {
+    contextLine:
+      "Shanmukhi Mudra is offered in Albania through Nava Hatha Yoga, with teaching based in Saranda and Tirana.",
+    related: [
+      { label: "Eye Care Practices", href: "/programs/eye-care-practices" },
+      { label: "Upa Yoga", href: "/programs/upa-yoga" },
+    ],
+    seo: {
+      title: "Shanmukhi Mudra in Albania",
+      description:
+        "Learn Shanmukhi Mudra in Albania — a classical practice of sense withdrawal, taught in its traditional form, with teaching based in Saranda and Tirana.",
+    },
+  },
+  "eye-care-practices": {
+    contextLine:
+      "Eye Care Practices are offered in Albania through Nava Hatha Yoga, with teaching based in Saranda and Tirana.",
+    related: [
+      { label: "Shanmukhi Mudra", href: "/programs/shanmukhi-mudra" },
+      { label: "Yogasanas", href: "/programs/yogasanas" },
+    ],
+    seo: {
+      title: "Eye Care Practices in Albania",
+      description:
+        "Yogic eye care practices in Albania — simple Classical Hatha practices for the eyes, taught as intended, with teaching based in Saranda and Tirana.",
+    },
+  },
+  pavanamuktasana: {
+    contextLine:
+      "Pavanamuktasana is offered in Albania through Nava Hatha Yoga, with teaching based in Saranda and Tirana.",
+    related: [
+      { label: "Yogasanas", href: "/programs/yogasanas" },
+      { label: "Upa Yoga", href: "/programs/upa-yoga" },
+    ],
+    seo: {
+      title: "Pavanamuktasana in Albania",
+      description:
+        "Learn Pavanamuktasana in Albania — a classical yogic posture taught in its traditional form, with teaching based in Saranda and Tirana.",
+    },
+  },
 };
 
 const PROGRAM_ORDER = [
@@ -516,6 +714,7 @@ programDocs.forEach((p, i) => {
   const beforeTitle = PROGRAM_BEFORE_PROGRAM_TITLES[p.slug];
   const imagePath = PROGRAM_IMAGES[p.slug];
   const videoTitle = PROGRAM_VIDEO_TITLES[p.slug];
+  const context = PROGRAM_CONTEXT[p.slug];
 
   docs.push({
     _id: `program-${p.slug}`,
@@ -527,6 +726,16 @@ programDocs.forEach((p, i) => {
     orderRank: (i + 1) * 10,
     ...(imagePath ? { image: imageAsset(imagePath, p.title) } : {}),
     shortIntro: p.shortIntro,
+    ...(context?.contextLine ? { contextLine: context.contextLine } : {}),
+    ...(context?.related
+      ? {
+          relatedPrograms: context.related.map((item) => ({
+            _type: "ctaLink",
+            _key: key(),
+            ...item,
+          })),
+        }
+      : {}),
     whatIs: blocks(...p.whatIs),
     aboutThePractice: blocks(...p.aboutThePractice),
     benefits: p.benefits,
@@ -538,6 +747,7 @@ programDocs.forEach((p, i) => {
     ...(videoTitle ? { videoTitle } : {}),
     ...(PROGRAM_INTENSITY[p.slug] ? { intensity: PROGRAM_INTENSITY[p.slug] } : {}),
     priceLabel: programPriceLabel(p.slug, p.priceLabel),
+    ...(context?.seo ? { seo: context.seo } : {}),
   });
 });
 
@@ -551,7 +761,7 @@ docs.push({
   email: "info@navahathayoga.com",
   phone: "+355 69 939 1791",
   whatsapp: "355699391791",
-  location: "Saranda, Albania",
+  location: "Saranda & Tirana, Albania",
   social: [
     {
       _key: key(),
@@ -594,11 +804,31 @@ docs.push({
   intro: {
     eyebrow: "The Practice",
     heading: "What is Classical Hatha Yoga?",
-    body: blocks(
-      "Classical Hatha Yoga stems from a deep understanding of the mechanics of the body, and uses yogic postures, or yogasanas, to enable the system to sustain higher dimensions of energy. By practicing this profound science, one can change and enhance the way they think, feel, and experience life.",
-      "Classical Hatha Yoga is about creating a body that is not a hurdle in your life. The body becomes a stepping stone in the progress towards blossoming into your ultimate possibility.",
-    ),
+    body: [
+      ...blocks(
+        "Classical Hatha Yoga stems from a deep understanding of the mechanics of the body, and uses yogic postures, or yogasanas, to enable the system to sustain higher dimensions of energy. By practicing this profound science, one can change and enhance the way they think, feel, and experience life.",
+        "Classical Hatha Yoga is about creating a body that is not a hurdle in your life. The body becomes a stepping stone in the progress towards blossoming into your ultimate possibility.",
+      ),
+      linkedParagraph([
+        "These practices are offered in Albania, based in Saranda and Tirana, and taught in their traditional form. Begin with ",
+        { text: "Upa Yoga", href: "/programs/upa-yoga" },
+        ", explore ",
+        { text: "Surya Kriya", href: "/programs/surya-kriya" },
+        ", ",
+        { text: "Yogasanas", href: "/programs/yogasanas" },
+        ", ",
+        { text: "Angamardana", href: "/programs/angamardana" },
+        ", or ",
+        { text: "Bhuta Shuddhi", href: "/programs/bhuta-shuddhi" },
+        " — or ",
+        { text: "meet the teacher", href: "/about" },
+        ". Other teaching locations may be arranged ",
+        { text: "upon request", href: "/contact" },
+        ".",
+      ]),
+    ],
     videoUrl: "https://youtu.be/UIK3hR-NjYU",
+    videoTitle: "The Incredible Power of Classical Hatha Yoga",
   },
   featuredProgramsSection: {
     eyebrow: "Programs",
@@ -651,12 +881,18 @@ docs.push({
     body: "For questions regarding upcoming programs, private instruction, or general inquiries, please leave a message below.",
     cta: { label: "Get in Touch", href: "/contact" },
   },
+  seo: {
+    title: "Classical Hatha Yoga in Albania",
+    description:
+      "Authentic Classical Hatha Yoga in Albania — traditional practices taught as intended in Saranda & Tirana, for clarity, balance, and inner transformation.",
+  },
 });
 
 docs.push({
   _id: "aboutPage",
   _type: "aboutPage",
   title: "Classical Hatha Yoga, taught with care.",
+  heroEyebrow: "About",
   heroDescription:
     "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended, based in Saranda & Tirana.",
   teacherStory: {
@@ -752,6 +988,16 @@ docs.push({
       ),
     },
   ],
+  finalCta: {
+    heading: "Explore the practices",
+    body: "Discover Classical Hatha Yoga programs taught as intended, or register your interest for upcoming sessions in Albania.",
+    cta: { label: "View programs", href: "/programs" },
+  },
+  seo: {
+    title: "Classical Hatha Yoga Teacher in Albania",
+    description:
+      "Meet the Classical Hatha Yoga teacher behind Nava Hatha Yoga in Albania — certified training, traditional practices taught as intended, based in Saranda & Tirana.",
+  },
 });
 
 const legal = Object.values(legalContent);
@@ -771,7 +1017,7 @@ docs.push({
   _type: "contactPage",
   heroTitle: "Get in touch",
   heroDescription:
-    "For questions regarding upcoming programs, private instruction, or general inquiries, please leave a message below.",
+    "For questions regarding upcoming programs, private instruction, or teaching locations in Albania, please leave a message below.",
   formHeading: "Send a message",
   quickMessageBody:
     "Prefer WhatsApp? Reach out directly and we'll reply as soon as we can.",
@@ -780,7 +1026,12 @@ docs.push({
     mainHeading: "Main teaching locations",
     mainLocations: "Tirana, Saranda.",
     otherHeading: "Other teaching locations upon request",
-    otherLocations: "Vlora, Gjirokaster, Korca, Corfu, Prishtina.",
+    otherLocations: "Vlorë, Gjirokastër, Korçë, Corfu, Prishtina.",
+  },
+  seo: {
+    title: "Register for Classical Hatha Yoga in Albania",
+    description:
+      "Register or enquire about Classical Hatha Yoga in Albania. Teaching is based in Saranda and Tirana, with other locations available upon request. Classes are in-person.",
   },
 });
 
@@ -809,6 +1060,11 @@ docs.push({
       },
     ],
   },
+  seo: {
+    title: "Classical Hatha Yoga Programs in Albania",
+    description:
+      "Explore Classical Hatha Yoga programs in Albania — traditional practices taught as intended, from Upa Yoga and Surya Kriya to Yogasanas, Angamardana, and Bhuta Shuddhi.",
+  },
 });
 
 docs.push({
@@ -817,13 +1073,18 @@ docs.push({
   heroEyebrow: "Events",
   heroTitle: "Upcoming events",
   heroDescription:
-    "Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life.",
+    "Upcoming in-person Classical Hatha Yoga sessions in Saranda and Tirana, Albania. Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life.",
   emptyTitle: "New events are being scheduled",
   emptyDescription:
     "There are no upcoming events listed right now. Please check back soon, or get in touch to register your interest and be notified.",
   contactHeading: "Have a question about an event?",
   contactDescription:
     "Reach out and we'll be glad to help you find the right session and answer any questions. Please leave a message below.",
+  seo: {
+    title: "Classical Hatha Yoga Events in Albania",
+    description:
+      "Upcoming Classical Hatha Yoga workshops, free sessions, and gatherings in Saranda and Tirana, Albania.",
+  },
 });
 
 docs.push({
@@ -877,6 +1138,11 @@ docs.push({
     ],
     whatsappPrefill:
       "Hello, I'd like to explore a Partner Program collaboration with NAVA.",
+  },
+  seo: {
+    title: "Classical Hatha Yoga Retreats in Albania",
+    description:
+      "Discover upcoming Classical Hatha Yoga retreats in Albania, created for immersive traditional practice and inner transformation. Register your interest for future retreats.",
   },
 });
 

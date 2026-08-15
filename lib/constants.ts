@@ -68,7 +68,7 @@ export const CONTACT = {
   // Digits only (international format, no +, spaces, or symbols) for wa.me links
   whatsapp: "355699391791",
   instagram: "navahathayoga",
-  location: "Saranda, Albania",
+  location: "Saranda & Tirana, Albania",
 };
 
 export function whatsappLink(message?: string): string {

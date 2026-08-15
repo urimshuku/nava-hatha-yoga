@@ -10,9 +10,9 @@ import { buildMetadata } from "@/lib/seo";
 import { getPastEvents } from "@/sanity/lib/fetch";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Past Events",
+  title: "Past Classical Hatha Yoga Events in Albania",
   description:
-    "An archive of past Classical Hatha Yoga events and gatherings at Nava Hatha Yoga.",
+    "An archive of past Classical Hatha Yoga events and gatherings in Albania.",
   path: "/events/archive",
 });
 

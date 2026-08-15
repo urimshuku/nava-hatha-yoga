@@ -10,7 +10,7 @@ import { getRegisterPage } from "@/sanity/lib/fetch";
 
 export const metadata: Metadata = buildMetadata({
   title: "Register",
-  description: "Register for a Hatha Yoga program in Saranda, Albania.",
+  description: "Register for a Hatha Yoga program in Saranda & Tirana, Albania.",
   path: "/register",
   noIndex: true,
 });

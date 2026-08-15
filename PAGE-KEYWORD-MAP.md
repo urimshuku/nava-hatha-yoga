@@ -1,13 +1,13 @@
 # Page–Keyword Map — Nava Hatha Yoga
 
-**Date:** 10 August 2026  
-**Companion docs:** `KEYWORD-ARCHITECTURE.md`, `TOPIC-CLUSTERS.md`, `CONTENT-GAPS.md`  
-**Rule:** Exactly **one primary keyword per URL**. Primaries are unique across the site.
+**Date:** 15 August 2026  
+**Companion docs:** `KEYWORD-ARCHITECTURE.md`, `TOPIC-CLUSTERS.md`, `CONTENT-GAPS.md`, `SEO-GEOGRAPHIC-KEYWORD-EXPANSION-REPORT.md`  
+**Rule:** Exactly **one primary keyword per URL**. Primaries are unique across the site. City landers are reserved and unpublished.
 
 **Funnel stages:** TOFU (awareness) · MOFU (consideration) · BOFU (conversion)  
 **Priority:** P0–P3 (see architecture doc)
 
-Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable routes (`/register`, `/thank-you`, `/studio`, `/api/*`) are listed at the end for exclusion only.
+Indexable inventory today: **23 URLs** (10 static + 13 programs). Location URLs are reserved, not published. Non-indexable routes (`/register`, `/thank-you`, `/studio`, `/api/*`) are listed at the end for exclusion only.
 
 ---
 
@@ -22,11 +22,11 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | **Search intent** | Know-local + Do-evaluate |
 | **Funnel stage** | TOFU → MOFU |
 | **Primary keyword** | Classical Hatha Yoga Albania |
-| **Secondary keywords** | authentic Classical Hatha Yoga; traditional Hatha Yoga Albania; Classical Hatha Yoga programs; in-person yoga Albania; Nava Hatha Yoga |
-| **Related semantic keywords** | inner transformation; classical hatha tradition; certified Hatha Yoga teacher; Saranda Albania yoga; clarity balance inner stability |
+| **Secondary keywords** | Hatha Yoga Albania; authentic Classical Hatha Yoga; traditional Hatha Yoga Albania; Classical Hatha Yoga programs; in-person yoga Albania; Nava Hatha Yoga |
+| **Related semantic keywords** | inner transformation; classical hatha tradition; certified Hatha Yoga teacher; Saranda Albania yoga; Tirana Classical Hatha (supporting only); clarity balance inner stability |
 | **Questions users ask** | What is Classical Hatha Yoga? Is authentic Classical Hatha Yoga available in Albania? Where can I learn traditional Hatha Yoga in Albania? |
 | **Overlap** | Partial overlap with `/programs` (category) and future Saranda lander |
-| **Cannibalization risk** | **Medium** — current title leans “Saranda”; long-term Saranda primary moves to `/locations/saranda`. Keep Saranda as secondary here only. |
+| **Cannibalization risk** | **Medium** — must not take Tirana/Saranda/Korçë/Gjirokastër/Vlorë/Corfu primaries. Those stay reserved for future `/locations/{city}` pages. Keep city names as supporting context only. |
 | **Priority score** | **P0** |
 
 ---
@@ -58,8 +58,8 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | **Search intent** | Do-evaluate |
 | **Funnel stage** | MOFU → BOFU |
 | **Primary keyword** | Surya Kriya Albania |
-| **Secondary keywords** | Surya Kriya Saranda; learn Surya Kriya Albania; Surya Kriya class; 21-step Surya Kriya |
-| **Related semantic keywords** | solar practice; balance of energies; classical sun practice; Surya Kriya Tirana; inner stability; traditional yogic process |
+| **Secondary keywords** | Surya Kriya Tirana; Surya Kriya Saranda; learn Surya Kriya Albania; Surya Kriya class; 21-step Surya Kriya |
+| **Related semantic keywords** | solar practice; balance of energies; classical sun practice; inner stability; traditional yogic process |
 | **Questions users ask** | What is Surya Kriya? Where can I learn Surya Kriya in Albania? How is Surya Kriya different from Surya Namaskar / Surya Shakti? |
 | **Overlap** | `/programs/surya-shakti` (name similarity); home featured section |
 | **Cannibalization risk** | **Medium** vs Surya Shakti — keep primaries distinct; use comparison only on informational pages |
@@ -76,8 +76,8 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | **Search intent** | Do-evaluate |
 | **Funnel stage** | MOFU → BOFU |
 | **Primary keyword** | Angamardana Albania |
-| **Secondary keywords** | Angamardana Saranda; Angamardana class Albania; learn Angamardana |
-| **Related semantic keywords** | body mastery yoga; 31 processes; prepare body for Hatha Yoga; classical fitness system rooted in yoga; Angamardana Tirana |
+| **Secondary keywords** | Angamardana Tirana; Angamardana Saranda; Angamardana class Albania; learn Angamardana |
+| **Related semantic keywords** | body mastery yoga; 31 processes; prepare body for Hatha Yoga; classical fitness system rooted in yoga |
 | **Questions users ask** | What is Angamardana? Is Angamardana available in Albania? Is it fitness or yoga? Who is it for? |
 | **Overlap** | Programs listing; informational “what is Angamardana” (planned) |
 | **Cannibalization risk** | **Low** on commercial primary; **Medium** if blog uses “Angamardana Albania” as title |
@@ -94,7 +94,7 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | **Search intent** | Do-evaluate |
 | **Funnel stage** | MOFU → BOFU |
 | **Primary keyword** | Yogasanas Albania |
-| **Secondary keywords** | classical Yogasanas Albania; Yogasanas Saranda; traditional asana practice Albania |
+| **Secondary keywords** | Yogasanas Tirana; Yogasanas Saranda; classical Yogasanas Albania; traditional asana practice Albania |
 | **Related semantic keywords** | Hatha Yoga postures classical; asana for wellbeing; Yogasanas vs gym yoga; posture energy balance |
 | **Questions users ask** | What are Yogasanas? Where to practice classical Yogasanas in Albania? How is this different from a yoga stretch class? |
 | **Overlap** | Home intro; Classical Hatha informational pages |
@@ -112,8 +112,8 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | **Search intent** | Do-evaluate |
 | **Funnel stage** | MOFU → BOFU |
 | **Primary keyword** | Upa Yoga Albania |
-| **Secondary keywords** | Upa Yoga Saranda; Upa Yoga for beginners Albania; learn Upa Yoga |
-| **Related semantic keywords** | joints muscles energy activation; introductory Classical Hatha; stress tiredness relief yoga; Upa Yoga Tirana |
+| **Secondary keywords** | Upa Yoga Tirana; Upa Yoga Saranda; Upa Yoga for beginners Albania; learn Upa Yoga |
+| **Related semantic keywords** | joints muscles energy activation; introductory Classical Hatha; stress tiredness relief yoga |
 | **Questions users ask** | What is Upa Yoga? Is Upa Yoga good for beginners? Can I learn Upa Yoga in Albania? |
 | **Overlap** | Programs listing as “start here” candidate |
 | **Cannibalization risk** | **Low** |
@@ -130,8 +130,8 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | **Search intent** | Do-evaluate |
 | **Funnel stage** | MOFU → BOFU |
 | **Primary keyword** | Bhuta Shuddhi Albania |
-| **Secondary keywords** | Bhuta Shuddhi Saranda; Bhuta Shuddhi process Albania; five elements yoga Albania |
-| **Related semantic keywords** | elemental purification; cleansing practice classical yoga; Bhuta Shuddhi Tirana; inner cleansing |
+| **Secondary keywords** | Bhuta Shuddhi Tirana; Bhuta Shuddhi Saranda; Bhuta Shuddhi process Albania; five elements yoga Albania |
+| **Related semantic keywords** | elemental purification; cleansing practice classical yoga; inner cleansing |
 | **Questions users ask** | What is Bhuta Shuddhi? Where can I take Bhuta Shuddhi in Albania? What does the process involve? |
 | **Overlap** | Programs listing; transformation-themed informational content |
 | **Cannibalization risk** | **Low** |
@@ -165,8 +165,8 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | **Purpose** | Attract parents seeking Classical Hatha for children |
 | **Search intent** | Do-evaluate |
 | **Funnel stage** | MOFU |
-| **Primary keyword** | Classical Hatha Yoga for children Albania |
-| **Secondary keywords** | children's yoga Albania; kids Classical Hatha Saranda; yoga for children Albania |
+| **Primary keyword** | Children's Program Albania |
+| **Secondary keywords** | Children's Program Tirana; Children's Yoga Tirana; Classical Hatha Yoga for Children Tirana; children's yoga Albania |
 | **Related semantic keywords** | family yoga traditional; children’s yogic practices; mindful movement for kids (avoid “kids workout”) |
 | **Questions users ask** | Is there Classical Hatha Yoga for children in Albania? What age is it for? |
 | **Overlap** | Programs listing |
@@ -184,7 +184,7 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | **Search intent** | Do-evaluate |
 | **Funnel stage** | MOFU |
 | **Primary keyword** | Bhastrika Kriya Albania |
-| **Secondary keywords** | Bhastrika Kriya Saranda; yogic breathing practice Albania |
+| **Secondary keywords** | Bhastrika Kriya Tirana; Bhastrika Kriya Saranda; yogic breathing practice Albania |
 | **Related semantic keywords** | respiratory yogic process; lung capacity yoga classical; prepare for powerful energy states |
 | **Questions users ask** | What is Bhastrika Kriya? Where is it offered in Albania? |
 | **Overlap** | Special programs group |
@@ -202,7 +202,7 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | **Search intent** | Do-evaluate |
 | **Funnel stage** | MOFU |
 | **Primary keyword** | Jala Neti Albania |
-| **Secondary keywords** | Jala Neti Saranda; nasal cleansing yoga Albania |
+| **Secondary keywords** | Jala Neti Tirana; Jala Neti Saranda; nasal cleansing yoga Albania |
 | **Related semantic keywords** | neti kriya classical; yogic cleansing practice; prerequisite practices |
 | **Questions users ask** | Can I learn Jala Neti in Albania? What are the prerequisites? |
 | **Overlap** | Special programs |
@@ -220,7 +220,7 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | **Search intent** | Do-evaluate |
 | **Funnel stage** | MOFU |
 | **Primary keyword** | Thoppukarnam Albania |
-| **Secondary keywords** | Thoppukarnam Saranda; brain yoga Albania classical |
+| **Secondary keywords** | Thoppukarnam Tirana; Thoppukarnam Saranda; brain yoga Albania classical |
 | **Related semantic keywords** | neurological vitality yogic practice; classical coordination practice |
 | **Questions users ask** | What is Thoppukarnam? Is it offered in Albania? |
 | **Overlap** | Special programs |
@@ -238,7 +238,7 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | **Search intent** | Do-evaluate |
 | **Funnel stage** | MOFU |
 | **Primary keyword** | Shanmukhi Mudra Albania |
-| **Secondary keywords** | Shanmukhi Mudra Saranda; sense withdrawal yoga Albania |
+| **Secondary keywords** | Shanmukhi Mudra Tirana; Shanmukhi Mudra Saranda; sense withdrawal yoga Albania |
 | **Related semantic keywords** | mudra for face and eyes; classical sensory withdrawal |
 | **Questions users ask** | What is Shanmukhi Mudra? Where can I learn it in Albania? |
 | **Overlap** | Eye care practices (adjacent benefits) |
@@ -255,8 +255,8 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | **Purpose** | Special practice landing for yogic eye care |
 | **Search intent** | Do-evaluate |
 | **Funnel stage** | MOFU |
-| **Primary keyword** | yogic eye care practices Albania |
-| **Secondary keywords** | Eye Care Practices yoga Albania; Classical Hatha eye practices Saranda |
+| **Primary keyword** | Eye Care Practices Albania |
+| **Secondary keywords** | Yogic Eye Care Practices Albania; Eye Care Practices Tirana; Yogic Eye Care Tirana |
 | **Related semantic keywords** | yogic practices for eyes; traditional eye care yoga |
 | **Questions users ask** | Are there yogic eye care practices in Albania? Who can attend? |
 | **Overlap** | Shanmukhi Mudra |
@@ -274,7 +274,7 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | **Search intent** | Do-evaluate |
 | **Funnel stage** | MOFU |
 | **Primary keyword** | Pavanamuktasana Albania |
-| **Secondary keywords** | Pavanamuktasana Saranda; classical digestion yoga posture Albania |
+| **Secondary keywords** | Pavanamuktasana Tirana; Pavanamuktasana Saranda; classical digestion yoga posture Albania |
 | **Related semantic keywords** | gas relief yogasana classical; lower back yogic posture traditional |
 | **Questions users ask** | What is Pavanamuktasana? Can I learn it as Classical Hatha in Albania? |
 | **Overlap** | Yogasanas (posture family) |
@@ -368,7 +368,7 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | **Search intent** | Do-register |
 | **Funnel stage** | BOFU |
 | **Primary keyword** | register Classical Hatha Yoga Albania |
-| **Secondary keywords** | contact Nava Hatha Yoga; book Hatha Yoga Saranda; inquire Classical Hatha Yoga Tirana; private Classical Hatha session Albania |
+| **Secondary keywords** | inquire Classical Hatha Yoga Tirana; book Hatha Yoga Saranda; contact Nava Hatha Yoga; private Classical Hatha session Albania; teaching locations upon request Albania |
 | **Related semantic keywords** | WhatsApp yoga Saranda; teaching locations Albania Kosovo Greece; how to join program |
 | **Questions users ask** | How do I register? How do I book a private session? Do you teach in my city? |
 | **Overlap** | Program CTAs; register flow (noindex) |
@@ -445,12 +445,12 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | Upa Yoga Albania | `/programs/upa-yoga` |
 | Bhuta Shuddhi Albania | `/programs/bhuta-shuddhi` |
 | Surya Shakti Albania | `/programs/surya-shakti` |
-| Classical Hatha Yoga for children Albania | `/programs/childrens-program` |
+| Children's Program Albania | `/programs/childrens-program` |
 | Bhastrika Kriya Albania | `/programs/bhastrika-kriya` |
 | Jala Neti Albania | `/programs/jala-neti` |
 | Thoppukarnam Albania | `/programs/thoppukarnam` |
 | Shanmukhi Mudra Albania | `/programs/shanmukhi-mudra` |
-| yogic eye care practices Albania | `/programs/eye-care-practices` |
+| Eye Care Practices Albania | `/programs/eye-care-practices` |
 | Pavanamuktasana Albania | `/programs/pavanamuktasana` |
 | Hatha Yoga Retreat Albania | `/retreats` |
 | Classical Hatha Yoga events Albania | `/events` |
@@ -461,8 +461,21 @@ Indexable inventory today: **23 URLs** (10 static + 13 programs). Non-indexable 
 | Nava Hatha Yoga privacy policy | `/privacy-policy` |
 | Nava Hatha Yoga cookie policy | `/cookie-policy` |
 
-**Reserved primaries for planned pages** (do not assign to existing pages): see `CONTENT-GAPS.md`  
-Examples: `Classical Hatha Yoga Saranda`, `Yoga Retreat Saranda`, `Classical Hatha Yoga Tirana`, `What is Classical Hatha Yoga`, `What is Surya Kriya`, city landers, etc.
+**Reserved primaries for planned pages** (do not assign to existing pages):
+
+| Reserved primary | Future URL | Status |
+|------------------|------------|--------|
+| Classical Hatha Yoga Tirana | `/locations/tirana` | Reserved — not created |
+| Classical Hatha Yoga Saranda | `/locations/saranda` | Reserved — not created |
+| Classical Hatha Yoga Korca | `/locations/korca` | Reserved — not created |
+| Classical Hatha Yoga Gjirokaster | `/locations/gjirokaster` | Reserved — not created |
+| Classical Hatha Yoga Vlora | `/locations/vlora` | Reserved — not created |
+| Classical Hatha Yoga Corfu | `/locations/corfu` | Reserved — not created |
+| Yoga Retreat Saranda | retreat detail or `/retreats/saranda` | Reserved — no public retreat product |
+| Classical Hatha Yoga Prishtina | `/locations/prishtina` | Previously reserved; unchanged |
+| What is Classical Hatha Yoga / What is {Practice} | `/guides/...` | Informational — never take `{Practice} Albania` |
+
+See `KEYWORD-ARCHITECTURE.md` §10 for the full geographic register.
 
 ---
 
@@ -494,4 +507,4 @@ Examples: `Classical Hatha Yoga Saranda`, `Yoga Retreat Saranda`, `Classical Hat
 
 ## H. Implementation note (future)
 
-This map is the source of truth for future title tags, H1s, and CMS SEO fields. Do not implement in this phase.
+This map is the source of truth for title tags, H1s, and CMS SEO fields. Geographic expansion (15 August 2026) aligned existing URLs only — no city or program × city pages were published.

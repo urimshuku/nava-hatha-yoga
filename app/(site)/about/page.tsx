@@ -9,6 +9,7 @@ import { Section } from "@/components/layout/Section";
 import { CTASection } from "@/components/ui/CTASection";
 import { PageHero } from "@/components/ui/PageHero";
 import { ABOUT_PAGE_HERO_TITLE } from "@/lib/constants";
+import { placeholderAboutPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
 import { PHASE1_ABOUT_SEO } from "@/lib/seo-phase1";
 import {
@@ -34,13 +35,7 @@ function resolveTeacherStory(story?: TeacherStory): ResolvedTeacherStory {
 }
 
 function AboutPageHeroTitle({ title }: { title?: string }): ReactNode {
-  const normalized = title?.trim();
-  const text =
-    !normalized ||
-    normalized === "About Nava Hatha Yoga" ||
-    normalized === "Classical Hatha Yoga, taught with care and precision."
-      ? ABOUT_PAGE_HERO_TITLE
-      : normalized;
+  const text = title?.trim() || ABOUT_PAGE_HERO_TITLE;
 
   if (text.startsWith("Classical Hatha Yoga,")) {
     const rest = text.slice("Classical Hatha Yoga,".length).trim();
@@ -54,17 +49,6 @@ function AboutPageHeroTitle({ title }: { title?: string }): ReactNode {
   }
 
   return text;
-}
-
-function resolveAboutHeroDescription(cms?: string): string {
-  const trimmed = cms?.trim();
-  if (
-    !trimmed ||
-    (/based in Saranda/i.test(trimmed) && !/Tirana/i.test(trimmed))
-  ) {
-    return PHASE1_ABOUT_SEO.heroDescription;
-  }
-  return trimmed;
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -81,13 +65,17 @@ export default async function AboutPage() {
   const about = await getAboutPage();
   const sections = about.sections ?? [];
   const teacherStory = resolveTeacherStory(about.teacherStory);
-  const heroDescription = resolveAboutHeroDescription(about.heroDescription);
+  const heroDescription =
+    about.heroDescription?.trim() ||
+    placeholderAboutPage.heroDescription ||
+    PHASE1_ABOUT_SEO.heroDescription;
   const hasIntro = Boolean(about.intro && about.intro.length > 0);
+  const finalCta = about.finalCta ?? placeholderAboutPage.finalCta;
 
   return (
     <>
       <PageHero
-        eyebrow="About"
+        eyebrow={about.heroEyebrow?.trim() || "About"}
         title={<AboutPageHeroTitle title={about.title} />}
         description={heroDescription}
       />
@@ -120,10 +108,13 @@ export default async function AboutPage() {
       ))}
 
       <CTASection
-        heading="Explore the practices"
-        body="Discover Classical Hatha Yoga programs taught as intended, or register your interest for upcoming sessions in Albania."
-        ctaLabel="View programs"
-        ctaHref="/programs"
+        heading={finalCta?.heading ?? "Explore the practices"}
+        body={
+          finalCta?.body ??
+          "Discover Classical Hatha Yoga programs taught as intended, or register your interest for upcoming sessions in Albania."
+        }
+        ctaLabel={finalCta?.cta?.label ?? "View programs"}
+        ctaHref={finalCta?.cta?.href ?? "/programs"}
       />
     </>
   );

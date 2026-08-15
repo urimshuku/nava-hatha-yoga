@@ -59,7 +59,7 @@ export const siteSettings = defineType({
       title: "Location",
       type: "string",
       group: "contact",
-      initialValue: "Saranda, Albania",
+      initialValue: "Saranda & Tirana, Albania",
     }),
     defineField({
       name: "social",

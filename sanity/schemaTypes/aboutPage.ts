@@ -17,6 +17,13 @@ export const aboutPage = defineType({
       initialValue: "Classical Hatha Yoga, taught with care.",
     }),
     defineField({
+      name: "heroEyebrow",
+      title: "Hero eyebrow",
+      type: "string",
+      group: "content",
+      initialValue: "About",
+    }),
+    defineField({
       name: "heroDescription",
       title: "Page introduction",
       type: "text",
@@ -111,6 +118,18 @@ export const aboutPage = defineType({
       description:
         "The four main sections on the About page. Each section supports a title, image, and text.",
       validation: (rule) => rule.min(1).max(6),
+    }),
+    defineField({
+      name: "finalCta",
+      title: "Closing call to action",
+      type: "object",
+      group: "content",
+      description: "Shown at the bottom of the About page.",
+      fields: [
+        { name: "heading", title: "Heading", type: "string" },
+        { name: "body", title: "Body", type: "text", rows: 3 },
+        { name: "cta", title: "Button", type: "ctaLink" },
+      ],
     }),
     defineField({
       name: "seo",

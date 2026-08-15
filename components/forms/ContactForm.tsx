@@ -29,14 +29,14 @@ const labelClass = formLabelClass;
 const SENT_DISPLAY_MS = 3000;
 
 const PREFERRED_LOCATIONS = [
-  "Tirana",
-  "Saranda",
-  "Vlora",
-  "Gjirokaster",
-  "Korca",
-  "Corfu",
-  "Prishtina",
-  "Other",
+  { value: "Tirana", label: "Tirana" },
+  { value: "Saranda", label: "Saranda" },
+  { value: "Vlora", label: "Vlorë" },
+  { value: "Gjirokaster", label: "Gjirokastër" },
+  { value: "Korca", label: "Korçë" },
+  { value: "Corfu", label: "Corfu" },
+  { value: "Prishtina", label: "Prishtina" },
+  { value: "Other", label: "Other" },
 ] as const;
 
 const INTERESTS_WITHOUT_SESSION_DETAILS = new Set([
@@ -252,8 +252,8 @@ export function ContactForm({ programs = [] }: ContactFormProps) {
               >
                 <option value="">Select a location (optional)</option>
                 {PREFERRED_LOCATIONS.map((location) => (
-                  <option key={location} value={location}>
-                    {location}
+                  <option key={location.value} value={location.value}>
+                    {location.label}
                   </option>
                 ))}
               </select>

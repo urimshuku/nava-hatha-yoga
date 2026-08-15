@@ -11,6 +11,7 @@ import { MotionItem, MotionStagger } from "@/components/ui/Motion";
 import { PageHero } from "@/components/ui/PageHero";
 import { placeholderEventsPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
+import { PHASE1_EVENTS_SEO } from "@/lib/seo-phase1";
 import { buildEventsJsonLd } from "@/lib/structured-data";
 import {
   getEventsPage,
@@ -22,10 +23,8 @@ import {
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getEventsPage();
   return buildMetadata({
-    title: "Upcoming Events",
-    description:
-      page.heroDescription?.trim() ||
-      "Upcoming Classical Hatha Yoga workshops, free sessions, and gatherings at Nava Hatha Yoga in Saranda, Albania.",
+    title: PHASE1_EVENTS_SEO.title,
+    description: PHASE1_EVENTS_SEO.description,
     seo: page.seo,
     path: "/events",
   });
@@ -48,7 +47,9 @@ export default async function EventsPage() {
         eyebrow={page.heroEyebrow?.trim() || placeholderEventsPage.heroEyebrow}
         title={page.heroTitle?.trim() || placeholderEventsPage.heroTitle || ""}
         description={
-          page.heroDescription?.trim() || placeholderEventsPage.heroDescription
+          page.heroDescription?.trim() ||
+          placeholderEventsPage.heroDescription ||
+          PHASE1_EVENTS_SEO.heroDescription
         }
       />
 

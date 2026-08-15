@@ -1,20 +1,19 @@
 # Content Gaps — Nava Hatha Yoga
 
-**Date:** 10 August 2026  
-**Companion docs:** `KEYWORD-ARCHITECTURE.md`, `PAGE-KEYWORD-MAP.md`, `TOPIC-CLUSTERS.md`  
-**Status:** Strategy backlog only — do not implement in this phase  
+**Date:** 15 August 2026  
+**Companion docs:** `KEYWORD-ARCHITECTURE.md`, `PAGE-KEYWORD-MAP.md`, `TOPIC-CLUSTERS.md`, `SEO-GEOGRAPHIC-KEYWORD-EXPANSION-REPORT.md`  
+**Status:** City landers, guides, and program × city pages remain unpublished by design. Geographic keywords are reserved; existing URLs were aligned in the 15 August 2026 expansion.  
 
 ---
 
 ## 1. Executive gap summary
 
-Technical SEO is in place and **23 indexable URLs** already cover brand, programs, retreats listing, events, about, and contact. The largest organic gaps are:
+Technical SEO is in place and **23 indexable URLs** already cover brand, programs, retreats listing, events, about, and contact. Albania program keywords are owned by existing program URLs. The largest remaining organic gaps are:
 
-1. **No local city landing pages** for Saranda, Tirana, Prishtina, Corfu, Korçë, Gjirokastër  
+1. **No local city landing pages** for Saranda, Tirana, Vlorë, Korçë, Gjirokastër, Corfu, Prishtina — **intentionally unpublished** until each has unique local value  
 2. **Almost no informational / educational pages** beyond a homepage intro block  
 3. **No published retreat detail / Saranda retreat commercial page** despite strong retreat keywords  
-4. **Weak separation** between Albania-wide vs Saranda-specific commercial intent on current home title strategy  
-5. **No dedicated pages** for travel audiences from Kosovo / North Macedonia / Greece beyond contact mentions  
+4. **No dedicated pages** for travel audiences from Kosovo / North Macedonia / Greece beyond contact mentions  
 
 ---
 
@@ -22,16 +21,17 @@ Technical SEO is in place and **23 indexable URLs** already cover brand, program
 
 These are high-intent pages meant to rank and convert.
 
-| Priority | Planned URL (suggested) | Primary keyword (reserved) | Intent | Why missing matters | Links into |
-|----------|-------------------------|----------------------------|--------|---------------------|------------|
-| **P0** | `/locations/saranda` | Classical Hatha Yoga Saranda | Know-local / Do-register | Highest-priority city; currently diluted on home | Home, Programs, Events, Contact |
-| **P0** | `/retreats/saranda` *or first Sanity retreat detail* | Yoga Retreat Saranda | Do-visit / Do-register | Explicit P0 term with no dedicated owner | Retreats hub, Programs, Contact |
-| **P0** | `/locations/tirana` | Classical Hatha Yoga Tirana | Know-local / Do-register | Capital demand + existing teaching footprint | Home, Events, Contact |
-| **P1** | `/locations/prishtina` | Classical Hatha Yoga Prishtina | Know-local / travel | Kosovo travel audience | Retreats, Contact, core programs |
-| **P1** | `/locations/corfu` | Classical Hatha Yoga Corfu | Know-local / travel | Greece / Corfu day-travel or retreat travel | Retreats, Saranda, Contact |
-| **P2** | `/locations/korce` | Classical Hatha Yoga Korçë | Know-local | Priority city coverage | Contact, Programs |
-| **P2** | `/locations/gjirokaster` | Classical Hatha Yoga Gjirokastër | Know-local | Priority city coverage | Contact, Programs |
-| **P1** | `/locations` (optional index) | Classical Hatha Yoga locations Albania | Navigational | Hub for city landers | All location pages |
+| Priority | Planned URL (suggested) | Primary keyword (reserved) | Intent | Why missing matters | Page exists? | Create only if |
+|----------|-------------------------|----------------------------|--------|---------------------|--------------|----------------|
+| **P0** | `/locations/saranda` | Classical Hatha Yoga Saranda | Know-local / Do-register | Highest-priority city; currently supporting context only | No | Recurring Saranda teaching + unique local logistics/proof |
+| **P0** | `/locations/tirana` | Classical Hatha Yoga Tirana | Know-local / Do-register | Capital demand + existing teaching footprint | No | Recurring Tirana teaching/events + unique local value |
+| **P0** | `/retreats/saranda` *or first Sanity retreat detail* | Yoga Retreat Saranda | Do-visit / Do-register | Explicit P0 term with no dedicated owner | No | Real retreat offer or dated waitlist |
+| **P1** | `/locations/corfu` | Classical Hatha Yoga Corfu | Know-local / travel | Greece / Corfu day-travel or retreat travel | No | Genuine travel/teaching proposition |
+| **P2** | `/locations/vlora` | Classical Hatha Yoga Vlora | Know-local | Upon-request city (existing Contact copy) | No | Recurring teaching or unique local information |
+| **P2** | `/locations/korca` | Classical Hatha Yoga Korca | Know-local | Upon-request city | No | Same unique-value bar; visible spelling **Korçë** |
+| **P2** | `/locations/gjirokaster` | Classical Hatha Yoga Gjirokaster | Know-local | Upon-request city | No | Same unique-value bar; visible spelling **Gjirokastër** |
+| **P1** | `/locations/prishtina` | Classical Hatha Yoga Prishtina | Know-local / travel | Kosovo travel audience | No | Travel demand + unique content |
+| **P1** | `/locations` (optional index) | Classical Hatha Yoga locations Albania | Navigational | Hub for city landers | No | Only after at least two genuine city pages exist |
 
 ### Local landing page brief (when built later)
 
@@ -43,7 +43,16 @@ Each city page should answer:
 - Who teaches (link About)?  
 - Clear CTA to Contact / upcoming Events  
 
-**Do not** create thin pages that only swap the city name. Require unique logistics, proof, and CTAs.
+**Do not** create thin pages that only swap the city name. Require unique logistics, proof, and CTAs. Upon-request mentions on `/contact` are **not** sufficient to publish a city lander.
+
+A location page may be created later only if there is sufficient unique value such as:
+
+- real teaching in that city  
+- recurring programs  
+- scheduled events  
+- genuine travel/service availability  
+- unique local information  
+- Search Console evidence of meaningful search demand
 
 ---
 
@@ -103,12 +112,13 @@ Each city page should answer:
 
 | City | Classical Hatha lander | Program × city pages | Retreat angle |
 |------|------------------------|----------------------|---------------|
-| Saranda | **Missing (P0)** | Optional later for Surya Kriya Saranda as secondary on program page first | **Missing Yoga Retreat Saranda (P0)** |
-| Tirana | **Missing (P0)** | Optional `Surya Kriya Tirana` only with proven demand | Point to Albania retreats + Tirana events |
-| Prishtina | **Missing (P1)** | Avoid until demand | Travel to Saranda / Albania retreat |
-| Corfu | **Missing (P1)** | Avoid until demand | Travel / Corfu ↔ Saranda |
-| Korçë | **Missing (P2)** | Avoid | Contact / visiting teacher narrative |
-| Gjirokastër | **Missing (P2)** | Avoid | Contact / visiting teacher narrative |
+| Saranda | **Reserved (P0) — not created** | Keep Surya Kriya Saranda etc. as secondaries on program pages | **Yoga Retreat Saranda reserved (P0)** |
+| Tirana | **Reserved (P0) — not created** | Keep `{Program} Tirana` as secondaries on program pages | Point to Albania retreats + Tirana events |
+| Vlorë | **Reserved (P2) — not created** | Avoid | Contact / upon request |
+| Korçë | **Reserved (P2) — not created** | Avoid | Contact / upon request |
+| Gjirokastër | **Reserved (P2) — not created** | Avoid | Contact / upon request |
+| Corfu | **Reserved (P1) — not created** | Avoid until demand | Travel / Corfu ↔ Saranda |
+| Prishtina | **Reserved (P1) — not created** | Avoid until demand | Travel to Saranda / Albania retreat |
 
 **Rule:** Launch city × program URLs only after the city lander exists and Search Console shows meaningful `{program} {city}` demand. Until then, keep city modifiers as **secondaries** on the national program page.
 
@@ -118,15 +128,15 @@ Each city page should answer:
 
 These are mapping/strategy issues visible from the audit; fix later via content/metadata projects:
 
-| Page | Gap | Strategic fix (later) |
-|------|-----|------------------------|
-| `/` | Primary should be Albania-wide; Saranda currently dominates title pattern | Retarget primary to Classical Hatha Yoga Albania; move Saranda emphasis to location lander |
-| `/programs` | Needs explicit “programs”-qualified primary | Own Classical Hatha Yoga programs Albania |
+| Page | Gap | Strategic fix |
+|------|-----|----------------|
+| `/` | City primaries must stay off home | Albania primary is in place; city names remain supporting context |
+| `/programs` | — | Owns Classical Hatha Yoga programs Albania |
 | `/retreats` | Listing exists but weak product depth | Keep Albania retreat primary; add Saranda retreat URL when ready |
-| Core program pages | Titles are practice names only | Align titles/H1s to `{Practice} Albania` primaries without stuffing |
-| `/events` | Not in main nav | Discoverability gap for schedule intent |
-| `/about` | Strong trust page; must not compete for category Albania term | Lock primary to teacher query |
-| Special programs | Thin external demand likely | Maintain pages; don’t expand clusters until data says so |
+| Core + additional program pages | — | `{Practice} Albania` primaries aligned in the geographic expansion |
+| `/events` | Schedule intent | Owns Classical Hatha Yoga events Albania |
+| `/contact` | Transactional | Owns register Classical Hatha Yoga Albania; lists upon-request cities without owning city primaries |
+| `/about` | Strong trust page | Primary locked to teacher query |
 
 ---
 
@@ -134,8 +144,8 @@ These are mapping/strategy issues visible from the audit; fix later via content/
 
 ```
 TOFU  Informational guides .......... MOSTLY MISSING
-MOFU  Programs + category ............ MOSTLY COVERED (needs keyword alignment)
-MOFU  Local city intent .............. MISSING
+MOFU  Programs + category ............ COVERED (Albania program keywords aligned)
+MOFU  Local city intent .............. RESERVED (contact lists upon-request cities)
 BOFU  Events schedule ................ COVERED
 BOFU  Retreat commercial ............. PARTIAL (listing only)
 BOFU  Contact / register path ........ COVERED (register noindex by design)
@@ -148,8 +158,7 @@ BOFU  Contact / register path ........ COVERED (register noindex by design)
 ## 8. Recommended build sequence (when implementation starts)
 
 ### Phase A — Protect money terms (metadata/content alignment on existing URLs)
-1. Home, Programs, five core program pages, Retreats, About, Contact, Events  
-2. Enforce unique primaries from `PAGE-KEYWORD-MAP.md`  
+**Done** (Phase 1 + 15 August 2026 geographic expansion). Do not reopen by publishing thin city pages.
 
 ### Phase B — Education pillars
 1. What is Classical Hatha Yoga  
@@ -157,12 +166,13 @@ BOFU  Contact / register path ........ COVERED (register noindex by design)
 3. What is Surya Kriya  
 4. What is Angamardana / Yogasanas / Upa Yoga / Bhuta Shuddhi (batch)  
 
-### Phase C — Local + retreat commercial
+### Phase C — Local + retreat commercial (only with unique value)
 1. Saranda lander  
 2. Tirana lander  
 3. Yoga Retreat Saranda (when offer exists)  
-4. Prishtina + Corfu  
-5. Korçë + Gjirokastër  
+4. Corfu  
+5. Vlorë + Korçë + Gjirokastër  
+6. Prishtina  
 
 ### Phase D — Depth
 1. Benefits / beginners / differentiation guides  
@@ -177,10 +187,11 @@ Do **not** assign these as primaries on any existing URL:
 
 - Classical Hatha Yoga Saranda  
 - Classical Hatha Yoga Tirana  
-- Classical Hatha Yoga Prishtina  
+- Classical Hatha Yoga Vlora  
+- Classical Hatha Yoga Korca  
+- Classical Hatha Yoga Gjirokaster  
 - Classical Hatha Yoga Corfu  
-- Classical Hatha Yoga Korçë  
-- Classical Hatha Yoga Gjirokastër  
+- Classical Hatha Yoga Prishtina  
 - Yoga Retreat Saranda  
 - What is Classical Hatha Yoga  
 - Classical Hatha Yoga vs modern yoga  
@@ -195,6 +206,7 @@ Do **not** assign these as primaries on any existing URL:
 - Upa Yoga for beginners  
 - Surya Kriya benefits  
 - Angamardana benefits  
+- Surya Kriya Tirana / Surya Kriya Saranda (and other program × city strings) as **page primaries** — they remain secondaries on the national program URL  
 
 ---
 
@@ -221,4 +233,4 @@ Otherwise expand sections on the existing cluster pillar.
 ---
 
 **End of strategy pack.**  
-Implementation explicitly deferred. Use these four documents as the brief for any future content or metadata project.
+Use these documents together with `SEO-GEOGRAPHIC-KEYWORD-EXPANSION-REPORT.md`. Do not publish city or program × city pages without the unique-value tests in §2 and §5.

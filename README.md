@@ -64,7 +64,7 @@ npm run seed
 
 ## Editing content (for the client)
 
-Everything editable lives in the Sanity Studio:
+Everything editable lives in the Sanity Studio. What you save there is what appears on the website:
 
 - **Site Settings** — brand name, contact details, WhatsApp number, default SEO
 - **Home Page** — hero, sections, featured programs, calls to action

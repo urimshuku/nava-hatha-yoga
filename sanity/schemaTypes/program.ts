@@ -74,6 +74,23 @@ export const program = defineType({
       validation: (rule) => rule.max(280),
     }),
     defineField({
+      name: "contextLine",
+      title: "Context line",
+      type: "text",
+      rows: 2,
+      group: "content",
+      description:
+        "Optional line under the short intro (e.g. offered in Albania, based in Saranda & Tirana).",
+    }),
+    defineField({
+      name: "relatedPrograms",
+      title: "Related programs",
+      type: "array",
+      group: "content",
+      of: [{ type: "ctaLink" }],
+      description: "Shown in the program sidebar as Related links.",
+    }),
+    defineField({
       name: "whatIs",
       title: "What is this practice?",
       type: "blockContent",

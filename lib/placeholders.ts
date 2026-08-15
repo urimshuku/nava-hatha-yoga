@@ -36,6 +36,7 @@ import {
   SPECIAL_PROGRAM_SLUGS,
 } from "@/lib/constants";
 import { sessionBoundaryFromSchedule } from "@/lib/event-boundary";
+import { PHASE1_PROGRAM_SEO } from "@/lib/seo-phase1";
 import { getPlaceholderLegalPages } from "@/lib/legal-content";
 import {
   TEACHER_NAME_LINE,
@@ -53,6 +54,42 @@ export function blocks(...paragraphs: string[]): PortableTextBlock[] {
     markDefs: [],
     children: [{ _type: "span", _key: `s${i}`, text, marks: [] }],
   }));
+}
+
+function linkedBlock(
+  key: string,
+  parts: Array<string | { text: string; href: string }>,
+): PortableTextBlock {
+  const markDefs: { _type: "link"; _key: string; href: string }[] = [];
+  const children: NonNullable<PortableTextBlock["children"]> = [];
+
+  parts.forEach((part, i) => {
+    if (typeof part === "string") {
+      children.push({
+        _type: "span",
+        _key: `${key}-s${i}`,
+        text: part,
+        marks: [],
+      });
+      return;
+    }
+    const markKey = `${key}-l${i}`;
+    markDefs.push({ _type: "link", _key: markKey, href: part.href });
+    children.push({
+      _type: "span",
+      _key: `${key}-s${i}`,
+      text: part.text,
+      marks: [markKey],
+    });
+  });
+
+  return {
+    _type: "block",
+    _key: key,
+    style: "normal",
+    markDefs,
+    children,
+  };
 }
 
 export const placeholderSiteSettings: SiteSettings = {
@@ -441,6 +478,7 @@ export const placeholderPrograms: ProgramListItem[] = programSeeds.map((p) => ({
 export function placeholderProgramBySlug(slug: string): Program | undefined {
   const p = programSeeds.find((s) => s.slug === slug);
   if (!p) return undefined;
+  const phase1 = PHASE1_PROGRAM_SEO[p.slug];
   return {
     _id: `placeholder-${p.slug}`,
     title: p.title,
@@ -457,6 +495,8 @@ export function placeholderProgramBySlug(slug: string): Program | undefined {
     benefits: p.benefits,
     practiceIndependently: blocks(...p.practiceIndependently),
     privateAndGroupSessions: blocks(...p.privateAndGroupSessions),
+    contextLine: phase1?.contextLine,
+    relatedPrograms: phase1?.related ? [...phase1.related] : undefined,
     videoUrl: p.videoUrl,
     priceLabel: getProgramPriceLabel(p.slug, p.priceLabel),
   };
@@ -484,11 +524,31 @@ export const placeholderHomePage: HomePage = {
   intro: {
     eyebrow: "The Practice",
     heading: "What is Classical Hatha Yoga?",
-    body: blocks(
-      "Classical Hatha Yoga stems from a deep understanding of the mechanics of the body, and uses yogic postures, or yogasanas, to enable the system to sustain higher dimensions of energy. By practicing this profound science, one can change and enhance the way they think, feel, and experience life.",
-      "Classical Hatha Yoga is about creating a body that is not a hurdle in your life. The body becomes a stepping stone in the progress towards blossoming into your ultimate possibility.",
-    ),
+    body: [
+      ...blocks(
+        "Classical Hatha Yoga stems from a deep understanding of the mechanics of the body, and uses yogic postures, or yogasanas, to enable the system to sustain higher dimensions of energy. By practicing this profound science, one can change and enhance the way they think, feel, and experience life.",
+        "Classical Hatha Yoga is about creating a body that is not a hurdle in your life. The body becomes a stepping stone in the progress towards blossoming into your ultimate possibility.",
+      ),
+      linkedBlock("intro-geo", [
+        "These practices are offered in Albania, based in Saranda and Tirana, and taught in their traditional form. Begin with ",
+        { text: "Upa Yoga", href: "/programs/upa-yoga" },
+        ", explore ",
+        { text: "Surya Kriya", href: "/programs/surya-kriya" },
+        ", ",
+        { text: "Yogasanas", href: "/programs/yogasanas" },
+        ", ",
+        { text: "Angamardana", href: "/programs/angamardana" },
+        ", or ",
+        { text: "Bhuta Shuddhi", href: "/programs/bhuta-shuddhi" },
+        " — or ",
+        { text: "meet the teacher", href: "/about" },
+        ". Other teaching locations may be arranged ",
+        { text: "upon request", href: "/contact" },
+        ".",
+      ]),
+    ],
     videoUrl: "https://youtu.be/UIK3hR-NjYU",
+    videoTitle: "The Incredible Power of Classical Hatha Yoga",
   },
   featuredProgramsSection: {
     eyebrow: "Programs",
@@ -539,6 +599,7 @@ export const placeholderHomePage: HomePage = {
 
 export const placeholderAboutPage: AboutPage = {
   title: "Classical Hatha Yoga, taught with care.",
+  heroEyebrow: "About",
   heroDescription:
     "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended, based in Saranda & Tirana.",
   teacherStory: {
@@ -594,6 +655,11 @@ export const placeholderAboutPage: AboutPage = {
       ),
     },
   ],
+  finalCta: {
+    heading: "Explore the practices",
+    body: "Discover Classical Hatha Yoga programs taught as intended, or register your interest for upcoming sessions in Albania.",
+    cta: { label: "View programs", href: "/programs" },
+  },
 };
 
 const MONTH_NAMES = [
@@ -895,7 +961,7 @@ export const placeholderRetreats: Retreat[] = [];
 export const placeholderContactPage: ContactPage = {
   heroTitle: "Get in touch",
   heroDescription:
-    "For questions regarding upcoming programs, private instruction, or general inquiries, please leave a message below.",
+    "For questions regarding upcoming programs, private instruction, or teaching locations in Albania, please leave a message below.",
   formHeading: "Send a message",
   quickMessageBody:
     "Prefer WhatsApp? Reach out directly and we'll reply as soon as we can.",
@@ -904,7 +970,7 @@ export const placeholderContactPage: ContactPage = {
     mainHeading: "Main teaching locations",
     mainLocations: "Tirana, Saranda.",
     otherHeading: "Other teaching locations upon request",
-    otherLocations: "Vlora, Gjirokaster, Korca, Corfu, Prishtina.",
+    otherLocations: "Vlorë, Gjirokastër, Korçë, Corfu, Prishtina.",
   },
 };
 
@@ -935,7 +1001,7 @@ export const placeholderEventsPage: EventsPage = {
   heroEyebrow: "Events",
   heroTitle: "Upcoming events",
   heroDescription:
-    "Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life.",
+    "Upcoming in-person Classical Hatha Yoga sessions in Saranda and Tirana, Albania. Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life.",
   emptyTitle: "New events are being scheduled",
   emptyDescription:
     "There are no upcoming events listed right now. Please check back soon, or get in touch to register your interest and be notified.",

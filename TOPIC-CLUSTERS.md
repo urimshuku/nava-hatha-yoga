@@ -1,7 +1,7 @@
 # Topic Clusters — Nava Hatha Yoga
 
-**Date:** 10 August 2026  
-**Companion docs:** `KEYWORD-ARCHITECTURE.md`, `PAGE-KEYWORD-MAP.md`, `CONTENT-GAPS.md`  
+**Date:** 15 August 2026  
+**Companion docs:** `KEYWORD-ARCHITECTURE.md`, `PAGE-KEYWORD-MAP.md`, `CONTENT-GAPS.md`, `SEO-GEOGRAPHIC-KEYWORD-EXPANSION-REPORT.md`  
 
 This document defines seven topic clusters. Each cluster has one **pillar** (or dual commercial + education pillars where needed), supporting **cluster pages**, and required **internal link rules**.
 
@@ -55,13 +55,14 @@ Category + positioning cluster. Educates seekers who want authenticity and route
 | `/guides/inner-transformation-through-hatha-yoga` | Transformation intent | inner transformation through Classical Hatha Yoga |
 | `/locations/saranda` | Local commercial lander | Classical Hatha Yoga Saranda |
 | `/locations/tirana` | Local lander | Classical Hatha Yoga Tirana |
-| `/locations/prishtina` | Regional travel lander | Classical Hatha Yoga Prishtina |
+| `/locations/vlora` | Local lander | Classical Hatha Yoga Vlora |
+| `/locations/korca` | Local lander | Classical Hatha Yoga Korca |
+| `/locations/gjirokaster` | Local lander | Classical Hatha Yoga Gjirokaster |
 | `/locations/corfu` | Cross-border travel lander | Classical Hatha Yoga Corfu |
-| `/locations/korce` | Local lander | Classical Hatha Yoga Korçë |
-| `/locations/gjirokaster` | Local lander | Classical Hatha Yoga Gjirokastër |
+| `/locations/prishtina` | Regional travel lander | Classical Hatha Yoga Prishtina |
 
 ### Semantic keyword bank
-authentic Classical Hatha Yoga · traditional Hatha Yoga · Classical Hatha Yoga Albania · taught as intended · certified teacher · in-person Classical Hatha · Saranda Albania · inner transformation · not power yoga · not gym yoga  
+authentic Classical Hatha Yoga · traditional Hatha Yoga · Classical Hatha Yoga Albania · Hatha Yoga Albania · taught as intended · certified teacher · in-person Classical Hatha · Saranda · Tirana · inner transformation · not power yoga · not gym yoga  
 
 ### Internal linking rules
 - Home → each core program pillar + `/programs` + `/about` + `/retreats`  
@@ -102,7 +103,7 @@ Highest-priority practice cluster for registrations.
 | Optional: `/programs/surya-kriya/tirana` only if demand is strong | City × program | Surya Kriya Tirana |
 
 ### Semantic keyword bank
-Surya Kriya Albania · Surya Kriya Saranda · 21-step practice · solar yogic process · balance of energies · classical sun practice · learn Surya Kriya · Surya Kriya workshop  
+Surya Kriya Albania · Surya Kriya Tirana · Surya Kriya Saranda · 21-step practice · solar yogic process · balance of energies · classical sun practice · learn Surya Kriya · Surya Kriya workshop  
 
 ### Internal linking rules
 - Surya Kriya page ↔ What is Surya Kriya (planned)  
@@ -141,7 +142,7 @@ Body-mastery / preparation practice cluster with strong commercial potential.
 | `/guides/prepare-body-for-classical-hatha-yoga` | Bridge from fitness seekers (reframed) | prepare body for Classical Hatha Yoga |
 
 ### Semantic keyword bank
-Angamardana Albania · Angamardana Saranda · 31 processes · mastery over limbs · classical fitness system rooted in yoga · prepare for Hatha Yoga · invigorate body  
+Angamardana Albania · Angamardana Tirana · Angamardana Saranda · 31 processes · mastery over limbs · classical fitness system rooted in yoga · prepare for Hatha Yoga · invigorate body  
 
 ### Internal linking rules
 - Keep fitness language tied to **yogic mastery**, never “workout” or “weight loss” landing pages  
@@ -178,7 +179,7 @@ Core classical posture practice cluster; defends against “yoga class / stretch
 | `/guides/classical-asana-practice` | Depth | classical asana practice |
 
 ### Semantic keyword bank
-Yogasanas Albania · classical Yogasanas · traditional asana Albania · Hatha Yoga postures classical · posture energy wellbeing · Yogasanas Saranda  
+Yogasanas Albania · Yogasanas Tirana · Yogasanas Saranda · classical Yogasanas · traditional asana Albania · Hatha Yoga postures classical · posture energy wellbeing  
 
 ### Internal linking rules
 - Any content answering “yoga stretching Albania” should soft-redirect intent to this cluster via clarifying copy + link — **no** dedicated stretching page  
@@ -213,7 +214,7 @@ Beginner / accessible entry cluster into Classical Hatha.
 | `/guides/first-classical-hatha-yoga-practice` | Entry journey | first Classical Hatha Yoga practice |
 
 ### Semantic keyword bank
-Upa Yoga Albania · Upa Yoga Saranda · joints muscles energy · introductory Classical Hatha · stress and tiredness · beginners traditional yoga Albania  
+Upa Yoga Albania · Upa Yoga Tirana · Upa Yoga Saranda · joints muscles energy · introductory Classical Hatha · stress and tiredness · beginners traditional yoga Albania  
 
 ### Internal linking rules
 - Home and Programs should preferentially deep-link beginners to Upa Yoga before advanced practices  
@@ -249,7 +250,7 @@ Purification / transformation-intent cluster.
 | `/guides/inner-cleansing-classical-hatha` | Transformation intent | inner cleansing Classical Hatha Yoga |
 
 ### Semantic keyword bank
-Bhuta Shuddhi Albania · five elements · elemental purification · Bhuta Shuddhi process · classical cleansing practice · Bhuta Shuddhi Saranda  
+Bhuta Shuddhi Albania · Bhuta Shuddhi Tirana · Bhuta Shuddhi Saranda · five elements · elemental purification · Bhuta Shuddhi process · classical cleansing practice  
 
 ### Internal linking rules
 - Transformation guides → Bhuta Shuddhi and/or Home, not gym-detox language  
@@ -315,23 +316,24 @@ Own **Hatha Yoga Retreat Albania** and **Yoga Retreat Saranda** on separate URLs
 
 ## Special practices (satellite pages, not full clusters)
 
-These existing pages support Classical Hatha Yoga but do not get their own full cluster until demand justifies it:
+These existing pages support Classical Hatha Yoga but do not get their own full cluster until demand justifies it. Each now owns `{Practice} Albania` (Children's Program Albania; Eye Care Practices Albania):
 
 - Bhastrika Kriya · Jala Neti · Thoppukarnam · Shanmukhi Mudra · Eye Care Practices · Pavanamuktasana · Children's Program · Surya Shakti  
 
-**Linking:** each satellites → `/programs` + Classical hub + Contact.  
+**Linking:** each satellite → `/programs` + Classical hub + Contact; related practices where useful.  
+**Tirana secondaries** live on the program URL. **Do not** publish `/programs/{slug}/tirana`.  
 **Optional later:** micro-guides (“What is Jala Neti”) only if Search Console shows sustained query volume.
 
 ---
 
 ## Cluster publishing order (strategy)
 
-1. Align metadata/anchors on existing P0 pillars (Home, 5 programs, Retreats) — future implementation  
+1. Align metadata/anchors on existing P0 pillars (Home, programs, Retreats) — **done in Phase 1 + geographic expansion**  
 2. Classical Hatha educational guides  
-3. Saranda + Tirana location landers  
+3. Saranda + Tirana location landers **only when unique local value exists**  
 4. Surya Kriya / Angamardana educational supports  
 5. Retreat Saranda commercial page (when product ready)  
-6. Remaining city landers (Prishtina, Corfu, Korçë, Gjirokastër)  
+6. Remaining city landers (Corfu, Vlorë, Korçë, Gjirokastër, then Prishtina)  
 7. Remaining practice guides  
 
 Details and gap backlog: `CONTENT-GAPS.md`.

@@ -1,24 +1,14 @@
 import { getCliClient } from "sanity/cli";
 
 /**
- * Keep Studio documents 1:1 with the live website copy.
+ * Geographic + program keyword expansion.
+ * Updates existing Sanity documents only — does not create location pages.
  *
  * Usage:
- *   npx sanity exec scripts/sync-cms-recent.mjs --with-user-token
+ *   npx sanity exec scripts/patch-seo-geo-expansion.mjs --with-user-token
  */
 
 const client = getCliClient({ apiVersion: "2024-10-01" });
-
-const ABOUT_HERO =
-  "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended, based in Saranda & Tirana.";
-const ABOUT_SEO =
-  "Meet the Classical Hatha Yoga teacher behind Nava Hatha Yoga in Albania — certified training, traditional practices taught as intended, based in Saranda & Tirana.";
-const SITE_DESCRIPTION =
-  "Nava Hatha Yoga offers Classical Hatha Yoga in Saranda & Tirana, Albania — practices taught in their traditional form to support clarity, balance, and inner stability. Classes are in-person.";
-const EVENTS_DESCRIPTION =
-  "Classes are held in person in Saranda and Tirana, Albania.";
-const HOME_SEO_DESCRIPTION =
-  "Authentic Classical Hatha Yoga in Albania — traditional practices taught as intended in Saranda & Tirana, for clarity, balance, and inner transformation.";
 
 function key(prefix) {
   return `${prefix}-${Math.random().toString(36).slice(2, 10)}`;
@@ -30,6 +20,66 @@ function span(text, marks = []) {
 
 function linkDef(href) {
   return { _type: "link", _key: key("l"), href };
+}
+
+function related(items) {
+  return items.map((item, index) => ({
+    _type: "ctaLink",
+    _key: `rel-${index}-${item.href.replace(/[^a-z0-9]+/g, "-")}`,
+    label: item.label,
+    href: item.href,
+  }));
+}
+
+function blockText(block) {
+  return (block?.children ?? []).map((child) => child.text ?? "").join("");
+}
+
+function buildHomeGeoBlock() {
+  const upa = linkDef("/programs/upa-yoga");
+  const surya = linkDef("/programs/surya-kriya");
+  const yogasanas = linkDef("/programs/yogasanas");
+  const anga = linkDef("/programs/angamardana");
+  const bhuta = linkDef("/programs/bhuta-shuddhi");
+  const about = linkDef("/about");
+  const contact = linkDef("/contact");
+
+  return {
+    _type: "block",
+    _key: key("b"),
+    style: "normal",
+    markDefs: [upa, surya, yogasanas, anga, bhuta, about, contact],
+    children: [
+      span(
+        "These practices are offered in Albania, based in Saranda and Tirana, and taught in their traditional form. Begin with ",
+      ),
+      span("Upa Yoga", [upa._key]),
+      span(", explore "),
+      span("Surya Kriya", [surya._key]),
+      span(", "),
+      span("Yogasanas", [yogasanas._key]),
+      span(", "),
+      span("Angamardana", [anga._key]),
+      span(", or "),
+      span("Bhuta Shuddhi", [bhuta._key]),
+      span(" — or "),
+      span("meet the teacher", [about._key]),
+      span(". Other teaching locations may be arranged "),
+      span("upon request", [contact._key]),
+      span("."),
+    ],
+  };
+}
+
+function replaceOrAppendGeoParagraph(introBody) {
+  const geo = buildHomeGeoBlock();
+  const next = [...(introBody ?? [])];
+  const idx = next.findIndex((block) =>
+    /offered in Albania|based in Saranda/i.test(blockText(block)),
+  );
+  if (idx >= 0) next[idx] = geo;
+  else next.push(geo);
+  return next;
 }
 
 async function patchSingleton(id, type, data) {
@@ -46,19 +96,6 @@ async function patchSingleton(id, type, data) {
   await client.patch(existingId).set(data).commit();
   console.log(`✓ ${type}`);
   return existingId;
-}
-
-function related(items) {
-  return items.map((item, index) => ({
-    _type: "ctaLink",
-    _key: `rel-${index}-${item.href.replace(/[^a-z0-9]+/g, "-")}`,
-    label: item.label,
-    href: item.href,
-  }));
-}
-
-function blockText(block) {
-  return (block?.children ?? []).map((child) => child.text ?? "").join("");
 }
 
 const PROGRAMS = [
@@ -246,91 +283,17 @@ const PROGRAMS = [
   },
 ];
 
-await patchSingleton("aboutPage", "aboutPage", {
-  heroEyebrow: "About",
-  heroDescription: ABOUT_HERO,
-  "seo.title": "Classical Hatha Yoga Teacher in Albania",
-  "seo.description": ABOUT_SEO,
-  finalCta: {
-    heading: "Explore the practices",
-    body: "Discover Classical Hatha Yoga programs taught as intended, or register your interest for upcoming sessions in Albania.",
-    cta: {
-      _type: "ctaLink",
-      _key: "cta-programs",
-      label: "View programs",
-      href: "/programs",
-    },
-  },
-});
+console.log("Patching geographic SEO expansion…");
 
 const introBody = await client.fetch(`*[_id == "homePage"][0].intro.body`);
-
-const upa = linkDef("/programs/upa-yoga");
-const surya = linkDef("/programs/surya-kriya");
-const yogasanas = linkDef("/programs/yogasanas");
-const anga = linkDef("/programs/angamardana");
-const bhuta = linkDef("/programs/bhuta-shuddhi");
-const about = linkDef("/about");
-const contact = linkDef("/contact");
-
-const geoBlock = {
-  _type: "block",
-  _key: key("b"),
-  style: "normal",
-  markDefs: [upa, surya, yogasanas, anga, bhuta, about, contact],
-  children: [
-    span(
-      "These practices are offered in Albania, based in Saranda and Tirana, and taught in their traditional form. Begin with ",
-    ),
-    span("Upa Yoga", [upa._key]),
-    span(", explore "),
-    span("Surya Kriya", [surya._key]),
-    span(", "),
-    span("Yogasanas", [yogasanas._key]),
-    span(", "),
-    span("Angamardana", [anga._key]),
-    span(", or "),
-    span("Bhuta Shuddhi", [bhuta._key]),
-    span(" — or "),
-    span("meet the teacher", [about._key]),
-    span(". Other teaching locations may be arranged "),
-    span("upon request", [contact._key]),
-    span("."),
-  ],
-};
-
-const nextIntro = [...(introBody ?? [])];
-const geoIdx = nextIntro.findIndex((block) =>
-  /offered in Albania|based in Saranda/i.test(blockText(block)),
-);
-if (geoIdx >= 0) nextIntro[geoIdx] = geoBlock;
-else nextIntro.push(geoBlock);
-
-const homePatch = {
+await patchSingleton("homePage", "homePage", {
   "seo.title": "Classical Hatha Yoga in Albania",
-  "seo.description": HOME_SEO_DESCRIPTION,
-  "upcomingEventsSection.description": EVENTS_DESCRIPTION,
+  "seo.description":
+    "Authentic Classical Hatha Yoga in Albania — traditional practices taught as intended in Saranda & Tirana, for clarity, balance, and inner transformation.",
+  "intro.body": replaceOrAppendGeoParagraph(introBody),
   "intro.videoTitle": "The Incredible Power of Classical Hatha Yoga",
-  "intro.body": nextIntro,
-};
-
-await patchSingleton("homePage", "homePage", homePatch);
-
-await patchSingleton("siteSettings", "siteSettings", {
-  description: SITE_DESCRIPTION,
-  location: "Saranda & Tirana, Albania",
-});
-
-await patchSingleton("programsPage", "programsPage", {
-  "seo.title": "Classical Hatha Yoga Programs in Albania",
-  "seo.description":
-    "Explore Classical Hatha Yoga programs in Albania — traditional practices taught as intended, from Upa Yoga and Surya Kriya to Yogasanas, Angamardana, and Bhuta Shuddhi.",
-});
-
-await patchSingleton("retreatsPage", "retreatsPage", {
-  "seo.title": "Classical Hatha Yoga Retreats in Albania",
-  "seo.description":
-    "Discover upcoming Classical Hatha Yoga retreats in Albania, created for immersive traditional practice and inner transformation. Register your interest for future retreats.",
+  "upcomingEventsSection.description":
+    "Classes are held in person in Saranda and Tirana, Albania.",
 });
 
 await patchSingleton("contactPage", "contactPage", {
@@ -341,26 +304,6 @@ await patchSingleton("contactPage", "contactPage", {
   "seo.title": "Register for Classical Hatha Yoga in Albania",
   "seo.description":
     "Register or enquire about Classical Hatha Yoga in Albania. Teaching is based in Saranda and Tirana, with other locations available upon request. Classes are in-person.",
-});
-
-await client.createIfNotExists({
-  _id: "eventsPage",
-  _type: "eventsPage",
-  heroEyebrow: "Events",
-  heroTitle: "Upcoming events",
-  heroDescription:
-    "Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life.",
-  emptyTitle: "New events are being scheduled",
-  emptyDescription:
-    "There are no upcoming events listed right now. Please check back soon, or get in touch to register your interest and be notified.",
-  contactHeading: "Have a question about an event?",
-  contactDescription:
-    "Reach out and we'll be glad to help you find the right session and answer any questions. Please leave a message below.",
-  seo: {
-    title: "Classical Hatha Yoga Events in Albania",
-    description:
-      "Upcoming Classical Hatha Yoga workshops, free sessions, and gatherings in Saranda and Tirana, Albania.",
-  },
 });
 
 await patchSingleton("eventsPage", "eventsPage", {
@@ -388,23 +331,8 @@ for (const program of PROGRAMS) {
       seo: program.seo,
     })
     .commit();
-  console.log(`✓ program ${program.slug}`);
+  console.log(`✓ program ${program.slug} (${doc.title})`);
 }
 
-const template = await client.fetch(
-  `*[_id == "retreat-test-preview"][0]{ title, published, "slug": slug.current }`,
-);
-if (!template) {
-  console.warn("⚠ Retreat template missing (retreat-test-preview)");
-} else if (template.published) {
-  await client.patch("retreat-test-preview").set({ published: false }).commit();
-  console.log("✓ retreat template unpublished");
-} else {
-  console.log("✓ retreat template present and unpublished:", template);
-}
-
-const publishedCount = await client.fetch(
-  `count(*[_type == "retreat" && published == true && !(_id in ["retreat-test-preview", "drafts.retreat-test-preview"])])`,
-);
-console.log("Published public retreats:", publishedCount);
-console.log("CMS 1:1 sync complete.");
+console.log("Geographic SEO expansion patch complete.");
+console.log("Did not create location pages or program × city pages.");

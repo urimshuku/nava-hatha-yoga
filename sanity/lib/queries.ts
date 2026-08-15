@@ -38,7 +38,7 @@ export const homePageQuery = groq`
       items[]{ text, lines },
       closingQuote
     },
-    intro{ eyebrow, heading, body, videoUrl },
+    intro{ eyebrow, heading, body, videoUrl, videoTitle },
     featuredProgramsSection{ eyebrow, title, description, ctaLabel },
     featuredPrograms[]->{
       _id,
@@ -71,6 +71,7 @@ export const homePageQuery = groq`
 export const aboutPageQuery = groq`
   *[_type == "aboutPage"][0]{
     title,
+    heroEyebrow,
     heroDescription,
     intro,
     teacherStory{
@@ -93,6 +94,7 @@ export const aboutPageQuery = groq`
       image${imageFields},
       cta{ label, href }
     },
+    finalCta{ heading, body, cta{ label, href } },
     ${seoFields}
   }
 `;
@@ -122,6 +124,8 @@ export const programBySlugQuery = groq`
     title,
     "slug": slug.current,
     shortIntro,
+    contextLine,
+    relatedPrograms[]{ label, href },
     category,
     intensity,
     image${imageFields},
