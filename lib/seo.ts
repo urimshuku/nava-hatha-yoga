@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/constants";
+import { urlForImage } from "@/sanity/lib/image";
 import type { SeoFields } from "@/sanity/lib/types";
 
 /** Default social share image (static PNG — reliable on OpenNext/Cloudflare Workers). */
@@ -83,7 +84,16 @@ export function buildMetadata({
   const ogTitle = resolvedTitle
     ? `${resolvedTitle} · ${siteName}`
     : `${siteName} · Classical Hatha Yoga`;
-  const ogImage = resolveOgImage(image, ogTitle);
+  const seoImageUrl = urlForImage(seo?.image)?.width(1200).height(630).fit("crop").url();
+  const seoImage: OgImageInput | undefined = seoImageUrl
+    ? {
+        url: seoImageUrl,
+        width: 1200,
+        height: 630,
+        alt: seo?.image?.alt || ogTitle,
+      }
+    : undefined;
+  const ogImage = resolveOgImage(seoImage ?? image, ogTitle);
 
   return {
     title: resolvedTitle,

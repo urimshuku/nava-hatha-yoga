@@ -1,9 +1,9 @@
 /**
- * Static content for the event registration form (6-step wizard).
+ * Emergency registration-form copy.
  *
- * These texts, policies, and bank details are displayed verbatim to the user.
- * They live here (rather than Sanity) so they can be edited in one place in
- * code. Update the values below as needed.
+ * Production form text lives in the Sanity “Registration form” document.
+ * This file is used only when that document cannot be fetched, or when a
+ * specific field on it is empty. Keep these strings aligned with the CMS.
  */
 
 /* ------------------------------------------------------------------ */

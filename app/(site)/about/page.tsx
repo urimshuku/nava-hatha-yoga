@@ -93,6 +93,7 @@ export default async function AboutPage() {
       <AboutHighlightCards
         teacherStory={teacherStory}
         cards={about.highlightCards}
+        heading={about.teacherSectionTitle}
       />
 
       {sections.map((section, index) => (

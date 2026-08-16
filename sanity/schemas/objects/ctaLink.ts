@@ -7,7 +7,7 @@ export const ctaLink = defineType({
   fields: [
     defineField({
       name: "label",
-      title: "Button label",
+      title: "Button Label",
       type: "string",
     }),
     defineField({

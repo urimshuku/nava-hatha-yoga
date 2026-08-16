@@ -2,7 +2,8 @@
  * Phase 1 SEO semantic targets and natural-language fallbacks,
  * plus the geographic / program-keyword expansion.
  *
- * CMS `seo` fields should match these; code uses them when CMS is empty.
+ * CMS `seo` fields should match these; code uses them only when CMS is empty.
+ * These are resilience fallbacks, not the normal production source.
  * Albania remains the primary geographic target. City names are supporting
  * context only — they do not replace page ownership or create new URLs.
  */

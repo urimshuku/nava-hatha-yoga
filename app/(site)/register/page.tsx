@@ -30,9 +30,16 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   return (
     <>
       <PageHero
-        eyebrow="Registration"
-        title={eventName ? `Register for ${eventName}` : "Program registration"}
-        description="Please complete the form below. Your information is confidential and is used only to prepare for your participation."
+        eyebrow={registerPage?.heroEyebrow?.trim() || "Registration"}
+        title={
+          eventName
+            ? `Register for ${eventName}`
+            : registerPage?.heroTitle?.trim() || "Program registration"
+        }
+        description={
+          registerPage?.heroDescription?.trim() ||
+          "Please complete the form below. Your information is confidential and is used only to prepare for your participation."
+        }
       />
 
       <Section tone="cream">

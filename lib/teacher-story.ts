@@ -1,3 +1,10 @@
+/**
+ * Emergency teacher-story copy.
+ *
+ * Production story text lives on the About page in Sanity.
+ * These values are used only when the CMS teacher story is missing.
+ */
+
 export const TEACHER_NAME_LINE = "My name is Linda.";
 
 export const TEACHER_STORY_TITLE = "My Full Story";

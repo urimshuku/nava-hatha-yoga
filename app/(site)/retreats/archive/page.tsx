@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHero } from "@/components/ui/PageHero";
 import { buildMetadata } from "@/lib/seo";
-import { getPastRetreats } from "@/sanity/lib/fetch";
+import { getPastRetreats, getRetreatsPage } from "@/sanity/lib/fetch";
 
 export const metadata: Metadata = buildMetadata({
   title: "Past Retreats",
@@ -19,14 +19,20 @@ export const metadata: Metadata = buildMetadata({
 export const revalidate = 60;
 
 export default async function RetreatsArchivePage() {
-  const retreats = await getPastRetreats();
+  const [retreats, page] = await Promise.all([
+    getPastRetreats(),
+    getRetreatsPage(),
+  ]);
 
   return (
     <>
       <PageHero
-        eyebrow="Archive"
-        title="Past retreats"
-        description="A record of immersive retreats that have taken place."
+        eyebrow={page.archiveEyebrow?.trim() || "Archive"}
+        title={page.archiveTitle?.trim() || "Past retreats"}
+        description={
+          page.archiveDescription?.trim() ||
+          "A record of immersive retreats that have taken place."
+        }
       />
 
       <Section tone="cream">
@@ -35,8 +41,11 @@ export default async function RetreatsArchivePage() {
             <RetreatArchiveList retreats={retreats} />
           ) : (
             <EmptyState
-              title="No past retreats yet"
-              description="Once retreats have taken place, they will appear here."
+              title={page.archiveEmptyTitle?.trim() || "No past retreats yet"}
+              description={
+                page.archiveEmptyDescription?.trim() ||
+                "Once retreats have taken place, they will appear here."
+              }
             >
               <Button href="/retreats" variant="secondary">
                 View upcoming retreats

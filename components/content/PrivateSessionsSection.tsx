@@ -45,7 +45,7 @@ export function PrivateSessionsSection({
   const items =
     offerings?.filter((item) => item.title?.trim() && item.body?.trim()) ?? [];
   const resolvedOfferings = items.length > 0 ? items : DEFAULT_OFFERINGS;
-  const resolvedHeading = heading?.trim() || "Private Sessions";
+  const resolvedHeading = heading?.trim() || "Private & Corporate Sessions";
   const resolvedLead =
     lead?.trim() ||
     "Private sessions are available upon request. Depending on the needs of the individual, group, or organization, selected Classical Hatha Yoga practices can be offered in a focused setting.";

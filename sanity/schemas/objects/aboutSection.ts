@@ -7,19 +7,19 @@ export const aboutSection = defineType({
   fields: [
     defineField({
       name: "title",
-      title: "Section title",
+      title: "Section Title",
       type: "string",
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: "image",
-      title: "Section image",
+      title: "Section Image",
       type: "imageWithAlt",
       description: "Photo for this section.",
     }),
     defineField({
       name: "body",
-      title: "Section text",
+      title: "Section Text",
       type: "blockContent",
       description: "The main content for this section.",
     }),

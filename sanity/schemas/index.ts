@@ -15,21 +15,20 @@ import {
 import { imageWithAlt } from "./objects/imageWithAlt";
 import { seo } from "./objects/seo";
 
-import { siteSettings } from "./siteSettings";
-import { homePage } from "./homePage";
-import { aboutPage } from "./aboutPage";
-import { contactPage } from "./contactPage";
-import { registerPage } from "./registerPage";
-import { programsPage } from "./programsPage";
-import { eventsPage } from "./eventsPage";
-import { retreatsPage } from "./retreatsPage";
-import { program } from "./program";
-import { event } from "./event";
-import { retreat } from "./retreat";
-import { legalPage } from "./legalPage";
+import { aboutPage } from "./documents/aboutPage";
+import { contactPage } from "./documents/contactPage";
+import { event } from "./documents/event";
+import { eventsPage } from "./documents/eventsPage";
+import { homePage } from "./documents/homePage";
+import { legalPage } from "./documents/legalPage";
+import { program } from "./documents/program";
+import { programsPage } from "./documents/programsPage";
+import { registerPage } from "./documents/registerPage";
+import { retreat } from "./documents/retreat";
+import { retreatsPage } from "./documents/retreatsPage";
+import { siteSettings } from "./documents/siteSettings";
 
 export const schemaTypes: SchemaTypeDefinition[] = [
-  // Objects
   aboutSection,
   blockContent,
   ctaLink,
@@ -40,7 +39,6 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   guidelineSection,
   imageWithAlt,
   seo,
-  // Documents
   siteSettings,
   homePage,
   aboutPage,

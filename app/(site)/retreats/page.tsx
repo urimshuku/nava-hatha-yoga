@@ -95,7 +95,9 @@ export default async function RetreatsPage() {
           <Section tone="cream">
             <Container>
               <MotionReveal className="mx-auto max-w-2xl rounded-2xl border border-border bg-ivory px-8 py-16 text-center shadow-soft sm:py-20">
-                <p className="eyebrow">Coming Soon</p>
+                <p className="eyebrow">
+                  {page.comingSoonEyebrow?.trim() || "Coming Soon"}
+                </p>
                 <h2 className="mt-4 text-display-sm text-balance">
                   {page.comingSoonHeading?.trim() ||
                     placeholderRetreatsPage.comingSoonHeading}
@@ -117,7 +119,9 @@ export default async function RetreatsPage() {
           <Section tone="ivory" className="border-t border-border">
             <Container>
               <MotionReveal className="text-center">
-                <p className="eyebrow mb-4">What to expect</p>
+                <p className="eyebrow mb-4">
+                  {page.expectationsEyebrow?.trim() || "What to expect"}
+                </p>
                 <h2 className="text-display-sm text-balance">
                   {page.expectationsHeading?.trim() ||
                     placeholderRetreatsPage.expectationsHeading}

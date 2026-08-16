@@ -43,7 +43,7 @@ export default async function ContactPage() {
   return (
     <>
       <PageHero
-        eyebrow="Contact"
+        eyebrow={page.heroEyebrow?.trim() || placeholderContactPage.heroEyebrow || "Contact"}
         title={page.heroTitle?.trim() || placeholderContactPage.heroTitle}
         description={
           page.heroDescription?.trim() ||

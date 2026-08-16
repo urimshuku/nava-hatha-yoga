@@ -1,7 +1,7 @@
 "use client";
 
 const STEPS = [
-  "Open Retreat template in the left pane (not Retreats Page). That document is a ready-made example — do not turn Published on for the template itself.",
+        "Open Retreats → Retreat template (not Retreats page). That document is a ready-made example — do not turn Published on for the template itself.",
   "Use Duplicate (the document menu) to make a new retreat from the template.",
   "Change Title, then click Generate on Slug.",
   "Set Date (start) and End date (last day). Multi-day retreats stay listed until the end date.",

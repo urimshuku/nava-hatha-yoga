@@ -2,7 +2,7 @@ import { defineField, defineType } from "sanity";
 
 export const registerPage = defineType({
   name: "registerPage",
-  title: "Register Page",
+  title: "Registration form",
   type: "document",
   groups: [
     { name: "health", title: "Health step", default: true },
@@ -11,12 +11,36 @@ export const registerPage = defineType({
     { name: "guidelines", title: "Guidelines" },
   ],
   fields: [
-    // ------------------------------------------------------------------
-    // Step 2 — Health-Related Information
-    // ------------------------------------------------------------------
+    defineField({
+      name: "heroEyebrow",
+      title: "Small Label",
+      type: "string",
+      group: "health",
+      initialValue: "Registration",
+    }),
+    defineField({
+      name: "heroTitle",
+      title: "Page Title",
+      type: "string",
+      group: "health",
+      description:
+        "Used when no event name is in the link. If someone opens a registration link for a named event, the title becomes “Register for [event]”.",
+      initialValue: "Program registration",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "heroDescription",
+      title: "Page Introduction",
+      type: "text",
+      rows: 3,
+      group: "health",
+      initialValue:
+        "Please complete the form below. Your information is confidential and is used only to prepare for your participation.",
+      validation: (rule) => rule.required(),
+    }),
     defineField({
       name: "healthIntro",
-      title: "Health step introduction",
+      title: "Health Step Introduction",
       type: "array",
       group: "health",
       of: [{ type: "text", rows: 3 }],
@@ -24,7 +48,7 @@ export const registerPage = defineType({
     }),
     defineField({
       name: "healthConditions",
-      title: "Health conditions",
+      title: "Health Conditions",
       type: "array",
       group: "health",
       of: [{ type: "string" }],
@@ -33,43 +57,40 @@ export const registerPage = defineType({
     }),
     defineField({
       name: "healthDetailsLabel",
-      title: "Health details question",
+      title: "Health Details Question",
       type: "text",
       rows: 3,
       group: "health",
     }),
     defineField({
       name: "majorSurgeryQuestion",
-      title: "Major surgery question",
+      title: "Major Surgery Question",
       type: "string",
       group: "health",
     }),
     defineField({
       name: "majorSurgeryHint",
-      title: "Major surgery hint",
+      title: "Major Surgery Hint",
       type: "text",
       rows: 3,
       group: "health",
     }),
     defineField({
       name: "pregnancyLabel",
-      title: "Pregnancy question",
+      title: "Pregnancy Question",
       type: "string",
       group: "health",
     }),
-    // ------------------------------------------------------------------
-    // Medical disclaimer (pop-up + consent)
-    // ------------------------------------------------------------------
     defineField({
       name: "disclaimerTitle",
-      title: "Disclaimer title",
+      title: "Disclaimer Title",
       type: "string",
       group: "disclaimer",
       description: "Title of the disclaimer pop-up.",
     }),
     defineField({
       name: "disclaimerDocument",
-      title: "Disclaimer document",
+      title: "Disclaimer Document",
       type: "array",
       group: "disclaimer",
       of: [{ type: "disclaimerSection" }],
@@ -77,7 +98,7 @@ export const registerPage = defineType({
     }),
     defineField({
       name: "disclaimerBullets",
-      title: "Confirmation bullets",
+      title: "Confirmation Bullets",
       type: "array",
       group: "disclaimer",
       of: [{ type: "text", rows: 2 }],
@@ -85,52 +106,46 @@ export const registerPage = defineType({
     }),
     defineField({
       name: "disclaimerConsentLabel",
-      title: "Consent checkbox label",
+      title: "Consent Checkbox Label",
       type: "text",
       rows: 2,
       group: "disclaimer",
     }),
-    // ------------------------------------------------------------------
-    // Step 4 — Agreement
-    // ------------------------------------------------------------------
     defineField({
       name: "refundPolicyBullets",
-      title: "Refund policy bullets",
+      title: "Refund Policy Bullets",
       type: "array",
       group: "agreement",
       of: [{ type: "text", rows: 2 }],
     }),
     defineField({
       name: "refundPolicyConsentLabel",
-      title: "Refund policy consent label",
+      title: "Refund Policy Consent Label",
       type: "string",
       group: "agreement",
     }),
     defineField({
       name: "agreementTitle",
-      title: "Participant agreement title",
+      title: "Participant Agreement Title",
       type: "string",
       group: "agreement",
     }),
     defineField({
       name: "agreementBullets",
-      title: "Participant agreement bullets",
+      title: "Participant Agreement Bullets",
       type: "array",
       group: "agreement",
       of: [{ type: "text", rows: 2 }],
     }),
     defineField({
       name: "agreementConsentLabel",
-      title: "Agreement consent label",
+      title: "Agreement Consent Label",
       type: "string",
       group: "agreement",
     }),
-    // ------------------------------------------------------------------
-    // Final step + full guidelines document (also used for the PDF)
-    // ------------------------------------------------------------------
     defineField({
       name: "beforeSessionBlocks",
-      title: "“Before the Start of the Session” blocks",
+      title: "“Before the Start of the Session” Blocks",
       type: "array",
       group: "guidelines",
       of: [{ type: "guidelineBlock" }],
@@ -138,14 +153,14 @@ export const registerPage = defineType({
     }),
     defineField({
       name: "guidelinesTitle",
-      title: "Full guidelines title",
+      title: "Full Guidelines Title",
       type: "string",
       group: "guidelines",
       description: "Title of the full guidelines pop-up and PDF.",
     }),
     defineField({
       name: "guidelinesDocument",
-      title: "Full guidelines document",
+      title: "Full Guidelines Document",
       type: "array",
       group: "guidelines",
       of: [{ type: "guidelineSection" }],
@@ -154,6 +169,6 @@ export const registerPage = defineType({
     }),
   ],
   preview: {
-    prepare: () => ({ title: "Register Page" }),
+    prepare: () => ({ title: "Registration form" }),
   },
 });

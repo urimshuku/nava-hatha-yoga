@@ -1,7 +1,6 @@
 import { groq } from "next-sanity";
 
-const seoFields = `seo{ title, description }`;
-const imageFields = `{ ..., "alt": alt }`;
+import { imageFields, seoFields } from "./fragments";
 
 export const siteSettingsQuery = groq`
   *[_type == "siteSettings"][0]{
@@ -31,8 +30,7 @@ export const homePageQuery = groq`
       subtitle,
       supportingText,
       primaryCta{ label, href },
-      secondaryCta{ label, href },
-      image${imageFields}
+      secondaryCta{ label, href }
     },
     highlights{
       items[]{ text, lines },
@@ -74,6 +72,7 @@ export const aboutPageQuery = groq`
     heroEyebrow,
     heroDescription,
     intro,
+    teacherSectionTitle,
     teacherStory{
       nameLine,
       photo${imageFields},
@@ -82,11 +81,7 @@ export const aboutPageQuery = groq`
       story
     },
     highlightCards[]{
-      eyebrow,
-      title,
-      stat,
-      body,
-      showCertificationLogo
+      title
     },
     sections[]{
       title,
@@ -99,129 +94,9 @@ export const aboutPageQuery = groq`
   }
 `;
 
-export const programsQuery = groq`
-  *[_type == "program" && published == true] | order(orderRank asc, title asc){
-    _id,
-    title,
-    "slug": slug.current,
-    shortIntro,
-    category,
-    intensity,
-    image${imageFields}
-  }
-`;
-
-export const programSlugsQuery = groq`
-  *[_type == "program" && published == true && defined(slug.current)]{
-    "slug": slug.current,
-    "_updatedAt": _updatedAt
-  }
-`;
-
-export const programBySlugQuery = groq`
-  *[_type == "program" && slug.current == $slug][0]{
-    _id,
-    title,
-    "slug": slug.current,
-    shortIntro,
-    contextLine,
-    relatedPrograms[]{ label, href },
-    category,
-    intensity,
-    image${imageFields},
-    whatIs,
-    aboutThePractice,
-    benefits,
-    beforeProgramTitle,
-    beforeProgramNotes,
-    practiceIndependently,
-    privateAndGroupSessions,
-    videoUrl,
-    videoTitle,
-    priceLabel,
-    ${seoFields}
-  }
-`;
-
-const eventSessionFields = `
-  sessions[]{ day, hours },
-  sessionNote,
-  time,
-`;
-
-export const allEventsQuery = groq`
-  *[_type == "event" && published == true] | order(date asc){
-    _id,
-    title,
-    date,
-    endDate,
-    ${eventSessionFields}
-    location,
-    priceLabel,
-    paymentNote,
-    teacher,
-    ageRequirement,
-    category,
-    relatedProgram->{ title, "slug": slug.current, intensity },
-    description,
-    notes,
-    image${imageFields},
-    registrationLink,
-    whatsappEnabled
-  }
-`;
-
-export const retreatsQuery = groq`
-  *[_type == "retreat" && published == true && !(_id in ["retreat-test-preview", "drafts.retreat-test-preview"])] | order(date asc){
-    _id,
-    title,
-    "slug": slug.current,
-    date,
-    endDate,
-    location,
-    priceLabel,
-    description,
-    image${imageFields}
-  }
-`;
-
-export const retreatSlugsQuery = groq`
-  *[_type == "retreat" && published == true && defined(slug.current) && !(_id in ["retreat-test-preview", "drafts.retreat-test-preview"])]{
-    "slug": slug.current,
-    "_updatedAt": _updatedAt
-  }
-`;
-
-export const retreatBySlugQuery = groq`
-  *[_type == "retreat" && published == true && slug.current == $slug && !(_id in ["retreat-test-preview", "drafts.retreat-test-preview"])][0]{
-    _id,
-    title,
-    "slug": slug.current,
-    date,
-    endDate,
-    location,
-    priceLabel,
-    description,
-    body,
-    gallery[]${imageFields},
-    image${imageFields},
-    registrationLink,
-    cancellationPolicy,
-    ${seoFields}
-  }
-`;
-
-export const legalPageQuery = groq`
-  *[_type == "legalPage" && slug.current == $slug][0]{
-    title,
-    "slug": slug.current,
-    body,
-    ${seoFields}
-  }
-`;
-
 export const contactPageQuery = groq`
   *[_type == "contactPage"][0]{
+    heroEyebrow,
     heroTitle,
     heroDescription,
     formHeading,
@@ -242,6 +117,9 @@ export const programsPageQuery = groq`
     heroEyebrow,
     heroTitle,
     heroDescription,
+    mainProgramsHeading,
+    specialProgramsHeading,
+    specialProgramsLead,
     freeOfferings{
       eyebrow,
       lead,
@@ -260,6 +138,11 @@ export const eventsPageQuery = groq`
     emptyDescription,
     contactHeading,
     contactDescription,
+    archiveEyebrow,
+    archiveTitle,
+    archiveDescription,
+    archiveEmptyTitle,
+    archiveEmptyDescription,
     ${seoFields}
   }
 `;
@@ -269,8 +152,10 @@ export const retreatsPageQuery = groq`
     heroEyebrow,
     heroTitle,
     heroDescription,
+    comingSoonEyebrow,
     comingSoonHeading,
     comingSoonBody,
+    expectationsEyebrow,
     expectationsHeading,
     expectations[]{ title, body },
     listingCta{ heading, body, cta{ label, href } },
@@ -282,12 +167,20 @@ export const retreatsPageQuery = groq`
       closing,
       whatsappPrefill
     },
+    archiveEyebrow,
+    archiveTitle,
+    archiveDescription,
+    archiveEmptyTitle,
+    archiveEmptyDescription,
     ${seoFields}
   }
 `;
 
 export const registerPageQuery = groq`
   *[_type == "registerPage"][0]{
+    heroEyebrow,
+    heroTitle,
+    heroDescription,
     healthIntro,
     healthConditions,
     healthDetailsLabel,
@@ -321,5 +214,14 @@ export const registerPageQuery = groq`
         lists[]{ label, items }
       }
     }
+  }
+`;
+
+export const legalPageQuery = groq`
+  *[_type == "legalPage" && slug.current == $slug][0]{
+    title,
+    "slug": slug.current,
+    body,
+    ${seoFields}
   }
 `;

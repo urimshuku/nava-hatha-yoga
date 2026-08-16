@@ -51,7 +51,13 @@ export default async function ProgramsPage() {
 
       <Section tone="cream">
         <Container>
-          <ProgramsListing mainPrograms={main} specialPrograms={special} />
+          <ProgramsListing
+            mainPrograms={main}
+            specialPrograms={special}
+            mainHeading={page.mainProgramsHeading}
+            specialHeading={page.specialProgramsHeading}
+            specialLead={page.specialProgramsLead}
+          />
         </Container>
       </Section>
 

@@ -1,7 +1,8 @@
 /**
- * Static site constants and fallback contact details.
- * Most of these are also editable in Sanity (Site Settings); these act as
- * sensible placeholders before the CMS is connected.
+ * Static site constants and emergency fallbacks.
+ *
+ * Production editorial content lives in Sanity. These values are used only
+ * when CMS data is unavailable or a specific field is empty.
  */
 
 export const SITE_NAME = "Nava Hatha Yoga";
@@ -227,12 +228,12 @@ export function getProgramIntensity(slug?: string | null): ProgramIntensity | nu
 }
 
 export const MAIN_PROGRAM_SLUGS = [
-  "upa-yoga",
   "surya-kriya",
-  "surya-shakti",
-  "yogasanas",
   "angamardana",
+  "yogasanas",
+  "upa-yoga",
   "bhuta-shuddhi",
+  "surya-shakti",
   "childrens-program",
 ] as const;
 

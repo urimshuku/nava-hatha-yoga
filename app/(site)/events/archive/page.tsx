@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHero } from "@/components/ui/PageHero";
 import { buildMetadata } from "@/lib/seo";
-import { getPastEvents } from "@/sanity/lib/fetch";
+import { getPastEvents, getEventsPage } from "@/sanity/lib/fetch";
 
 export const metadata: Metadata = buildMetadata({
   title: "Past Classical Hatha Yoga Events in Albania",
@@ -19,14 +19,17 @@ export const metadata: Metadata = buildMetadata({
 export const revalidate = 60;
 
 export default async function EventsArchivePage() {
-  const events = await getPastEvents();
+  const [events, page] = await Promise.all([getPastEvents(), getEventsPage()]);
 
   return (
     <>
       <PageHero
-        eyebrow="Archive"
-        title="Past events"
-        description="A record of gatherings and sessions that have taken place."
+        eyebrow={page.archiveEyebrow?.trim() || "Archive"}
+        title={page.archiveTitle?.trim() || "Past events"}
+        description={
+          page.archiveDescription?.trim() ||
+          "A record of gatherings and sessions that have taken place."
+        }
       />
 
       <Section tone="cream">
@@ -35,8 +38,11 @@ export default async function EventsArchivePage() {
             <ArchiveList events={events} />
           ) : (
             <EmptyState
-              title="No past events yet"
-              description="Once events have taken place, they will appear here."
+              title={page.archiveEmptyTitle?.trim() || "No past events yet"}
+              description={
+                page.archiveEmptyDescription?.trim() ||
+                "Once events have taken place, they will appear here."
+              }
             >
               <Button href="/events" variant="secondary">
                 View upcoming events

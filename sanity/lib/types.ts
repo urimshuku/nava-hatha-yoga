@@ -6,6 +6,7 @@ export type SanityImage = Image & { alt?: string };
 export interface SeoFields {
   title?: string;
   description?: string;
+  image?: SanityImage;
 }
 
 export interface CtaLink {
@@ -89,6 +90,7 @@ export interface AboutPage {
   heroEyebrow?: string;
   heroDescription?: string;
   intro?: PortableTextBlock[];
+  teacherSectionTitle?: string;
   teacherStory?: TeacherStory;
   highlightCards?: AboutHighlightCard[];
   sections?: AboutSection[];
@@ -221,6 +223,7 @@ export interface LegalPage {
 }
 
 export interface ContactPage {
+  heroEyebrow?: string;
   heroTitle?: string;
   heroDescription?: string;
   formHeading?: string;
@@ -244,6 +247,9 @@ export interface ProgramsPage {
   heroEyebrow?: string;
   heroTitle?: string;
   heroDescription?: string;
+  mainProgramsHeading?: string;
+  specialProgramsHeading?: string;
+  specialProgramsLead?: string;
   freeOfferings?: {
     eyebrow?: string;
     lead?: string;
@@ -260,6 +266,11 @@ export interface EventsPage {
   emptyDescription?: string;
   contactHeading?: string;
   contactDescription?: string;
+  archiveEyebrow?: string;
+  archiveTitle?: string;
+  archiveDescription?: string;
+  archiveEmptyTitle?: string;
+  archiveEmptyDescription?: string;
   seo?: SeoFields;
 }
 
@@ -267,8 +278,10 @@ export interface RetreatsPage {
   heroEyebrow?: string;
   heroTitle?: string;
   heroDescription?: string;
+  comingSoonEyebrow?: string;
   comingSoonHeading?: string;
   comingSoonBody?: string;
+  expectationsEyebrow?: string;
   expectationsHeading?: string;
   expectations?: { title?: string; body?: string }[];
   listingCta?: { heading?: string; body?: string; cta?: CtaLink };
@@ -280,6 +293,11 @@ export interface RetreatsPage {
     closing?: string[];
     whatsappPrefill?: string;
   };
+  archiveEyebrow?: string;
+  archiveTitle?: string;
+  archiveDescription?: string;
+  archiveEmptyTitle?: string;
+  archiveEmptyDescription?: string;
   seo?: SeoFields;
 }
 
@@ -314,6 +332,9 @@ export interface DisclaimerSectionData {
 }
 
 export interface RegisterPage {
+  heroEyebrow?: string;
+  heroTitle?: string;
+  heroDescription?: string;
   healthIntro?: string[];
   healthConditions?: string[];
   healthDetailsLabel?: string;

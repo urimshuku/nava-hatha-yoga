@@ -1,3 +1,10 @@
+/**
+ * Emergency editorial fallbacks used only when a Sanity document cannot be
+ * fetched (CMS down, misconfigured project, or empty fetch result).
+ *
+ * Production content lives in Sanity. These values must match the current
+ * CMS wording so a fallback never silently changes the public website.
+ */
 import type { PortableTextBlock } from "@portabletext/types";
 
 import type {
@@ -571,7 +578,7 @@ export const placeholderHomePage: HomePage = {
     ctaLabel: "See all upcoming events",
   },
   privateCorporate: {
-    heading: "Private Sessions",
+    heading: "Private & Corporate Sessions",
     lead:
       "Private sessions are available upon request. Depending on the needs of the individual, group, or organization, selected Classical Hatha Yoga practices can be offered in a focused setting.",
     offerings: [
@@ -591,8 +598,8 @@ export const placeholderHomePage: HomePage = {
     cta: { label: "Request a private session", href: "/contact" },
   },
   finalCta: {
-    heading: "Connect with Us",
-    body: "For questions regarding upcoming programs, private instruction, or general inquiries, please leave a message below.",
+    heading: "Begin your practice",
+    body: "Reach out to learn more, register your interest, or ask any questions. Classes are in-person and registration is handled personally.",
     cta: { label: "Get in Touch", href: "/contact" },
   },
 };
@@ -602,6 +609,7 @@ export const placeholderAboutPage: AboutPage = {
   heroEyebrow: "About",
   heroDescription:
     "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended, based in Saranda & Tirana.",
+  teacherSectionTitle: "About the Teacher",
   teacherStory: {
     nameLine: TEACHER_NAME_LINE,
     teaser: [...TEACHER_STORY_TEASER_PARAGRAPHS],
@@ -959,6 +967,7 @@ export const placeholderPastEvents: PastEvent[] = [];
 export const placeholderRetreats: Retreat[] = [];
 
 export const placeholderContactPage: ContactPage = {
+  heroEyebrow: "Contact",
   heroTitle: "Get in touch",
   heroDescription:
     "For questions regarding upcoming programs, private instruction, or teaching locations in Albania, please leave a message below.",
@@ -979,6 +988,10 @@ export const placeholderProgramsPage: ProgramsPage = {
   heroTitle: "Classical Hatha Yoga programs",
   heroDescription:
     "Core programs form the foundation of Classical Hatha Yoga in Albania, taught in their traditional form. Special programs address specific needs, and free offerings offer a gentle way to begin.",
+  mainProgramsHeading: "Main programs",
+  specialProgramsHeading: "Special programs",
+  specialProgramsLead:
+    "Practices that support specific aspects of health and wellbeing.",
   freeOfferings: {
     eyebrow: "Free offerings",
     lead: "Open resources to begin exploring Classical Hatha Yoga.",
@@ -1008,6 +1021,11 @@ export const placeholderEventsPage: EventsPage = {
   contactHeading: "Have a question about an event?",
   contactDescription:
     "Reach out and we'll be glad to help you find the right session and answer any questions. Please leave a message below.",
+  archiveEyebrow: "Archive",
+  archiveTitle: "Past events",
+  archiveDescription: "A record of gatherings and sessions that have taken place.",
+  archiveEmptyTitle: "No past events yet",
+  archiveEmptyDescription: "Once events have taken place, they will appear here.",
 };
 
 export const placeholderRetreatsPage: RetreatsPage = {
@@ -1015,9 +1033,11 @@ export const placeholderRetreatsPage: RetreatsPage = {
   heroTitle: "Classical Hatha Yoga retreats",
   heroDescription:
     "Upcoming immersive Classical Hatha Yoga retreats in Albania — devoted to traditional practice, quiet settings, and inner transformation. Dates will be announced; register your interest to be notified.",
+  comingSoonEyebrow: "Coming Soon",
   comingSoonHeading: "Retreats are on their way",
   comingSoonBody:
     "We are carefully preparing upcoming Classical Hatha Yoga retreats in Albania. No retreat is open for booking yet — if you would like to hear when dates are announced, please register your interest.",
+  expectationsEyebrow: "What to expect",
   expectationsHeading: "An invitation to go deeper",
   expectations: [
     {
@@ -1057,6 +1077,11 @@ export const placeholderRetreatsPage: RetreatsPage = {
     whatsappPrefill:
       "Hello, I'd like to explore a Partner Program collaboration with NAVA.",
   },
+  archiveEyebrow: "Archive",
+  archiveTitle: "Past retreats",
+  archiveDescription: "A record of immersive retreats that have taken place.",
+  archiveEmptyTitle: "No past retreats yet",
+  archiveEmptyDescription: "Once retreats have taken place, they will appear here.",
 };
 
 export const placeholderLegalPages: Record<string, LegalPage> =

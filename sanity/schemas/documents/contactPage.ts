@@ -2,7 +2,7 @@ import { defineField, defineType } from "sanity";
 
 export const contactPage = defineType({
   name: "contactPage",
-  title: "Contact Page",
+  title: "Contact",
   type: "document",
   groups: [
     { name: "content", title: "Content", default: true },
@@ -10,30 +10,41 @@ export const contactPage = defineType({
   ],
   fields: [
     defineField({
+      name: "heroEyebrow",
+      title: "Small Label",
+      type: "string",
+      group: "content",
+      description: "Short label above the page title.",
+      initialValue: "Contact",
+    }),
+    defineField({
       name: "heroTitle",
-      title: "Page title",
+      title: "Page Title",
       type: "string",
       group: "content",
       initialValue: "Get in touch",
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "heroDescription",
-      title: "Page introduction",
+      title: "Page Introduction",
       type: "text",
       rows: 3,
       group: "content",
       description: "Short text shown below the page title.",
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "formHeading",
-      title: "Form heading",
+      title: "Form Heading",
       type: "string",
       group: "content",
       initialValue: "Send a message",
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "quickMessageBody",
-      title: "Quick message text",
+      title: "Quick Message Text",
       type: "text",
       rows: 3,
       group: "content",
@@ -41,21 +52,22 @@ export const contactPage = defineType({
     }),
     defineField({
       name: "whatsappPrefill",
-      title: "WhatsApp pre-filled message",
+      title: "WhatsApp Pre-filled Message",
       type: "string",
       group: "content",
       description: "The message that opens pre-typed when someone taps the WhatsApp link.",
     }),
     defineField({
       name: "teachingLocations",
-      title: "Teaching locations",
+      title: "Teaching Locations",
       type: "object",
       group: "content",
+      description: "Only list locations where teaching is genuinely offered.",
       fields: [
-        { name: "mainHeading", title: "Main locations heading", type: "string" },
-        { name: "mainLocations", title: "Main locations", type: "string" },
-        { name: "otherHeading", title: "Other locations heading", type: "string" },
-        { name: "otherLocations", title: "Other locations", type: "string" },
+        { name: "mainHeading", title: "Main Locations Heading", type: "string" },
+        { name: "mainLocations", title: "Main Locations", type: "string" },
+        { name: "otherHeading", title: "Other Locations Heading", type: "string" },
+        { name: "otherLocations", title: "Other Locations", type: "string" },
       ],
     }),
     defineField({
@@ -66,6 +78,6 @@ export const contactPage = defineType({
     }),
   ],
   preview: {
-    prepare: () => ({ title: "Contact Page" }),
+    prepare: () => ({ title: "Contact" }),
   },
 });

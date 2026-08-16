@@ -9,7 +9,7 @@ import { composeEventTimeLabel } from "@/lib/utils";
 
 import { client } from "./client";
 import { isSanityConfigured } from "../env";
-import * as Q from "./queries";
+import * as Q from "../queries";
 import type {
   AboutPage,
   ContactPage,
@@ -66,7 +66,10 @@ async function sanityFetch<T>(query: string, params: Record<string, unknown> = {
       next: { revalidate: REVALIDATE },
     });
   } catch (error) {
-    console.error("Sanity fetch failed; falling back to placeholders.", error);
+    console.error(
+      "Sanity fetch failed; using emergency placeholders until CMS data is available.",
+      error,
+    );
     return null;
   }
 }
