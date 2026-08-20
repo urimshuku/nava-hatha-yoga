@@ -384,7 +384,6 @@ export function EventCard({
           ) : null}
           <EventShareButton
             title={`${event.title} · Nava Hatha Yoga`}
-            summary={registrationEvent}
             path={event.slug ? `/events/${event.slug}` : `/events#${shareAnchorId}`}
           />
           {showRegistration ? (

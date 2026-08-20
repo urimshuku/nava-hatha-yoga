@@ -32,24 +32,21 @@ function IconShare() {
 
 type EventShareButtonProps = {
   title: string;
-  summary: string;
   path: string;
 };
 
 export function EventShareButton({
   title,
-  summary,
   path,
 }: EventShareButtonProps) {
   const [copied, setCopied] = useState(false);
 
   async function share() {
     const url = `${window.location.origin}${path}`;
-    const text = `${summary}\n${url}`;
 
     if (typeof navigator.share === "function") {
       try {
-        await navigator.share({ title, text: summary, url });
+        await navigator.share({ url });
         return;
       } catch (error) {
         if (error instanceof Error && error.name === "AbortError") return;
@@ -57,7 +54,7 @@ export function EventShareButton({
     }
 
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(url);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
