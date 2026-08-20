@@ -28,7 +28,6 @@ import {
   getBeforeProgramTitle,
   getProgramIntensity,
   getProgramPriceLabel,
-  MAIN_PROGRAM_SLUGS,
   PROGRAM_BEFORE_PROGRAM_NOTES,
   PROGRAM_BONUS_ITEMS,
   PROGRAM_BONUS_TITLE,
@@ -564,7 +563,15 @@ export const placeholderHomePage: HomePage = {
       "Each program is a complete practice within the Classical Hatha Yoga system, taught as intended. Explore a practice and register your interest for upcoming sessions.",
     ctaLabel: "View all programs",
   },
-  featuredPrograms: MAIN_PROGRAM_SLUGS.flatMap((slug) => {
+  featuredPrograms: (
+    [
+      "surya-kriya",
+      "angamardana",
+      "yogasanas",
+      "upa-yoga",
+      "bhuta-shuddhi",
+    ] as const
+  ).flatMap((slug) => {
     const program = placeholderPrograms.find((p) => p.slug === slug);
     return program ? [program] : [];
   }),

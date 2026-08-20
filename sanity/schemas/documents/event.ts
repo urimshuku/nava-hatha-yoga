@@ -29,7 +29,7 @@ export const event = defineType({
         maxLength: 96,
       },
       validation: (rule) =>
-        rule.custom((slug) => {
+        rule.required().custom((slug) => {
           if (slug?.current === "archive") {
             return "“archive” is reserved for the past events page.";
           }

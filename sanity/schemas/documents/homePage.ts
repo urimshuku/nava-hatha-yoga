@@ -131,7 +131,8 @@ export const homePage = defineType({
       type: "array",
       group: "content",
       fieldset: "featured",
-      description: "Choose 3–6 programs to feature on the homepage. Drag to reorder.",
+      description:
+        "Choose 3–6 programs to feature on the homepage. Keep this order the same as the Programs page unless you intend a different homepage set.",
       of: [{ type: "reference", to: [{ type: "program" }] }],
       validation: (rule) => rule.max(6),
     }),

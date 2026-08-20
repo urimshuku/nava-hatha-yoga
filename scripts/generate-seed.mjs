@@ -838,10 +838,10 @@ docs.push({
     ctaLabel: "View all programs",
   },
   featuredPrograms: [
-    { _type: "reference", _key: key(), _ref: "program-upa-yoga" },
     { _type: "reference", _key: key(), _ref: "program-surya-kriya" },
     { _type: "reference", _key: key(), _ref: "program-angamardana" },
     { _type: "reference", _key: key(), _ref: "program-yogasanas" },
+    { _type: "reference", _key: key(), _ref: "program-upa-yoga" },
     { _type: "reference", _key: key(), _ref: "program-bhuta-shuddhi" },
   ],
   upcomingEventsSection: {
