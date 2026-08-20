@@ -14,8 +14,40 @@ import { default as handler } from "./.open-next/worker.js";
 
 import { flushPendingSubmissions } from "./lib/form-delivery";
 
+/** Keep local `wrangler dev` on http://localhost. */
+function isLocalHostname(hostname: string): boolean {
+  return (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "[::1]" ||
+    hostname.endsWith(".localhost")
+  );
+}
+
+/**
+ * Apex HTTP currently returns 200 (Always Use HTTPS is not on at the edge).
+ * Google then lists those URLs as "Alternate page with proper canonical tag".
+ * 308 to HTTPS so there is one indexable origin.
+ */
+function redirectHttpToHttps(request: Request): Response | null {
+  const url = new URL(request.url);
+  if (url.protocol !== "http:") return null;
+  if (isLocalHostname(url.hostname)) return null;
+
+  url.protocol = "https:";
+  return Response.redirect(url.toString(), 308);
+}
+
 export default {
-  fetch: handler.fetch,
+  fetch(
+    request: Request,
+    env: CloudflareEnv,
+    ctx: ExecutionContext,
+  ): ReturnType<typeof handler.fetch> {
+    const httpsRedirect = redirectHttpToHttps(request);
+    if (httpsRedirect) return httpsRedirect;
+    return handler.fetch(request, env, ctx);
+  },
 
   async scheduled(
     _event: ScheduledController,
