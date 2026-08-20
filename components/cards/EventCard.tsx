@@ -351,7 +351,7 @@ export function EventCard({
         ) : null}
       </div>
 
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-3 sm:gap-4 sm:px-7 sm:py-4">
+      <div className="relative z-10 flex flex-col gap-3 border-t border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-7 sm:py-4">
         {event.priceLabel || event.paymentNote ? (
           <p className="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-heading text-lg text-charcoal sm:text-xl">
             {event.priceLabel ? (
@@ -367,27 +367,29 @@ export function EventCard({
             ) : null}
           </p>
         ) : (
-          <span />
+          <span className="hidden sm:block" />
         )}
 
-        <div className="ml-auto flex flex-wrap justify-end gap-2 sm:gap-3">
-          {programSlug ? (
-            <Button
-              href={`/programs/${programSlug}`}
-              variant="secondary"
-              size="sm"
-              className="px-3"
-              aria-label="About the Program"
-            >
-              <IconMore />
-            </Button>
-          ) : null}
-          <EventShareButton
-            title={`${event.title} · Nava Hatha Yoga`}
-            path={event.slug ? `/events/${event.slug}` : `/events#${shareAnchorId}`}
-          />
+        <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-end sm:gap-3">
+          <div className="flex shrink-0 gap-2">
+            {programSlug ? (
+              <Button
+                href={`/programs/${programSlug}`}
+                variant="secondary"
+                size="sm"
+                className="px-3"
+                aria-label="About the Program"
+              >
+                <IconMore />
+              </Button>
+            ) : null}
+            <EventShareButton
+              title={`${event.title} · Nava Hatha Yoga`}
+              path={event.slug ? `/events/${event.slug}` : `/events#${shareAnchorId}`}
+            />
+          </div>
           {showRegistration ? (
-            <>
+            <div className="flex flex-wrap justify-end gap-2">
               <Button
                 href={`/register?event=${encodeURIComponent(registrationEvent)}`}
                 size="sm"
@@ -400,7 +402,7 @@ export function EventCard({
                   Register via WhatsApp
                 </Button>
               ) : null}
-            </>
+            </div>
           ) : null}
         </div>
       </div>
