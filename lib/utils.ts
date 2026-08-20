@@ -271,6 +271,41 @@ export function formatRegistrationEventLabel(event: {
   return title;
 }
 
+/** Stable page-anchor for an event card, used for in-page links. */
+export function eventAnchorId(eventId: string): string {
+  return `event-${eventId.replace(/[^a-zA-Z0-9_-]/g, "")}`;
+}
+
+const RESERVED_EVENT_SLUGS = new Set(["archive"]);
+
+export function slugifySegment(value: string): string {
+  return value
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** Public session URL slug. Uses the CMS slug when set, otherwise title + place + date. */
+export function deriveEventSlug(event: {
+  _id: string;
+  title: string;
+  slug?: string | null;
+  date?: string | null;
+  location?: string | null;
+}): string {
+  const stored = event.slug?.trim();
+  if (stored && !RESERVED_EVENT_SLUGS.has(stored)) return stored;
+
+  const date = event.date ? event.date.slice(0, 10) : "";
+  const location = eventLocationShort(event.location);
+  const derived = slugifySegment([event.title, location, date].filter(Boolean).join(" "));
+  if (derived && !RESERVED_EVENT_SLUGS.has(derived)) return derived;
+
+  return slugifySegment(event._id.replace(/^drafts\./, "")) || eventAnchorId(event._id);
+}
+
 /** Short card copy: intro only, capped at a few sentences. */
 export function eventCardSummary(description?: string | null, maxSentences = 3): string {
   if (!description) return "";
@@ -331,6 +366,7 @@ export function composeEventTimeLabel(input: {
   sessionNote?: string | null;
   time?: string | null;
 }): string | undefined {
+  const hasStructuredSessions = Array.isArray(input.sessions);
   const sessionLines = (input.sessions ?? [])
     .map((session) => {
       const day = session.day?.trim();
@@ -343,6 +379,11 @@ export function composeEventTimeLabel(input: {
   if (sessionLines.length > 0) {
     const note = input.sessionNote?.trim();
     return note ? [...sessionLines, "", note].join("\n") : sessionLines.join("\n");
+  }
+
+  // Empty Session Schedule is intentional — do not revive the hidden legacy `time` field.
+  if (hasStructuredSessions) {
+    return input.sessionNote?.trim() || undefined;
   }
 
   const legacy = input.time?.trim();

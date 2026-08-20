@@ -5,7 +5,7 @@ import {
   isPastEvent,
   isUpcomingEvent,
 } from "@/lib/event-boundary";
-import { composeEventTimeLabel } from "@/lib/utils";
+import { composeEventTimeLabel, deriveEventSlug } from "@/lib/utils";
 
 import { client } from "./client";
 import { isSanityConfigured } from "../env";
@@ -55,8 +55,21 @@ type EventBoundary = {
 function withComposedEventTime(event: YogaEvent): YogaEvent {
   return {
     ...event,
-    time: composeEventTimeLabel(event) ?? event.time,
+    time: composeEventTimeLabel(event),
   };
+}
+
+function withUniqueEventSlugs(events: YogaEvent[]): YogaEvent[] {
+  const used = new Set<string>();
+  return events.map((event) => {
+    let slug = deriveEventSlug(event);
+    if (used.has(slug)) {
+      const suffix = event._id.replace(/^drafts\./, "").slice(-6);
+      slug = `${slug}-${suffix}`;
+    }
+    used.add(slug);
+    return { ...event, slug };
+  });
 }
 
 async function sanityFetch<T>(query: string, params: Record<string, unknown> = {}): Promise<T | null> {
@@ -95,13 +108,14 @@ function getPastFrom<T extends EventBoundary>(events: T[]): T[] {
 async function getAllEvents(): Promise<YogaEvent[]> {
   const data = await sanityFetch<YogaEvent[]>(Q.allEventsQuery);
   const events = data ?? placeholderEvents;
-  return events.map(withComposedEventTime);
+  return withUniqueEventSlugs(events.map(withComposedEventTime));
 }
 
 function toPastEvent(event: YogaEvent): PastEvent {
   return {
     _id: event._id,
     title: event.title,
+    slug: event.slug,
     date: event.date,
     endDate: event.endDate,
     time: event.time,
@@ -182,6 +196,26 @@ export async function getUpcomingEventsByProgram(
   return getUpcomingFrom(
     events.filter((event) => event.relatedProgram?.slug === slug),
   );
+}
+
+export async function getEventSlugEntries(): Promise<SlugEntry[]> {
+  const events = await getAllEvents();
+  return events
+    .filter((event) => event.slug)
+    .map((event) => ({
+      slug: event.slug as string,
+      _updatedAt: event._updatedAt,
+    }));
+}
+
+export async function getEventSlugs(): Promise<string[]> {
+  return (await getEventSlugEntries()).map((entry) => entry.slug);
+}
+
+export async function getEventBySlug(slug: string): Promise<YogaEvent | undefined> {
+  if (!slug || slug === "archive") return undefined;
+  const events = await getAllEvents();
+  return events.find((event) => event.slug === slug);
 }
 
 export async function getPastEvents(): Promise<PastEvent[]> {

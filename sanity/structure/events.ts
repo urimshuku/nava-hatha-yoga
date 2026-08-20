@@ -23,8 +23,25 @@ type EventNavItem = {
 function withBoundary(event: EventNavItem): EventNavItem {
   return {
     ...event,
-    time: composeEventTimeLabel(event) ?? event.time,
+    time: composeEventTimeLabel(event),
   };
+}
+
+function publishedId(id: string): string {
+  return id.replace(/^drafts\./, "");
+}
+
+/** One row per event: prefer the draft so unpublished deletes are what you see. */
+function preferDrafts(events: EventNavItem[]): EventNavItem[] {
+  const byId = new Map<string, EventNavItem>();
+  for (const event of events) {
+    const id = publishedId(event._id);
+    const existing = byId.get(id);
+    if (!existing || event._id.startsWith("drafts.")) {
+      byId.set(id, event);
+    }
+  }
+  return [...byId.values()];
 }
 
 function hasDate(event: EventNavItem): event is EventNavItem & { date: string } {
@@ -32,11 +49,12 @@ function hasDate(event: EventNavItem): event is EventNavItem & { date: string } 
 }
 
 function eventItem(S: StructureBuilder, event: EventNavItem) {
+  const id = publishedId(event._id);
   return S.listItem()
     .title(event.title || "Untitled event")
-    .id(event._id)
+    .id(id)
     .schemaType("event")
-    .child(S.document().schemaType("event").documentId(event._id));
+    .child(S.document().schemaType("event").documentId(id));
 }
 
 export async function eventsList(
@@ -58,9 +76,10 @@ export async function eventsList(
     )
   ).map(withBoundary);
 
-  const dated = events.filter(hasDate);
+  const uniqueEvents = preferDrafts(events);
+  const dated = uniqueEvents.filter(hasDate);
   const upcoming = [
-    ...events.filter((event) => !event.date),
+    ...uniqueEvents.filter((event) => !event.date),
     ...dated
       .filter((event) => isUpcomingEvent(event))
       .sort((a, b) => eventStartTimestamp(a) - eventStartTimestamp(b)),

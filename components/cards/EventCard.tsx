@@ -1,11 +1,15 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { ElementType, ReactNode } from "react";
 
+import { EventShareButton } from "@/components/cards/EventShareButton";
 import { IconWhatsApp } from "@/components/ui/BrandIcons";
 import { Button } from "@/components/ui/Button";
 import { getProgramIntensity, whatsappLink } from "@/lib/constants";
 import { programSymbolSrc } from "@/lib/local-images";
 import {
+  cn,
+  eventAnchorId,
   eventCardSummary,
   eventLocationBadge,
   formatEventCalendarLine,
@@ -19,8 +23,11 @@ interface EventCardProps {
   event: YogaEvent;
   whatsappNumber?: string;
   experienceNote?: string;
-  /** Use 2 on /events (under page h1); keep 3 under an existing section h2. */
-  headingLevel?: 2 | 3;
+  /** Use 1 on the session page; 2 on /events; 3 under a section heading. */
+  headingLevel?: 1 | 2 | 3;
+  /** Link the whole card to the session page when a slug exists. */
+  linkTitle?: boolean;
+  showRegistration?: boolean;
 }
 
 function IconCalendar() {
@@ -73,6 +80,16 @@ function IconExperience() {
     <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 shrink-0 text-clay" aria-hidden="true">
       <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.4" />
       <path d="M8 12.5 10.5 15 16 9.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function IconMore() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden="true">
+      <circle cx="5.5" cy="12" r="1.5" fill="currentColor" />
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+      <circle cx="18.5" cy="12" r="1.5" fill="currentColor" />
     </svg>
   );
 }
@@ -192,6 +209,8 @@ export function EventCard({
   whatsappNumber,
   experienceNote,
   headingLevel = 3,
+  linkTitle = true,
+  showRegistration = true,
 }: EventCardProps) {
   const TitleTag = `h${headingLevel}` as ElementType;
   const waMessage = `Hello, I'd like to register for "${event.title}".`;
@@ -203,15 +222,31 @@ export function EventCard({
   const locationBadge = eventLocationBadge(event.location);
   const summary = eventCardSummary(event.description);
   const registrationEvent = formatRegistrationEventLabel(event);
+  const shareAnchorId = eventAnchorId(event._id);
   const programSlug = event.relatedProgram?.slug;
   const symbolSrc = programSlug ? programSymbolSrc(programSlug) : null;
   const intensity =
     event.relatedProgram?.intensity ?? getProgramIntensity(programSlug);
   const experienceLabel =
     experienceNote?.trim() || "No prior yoga experience required!";
+  const sessionHref =
+    linkTitle && event.slug ? `/events/${event.slug}` : undefined;
 
   return (
-    <article className="overflow-hidden rounded-xl border border-border bg-ivory shadow-soft transition-shadow duration-300 ease-calm hover:shadow-card">
+    <article
+      id={shareAnchorId}
+      className={cn(
+        "relative scroll-mt-24 overflow-hidden rounded-xl border border-border bg-ivory shadow-soft transition-shadow duration-300 ease-calm hover:shadow-card sm:scroll-mt-28",
+        sessionHref && "group",
+      )}
+    >
+      {sessionHref ? (
+        <Link
+          href={sessionHref}
+          className="absolute inset-0 z-0"
+          aria-label={`View ${event.title}`}
+        />
+      ) : null}
       <div className="p-4 sm:p-7">
         <div className="flex items-start justify-between gap-3 sm:gap-4">
           {locationBadge ? (
@@ -247,7 +282,7 @@ export function EventCard({
               className="h-7 w-7 shrink-0 object-contain opacity-90"
             />
           ) : null}
-          <TitleTag className="font-heading text-xl text-charcoal sm:text-[1.75rem]">
+          <TitleTag className="font-heading text-xl text-charcoal transition-colors group-hover:text-saffron sm:text-[1.75rem]">
             {event.title}
           </TitleTag>
         </div>
@@ -316,7 +351,7 @@ export function EventCard({
         ) : null}
       </div>
 
-      <div className="flex flex-col gap-3 border-t border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-7 sm:py-4">
+      <div className="relative z-10 flex flex-col gap-3 border-t border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-7 sm:py-4">
         {event.priceLabel || event.paymentNote ? (
           <p className="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-heading text-lg text-charcoal sm:text-xl">
             {event.priceLabel ? (
@@ -336,17 +371,37 @@ export function EventCard({
         )}
 
         <div className="flex flex-wrap gap-2 sm:gap-3 sm:justify-end">
-          <Button
-            href={`/register?event=${encodeURIComponent(registrationEvent)}`}
-            size="sm"
-          >
-            Register
-          </Button>
-          {event.whatsappEnabled !== false ? (
-            <Button href={waHref} variant="secondary" size="sm">
-              <IconWhatsApp className="h-4 w-4 text-[#25D366]" />
-              Register via WhatsApp
+          {programSlug ? (
+            <Button
+              href={`/programs/${programSlug}`}
+              variant="secondary"
+              size="sm"
+              className="px-3"
+              aria-label="About the Program"
+            >
+              <IconMore />
             </Button>
+          ) : null}
+          <EventShareButton
+            title={`${event.title} · Nava Hatha Yoga`}
+            summary={registrationEvent}
+            path={event.slug ? `/events/${event.slug}` : `/events#${shareAnchorId}`}
+          />
+          {showRegistration ? (
+            <>
+              <Button
+                href={`/register?event=${encodeURIComponent(registrationEvent)}`}
+                size="sm"
+              >
+                Register
+              </Button>
+              {event.whatsappEnabled !== false ? (
+                <Button href={waHref} variant="secondary" size="sm">
+                  <IconWhatsApp className="h-4 w-4 text-[#25D366]" />
+                  Register via WhatsApp
+                </Button>
+              ) : null}
+            </>
           ) : null}
         </div>
       </div>

@@ -163,6 +163,8 @@ export interface EventSession {
 export interface YogaEvent {
   _id: string;
   title: string;
+  slug?: string;
+  _updatedAt?: string;
   date: string;
   endDate?: string;
   sessions?: EventSession[];
@@ -185,6 +187,7 @@ export interface YogaEvent {
 export interface PastEvent {
   _id: string;
   title: string;
+  slug?: string;
   date: string;
   endDate?: string;
   sessions?: EventSession[];

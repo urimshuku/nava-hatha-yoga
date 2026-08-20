@@ -191,7 +191,7 @@
   display: flex;
   width: max-content;
   align-items: center;
-  animation: ribbon-scroll 40s linear infinite;
+  animation: ribbon-scroll 20s linear infinite;
   will-change: transform;
 }
 

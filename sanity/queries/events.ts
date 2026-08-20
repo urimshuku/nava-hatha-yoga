@@ -12,6 +12,8 @@ export const allEventsQuery = groq`
   *[_type == "event" && published == true] | order(date asc){
     _id,
     title,
+    "slug": slug.current,
+    "_updatedAt": _updatedAt,
     date,
     endDate,
     ${eventSessionFields}

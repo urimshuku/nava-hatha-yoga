@@ -144,7 +144,6 @@ export default async function ProgramDetailPage({ params }: PageProps) {
   const hasAfterProgram = hasRichText(program.practiceIndependently);
   const hasSidebarSessions = hasRichText(program.privateAndGroupSessions);
   const phase1 = PHASE1_PROGRAM_SEO[program.slug];
-  const contextLine = program.contextLine?.trim() || phase1?.contextLine;
   const relatedPrograms = (
     program.relatedPrograms?.filter((item) => item.href && item.label).length
       ? program.relatedPrograms
@@ -177,11 +176,6 @@ export default async function ProgramDetailPage({ params }: PageProps) {
             <h1 className="text-display text-balance">{program.title}</h1>
             {program.shortIntro ? (
               <p className="hero-subtitle mt-4 sm:mt-6">{program.shortIntro}</p>
-            ) : null}
-            {contextLine ? (
-              <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-brown sm:mt-5 sm:text-base">
-                {contextLine}
-              </p>
             ) : null}
           </div>
         </Container>

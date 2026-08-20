@@ -51,8 +51,9 @@ export const program = defineType({
       rows: 2,
       group: "content",
       fieldset: "hero",
+      hidden: true,
       description:
-        "Optional line under the introduction (for example: offered in Albania, based in Saranda & Tirana).",
+        "LEGACY / STORED / NOT CURRENTLY DISPLAYED. Previously shown under the program introduction. Kept so existing values are not lost. Cannot override visible program content.",
     }),
     defineField({
       name: "whatIs",

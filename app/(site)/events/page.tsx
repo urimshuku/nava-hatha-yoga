@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { EventCard } from "@/components/cards/EventCard";
+import { EventHashScroll } from "@/components/cards/EventHashScroll";
 import { JsonLd } from "@/components/JsonLd";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
@@ -42,6 +43,7 @@ export default async function EventsPage() {
 
   return (
     <>
+      <EventHashScroll />
       <JsonLd data={buildEventsJsonLd(events, settings)} />
       <PageHero
         eyebrow={page.heroEyebrow?.trim() || placeholderEventsPage.heroEyebrow}

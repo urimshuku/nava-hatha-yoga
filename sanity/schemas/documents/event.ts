@@ -12,6 +12,27 @@ export const event = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "slug",
+      title: "Page URL",
+      type: "slug",
+      description:
+        "Address of this session’s page, for example /events/surya-kriya-tirane-2026-07-25. Generate after setting the title, date, and location. Do not use “archive”.",
+      options: {
+        source: (doc: { title?: string; date?: string; location?: string }) =>
+          [doc.title, doc.location, typeof doc.date === "string" ? doc.date.slice(0, 10) : ""]
+            .filter(Boolean)
+            .join(" "),
+        maxLength: 96,
+      },
+      validation: (rule) =>
+        rule.custom((slug) => {
+          if (slug?.current === "archive") {
+            return "“archive” is reserved for the past events page.";
+          }
+          return true;
+        }),
+    }),
+    defineField({
       name: "published",
       title: "Show on the website",
       type: "boolean",
@@ -87,8 +108,8 @@ export const event = defineType({
       type: "text",
       rows: 6,
       description:
-        "Displayed on the website only when Session Schedule above is empty. Prefer adding sessions as separate rows. Hidden in Studio when sessions exist so this stored text cannot override the structured schedule.",
-      hidden: ({ parent }) => Array.isArray(parent?.sessions) && parent.sessions.length > 0,
+        "Displayed on the website only when Session Schedule has never been used. Prefer adding sessions as separate rows. Hidden whenever Session Schedule is present so leftover text cannot come back after rows are deleted.",
+      hidden: ({ parent }) => Array.isArray(parent?.sessions),
     }),
     defineField({
       name: "location",

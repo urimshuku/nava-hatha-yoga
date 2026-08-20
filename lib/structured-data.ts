@@ -147,6 +147,7 @@ export function buildEventJsonLd(
     "@context": "https://schema.org",
     "@type": "Event",
     name: event.title,
+    url: event.slug ? absoluteUrl(`/events/${event.slug}`) : absoluteUrl("/events"),
     ...(event.description ? { description: event.description } : {}),
     startDate: toIsoDateTime(startMs),
     ...(Number.isFinite(endMs) && endMs !== Number.POSITIVE_INFINITY

@@ -942,6 +942,7 @@ export const placeholderEvents: YogaEvent[] = scheduledEvents.flatMap((event) =>
     {
       _id: `placeholder-event-${event.id}`,
       title: event.title,
+      slug: event.id,
       date,
       endDate,
       time,

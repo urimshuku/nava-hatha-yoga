@@ -2,14 +2,16 @@ import type { MetadataRoute } from "next";
 
 import { SITE_URL } from "@/lib/constants";
 import {
+  getEventSlugEntries,
   getProgramSlugEntries,
   getRetreatSlugEntries,
 } from "@/sanity/lib/fetch";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [programEntries, retreatEntries] = await Promise.all([
+  const [programEntries, retreatEntries, eventEntries] = await Promise.all([
     getProgramSlugEntries(),
     getRetreatSlugEntries(),
+    getEventSlugEntries(),
   ]);
 
   // Static routes: omit lastModified rather than inventing "now" (Google
@@ -48,6 +50,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: new URL(`/retreats/${entry.slug}`, SITE_URL).toString(),
       ...(entry._updatedAt ? { lastModified: new Date(entry._updatedAt) } : {}),
       changeFrequency: "monthly",
+      priority: 0.6,
+    });
+  }
+
+  for (const entry of eventEntries) {
+    entries.push({
+      url: new URL(`/events/${entry.slug}`, SITE_URL).toString(),
+      ...(entry._updatedAt ? { lastModified: new Date(entry._updatedAt) } : {}),
+      changeFrequency: "weekly",
       priority: 0.6,
     });
   }
