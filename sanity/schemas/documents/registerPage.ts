@@ -24,7 +24,7 @@ export const registerPage = defineType({
       type: "string",
       group: "health",
       description:
-        "Used when no event name is in the link. If someone opens a registration link for a named event, the title becomes “Register for [event]”.",
+        "Used when no event name is in the link. If someone opens a registration link for a named event, the title shows the event name and dates on two lines.",
       initialValue: "Program registration",
       validation: (rule) => rule.required(),
     }),

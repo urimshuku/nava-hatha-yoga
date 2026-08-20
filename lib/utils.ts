@@ -271,6 +271,16 @@ export function formatRegistrationEventLabel(event: {
   return title;
 }
 
+/** Split a registration label into the heading and a second-line date. */
+export function splitRegistrationEventTitle(label: string): {
+  heading: string;
+  dates?: string;
+} {
+  const match = label.trim().match(/^(.*?)\s*\(([^()]+)\)\s*$/);
+  if (!match) return { heading: label.trim() };
+  return { heading: match[1].trim(), dates: `(${match[2].trim()})` };
+}
+
 /** Stable page-anchor for an event card, used for in-page links. */
 export function eventAnchorId(eventId: string): string {
   return `event-${eventId.replace(/[^a-zA-Z0-9_-]/g, "")}`;

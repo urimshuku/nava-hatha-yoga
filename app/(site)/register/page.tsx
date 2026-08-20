@@ -6,6 +6,7 @@ import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/ui/PageHero";
 import { resolveRegisterContent } from "@/lib/register-config";
 import { buildMetadata } from "@/lib/seo";
+import { splitRegistrationEventTitle } from "@/lib/utils";
 import { getRegisterPage } from "@/sanity/lib/fetch";
 
 export const metadata: Metadata = buildMetadata({
@@ -25,6 +26,9 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
     getRegisterPage(),
   ]);
   const eventName = event?.trim() || undefined;
+  const eventTitle = eventName
+    ? splitRegistrationEventTitle(eventName)
+    : undefined;
   const content = resolveRegisterContent(registerPage);
 
   return (
@@ -32,9 +36,19 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
       <PageHero
         eyebrow={registerPage?.heroEyebrow?.trim() || "Registration"}
         title={
-          eventName
-            ? `Register for ${eventName}`
-            : registerPage?.heroTitle?.trim() || "Program registration"
+          eventTitle ? (
+            <>
+              {eventTitle.heading}
+              {eventTitle.dates ? (
+                <>
+                  <br />
+                  {eventTitle.dates}
+                </>
+              ) : null}
+            </>
+          ) : (
+            registerPage?.heroTitle?.trim() || "Program registration"
+          )
         }
         description={
           registerPage?.heroDescription?.trim() ||
