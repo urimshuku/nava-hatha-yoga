@@ -28,7 +28,7 @@ export const PHASE1_RETREATS_SEO = {
     "Discover upcoming Classical Hatha Yoga retreats in Albania, created for immersive traditional practice and inner transformation. Register your interest for future retreats.",
   heroTitle: "Classical Hatha Yoga retreats",
   heroDescription:
-    "Upcoming immersive Classical Hatha Yoga retreats in Albania — devoted to traditional practice, quiet settings, and inner transformation. Dates will be announced; register your interest to be notified.",
+    "Upcoming immersive Classical Hatha Yoga retreats in Albania — devoted to traditional practice, quiet settings, and inner transformation.",
   comingSoonHeading: "Retreats are on their way",
   comingSoonBody:
     "We are carefully preparing upcoming Classical Hatha Yoga retreats in Albania. No retreat is open for booking yet — if you would like to hear when dates are announced, please register your interest.",
@@ -39,7 +39,7 @@ export const PHASE1_ABOUT_SEO = {
   description:
     "Meet the Classical Hatha Yoga teacher behind Nava Hatha Yoga in Albania — certified training, traditional practices taught as intended, based in Saranda & Tirana.",
   heroDescription:
-    "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended, based in Saranda & Tirana.",
+    "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended.",
 } as const;
 
 export const PHASE1_CONTACT_SEO = {
@@ -47,7 +47,7 @@ export const PHASE1_CONTACT_SEO = {
   description:
     "Register or enquire about Classical Hatha Yoga in Albania. Teaching is based in Saranda and Tirana, with other locations available upon request. Classes are in-person.",
   heroDescription:
-    "For questions regarding upcoming programs, private instruction, or teaching locations in Albania, please leave a message below.",
+    "For questions regarding upcoming programs, private instruction, or teaching locations, please leave a message below.",
 } as const;
 
 export const PHASE1_EVENTS_SEO = {
@@ -55,7 +55,7 @@ export const PHASE1_EVENTS_SEO = {
   description:
     "Upcoming Classical Hatha Yoga workshops, free sessions, and gatherings in Saranda and Tirana, Albania.",
   heroDescription:
-    "Upcoming in-person Classical Hatha Yoga sessions in Saranda and Tirana, Albania. Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life.",
+    "Upcoming in-person Classical Hatha Yoga sessions. Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life.",
 } as const;
 
 export type Phase1ProgramSeo = {

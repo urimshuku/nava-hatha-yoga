@@ -298,7 +298,7 @@ await patchSingleton("homePage", "homePage", {
 
 await patchSingleton("contactPage", "contactPage", {
   heroDescription:
-    "For questions regarding upcoming programs, private instruction, or teaching locations in Albania, please leave a message below.",
+    "For questions regarding upcoming programs, private instruction, or teaching locations, please leave a message below.",
   "teachingLocations.otherLocations":
     "Vlorë, Gjirokastër, Korçë, Corfu, Prishtina.",
   "seo.title": "Register for Classical Hatha Yoga in Albania",
@@ -308,7 +308,7 @@ await patchSingleton("contactPage", "contactPage", {
 
 await patchSingleton("eventsPage", "eventsPage", {
   heroDescription:
-    "Upcoming in-person Classical Hatha Yoga sessions in Saranda and Tirana, Albania. Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life.",
+    "Upcoming in-person Classical Hatha Yoga sessions. Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life.",
   "seo.title": "Classical Hatha Yoga Events in Albania",
   "seo.description":
     "Upcoming Classical Hatha Yoga workshops, free sessions, and gatherings in Saranda and Tirana, Albania.",

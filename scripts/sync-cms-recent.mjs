@@ -10,7 +10,7 @@ import { getCliClient } from "sanity/cli";
 const client = getCliClient({ apiVersion: "2024-10-01" });
 
 const ABOUT_HERO =
-  "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended, based in Saranda & Tirana.";
+  "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended.";
 const ABOUT_SEO =
   "Meet the Classical Hatha Yoga teacher behind Nava Hatha Yoga in Albania — certified training, traditional practices taught as intended, based in Saranda & Tirana.";
 const SITE_DESCRIPTION =
@@ -335,7 +335,7 @@ await patchSingleton("retreatsPage", "retreatsPage", {
 
 await patchSingleton("contactPage", "contactPage", {
   heroDescription:
-    "For questions regarding upcoming programs, private instruction, or teaching locations in Albania, please leave a message below.",
+    "For questions regarding upcoming programs, private instruction, or teaching locations, please leave a message below.",
   "teachingLocations.otherLocations":
     "Vlorë, Gjirokastër, Korçë, Corfu, Prishtina.",
   "seo.title": "Register for Classical Hatha Yoga in Albania",
@@ -365,7 +365,7 @@ await client.createIfNotExists({
 
 await patchSingleton("eventsPage", "eventsPage", {
   heroDescription:
-    "Upcoming in-person Classical Hatha Yoga sessions in Saranda and Tirana, Albania. Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life.",
+    "Upcoming in-person Classical Hatha Yoga sessions. Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life.",
   "seo.title": "Classical Hatha Yoga Events in Albania",
   "seo.description":
     "Upcoming Classical Hatha Yoga workshops, free sessions, and gatherings in Saranda and Tirana, Albania.",

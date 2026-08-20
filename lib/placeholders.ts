@@ -608,7 +608,7 @@ export const placeholderAboutPage: AboutPage = {
   title: "Classical Hatha Yoga, taught with care.",
   heroEyebrow: "About",
   heroDescription:
-    "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended, based in Saranda & Tirana.",
+    "Know more about the teacher behind Nava Hatha Yoga in Albania — certified Classical Hatha Yoga training, practices taught as intended.",
   teacherSectionTitle: "About the Teacher",
   teacherStory: {
     nameLine: TEACHER_NAME_LINE,
@@ -971,7 +971,7 @@ export const placeholderContactPage: ContactPage = {
   heroEyebrow: "Contact",
   heroTitle: "Get in touch",
   heroDescription:
-    "For questions regarding upcoming programs, private instruction, or teaching locations in Albania, please leave a message below.",
+    "For questions regarding upcoming programs, private instruction, or teaching locations, please leave a message below.",
   formHeading: "Send a message",
   quickMessageBody:
     "Prefer WhatsApp? Reach out directly and we'll reply as soon as we can.",
@@ -1015,7 +1015,7 @@ export const placeholderEventsPage: EventsPage = {
   heroEyebrow: "Events",
   heroTitle: "Upcoming events",
   heroDescription:
-    "Upcoming in-person Classical Hatha Yoga sessions in Saranda and Tirana, Albania. Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life.",
+    "Upcoming in-person Classical Hatha Yoga sessions. Explore the sessions below and discover a practice that can bring greater clarity, vitality, and steadiness into everyday life.",
   emptyTitle: "New events are being scheduled",
   emptyDescription:
     "There are no upcoming events listed right now. Please check back soon, or get in touch to register your interest and be notified.",
@@ -1033,7 +1033,7 @@ export const placeholderRetreatsPage: RetreatsPage = {
   heroEyebrow: "Retreats & Partner Programs",
   heroTitle: "Classical Hatha Yoga retreats",
   heroDescription:
-    "Upcoming immersive Classical Hatha Yoga retreats in Albania — devoted to traditional practice, quiet settings, and inner transformation. Dates will be announced; register your interest to be notified.",
+    "Upcoming immersive Classical Hatha Yoga retreats in Albania — devoted to traditional practice, quiet settings, and inner transformation.",
   comingSoonEyebrow: "Coming Soon",
   comingSoonHeading: "Retreats are on their way",
   comingSoonBody:
