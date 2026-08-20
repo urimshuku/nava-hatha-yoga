@@ -18,8 +18,12 @@ export const event = defineType({
       description:
         "Address of this session’s page, for example /events/surya-kriya-tirane-2026-07-25. Generate after setting the title, date, and location. Do not use “archive”.",
       options: {
-        source: (doc: { title?: string; date?: string; location?: string }) =>
-          [doc.title, doc.location, typeof doc.date === "string" ? doc.date.slice(0, 10) : ""]
+        source: (doc) =>
+          [
+            typeof doc.title === "string" ? doc.title : "",
+            typeof doc.location === "string" ? doc.location : "",
+            typeof doc.date === "string" ? doc.date.slice(0, 10) : "",
+          ]
             .filter(Boolean)
             .join(" "),
         maxLength: 96,
