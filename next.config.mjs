@@ -16,6 +16,11 @@ const nextConfig = {
         destination: "/images/og-default.png",
         permanent: true,
       },
+      {
+        source: "/events/free-introduction-to-hatha-yoga-online-2026-09-11",
+        destination: "/events/free-introduction-to-hatha-yoga-tirane-2026-09-10",
+        permanent: true,
+      },
     ];
   },
   // Static metadata icons are emitted as /icon.png and /apple-icon.png; keep the
