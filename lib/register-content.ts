@@ -188,6 +188,11 @@ export const AGREEMENT_CONSENT_LABEL =
 
 export const SHOW_PAYMENT_DETAILS_STEP = false;
 
+/** Short registration: personal details only, no emergency contact. */
+export function isSimplifiedRegistration(event?: string | null): boolean {
+  return /free\s+introduction\s+to\s+hatha\s+yoga/i.test(event ?? "");
+}
+
 export const BANK_DETAILS = [
   { label: "Account Holder Name", value: "Erlinda Mustafaraj" },
   { label: "Address", value: "Lagjia Zinxhira" },

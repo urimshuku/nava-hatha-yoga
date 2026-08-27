@@ -370,7 +370,6 @@ export default async function ProgramDetailPage({ params }: PageProps) {
                 <EventCard
                   key={event._id}
                   event={event}
-                  whatsappNumber={settings.whatsapp}
                   experienceNote={settings.eventExperienceNote}
                 />
               ))}

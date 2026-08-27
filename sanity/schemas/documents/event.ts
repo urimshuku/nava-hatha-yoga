@@ -199,7 +199,9 @@ export const event = defineType({
       name: "whatsappEnabled",
       title: "Offer WhatsApp Registration",
       type: "boolean",
-      description: "Show a “Register via WhatsApp” button using the site WhatsApp number.",
+      hidden: true,
+      description:
+        "LEGACY / STORED / NOT CURRENTLY DISPLAYED. The Register via WhatsApp button is no longer shown. Kept so existing values are not lost.",
       initialValue: true,
     }),
   ],

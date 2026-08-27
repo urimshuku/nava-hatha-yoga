@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { isSimplifiedRegistration } from "@/lib/register-content";
 import { deliverRegistration } from "@/lib/registration";
 
 interface RegisterPayload {
@@ -53,6 +54,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
+  const event = data.event?.trim();
+  const simplified = isSimplifiedRegistration(event);
   const fullName = data.fullName?.trim();
   const email = data.email?.trim();
   const phone = data.phone?.trim();
@@ -73,18 +76,21 @@ export async function POST(request: Request) {
     ? data.healthConditions.filter((c) => typeof c === "string" && c.trim())
     : [];
 
+  if (!fullName || !email || !phone || !address || !age) {
+    return NextResponse.json(
+      { error: "Please complete all required fields." },
+      { status: 400 },
+    );
+  }
+
   if (
-    !fullName ||
-    !email ||
-    !phone ||
-    !address ||
-    !age ||
-    !emergencyName ||
-    !emergencyPhone ||
-    !majorSurgery ||
-    (howHeard.length === 0 && !howHeardOther) ||
-    !priorPractice ||
-    !otherIshaPractices
+    !simplified &&
+    (!emergencyName ||
+      !emergencyPhone ||
+      !majorSurgery ||
+      (howHeard.length === 0 && !howHeardOther) ||
+      !priorPractice ||
+      !otherIshaPractices)
   ) {
     return NextResponse.json(
       { error: "Please complete all required fields." },
@@ -99,7 +105,7 @@ export async function POST(request: Request) {
     );
   }
 
-  if (healthConditions.length === 0) {
+  if (!simplified && healthConditions.length === 0) {
     return NextResponse.json(
       { error: "Please select at least one health option." },
       { status: 400 },
@@ -107,9 +113,10 @@ export async function POST(request: Request) {
   }
 
   if (
-    data.medicalConsent !== "yes" ||
-    data.refundConsent !== "yes" ||
-    data.agreementConsent !== "yes"
+    !simplified &&
+    (data.medicalConsent !== "yes" ||
+      data.refundConsent !== "yes" ||
+      data.agreementConsent !== "yes")
   ) {
     return NextResponse.json(
       { error: "Please agree to all required terms to continue." },
@@ -119,7 +126,7 @@ export async function POST(request: Request) {
 
   try {
     await deliverRegistration({
-      event: data.event?.trim(),
+      event,
       fullName,
       preferredName: data.preferredName?.trim(),
       email,

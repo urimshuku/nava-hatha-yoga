@@ -25,7 +25,6 @@ export const allEventsQuery = groq`
     relatedProgram->{ title, "slug": slug.current, intensity },
     description,
     notes,
-    image${imageFields},
-    whatsappEnabled
+    image${imageFields}
   }
 `;

@@ -3,9 +3,8 @@ import Link from "next/link";
 import type { ElementType, ReactNode } from "react";
 
 import { EventShareButton } from "@/components/cards/EventShareButton";
-import { IconWhatsApp } from "@/components/ui/BrandIcons";
 import { Button } from "@/components/ui/Button";
-import { getProgramIntensity, whatsappLink } from "@/lib/constants";
+import { getProgramIntensity } from "@/lib/constants";
 import { programSymbolSrc } from "@/lib/local-images";
 import {
   cn,
@@ -21,7 +20,6 @@ import type { YogaEvent } from "@/sanity/lib/types";
 
 interface EventCardProps {
   event: YogaEvent;
-  whatsappNumber?: string;
   experienceNote?: string;
   /** Use 1 on the session page; 2 on /events; 3 under a section heading. */
   headingLevel?: 1 | 2 | 3;
@@ -206,18 +204,12 @@ function EventTimeBlock({ time }: { time: string }) {
 
 export function EventCard({
   event,
-  whatsappNumber,
   experienceNote,
   headingLevel = 3,
   linkTitle = true,
   showRegistration = true,
 }: EventCardProps) {
   const TitleTag = `h${headingLevel}` as ElementType;
-  const waMessage = `Hello, I'd like to register for "${event.title}".`;
-  const waHref = whatsappNumber
-    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(waMessage)}`
-    : whatsappLink(waMessage);
-
   const dateBadge = formatEventDateBadge(event.date, event.endDate);
   const locationBadge = eventLocationBadge(event.location);
   const summary = eventCardSummary(event.description);
@@ -396,12 +388,6 @@ export function EventCard({
               >
                 Register
               </Button>
-              {event.whatsappEnabled !== false ? (
-                <Button href={waHref} variant="secondary" size="sm">
-                  <IconWhatsApp className="h-4 w-4 text-[#25D366]" />
-                  Register via WhatsApp
-                </Button>
-              ) : null}
             </div>
           ) : null}
         </div>

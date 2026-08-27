@@ -34,6 +34,7 @@ import {
   HEALTH_CONDITION_NOT_APPLICABLE,
   MEDICAL_DISCLAIMER_INTRO,
   SHOW_PAYMENT_DETAILS_STEP,
+  isSimplifiedRegistration,
 } from "@/lib/register-content";
 import {
   GUIDELINES_PDF_URL,
@@ -51,7 +52,7 @@ const labelClass = formLabelClass;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const STEPS = [
+const FULL_STEPS = [
   "Personal Information",
   "Health-Related Information",
   "Program-Related Information",
@@ -167,6 +168,8 @@ export function RegistrationForm({
   event,
   content = DEFAULT_REGISTER_CONTENT,
 }: RegistrationFormProps) {
+  const simplified = isSimplifiedRegistration(event);
+  const steps = simplified ? (["Personal Information"] as const) : FULL_STEPS;
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>(initialState);
   const [errors, setErrors] = useState<Errors>({});
@@ -218,13 +221,15 @@ export function RegistrationForm({
       if (!form.address.trim())
         next.address = "Please enter your residential address.";
       if (!form.age.trim()) next.age = "Please enter your age.";
-      if (!form.emergencyName.trim())
-        next.emergencyName = "Please enter an emergency contact name.";
-      if (!form.emergencyPhone.trim())
-        next.emergencyPhone = "Please enter an emergency contact phone number.";
+      if (!simplified) {
+        if (!form.emergencyName.trim())
+          next.emergencyName = "Please enter an emergency contact name.";
+        if (!form.emergencyPhone.trim())
+          next.emergencyPhone = "Please enter an emergency contact phone number.";
+      }
     }
 
-    if (current === 1) {
+    if (!simplified && current === 1) {
       if (form.healthConditions.length === 0)
         next.healthConditions =
           "Please select at least one option (or 'NOT APPLICABLE').";
@@ -240,7 +245,7 @@ export function RegistrationForm({
           "Please confirm you have read and agree to the disclaimer.";
     }
 
-    if (current === 2) {
+    if (!simplified && current === 2) {
       if (form.howHeard.length === 0 && !form.howHeardOther.trim())
         next.howHeard = "Please select at least one option or fill in Other.";
       if (!form.priorPractice.trim())
@@ -249,7 +254,7 @@ export function RegistrationForm({
         next.otherIshaPractices = "Please select an option.";
     }
 
-    if (current === 3) {
+    if (!simplified && current === 3) {
       if (!form.refundConsent)
         next.refundConsent = "Please confirm you agree to the Refund Policy.";
       if (!form.agreementConsent)
@@ -266,7 +271,7 @@ export function RegistrationForm({
       return;
     }
     setErrors({});
-    setStep((s) => Math.min(s + 1, STEPS.length - 1));
+    setStep((s) => Math.min(s + 1, steps.length - 1));
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -277,10 +282,10 @@ export function RegistrationForm({
   }
 
   async function handleFinish() {
-    if (step !== STEPS.length - 1) return;
+    if (step !== steps.length - 1) return;
 
     // Re-validate every step before sending.
-    for (let i = 0; i < STEPS.length; i += 1) {
+    for (let i = 0; i < steps.length; i += 1) {
       const stepErrors = validateStep(i);
       if (Object.keys(stepErrors).length > 0) {
         setErrors(stepErrors);
@@ -347,19 +352,28 @@ export function RegistrationForm({
     }
   }
 
-  const isLastStep = step === STEPS.length - 1;
-  const currentStep = STEPS[step];
+  const isLastStep = step === steps.length - 1;
+  const currentStep = steps[step];
 
   if (status === "success") {
     return (
       <div className="space-y-5 py-3 text-center font-heading sm:space-y-8 sm:py-4">
         <h2 className="text-2xl text-charcoal sm:text-4xl">Thank you!</h2>
         <div className="mx-auto max-w-md space-y-4 text-base leading-relaxed text-brown sm:space-y-6 sm:text-lg">
-          <p>Payment details will be shared with you shortly.</p>
-          <p>
-            Meanwhile, I look forward to welcoming you to the program and supporting you in
-            establishing a practice that can stay with you for a lifetime.
-          </p>
+          {simplified ? (
+            <p>
+              I look forward to welcoming you to the session and supporting you in
+              establishing a practice that can stay with you for a lifetime.
+            </p>
+          ) : (
+            <>
+              <p>Payment details will be shared with you shortly.</p>
+              <p>
+                Meanwhile, I look forward to welcoming you to the program and supporting you in
+                establishing a practice that can stay with you for a lifetime.
+              </p>
+            </>
+          )}
           <div className="space-y-1">
             <p>Pranam,</p>
             <p>Erlinda Mustafaraj</p>
@@ -410,15 +424,16 @@ export function RegistrationForm({
       </div>
 
       {/* Progress */}
+      {steps.length > 1 ? (
       <div>
         <div className="flex items-baseline justify-between">
           <p className="eyebrow">
-            Step {step + 1} of {STEPS.length}
+            Step {step + 1} of {steps.length}
           </p>
-          <p className="text-xs text-brown sm:text-sm">{STEPS[step]}</p>
+          <p className="text-xs text-brown sm:text-sm">{steps[step]}</p>
         </div>
         <div className="mt-2 flex gap-1 sm:mt-3 sm:gap-1.5" aria-hidden="true">
-          {STEPS.map((label, i) => (
+          {steps.map((label, i) => (
             <span
               key={label}
               className={cn(
@@ -429,8 +444,9 @@ export function RegistrationForm({
           ))}
         </div>
       </div>
+      ) : null}
 
-      <h2 className="font-heading text-xl text-charcoal sm:text-2xl">{STEPS[step]}</h2>
+      <h2 className="font-heading text-xl text-charcoal sm:text-2xl">{steps[step]}</h2>
 
       {/* ---------------------------------------------------------------- */}
       {/* Step 1 — Personal Information                                     */}
@@ -558,6 +574,7 @@ export function RegistrationForm({
             />
           </div>
 
+          {simplified ? null : (
           <fieldset className={formBoxClass}>
             <legend className="px-1.5 text-xs font-medium text-charcoal sm:px-2 sm:text-sm">
               Emergency contact
@@ -607,13 +624,14 @@ export function RegistrationForm({
               </div>
             </div>
           </fieldset>
+          )}
         </div>
       ) : null}
 
       {/* ---------------------------------------------------------------- */}
       {/* Step 2 — Health-Related Information                               */}
       {/* ---------------------------------------------------------------- */}
-      {step === 1 ? (
+      {!simplified && step === 1 ? (
         <div className="space-y-4 sm:space-y-6">
           <div className="space-y-2 sm:space-y-3">
             {content.healthIntro.map((para) => (
@@ -774,7 +792,7 @@ export function RegistrationForm({
       {/* ---------------------------------------------------------------- */}
       {/* Step 3 — Program-Related Information                              */}
       {/* ---------------------------------------------------------------- */}
-      {step === 2 ? (
+      {!simplified && step === 2 ? (
         <div className={formStackClass}>
           <fieldset>
             <legend className={labelClass}>
@@ -888,7 +906,7 @@ export function RegistrationForm({
       {/* ---------------------------------------------------------------- */}
       {/* Step 4 — Agreement                                                */}
       {/* ---------------------------------------------------------------- */}
-      {step === 3 ? (
+      {!simplified && step === 3 ? (
         <div className="space-y-4 sm:space-y-6">
           <div className={formBoxClass}>
             <p className={formSectionTitleClass}>Refund Policy:</p>
@@ -946,14 +964,14 @@ export function RegistrationForm({
         </div>
       ) : null}
 
-      {currentStep === "Payment Details" ? (
+      {!simplified && currentStep === "Payment Details" ? (
         <BankDetailsCard />
       ) : null}
 
       {/* ---------------------------------------------------------------- */}
       {/* Before the Start of the Session                                  */}
       {/* ---------------------------------------------------------------- */}
-      {currentStep === "Before the Start of the Session" ? (
+      {!simplified && currentStep === "Before the Start of the Session" ? (
         <div className="space-y-4 sm:space-y-6">
           {content.beforeSessionBlocks.map((block) => (
             <div key={block.heading} className={cn(formBoxClass, "sm:p-6")}>

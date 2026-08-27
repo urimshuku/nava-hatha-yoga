@@ -278,7 +278,6 @@ export default async function HomePage() {
                     <MotionItem key={event._id} className="h-full">
                       <EventCard
                         event={event}
-                        whatsappNumber={settings.whatsapp}
                         experienceNote={settings.eventExperienceNote}
                       />
                     </MotionItem>

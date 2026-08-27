@@ -90,6 +90,24 @@ function parseEventDate(dateString: string): Date | null {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
+function zonedDateParts(date: Date): { year: number; month: number; day: number } {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: EVENT_TIMEZONE,
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  }).formatToParts(date);
+  const value = (type: string) =>
+    Number(parts.find((part) => part.type === type)?.value);
+  return { year: value("year"), month: value("month"), day: value("day") };
+}
+
+function isSameZonedDay(start: Date, end: Date): boolean {
+  const a = zonedDateParts(start);
+  const b = zonedDateParts(end);
+  return a.year === b.year && a.month === b.month && a.day === b.day;
+}
+
 /** Compact day + month badge for the top-right of event cards (e.g. 27–29 / JUN 2026). */
 export function formatEventDateBadge(
   startString?: string | null,
@@ -107,20 +125,14 @@ export function formatEventDateBadge(
     .format(start)
     .toUpperCase();
 
-  if (end && end.getTime() > start.getTime()) {
+  if (end && end.getTime() > start.getTime() && !isSameZonedDay(start, end)) {
+    const startParts = zonedDateParts(start);
+    const endParts = zonedDateParts(end);
     const sameMonth =
-      start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+      startParts.month === endParts.month && startParts.year === endParts.year;
 
     if (sameMonth) {
-      const startDay = new Intl.DateTimeFormat("en-GB", {
-        day: "numeric",
-        timeZone: EVENT_TIMEZONE,
-      }).format(start);
-      const endDay = new Intl.DateTimeFormat("en-GB", {
-        day: "numeric",
-        timeZone: EVENT_TIMEZONE,
-      }).format(end);
-      return { days: `${startDay}\u2013${endDay}`, monthYear };
+      return { days: `${startParts.day}\u2013${endParts.day}`, monthYear };
     }
   }
 
@@ -147,19 +159,13 @@ export function formatEventCalendarLine(
       timeZone: EVENT_TIMEZONE,
     }).format(date);
 
-  if (end && end.getTime() > start.getTime()) {
+  if (end && end.getTime() > start.getTime() && !isSameZonedDay(start, end)) {
+    const startParts = zonedDateParts(start);
+    const endParts = zonedDateParts(end);
     const sameMonth =
-      start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+      startParts.month === endParts.month && startParts.year === endParts.year;
 
     if (sameMonth) {
-      const startDay = new Intl.DateTimeFormat("en-GB", {
-        day: "numeric",
-        timeZone: EVENT_TIMEZONE,
-      }).format(start);
-      const endDay = new Intl.DateTimeFormat("en-GB", {
-        day: "numeric",
-        timeZone: EVENT_TIMEZONE,
-      }).format(end);
       const monthYear = new Intl.DateTimeFormat("en-GB", {
         month: "short",
         year: "numeric",
@@ -169,7 +175,7 @@ export function formatEventCalendarLine(
       const weekdays =
         weekday(start) === weekday(end) ? weekday(start) : `${weekday(start)}\u2013${weekday(end)}`;
 
-      return `${weekdays}, ${startDay}\u2013${endDay} ${monthYear}`;
+      return `${weekdays}, ${startParts.day}\u2013${endParts.day} ${monthYear}`;
     }
   }
 
@@ -240,9 +246,11 @@ export function formatRegistrationEventDates(
       timeZone: EVENT_TIMEZONE,
     }).format(date);
 
-  if (end && end.getTime() > start.getTime()) {
+  if (end && end.getTime() > start.getTime() && !isSameZonedDay(start, end)) {
+    const startParts = zonedDateParts(start);
+    const endParts = zonedDateParts(end);
     const sameMonth =
-      start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+      startParts.month === endParts.month && startParts.year === endParts.year;
 
     if (sameMonth) {
       return `${day(start)}-${day(end)} ${monthName(start)}`;
