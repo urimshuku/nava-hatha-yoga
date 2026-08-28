@@ -55,8 +55,7 @@ export default async function PagesPage() {
         <h1 className="font-heading text-3xl text-charcoal">Pages</h1>
         <p className="mt-1 max-w-2xl text-sm text-brown">
           Every page of the website. Open one to change its wording, photos and
-          buttons. Save keeps your work in the editor. Publish puts it on the
-          website.
+          buttons.
         </p>
       </div>
 

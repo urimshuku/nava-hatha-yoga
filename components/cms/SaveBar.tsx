@@ -14,35 +14,30 @@ export function SaveBar({ cancelHref }: { cancelHref: string }) {
   const [intent, setIntent] = useState<"save" | "publish" | null>(null);
 
   return (
-    <div className="ml-auto flex shrink-0 flex-col items-end gap-2">
-      <div className="flex items-center gap-3">
-        <button
-          type="submit"
-          name="intent"
-          value="save"
-          disabled={pending}
-          onClick={() => setIntent("save")}
-          className="rounded border border-border-strong bg-white px-5 py-2.5 text-sm font-medium text-charcoal transition-colors hover:border-saffron hover:text-saffron disabled:opacity-60"
-        >
-          {pending && intent === "save" ? "Saving…" : "Save"}
-        </button>
-        <button
-          type="submit"
-          name="intent"
-          value="publish"
-          disabled={pending}
-          onClick={() => setIntent("publish")}
-          className="rounded bg-saffron px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-saffron-hover disabled:opacity-60"
-        >
-          {pending && intent === "publish" ? "Publishing…" : "Publish"}
-        </button>
-        <Link href={cancelHref} className="text-sm text-brown hover:text-saffron">
-          Cancel
-        </Link>
-      </div>
-      <p className="max-w-xs text-right text-xs text-brown">
-        Save keeps your work in the editor. Publish puts it on the website.
-      </p>
+    <div className="ml-auto flex shrink-0 items-center gap-3">
+      <button
+        type="submit"
+        name="intent"
+        value="save"
+        disabled={pending}
+        onClick={() => setIntent("save")}
+        className="rounded border border-border-strong bg-white px-5 py-2.5 text-sm font-medium text-charcoal transition-colors hover:border-saffron hover:text-saffron disabled:opacity-60"
+      >
+        {pending && intent === "save" ? "Saving…" : "Save"}
+      </button>
+      <button
+        type="submit"
+        name="intent"
+        value="publish"
+        disabled={pending}
+        onClick={() => setIntent("publish")}
+        className="rounded bg-saffron px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-saffron-hover disabled:opacity-60"
+      >
+        {pending && intent === "publish" ? "Publishing…" : "Publish"}
+      </button>
+      <Link href={cancelHref} className="text-sm text-brown hover:text-saffron">
+        Cancel
+      </Link>
     </div>
   );
 }
