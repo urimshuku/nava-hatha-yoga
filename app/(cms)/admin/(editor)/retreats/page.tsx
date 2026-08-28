@@ -3,11 +3,80 @@ import Link from "next/link";
 import { ContentListActions } from "@/components/cms/ContentListActions";
 import { FormNotice } from "@/components/cms/SaveBar";
 import { SourceBadge } from "@/components/cms/SourceBadge";
-import { listRetreatEntries } from "@/lib/cms/admin-list";
+import {
+  compareStartDateAscending,
+  compareStartDateDescending,
+  isPastAdminEntry,
+  listRetreatEntries,
+  type AdminListEntry,
+} from "@/lib/cms/admin-list";
+import { formatDateRange } from "@/lib/utils";
 
 import { deleteRetreat, duplicateRetreat, restoreRetreat } from "./actions";
 
 export const dynamic = "force-dynamic";
+
+function RetreatRow({ entry }: { entry: AdminListEntry }) {
+  return (
+    <li className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-4 last:border-b-0">
+      <div className="min-w-0">
+        <Link
+          href={`/admin/retreats/${entry.slug}`}
+          className="font-medium text-charcoal hover:text-saffron"
+        >
+          {entry.title}
+        </Link>
+        <p className="mt-1 text-sm text-brown">
+          {entry.date
+            ? formatDateRange(entry.date, entry.endDate)
+            : `/retreats/${entry.slug}`}
+        </p>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <SourceBadge entry={entry} />
+        <ContentListActions
+          slug={entry.slug}
+          hidden={entry.hidden}
+          editHref={`/admin/retreats/${entry.slug}`}
+          noun="retreat"
+          duplicate={duplicateRetreat}
+          restore={restoreRetreat}
+          remove={deleteRetreat}
+        />
+      </div>
+    </li>
+  );
+}
+
+function RetreatList({
+  title,
+  entries,
+  emptyMessage,
+}: {
+  title: string;
+  entries: AdminListEntry[];
+  emptyMessage: string;
+}) {
+  return (
+    <section className="mt-10">
+      <h2 className="mb-3 text-xs uppercase tracking-widest text-brown">
+        {title}
+      </h2>
+      {entries.length === 0 ? (
+        <p className="rounded-lg border border-border bg-white px-4 py-6 text-sm text-brown">
+          {emptyMessage}
+        </p>
+      ) : (
+        <ul className="overflow-hidden rounded-lg border border-border bg-white">
+          {entries.map((entry) => (
+            <RetreatRow key={entry.slug} entry={entry} />
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
 
 export default async function AdminRetreatsPage({
   searchParams,
@@ -18,6 +87,13 @@ export default async function AdminRetreatsPage({
     searchParams,
     listRetreatEntries(),
   ]);
+
+  const upcoming = entries
+    .filter((entry) => !isPastAdminEntry(entry))
+    .sort(compareStartDateAscending);
+  const past = entries
+    .filter(isPastAdminEntry)
+    .sort(compareStartDateDescending);
 
   return (
     <div>
@@ -56,37 +132,18 @@ export default async function AdminRetreatsPage({
           No retreats yet. Use “Add a retreat” to create the first one.
         </p>
       ) : (
-        <ul className="mt-8 overflow-hidden rounded-lg border border-border bg-white">
-          {entries.map((entry) => (
-            <li
-              key={entry.slug}
-              className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-4 last:border-b-0"
-            >
-              <div className="min-w-0">
-                <Link
-                  href={`/admin/retreats/${entry.slug}`}
-                  className="font-medium text-charcoal hover:text-saffron"
-                >
-                  {entry.title}
-                </Link>
-                <p className="mt-1 text-sm text-brown">/retreats/{entry.slug}</p>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <SourceBadge entry={entry} />
-                <ContentListActions
-                  slug={entry.slug}
-                  hidden={entry.hidden}
-                  editHref={`/admin/retreats/${entry.slug}`}
-                  noun="retreat"
-                  duplicate={duplicateRetreat}
-                  restore={restoreRetreat}
-                  remove={deleteRetreat}
-                />
-              </div>
-            </li>
-          ))}
-        </ul>
+        <>
+          <RetreatList
+            title="Upcoming"
+            entries={upcoming}
+            emptyMessage="No upcoming retreats yet. Use “Add a retreat” to create one."
+          />
+          <RetreatList
+            title="Past"
+            entries={past}
+            emptyMessage="No past retreats."
+          />
+        </>
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import { composeEventTimeLabel } from "@/lib/utils";
+import { eventStartTimestamp } from "@/lib/event-boundary";
 import type {
   Program,
   ProgramListItem,
@@ -117,7 +118,8 @@ function normalizeRetreat(document: CmsDocument<Retreat>): Retreat {
 }
 
 function byDateAscending(a: { date?: string }, b: { date?: string }): number {
-  return (a.date ?? "").localeCompare(b.date ?? "");
+  return eventStartTimestamp({ date: a.date ?? "" })
+    - eventStartTimestamp({ date: b.date ?? "" });
 }
 
 /**
@@ -164,7 +166,7 @@ export async function applyRetreatOverrides(
   const documents = await listDocuments<Retreat>("retreat");
   if (documents.length === 0) return fromSanity;
 
-  return merge(fromSanity, documents, normalizeRetreat);
+  return merge(fromSanity, documents, normalizeRetreat).sort(byDateAscending);
 }
 
 export async function applyRetreatSlugOverrides(

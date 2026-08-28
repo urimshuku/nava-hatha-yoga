@@ -3,17 +3,18 @@ import Link from "next/link";
 import { ContentListActions } from "@/components/cms/ContentListActions";
 import { FormNotice } from "@/components/cms/SaveBar";
 import { SourceBadge } from "@/components/cms/SourceBadge";
-import { listEventEntries, type AdminListEntry } from "@/lib/cms/admin-list";
+import {
+  compareStartDateAscending,
+  compareStartDateDescending,
+  isPastAdminEntry,
+  listEventEntries,
+  type AdminListEntry,
+} from "@/lib/cms/admin-list";
 import { formatDateRange } from "@/lib/utils";
 
 import { deleteEvent, duplicateEvent, restoreEvent } from "./actions";
 
 export const dynamic = "force-dynamic";
-
-function isPast(entry: AdminListEntry): boolean {
-  const end = entry.endDate ?? entry.date;
-  return Boolean(end) && Date.parse(end as string) < Date.now();
-}
 
 function EventRow({ entry }: { entry: AdminListEntry }) {
   return (
@@ -87,8 +88,12 @@ export default async function AdminEventsPage({
     listEventEntries(),
   ]);
 
-  const upcoming = entries.filter((entry) => !isPast(entry));
-  const past = entries.filter(isPast);
+  const upcoming = entries
+    .filter((entry) => !isPastAdminEntry(entry))
+    .sort(compareStartDateAscending);
+  const past = entries
+    .filter(isPastAdminEntry)
+    .sort(compareStartDateDescending);
 
   return (
     <div>
