@@ -1,9 +1,45 @@
 import Link from "next/link";
 
 import { EDITABLE_PAGES } from "@/lib/cms/editable-pages";
-import { getDocument } from "@/lib/cms/repository";
+import {
+  getDocument,
+  hasUnpublishedChanges,
+  type CmsDocument,
+} from "@/lib/cms/repository";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
+
+function PageStatusBadge({
+  stored,
+}: {
+  stored: CmsDocument<unknown> | undefined;
+}) {
+  const unpublished = stored && (!stored.published || stored.hidden);
+  const pending = stored ? hasUnpublishedChanges(stored) : false;
+  const label = unpublished
+    ? "Unpublished"
+    : pending
+      ? "Unpublished changes"
+      : "Published";
+  const tone =
+    unpublished || pending
+      ? "bg-saffron/10 text-saffron-hover"
+      : stored
+        ? "bg-emerald-100 text-emerald-800"
+        : "bg-sand/50 text-brown";
+
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+        tone,
+      )}
+    >
+      {label}
+    </span>
+  );
+}
 
 export default async function PagesPage() {
   const entries = await Promise.all(
@@ -19,7 +55,8 @@ export default async function PagesPage() {
         <h1 className="font-heading text-3xl text-charcoal">Pages</h1>
         <p className="mt-1 max-w-2xl text-sm text-brown">
           Every page of the website. Open one to change its wording, photos and
-          buttons. Changes appear on the website as soon as you save.
+          buttons. Save keeps your work in the editor. Publish puts it on the
+          website.
         </p>
       </div>
 
@@ -35,15 +72,7 @@ export default async function PagesPage() {
                 <p className="mt-0.5 text-sm text-brown">{page.summary}</p>
               </div>
               <div className="flex items-center gap-3">
-                <span
-                  className={
-                    stored
-                      ? "inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800"
-                      : "inline-flex items-center rounded-full bg-sand/50 px-2.5 py-0.5 text-xs font-medium text-brown"
-                  }
-                >
-                  Published
-                </span>
+                <PageStatusBadge stored={stored} />
                 <span className="text-sm text-brown">Edit</span>
               </div>
             </Link>

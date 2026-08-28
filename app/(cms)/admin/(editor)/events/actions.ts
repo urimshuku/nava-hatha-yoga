@@ -5,9 +5,9 @@ import { redirect } from "next/navigation";
 
 import { nextAvailableSlug, titleForCopy } from "@/lib/cms/copy";
 import {
-  checkbox,
   dateToTimestamp,
   imageValue,
+  isPublishIntent,
   pairedList,
   resolveSlug,
   text,
@@ -124,12 +124,15 @@ export async function saveEvent(
     notes: textList(formData, "notes"),
   };
 
+  const publish = isPublishIntent(formData);
+
   try {
     await saveDocument({
       type: "event",
       slug,
       data: event,
-      published: checkbox(formData, "published"),
+      publish,
+      copyStateFromSlug: originalSlug || undefined,
     });
 
     // Renaming the web address leaves the old document behind; remove it.
@@ -144,8 +147,13 @@ export async function saveEvent(
     };
   }
 
-  refreshAffectedPages(slug);
-  redirect(`/admin/events?saved=${encodeURIComponent(slug)}`);
+  if (publish) {
+    refreshAffectedPages(slug);
+  } else {
+    revalidatePath("/admin/events");
+    revalidatePath(`/admin/events/${slug}`);
+  }
+  redirect(`/admin/events/${slug}?${publish ? "published=1" : "saved=1"}`);
 }
 
 /**
@@ -206,4 +214,17 @@ export async function duplicateEvent(formData: FormData): Promise<void> {
 
   refreshAffectedPages(newSlug);
   redirect(`/admin/events/${newSlug}`);
+}
+
+/** Permanently removes an event from the editor and the website. */
+export async function deleteEvent(formData: FormData): Promise<void> {
+  await assertCmsSession();
+
+  const slug = text(formData, "slug");
+  if (!slug) return;
+
+  await deleteDocument("event", slug);
+
+  refreshAffectedPages(slug);
+  redirect("/admin/events?deleted=1");
 }

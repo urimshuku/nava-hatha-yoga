@@ -10,16 +10,57 @@ import {
   getRetreatsPage,
   getSiteSettings,
 } from "@/lib/cms/site-content";
+import { getDocument, isTombstone } from "@/lib/cms/repository";
+import type { HomePage, RegisterPage } from "@/lib/cms/content-types";
 
 import type { EditablePage } from "./editable-pages";
 
 /**
- * The page exactly as the website shows it today, used to fill the editing form.
- *
- * These are the same getters the website uses, so whatever the client sees on the
- * page is what she sees in the editor.
+ * Fills the editing form from the working copy in the CMS when one exists, so
+ * a Save that has not been published is what the editor sees next time.
+ * Pages that have never been saved here use the wording currently on the
+ * website (or the built-in defaults).
  */
 export async function loadPageValues(
+  page: EditablePage,
+): Promise<Record<string, unknown>> {
+  const stored = await getDocument<Record<string, unknown>>(page.type, page.slug);
+  if (stored && !isTombstone(stored.data)) {
+    return valuesFromWorkingCopy(page, stored.data);
+  }
+
+  return valuesFromPublicSite(page);
+}
+
+function valuesFromWorkingCopy(
+  page: EditablePage,
+  data: Record<string, unknown>,
+): Record<string, unknown> {
+  if (page.type === "homePage") {
+    const home = data as HomePage;
+    return {
+      ...data,
+      featuredProgramSlugs: home.featuredProgramSlugs?.length
+        ? home.featuredProgramSlugs
+        : (home.featuredPrograms ?? [])
+            .map((program) => program?.slug)
+            .filter(Boolean),
+    };
+  }
+
+  if (page.type === "registerPage") {
+    return {
+      heroEyebrow: data.heroEyebrow,
+      heroTitle: data.heroTitle,
+      heroDescription: data.heroDescription,
+      ...resolveRegisterContent(data as RegisterPage),
+    };
+  }
+
+  return { ...data };
+}
+
+async function valuesFromPublicSite(
   page: EditablePage,
 ): Promise<Record<string, unknown>> {
   switch (page.type) {
@@ -27,7 +68,6 @@ export async function loadPageValues(
       const home = await getHomePage();
       return {
         ...home,
-        // The form edits the chosen programs as a list of web addresses.
         featuredProgramSlugs: (home.featuredPrograms ?? [])
           .map((program) => program?.slug)
           .filter(Boolean),
@@ -54,8 +94,6 @@ export async function loadPageValues(
 
     case "registerPage": {
       const stored = await getRegisterPage();
-      // The registration wording lives in code by default, so the form has to be
-      // seeded from the resolved content rather than from the stored page alone.
       return {
         heroEyebrow: stored?.heroEyebrow,
         heroTitle: stored?.heroTitle,

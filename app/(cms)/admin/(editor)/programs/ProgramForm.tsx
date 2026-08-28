@@ -3,7 +3,6 @@
 import { useActionState } from "react";
 
 import {
-  CheckboxField,
   SelectField,
   TextAreaField,
   TextField,
@@ -12,7 +11,7 @@ import { FormSection } from "@/components/cms/FormSection";
 import { ImageField } from "@/components/cms/ImageField";
 import { TextListField } from "@/components/cms/RepeatableFields";
 import { RichTextField } from "@/components/cms/RichTextField";
-import { FormError, SaveBar } from "@/components/cms/SaveBar";
+import { FormError, FormNotice, SaveBar, WorkingCopyBanner } from "@/components/cms/SaveBar";
 import type { Program } from "@/lib/cms/content-types";
 
 import { saveProgram, type ProgramFormState } from "./actions";
@@ -29,14 +28,18 @@ export function ProgramForm({
   program,
   richText,
   originalSlug,
-  published = true,
   isNew,
+  notice,
+  published,
+  unpublishedChanges,
 }: {
   program?: Partial<Program>;
   richText: ProgramRichText;
   originalSlug?: string;
-  published?: boolean;
   isNew: boolean;
+  notice?: "saved" | "published";
+  published?: boolean;
+  unpublishedChanges?: boolean;
 }) {
   const [state, formAction] = useActionState<ProgramFormState, FormData>(
     saveProgram,
@@ -56,6 +59,13 @@ export function ProgramForm({
         <SaveBar cancelHref="/admin/programs" />
       </div>
 
+      <FormNotice kind={notice} />
+      {!notice && !isNew ? (
+        <WorkingCopyBanner
+          published={published}
+          unpublishedChanges={unpublishedChanges}
+        />
+      ) : null}
       <FormError message={state.error} />
 
       <FormSection title="The basics">
@@ -170,18 +180,12 @@ export function ProgramForm({
         />
       </FormSection>
 
-      <FormSection title="Web address and visibility">
+      <FormSection title="Web address">
         <TextField
           name="slug"
           label="Web address"
           hint="The part after /programs/. Changing this moves the page, so existing links will stop working."
           defaultValue={originalSlug}
-        />
-        <CheckboxField
-          name="published"
-          label="Show on the website"
-          hint="Untick to keep working on this program without putting it on the website."
-          defaultChecked={published}
         />
       </FormSection>
 

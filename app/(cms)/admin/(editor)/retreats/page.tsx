@@ -1,19 +1,20 @@
 import Link from "next/link";
 
 import { ContentListActions } from "@/components/cms/ContentListActions";
+import { FormNotice } from "@/components/cms/SaveBar";
 import { SourceBadge } from "@/components/cms/SourceBadge";
 import { listRetreatEntries } from "@/lib/cms/admin-list";
 
-import { duplicateRetreat, restoreRetreat } from "./actions";
+import { deleteRetreat, duplicateRetreat, restoreRetreat } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminRetreatsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ saved?: string }>;
+  searchParams: Promise<{ saved?: string; published?: string; deleted?: string }>;
 }) {
-  const [{ saved }, entries] = await Promise.all([
+  const [query, entries] = await Promise.all([
     searchParams,
     listRetreatEntries(),
   ]);
@@ -36,10 +37,18 @@ export default async function AdminRetreatsPage({
         </Link>
       </div>
 
-      {saved ? (
-        <p className="mt-6 rounded border border-clay/40 bg-clay/10 px-4 py-3 text-sm text-brown">
-          Saved. The website is showing your change now.
-        </p>
+      {query.deleted ? (
+        <div className="mt-6">
+          <FormNotice kind="deleted" />
+        </div>
+      ) : query.published ? (
+        <div className="mt-6">
+          <FormNotice kind="published" />
+        </div>
+      ) : query.saved ? (
+        <div className="mt-6">
+          <FormNotice kind="saved" />
+        </div>
       ) : null}
 
       {entries.length === 0 ? (
@@ -69,8 +78,10 @@ export default async function AdminRetreatsPage({
                   slug={entry.slug}
                   hidden={entry.hidden}
                   editHref={`/admin/retreats/${entry.slug}`}
+                  noun="retreat"
                   duplicate={duplicateRetreat}
                   restore={restoreRetreat}
+                  remove={deleteRetreat}
                 />
               </div>
             </li>

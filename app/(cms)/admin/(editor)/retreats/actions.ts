@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { checkbox, resolveSlug, text } from "@/lib/cms/form-values";
+import { isPublishIntent, resolveSlug, text } from "@/lib/cms/form-values";
 import { nextAvailableSlug, titleForCopy } from "@/lib/cms/copy";
 import {
   deleteDocument,
@@ -54,12 +54,15 @@ export async function saveRetreat(
     slug,
   };
 
+  const publish = isPublishIntent(formData);
+
   try {
     await saveDocument({
       type: "retreat",
       slug,
       data: retreat,
-      published: checkbox(formData, "published"),
+      publish,
+      copyStateFromSlug: originalSlug || undefined,
     });
 
     if (originalSlug && originalSlug !== slug) {
@@ -71,8 +74,13 @@ export async function saveRetreat(
     return { error: "The retreat could not be saved. Please try again." };
   }
 
-  refreshAffectedPages(slug);
-  redirect(`/admin/retreats?saved=${encodeURIComponent(slug)}`);
+  if (publish) {
+    refreshAffectedPages(slug);
+  } else {
+    revalidatePath("/admin/retreats");
+    revalidatePath(`/admin/retreats/${slug}`);
+  }
+  redirect(`/admin/retreats/${slug}?${publish ? "published=1" : "saved=1"}`);
 }
 
 export async function hideRetreat(formData: FormData): Promise<void> {
@@ -129,4 +137,17 @@ export async function duplicateRetreat(formData: FormData): Promise<void> {
 
   refreshAffectedPages(newSlug);
   redirect(`/admin/retreats/${newSlug}`);
+}
+
+/** Permanently removes a retreat from the editor and the website. */
+export async function deleteRetreat(formData: FormData): Promise<void> {
+  await assertCmsSession();
+
+  const slug = text(formData, "slug");
+  if (!slug) return;
+
+  await deleteDocument("retreat", slug);
+
+  refreshAffectedPages(slug);
+  redirect("/admin/retreats?deleted=1");
 }

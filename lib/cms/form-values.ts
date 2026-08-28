@@ -15,6 +15,11 @@ export function checkbox(formData: FormData, name: string): boolean {
   return formData.get(name) != null;
 }
 
+/** True when the Publish button submitted the form, rather than Save. */
+export function isPublishIntent(formData: FormData): boolean {
+  return formData.get("intent") === "publish";
+}
+
 /**
  * An image field's value. It travels as JSON so an existing image survives an
  * edit untouched, rather than being rebuilt from separate inputs.

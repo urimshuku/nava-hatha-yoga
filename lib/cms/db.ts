@@ -30,3 +30,9 @@ export function isMissingTableError(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
   return /no such table/i.test(message);
 }
+
+/** True when a query names a column that has not been migrated in yet. */
+export function isMissingColumnError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /no such column/i.test(message);
+}

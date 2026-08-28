@@ -1,19 +1,20 @@
 import Link from "next/link";
 
 import { ContentListActions } from "@/components/cms/ContentListActions";
+import { FormNotice } from "@/components/cms/SaveBar";
 import { SourceBadge } from "@/components/cms/SourceBadge";
 import { listProgramEntries } from "@/lib/cms/admin-list";
 
-import { duplicateProgram, restoreProgram } from "./actions";
+import { deleteProgram, duplicateProgram, restoreProgram } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminProgramsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ saved?: string }>;
+  searchParams: Promise<{ saved?: string; published?: string; deleted?: string }>;
 }) {
-  const [{ saved }, entries] = await Promise.all([
+  const [query, entries] = await Promise.all([
     searchParams,
     listProgramEntries(),
   ]);
@@ -36,10 +37,18 @@ export default async function AdminProgramsPage({
         </Link>
       </div>
 
-      {saved ? (
-        <p className="mt-6 rounded border border-clay/40 bg-clay/10 px-4 py-3 text-sm text-brown">
-          Saved. The website is showing your change now.
-        </p>
+      {query.deleted ? (
+        <div className="mt-6">
+          <FormNotice kind="deleted" />
+        </div>
+      ) : query.published ? (
+        <div className="mt-6">
+          <FormNotice kind="published" />
+        </div>
+      ) : query.saved ? (
+        <div className="mt-6">
+          <FormNotice kind="saved" />
+        </div>
       ) : null}
 
       <ul className="mt-8 overflow-hidden rounded-lg border border-border bg-white">
@@ -64,8 +73,10 @@ export default async function AdminProgramsPage({
                 slug={entry.slug}
                 hidden={entry.hidden}
                 editHref={`/admin/programs/${entry.slug}`}
+                noun="program"
                 duplicate={duplicateProgram}
                 restore={restoreProgram}
+                remove={deleteProgram}
               />
             </div>
           </li>

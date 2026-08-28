@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { findEditablePage } from "@/lib/cms/editable-pages";
+import { isPublishIntent } from "@/lib/cms/form-values";
 import { saveDocument } from "@/lib/cms/repository";
 import { readDocument } from "@/lib/cms/schema-parse";
 import { assertCmsSession } from "@/lib/cms/session";
@@ -36,22 +37,29 @@ export async function savePage(
     data.slug = page.slug;
   }
 
+  const publish = isPublishIntent(formData);
+
   try {
     await saveDocument({
       type: page.type,
       slug: page.slug,
       data,
-      published: true,
+      publish,
     });
   } catch (error) {
     console.error(`Failed to save page ${page.id}.`, error);
     return { error: "The page could not be saved. Please try again." };
   }
 
-  for (const path of page.revalidate) {
-    revalidatePath(path);
+  if (publish) {
+    for (const path of page.revalidate) {
+      revalidatePath(path);
+    }
   }
   revalidatePath("/admin/pages");
+  revalidatePath(`/admin/pages/${page.id}`);
 
-  redirect(`/admin/pages/${page.id}?saved=1`);
+  redirect(
+    `/admin/pages/${page.id}?${publish ? "published=1" : "saved=1"}`,
+  );
 }

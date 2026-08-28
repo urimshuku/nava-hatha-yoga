@@ -3,7 +3,6 @@
 import { useActionState } from "react";
 
 import {
-  CheckboxField,
   DateField,
   SelectField,
   TextAreaField,
@@ -15,7 +14,7 @@ import {
   SessionsField,
   TextListField,
 } from "@/components/cms/RepeatableFields";
-import { FormError, SaveBar } from "@/components/cms/SaveBar";
+import { FormError, FormNotice, SaveBar, WorkingCopyBanner } from "@/components/cms/SaveBar";
 import type { YogaEvent } from "@/lib/cms/content-types";
 
 import { saveEvent, type EventFormState } from "./actions";
@@ -28,15 +27,19 @@ export interface ProgramOption {
 export function EventForm({
   event,
   originalSlug,
-  published = true,
   programs,
   isNew,
+  notice,
+  published,
+  unpublishedChanges,
 }: {
   event?: Partial<YogaEvent>;
   originalSlug?: string;
-  published?: boolean;
   programs: ProgramOption[];
   isNew: boolean;
+  notice?: "saved" | "published";
+  published?: boolean;
+  unpublishedChanges?: boolean;
 }) {
   const [state, formAction] = useActionState<EventFormState, FormData>(
     saveEvent,
@@ -56,6 +59,13 @@ export function EventForm({
         <SaveBar cancelHref="/admin/events" />
       </div>
 
+      <FormNotice kind={notice} />
+      {!notice && !isNew ? (
+        <WorkingCopyBanner
+          published={published}
+          unpublishedChanges={unpublishedChanges}
+        />
+      ) : null}
       <FormError message={state.error} />
 
       <FormSection title="The basics">
@@ -166,18 +176,12 @@ export function EventForm({
         />
       </FormSection>
 
-      <FormSection title="Web address and visibility">
+      <FormSection title="Web address">
         <TextField
           name="slug"
           label="Web address"
           hint="The part after /events/. Leave it empty and it is built from the title, location and date."
           defaultValue={originalSlug}
-        />
-        <CheckboxField
-          name="published"
-          label="Show on the website"
-          hint="Untick to keep working on this event without putting it on the website."
-          defaultChecked={published}
         />
       </FormSection>
 

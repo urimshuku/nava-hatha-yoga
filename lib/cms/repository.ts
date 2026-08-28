@@ -1,6 +1,6 @@
 import { cache } from "react";
 
-import { getCmsDb, isMissingTableError } from "./db";
+import { getCmsDb, isMissingColumnError, isMissingTableError } from "./db";
 
 /**
  * Read/write layer for `cms_documents`.
@@ -9,6 +9,9 @@ import { getCmsDb, isMissingTableError } from "./db";
  * row is unusable, they return nothing so the public site falls back to
  * lib/placeholders.ts. Writes throw, so the editor can surface the
  * failure to whoever is saving.
+ *
+ * `data` is the editor's working copy. `liveData` is the last published
+ * snapshot. Save writes `data` only; Publish copies it into `liveData`.
  */
 
 /**
@@ -35,7 +38,10 @@ export const SINGLETON_SLUG = "default";
 export interface CmsDocument<T> {
   type: CmsDocumentType;
   slug: string;
+  /** Working copy shown in the editor. */
   data: T;
+  /** Last version put on the website, or null if it has never been published. */
+  liveData: T | null;
   /** False keeps a document out of the public site while it is being written. */
   published: boolean;
   /** True removes this document from the public site. */
@@ -48,15 +54,27 @@ export interface SaveCmsDocumentInput<T> {
   type: CmsDocumentType;
   slug: string;
   data: T;
+  /**
+   * Put this version on the website: set published and copy `data` into the
+   * live snapshot. Omit this on a Save so the public site is left alone.
+   */
+  publish?: boolean;
+  /**
+   * Explicit published flag for hide / restore / duplicate. Ignored when
+   * `publish` is true. Omit on a Save to keep the current flag.
+   */
   published?: boolean;
   hidden?: boolean;
   sortOrder?: number | null;
+  /** When renaming, inherit published/live state from this slug. */
+  copyStateFromSlug?: string;
 }
 
 interface CmsRow {
   type: string;
   slug: string;
   data: string;
+  live_data?: string | null;
   published: number;
   hidden: number;
   sort_order: number | null;
@@ -64,6 +82,9 @@ interface CmsRow {
 }
 
 const SELECT_COLUMNS =
+  "type, slug, data, live_data, published, hidden, sort_order, updated_at";
+
+const SELECT_COLUMNS_LEGACY =
   "type, slug, data, published, hidden, sort_order, updated_at";
 
 /** Cross-request reuse inside a warm isolate. 30s is short enough that a save
@@ -98,12 +119,26 @@ function listFromIsolateCache(
   return hit.documents;
 }
 
+function parseLiveData<T>(raw: string | null | undefined, label: string): T | null {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as T;
+  } catch (error) {
+    console.error(
+      `CMS document ${label} holds invalid live JSON and was ignored.`,
+      error,
+    );
+    return null;
+  }
+}
+
 function parseRow<T>(row: CmsRow): CmsDocument<T> | null {
   try {
     return {
       type: row.type as CmsDocumentType,
       slug: row.slug,
       data: JSON.parse(row.data) as T,
+      liveData: parseLiveData<T>(row.live_data, `${row.type}/${row.slug}`),
       published: row.published === 1,
       hidden: row.hidden === 1,
       sortOrder: row.sort_order,
@@ -118,6 +153,42 @@ function parseRow<T>(row: CmsRow): CmsDocument<T> | null {
   }
 }
 
+/** Content the public website should show, or undefined if this row is not live. */
+export function publicPayload<T>(document: CmsDocument<T>): T | undefined {
+  if (document.hidden || !document.published) return undefined;
+  return document.liveData ?? document.data;
+}
+
+/** True when the CMS has taken over this type on the public site. */
+export function cmsOwnsType<T>(documents: CmsDocument<T>[]): boolean {
+  return documents.some((document) => document.hidden || document.published);
+}
+
+/** True when a live document has a newer working copy than the website shows. */
+export function hasUnpublishedChanges<T>(document: CmsDocument<T>): boolean {
+  if (!document.published || document.hidden) return false;
+  if (document.liveData == null) return false;
+  return JSON.stringify(document.data) !== JSON.stringify(document.liveData);
+}
+
+function liveSnapshotJson<T>(existing: CmsDocument<T> | undefined): string | null {
+  if (!existing) return null;
+  if (existing.liveData != null) return JSON.stringify(existing.liveData);
+  if (existing.published) return JSON.stringify(existing.data);
+  return null;
+}
+
+async function selectRows(
+  database: D1Database,
+  sql: string,
+  binds: unknown[],
+): Promise<CmsRow[]> {
+  const statement = database.prepare(sql);
+  const bound = binds.length > 0 ? statement.bind(...binds) : statement;
+  const { results } = await bound.all<CmsRow>();
+  return results ?? [];
+}
+
 async function listDocumentsFromDb<T>(
   type: CmsDocumentType,
   db?: D1Database,
@@ -130,18 +201,27 @@ async function listDocumentsFromDb<T>(
   const database = await getCmsDb(db);
   if (!database) return [];
 
-  try {
-    const { results } = await database
-      .prepare(
-        `SELECT ${SELECT_COLUMNS}
-           FROM cms_documents
-          WHERE type = ?
-          ORDER BY sort_order IS NULL, sort_order ASC, updated_at DESC`,
-      )
-      .bind(type)
-      .all<CmsRow>();
+  const order =
+    "ORDER BY sort_order IS NULL, sort_order ASC, updated_at DESC";
 
-    const documents = (results ?? []).flatMap((row) => {
+  try {
+    let rows: CmsRow[];
+    try {
+      rows = await selectRows(
+        database,
+        `SELECT ${SELECT_COLUMNS} FROM cms_documents WHERE type = ? ${order}`,
+        [type],
+      );
+    } catch (error) {
+      if (!isMissingColumnError(error)) throw error;
+      rows = await selectRows(
+        database,
+        `SELECT ${SELECT_COLUMNS_LEGACY} FROM cms_documents WHERE type = ? ${order}`,
+        [type],
+      );
+    }
+
+    const documents = rows.flatMap((row) => {
       const parsed = parseRow<T>(row);
       return parsed ? [parsed] : [];
     });
@@ -186,14 +266,27 @@ async function getDocumentFromDb<T>(
   if (!database) return undefined;
 
   try {
-    const row = await database
-      .prepare(
-        `SELECT ${SELECT_COLUMNS}
-           FROM cms_documents
-          WHERE type = ? AND slug = ?`,
-      )
-      .bind(type, slug)
-      .first<CmsRow>();
+    let row: CmsRow | null;
+    try {
+      row = await database
+        .prepare(
+          `SELECT ${SELECT_COLUMNS}
+             FROM cms_documents
+            WHERE type = ? AND slug = ?`,
+        )
+        .bind(type, slug)
+        .first<CmsRow>();
+    } catch (error) {
+      if (!isMissingColumnError(error)) throw error;
+      row = await database
+        .prepare(
+          `SELECT ${SELECT_COLUMNS_LEGACY}
+             FROM cms_documents
+            WHERE type = ? AND slug = ?`,
+        )
+        .bind(type, slug)
+        .first<CmsRow>();
+    }
 
     if (!row) return undefined;
     return parseRow<T>(row) ?? undefined;
@@ -231,13 +324,47 @@ export async function saveDocument<T>(
     );
   }
 
+  const existing =
+    (await getDocumentFromDb<T>(input.type, input.slug, database)) ??
+    (input.copyStateFromSlug && input.copyStateFromSlug !== input.slug
+      ? await getDocumentFromDb<T>(
+          input.type,
+          input.copyStateFromSlug,
+          database,
+        )
+      : undefined);
+
+  const dataJson = JSON.stringify(input.data);
+  const hidden =
+    input.hidden === undefined ? Boolean(existing?.hidden) : Boolean(input.hidden);
+  const sortOrder =
+    input.sortOrder !== undefined ? input.sortOrder : (existing?.sortOrder ?? null);
+
+  let published: number;
+  let liveJson: string | null;
+
+  if (input.publish) {
+    published = 1;
+    liveJson = dataJson;
+  } else if (input.published === false) {
+    published = 0;
+    liveJson = liveSnapshotJson(existing);
+  } else if (input.published === true) {
+    published = 1;
+    liveJson = liveSnapshotJson(existing) ?? dataJson;
+  } else {
+    published = existing?.published ? 1 : 0;
+    liveJson = liveSnapshotJson(existing);
+  }
+
   await database
     .prepare(
       `INSERT INTO cms_documents
-         (type, slug, data, published, hidden, sort_order, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?)
+         (type, slug, data, live_data, published, hidden, sort_order, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
        ON CONFLICT (type, slug) DO UPDATE SET
          data       = excluded.data,
+         live_data  = excluded.live_data,
          published  = excluded.published,
          hidden     = excluded.hidden,
          sort_order = excluded.sort_order,
@@ -246,10 +373,11 @@ export async function saveDocument<T>(
     .bind(
       input.type,
       input.slug,
-      JSON.stringify(input.data),
-      input.published === false ? 0 : 1,
-      input.hidden ? 1 : 0,
-      input.sortOrder ?? null,
+      dataJson,
+      liveJson,
+      published,
+      hidden ? 1 : 0,
+      sortOrder,
       new Date().toISOString(),
     )
     .run();
@@ -331,7 +459,8 @@ export async function setDocumentHidden(
       type,
       slug,
       data: existing.data,
-      published: hidden ? false : true,
+      publish: hidden ? undefined : true,
+      published: hidden ? false : undefined,
       hidden,
       sortOrder: existing.sortOrder,
     },

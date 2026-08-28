@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getDocument, isTombstone } from "@/lib/cms/repository";
+import { getDocument, hasUnpublishedChanges, isTombstone } from "@/lib/cms/repository";
 import type { Retreat } from "@/lib/cms/content-types";
 
 import { hideRetreat } from "../actions";
@@ -11,10 +11,13 @@ export const dynamic = "force-dynamic";
 
 export default async function EditRetreatPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ saved?: string; published?: string }>;
 }) {
   const { slug } = await params;
+  const query = await searchParams;
   const stored = await getDocument<Retreat>("retreat", slug);
 
   if (!stored || isTombstone(stored.data)) notFound();
@@ -33,6 +36,14 @@ export default async function EditRetreatPage({
           isNew={false}
           retreat={stored.data}
           originalSlug={slug}
+          notice={
+            query.published === "1"
+              ? "published"
+              : query.saved === "1"
+                ? "saved"
+                : undefined
+          }
+          unpublishedChanges={hasUnpublishedChanges(stored)}
           published={stored.published}
         />
       </div>

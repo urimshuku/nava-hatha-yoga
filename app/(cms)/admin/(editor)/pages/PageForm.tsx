@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 
 import { FormSection } from "@/components/cms/FormSection";
-import { FormError, SaveBar } from "@/components/cms/SaveBar";
+import { FormError, FormNotice, SaveBar } from "@/components/cms/SaveBar";
 import { SchemaFields } from "@/components/cms/SchemaFields";
 import type { DocumentSchema } from "@/lib/cms/schema";
 
@@ -14,13 +14,13 @@ export function PageForm({
   pageId,
   schema,
   values,
-  saved,
+  notice,
 }: {
   pageId: string;
   schema: DocumentSchema;
   /** The page as it stands today, from the CMS or from Sanity. */
   values: unknown;
-  saved?: boolean;
+  notice?: "saved" | "published";
 }) {
   const [state, formAction] = useActionState<PageFormState, FormData>(
     savePage,
@@ -43,12 +43,7 @@ export function PageForm({
         <SaveBar cancelHref="/admin/pages" />
       </div>
 
-      {saved ? (
-        <p className="rounded border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
-          Saved. Your changes are on the website now.
-        </p>
-      ) : null}
-
+      <FormNotice kind={notice} />
       <FormError message={state.error} />
 
       {schema.sections.map((section) => (

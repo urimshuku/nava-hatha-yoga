@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getDocument, isTombstone } from "@/lib/cms/repository";
+import { getDocument, hasUnpublishedChanges, isTombstone } from "@/lib/cms/repository";
 import { getPrograms } from "@/lib/cms/site-content";
 import type { YogaEvent } from "@/lib/cms/content-types";
 
@@ -12,10 +12,13 @@ export const dynamic = "force-dynamic";
 
 export default async function EditEventPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ saved?: string; published?: string }>;
 }) {
   const { slug } = await params;
+  const query = await searchParams;
 
   const [stored, programs] = await Promise.all([
     getDocument<YogaEvent>("event", slug),
@@ -38,6 +41,14 @@ export default async function EditEventPage({
           isNew={false}
           event={stored.data}
           originalSlug={slug}
+          notice={
+            query.published === "1"
+              ? "published"
+              : query.saved === "1"
+                ? "saved"
+                : undefined
+          }
+          unpublishedChanges={hasUnpublishedChanges(stored)}
           published={stored.published}
           programs={programs.map((program) => ({
             slug: program.slug,

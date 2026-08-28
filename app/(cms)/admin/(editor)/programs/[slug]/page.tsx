@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { portableTextToText } from "@/lib/cms/portable-text";
-import { getDocument, isTombstone } from "@/lib/cms/repository";
+import { getDocument, hasUnpublishedChanges, isTombstone } from "@/lib/cms/repository";
 import type { Program } from "@/lib/cms/content-types";
 
 import { hideProgram } from "../actions";
@@ -12,10 +12,13 @@ export const dynamic = "force-dynamic";
 
 export default async function EditProgramPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ saved?: string; published?: string }>;
 }) {
   const { slug } = await params;
+  const query = await searchParams;
   const stored = await getDocument<Program>("program", slug);
 
   if (!stored || isTombstone(stored.data)) notFound();
@@ -36,6 +39,14 @@ export default async function EditProgramPage({
           isNew={false}
           program={program}
           originalSlug={slug}
+          notice={
+            query.published === "1"
+              ? "published"
+              : query.saved === "1"
+                ? "saved"
+                : undefined
+          }
+          unpublishedChanges={hasUnpublishedChanges(stored)}
           published={stored.published}
           richText={{
             whatIs: portableTextToText(program.whatIs),

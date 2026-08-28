@@ -1,21 +1,26 @@
 import Link from "next/link";
 
+import { ConfirmDeleteButton } from "@/components/cms/ConfirmDeleteButton";
+
 /**
- * Edit / Duplicate / Put back on a content list row. Duplicate is always
- * available so a past event can be copied without starting from a blank form.
+ * Duplicate / Edit (or Put back) / Delete on a content list row.
  */
 export function ContentListActions({
   slug,
   hidden,
   editHref,
+  noun,
   duplicate,
   restore,
+  remove,
 }: {
   slug: string;
   hidden: boolean;
   editHref: string;
+  noun: "event" | "program" | "retreat";
   duplicate: (formData: FormData) => void | Promise<void>;
   restore: (formData: FormData) => void | Promise<void>;
+  remove: (formData: FormData) => void | Promise<void>;
 }) {
   const actionClass =
     "text-sm text-brown transition-colors hover:text-saffron";
@@ -40,6 +45,11 @@ export function ContentListActions({
           Edit
         </Link>
       )}
+      <ConfirmDeleteButton
+        slug={slug}
+        action={remove}
+        message={`Delete this ${noun} permanently? This cannot be undone.`}
+      />
     </>
   );
 }

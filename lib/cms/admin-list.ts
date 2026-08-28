@@ -4,7 +4,11 @@ import type {
   YogaEvent,
 } from "@/lib/cms/content-types";
 
-import { listDocuments, type CmsDocument } from "./repository";
+import {
+  hasUnpublishedChanges,
+  listDocuments,
+  type CmsDocument,
+} from "./repository";
 
 /**
  * Builds the lists the editor shows: every event, program and retreat stored
@@ -21,6 +25,8 @@ export interface AdminListEntry {
   hidden: boolean;
   /** Editing in progress: saved in the CMS but not shown on the website yet. */
   draft: boolean;
+  /** Live on the website, but the editor has a newer saved copy. */
+  unpublishedChanges: boolean;
   updatedAt?: string;
   date?: string;
   endDate?: string;
@@ -37,6 +43,7 @@ function toEntry<T extends { title?: string; date?: string; endDate?: string }>(
     source: "cms",
     hidden: document.hidden,
     draft: !document.published && !document.hidden,
+    unpublishedChanges: hasUnpublishedChanges(document),
     updatedAt: document.updatedAt,
     date: data?.date,
     endDate: data?.endDate,

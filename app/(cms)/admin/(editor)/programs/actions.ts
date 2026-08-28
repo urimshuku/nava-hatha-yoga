@@ -5,8 +5,8 @@ import { redirect } from "next/navigation";
 
 import { nextAvailableSlug, titleForCopy } from "@/lib/cms/copy";
 import {
-  checkbox,
   imageValue,
+  isPublishIntent,
   resolveSlug,
   text,
   textList,
@@ -111,12 +111,15 @@ export async function saveProgram(
     },
   };
 
+  const publish = isPublishIntent(formData);
+
   try {
     await saveDocument({
       type: "program",
       slug,
       data: program,
-      published: checkbox(formData, "published"),
+      publish,
+      copyStateFromSlug: originalSlug || undefined,
     });
 
     if (originalSlug && originalSlug !== slug) {
@@ -128,8 +131,13 @@ export async function saveProgram(
     return { error: "The program could not be saved. Please try again." };
   }
 
-  refreshAffectedPages(slug);
-  redirect(`/admin/programs?saved=${encodeURIComponent(slug)}`);
+  if (publish) {
+    refreshAffectedPages(slug);
+  } else {
+    revalidatePath("/admin/programs");
+    revalidatePath(`/admin/programs/${slug}`);
+  }
+  redirect(`/admin/programs/${slug}?${publish ? "published=1" : "saved=1"}`);
 }
 
 export async function hideProgram(formData: FormData): Promise<void> {
@@ -186,4 +194,17 @@ export async function duplicateProgram(formData: FormData): Promise<void> {
 
   refreshAffectedPages(newSlug);
   redirect(`/admin/programs/${newSlug}`);
+}
+
+/** Permanently removes a program from the editor and the website. */
+export async function deleteProgram(formData: FormData): Promise<void> {
+  await assertCmsSession();
+
+  const slug = text(formData, "slug");
+  if (!slug) return;
+
+  await deleteDocument("program", slug);
+
+  refreshAffectedPages(slug);
+  redirect("/admin/programs?deleted=1");
 }

@@ -19,7 +19,7 @@ import {
   getRetreatOverride,
 } from "./overrides";
 import { getPageOverride } from "./page-overrides";
-import { listDocuments } from "./repository";
+import { cmsOwnsType, listDocuments } from "./repository";
 import type {
   AboutPage,
   ContactPage,
@@ -89,7 +89,7 @@ function getPastFrom<T extends EventBoundary>(events: T[]): T[] {
 const getAllEvents = cache(async (): Promise<YogaEvent[]> => {
   const fromCms = await applyEventOverrides([]);
   if (fromCms.length > 0) return fromCms;
-  if ((await listDocuments("event")).length > 0) return fromCms;
+  if (cmsOwnsType(await listDocuments("event"))) return fromCms;
   const { placeholderEvents } = await loadPlaceholders();
   return withUniqueEventSlugs(placeholderEvents.map(withComposedEventTime));
 });
@@ -153,7 +153,7 @@ export async function getAboutPage(): Promise<AboutPage> {
 export const getPrograms = cache(async (): Promise<ProgramListItem[]> => {
   const fromCms = await applyProgramOverrides([]);
   if (fromCms.length > 0) return fromCms;
-  if ((await listDocuments("program")).length > 0) return fromCms;
+  if (cmsOwnsType(await listDocuments("program"))) return fromCms;
   return (await loadPlaceholders()).placeholderPrograms;
 });
 
@@ -177,7 +177,7 @@ export type SlugEntry = {
 export async function getProgramSlugEntries(): Promise<SlugEntry[]> {
   const fromCms = await applyProgramSlugOverrides([]);
   if (fromCms.length > 0) return fromCms;
-  if ((await listDocuments("program")).length > 0) return fromCms;
+  if (cmsOwnsType(await listDocuments("program"))) return fromCms;
   return (await loadPlaceholders()).placeholderPrograms.map((p) => ({ slug: p.slug }));
 }
 
@@ -190,10 +190,10 @@ export async function getProgramBySlug(slug: string): Promise<Program | undefine
   if (override.status === "found") return override.program;
   if (override.status === "hidden") return undefined;
 
-  if ((await listDocuments("program")).length === 0) {
-    return (await loadPlaceholders()).placeholderProgramBySlug(slug);
+  if (cmsOwnsType(await listDocuments("program"))) {
+    return undefined;
   }
-  return undefined;
+  return (await loadPlaceholders()).placeholderProgramBySlug(slug);
 }
 
 export async function getUpcomingEvents(): Promise<YogaEvent[]> {
@@ -244,7 +244,7 @@ function withDateBoundary<T extends { date?: string }>(
 async function getAllPublishedRetreats(): Promise<RetreatListItem[]> {
   const fromCms = await applyRetreatOverrides([]);
   if (fromCms.length > 0) return fromCms;
-  if ((await listDocuments("retreat")).length > 0) return fromCms;
+  if (cmsOwnsType(await listDocuments("retreat"))) return fromCms;
   return (await loadPlaceholders()).placeholderRetreats;
 }
 

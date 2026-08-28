@@ -79,8 +79,12 @@ function merge<TStored, TResult extends { slug?: string }>(
   return merged;
 }
 
+function liveContent<T>(document: CmsDocument<T>): T {
+  return document.liveData ?? document.data;
+}
+
 function normalizeEvent(document: CmsDocument<YogaEvent>): YogaEvent {
-  const event = document.data;
+  const event = liveContent(document);
 
   return {
     ...event,
@@ -93,7 +97,7 @@ function normalizeEvent(document: CmsDocument<YogaEvent>): YogaEvent {
 }
 
 function normalizeProgram(document: CmsDocument<Program>): Program {
-  const program = document.data;
+  const program = liveContent(document);
 
   return {
     ...program,
@@ -103,7 +107,7 @@ function normalizeProgram(document: CmsDocument<Program>): Program {
 }
 
 function normalizeRetreat(document: CmsDocument<Retreat>): Retreat {
-  const retreat = document.data;
+  const retreat = liveContent(document);
 
   return {
     ...retreat,
