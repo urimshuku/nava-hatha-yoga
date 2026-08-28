@@ -1,10 +1,11 @@
 import Link from "next/link";
 
+import { ContentListActions } from "@/components/cms/ContentListActions";
 import { SourceBadge } from "@/components/cms/SourceBadge";
 import { listEventEntries, type AdminListEntry } from "@/lib/cms/admin-list";
 import { formatDateRange } from "@/lib/utils";
 
-import { restoreEvent } from "./actions";
+import { duplicateEvent, restoreEvent } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -32,24 +33,13 @@ function EventRow({ entry }: { entry: AdminListEntry }) {
 
       <div className="flex items-center gap-3">
         <SourceBadge entry={entry} />
-        {entry.hidden ? (
-          <form action={restoreEvent}>
-            <input type="hidden" name="slug" value={entry.slug} />
-            <button
-              type="submit"
-              className="text-sm text-brown transition-colors hover:text-saffron"
-            >
-              Put back
-            </button>
-          </form>
-        ) : (
-          <Link
-            href={`/admin/events/${entry.slug}`}
-            className="text-sm text-brown transition-colors hover:text-saffron"
-          >
-            Edit
-          </Link>
-        )}
+        <ContentListActions
+          slug={entry.slug}
+          hidden={entry.hidden}
+          editHref={`/admin/events/${entry.slug}`}
+          duplicate={duplicateEvent}
+          restore={restoreEvent}
+        />
       </div>
     </li>
   );

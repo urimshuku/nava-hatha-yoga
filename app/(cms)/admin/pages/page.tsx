@@ -42,7 +42,7 @@ export default async function PagesPage() {
                       : "inline-flex items-center rounded-full bg-sand/50 px-2.5 py-0.5 text-xs font-medium text-brown"
                   }
                 >
-                  {stored ? "Edited here" : "Original wording"}
+                  Published
                 </span>
                 <span className="text-sm text-brown">Edit</span>
               </div>

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { nextAvailableSlug, titleForCopy } from "@/lib/cms/copy";
 import {
   checkbox,
   imageValue,
@@ -153,4 +154,36 @@ export async function restoreProgram(formData: FormData): Promise<void> {
 
   refreshAffectedPages(slug);
   redirect("/admin/programs");
+}
+
+/** Copies a program as an unpublished draft and opens it for editing. */
+export async function duplicateProgram(formData: FormData): Promise<void> {
+  await assertCmsSession();
+
+  const slug = text(formData, "slug");
+  if (!slug) return;
+
+  const stored = await getDocument<Program>("program", slug);
+  if (!stored || isTombstone(stored.data)) {
+    redirect("/admin/programs");
+  }
+
+  const newSlug = await nextAvailableSlug("program", `${stored.slug}-copy`);
+  const title = titleForCopy(stored.data.title || stored.slug);
+
+  await saveDocument({
+    type: "program",
+    slug: newSlug,
+    data: {
+      ...stored.data,
+      _id: `cms.program.${newSlug}`,
+      slug: newSlug,
+      title,
+    },
+    published: false,
+    hidden: false,
+  });
+
+  refreshAffectedPages(newSlug);
+  redirect(`/admin/programs/${newSlug}`);
 }

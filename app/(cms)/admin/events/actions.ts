@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { nextAvailableSlug, titleForCopy } from "@/lib/cms/copy";
 import {
   checkbox,
   dateToTimestamp,
@@ -173,4 +174,36 @@ export async function restoreEvent(formData: FormData): Promise<void> {
 
   refreshAffectedPages(slug);
   redirect("/admin/events");
+}
+
+/** Copies an event as an unpublished draft and opens it for editing. */
+export async function duplicateEvent(formData: FormData): Promise<void> {
+  await assertCmsSession();
+
+  const slug = text(formData, "slug");
+  if (!slug) return;
+
+  const stored = await getDocument<YogaEvent>("event", slug);
+  if (!stored || isTombstone(stored.data)) {
+    redirect("/admin/events");
+  }
+
+  const newSlug = await nextAvailableSlug("event", `${stored.slug}-copy`);
+  const title = titleForCopy(stored.data.title || stored.slug);
+
+  await saveDocument({
+    type: "event",
+    slug: newSlug,
+    data: {
+      ...stored.data,
+      _id: `cms.event.${newSlug}`,
+      slug: newSlug,
+      title,
+    },
+    published: false,
+    hidden: false,
+  });
+
+  refreshAffectedPages(newSlug);
+  redirect(`/admin/events/${newSlug}`);
 }

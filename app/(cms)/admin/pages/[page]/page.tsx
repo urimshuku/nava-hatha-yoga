@@ -47,8 +47,8 @@ export default async function EditPagePage({
 
       {!stored ? (
         <p className="rounded border border-border bg-cream/60 px-4 py-3 text-sm text-brown">
-          This page has not been edited here yet, so it shows the wording that is
-          on the website now. Saving takes over this page.
+          This page still uses the wording currently on the website. Saving
+          takes over this page.
         </p>
       ) : null}
 

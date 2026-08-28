@@ -1,9 +1,10 @@
 import Link from "next/link";
 
+import { ContentListActions } from "@/components/cms/ContentListActions";
 import { SourceBadge } from "@/components/cms/SourceBadge";
 import { listRetreatEntries } from "@/lib/cms/admin-list";
 
-import { restoreRetreat } from "./actions";
+import { duplicateRetreat, restoreRetreat } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -64,24 +65,13 @@ export default async function AdminRetreatsPage({
 
               <div className="flex items-center gap-3">
                 <SourceBadge entry={entry} />
-                {entry.hidden ? (
-                  <form action={restoreRetreat}>
-                    <input type="hidden" name="slug" value={entry.slug} />
-                    <button
-                      type="submit"
-                      className="text-sm text-brown transition-colors hover:text-saffron"
-                    >
-                      Put back
-                    </button>
-                  </form>
-                ) : (
-                  <Link
-                    href={`/admin/retreats/${entry.slug}`}
-                    className="text-sm text-brown transition-colors hover:text-saffron"
-                  >
-                    Edit
-                  </Link>
-                )}
+                <ContentListActions
+                  slug={entry.slug}
+                  hidden={entry.hidden}
+                  editHref={`/admin/retreats/${entry.slug}`}
+                  duplicate={duplicateRetreat}
+                  restore={restoreRetreat}
+                />
               </div>
             </li>
           ))}

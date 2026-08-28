@@ -1,9 +1,10 @@
 import Link from "next/link";
 
+import { ContentListActions } from "@/components/cms/ContentListActions";
 import { SourceBadge } from "@/components/cms/SourceBadge";
 import { listProgramEntries } from "@/lib/cms/admin-list";
 
-import { restoreProgram } from "./actions";
+import { duplicateProgram, restoreProgram } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -59,24 +60,13 @@ export default async function AdminProgramsPage({
 
             <div className="flex items-center gap-3">
               <SourceBadge entry={entry} />
-              {entry.hidden ? (
-                <form action={restoreProgram}>
-                  <input type="hidden" name="slug" value={entry.slug} />
-                  <button
-                    type="submit"
-                    className="text-sm text-brown transition-colors hover:text-saffron"
-                  >
-                    Put back
-                  </button>
-                </form>
-              ) : (
-                <Link
-                  href={`/admin/programs/${entry.slug}`}
-                  className="text-sm text-brown transition-colors hover:text-saffron"
-                >
-                  Edit
-                </Link>
-              )}
+              <ContentListActions
+                slug={entry.slug}
+                hidden={entry.hidden}
+                editHref={`/admin/programs/${entry.slug}`}
+                duplicate={duplicateProgram}
+                restore={restoreProgram}
+              />
             </div>
           </li>
         ))}

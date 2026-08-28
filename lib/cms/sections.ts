@@ -17,18 +17,7 @@ export interface CmsNavSection {
 
 export const CMS_SECTIONS: CmsNavSection[] = [
   {
-    heading: "Pages",
-    items: [
-      {
-        label: "All pages",
-        href: "/admin/pages",
-        description:
-          "The wording, photos and buttons on each page of the website.",
-      },
-    ],
-  },
-  {
-    heading: "Website content",
+    heading: "Content",
     items: [
       {
         label: "Events",
@@ -47,6 +36,17 @@ export const CMS_SECTIONS: CmsNavSection[] = [
         href: "/admin/retreats",
         description:
           "Retreats with their dates, photos and descriptions. Shown on the Retreats pages.",
+      },
+    ],
+  },
+  {
+    heading: "Pages",
+    items: [
+      {
+        label: "All pages",
+        href: "/admin/pages",
+        description:
+          "The wording, photos and buttons on each page of the website.",
       },
     ],
   },

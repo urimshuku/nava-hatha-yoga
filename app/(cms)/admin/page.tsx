@@ -11,8 +11,11 @@ import { CMS_SECTIONS } from "@/lib/cms/sections";
 
 export const dynamic = "force-dynamic";
 
-function countEdited(entries: { source: string }[]): number {
-  return entries.filter((entry) => entry.source === "cms").length;
+function visibilityCounts(entries: { hidden: boolean; draft: boolean }[]) {
+  const published = entries.filter((entry) => !entry.hidden && !entry.draft)
+    .length;
+  const unpublished = entries.length - published;
+  return { published, unpublished };
 }
 
 export default async function AdminHomePage() {
@@ -25,14 +28,17 @@ export default async function AdminHomePage() {
     ),
   ]);
 
-  const counts: Record<string, { total: number; edited: number }> = {
+  const counts: Record<
+    string,
+    { published: number; unpublished?: number; pages?: number }
+  > = {
     "/admin/pages": {
-      total: EDITABLE_PAGES.length,
-      edited: editedPages.filter(Boolean).length,
+      published: editedPages.filter(Boolean).length,
+      pages: EDITABLE_PAGES.length,
     },
-    "/admin/events": { total: events.length, edited: countEdited(events) },
-    "/admin/programs": { total: programs.length, edited: countEdited(programs) },
-    "/admin/retreats": { total: retreats.length, edited: countEdited(retreats) },
+    "/admin/events": visibilityCounts(events),
+    "/admin/programs": visibilityCounts(programs),
+    "/admin/retreats": visibilityCounts(retreats),
   };
 
   return (
@@ -68,10 +74,13 @@ export default async function AdminHomePage() {
                     </p>
                     {count ? (
                       <p className="mt-4 text-xs text-brown">
-                        {count.total} on the website
-                        {count.edited > 0
-                          ? ` · ${count.edited} edited here`
-                          : ""}
+                        {count.pages != null
+                          ? `${count.pages} pages`
+                          : `${count.published} published${
+                              count.unpublished
+                                ? ` · ${count.unpublished} unpublished`
+                                : ""
+                            }`}
                       </p>
                     ) : null}
                   </Link>
