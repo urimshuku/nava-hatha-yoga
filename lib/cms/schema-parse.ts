@@ -1,3 +1,4 @@
+import { dateToTimestamp } from "./form-values";
 import { textToPortableText } from "./portable-text";
 import { joinPath, type DocumentSchema, type FieldDef } from "./schema";
 
@@ -68,7 +69,8 @@ function readField(
 
     case "date": {
       const value = readText(formData, path);
-      return value ? new Date(`${value}T00:00:00.000Z`).toISOString() : undefined;
+      const boundary = field.name === "endDate" ? "end" : "start";
+      return dateToTimestamp(value, boundary);
     }
 
     case "number": {

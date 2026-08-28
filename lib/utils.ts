@@ -24,7 +24,10 @@ export function formatDate(
   if (!dateString) return "";
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) return "";
-  return new Intl.DateTimeFormat("en-GB", options).format(date);
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: EVENT_TIMEZONE,
+    ...options,
+  }).format(date);
 }
 
 export function formatShortDate(dateString?: string | null): string {
@@ -40,43 +43,42 @@ export function formatDateRange(
   startString?: string | null,
   endString?: string | null,
 ): string {
-  const start = startString ? new Date(startString) : null;
-  const end = endString ? new Date(endString) : null;
+  const start = startString ? parseEventDate(startString) : null;
+  const end = endString ? parseEventDate(endString) : null;
 
-  if (!start || Number.isNaN(start.getTime())) return formatDate(startString);
-  if (!end || Number.isNaN(end.getTime()) || end.getTime() <= start.getTime()) {
+  if (!start) return formatDate(startString);
+  if (!end || end.getTime() <= start.getTime() || isSameZonedDay(start, end)) {
     return formatDate(startString);
   }
 
-  const sameDay =
-    start.getFullYear() === end.getFullYear() &&
-    start.getMonth() === end.getMonth() &&
-    start.getDate() === end.getDate();
-  if (sameDay) return formatDate(startString);
+  const startParts = zonedDateParts(start);
+  const endParts = zonedDateParts(end);
+  const sameYear = startParts.year === endParts.year;
+  const sameMonth = sameYear && startParts.month === endParts.month;
 
-  const sameYear = start.getFullYear() === end.getFullYear();
-  const sameMonth = sameYear && start.getMonth() === end.getMonth();
+  const formatZoned = (date: Date, options: Intl.DateTimeFormatOptions) =>
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: EVENT_TIMEZONE,
+      ...options,
+    }).format(date);
 
   if (sameMonth) {
-    const startDay = new Intl.DateTimeFormat("en-GB", { day: "numeric" }).format(start);
-    const endPart = new Intl.DateTimeFormat("en-GB", {
+    const startDay = formatZoned(start, { day: "numeric" });
+    const endPart = formatZoned(end, {
       day: "numeric",
       month: "long",
       year: "numeric",
-    }).format(end);
+    });
     return `${startDay}\u2013${endPart}`;
   }
 
   if (sameYear) {
-    const startPart = new Intl.DateTimeFormat("en-GB", {
-      day: "numeric",
-      month: "long",
-    }).format(start);
-    const endPart = new Intl.DateTimeFormat("en-GB", {
+    const startPart = formatZoned(start, { day: "numeric", month: "long" });
+    const endPart = formatZoned(end, {
       day: "numeric",
       month: "long",
       year: "numeric",
-    }).format(end);
+    });
     return `${startPart} \u2013 ${endPart}`;
   }
 
@@ -106,6 +108,21 @@ function isSameZonedDay(start: Date, end: Date): boolean {
   const a = zonedDateParts(start);
   const b = zonedDateParts(end);
   return a.year === b.year && a.month === b.month && a.day === b.day;
+}
+
+/**
+ * The Albania calendar day for a stored timestamp, as YYYY-MM-DD for date
+ * inputs. Slicing the UTC ISO string would show the previous day.
+ */
+export function toDateInputValue(value?: string | null): string {
+  if (!value) return "";
+  const trimmed = value.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+  const date = parseEventDate(trimmed);
+  if (!date) return "";
+  const { year, month, day } = zonedDateParts(date);
+  if (!year || !month || !day) return "";
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
 /** Compact day + month badge for the top-right of event cards (e.g. 27–29 / JUN 2026). */
@@ -316,7 +333,7 @@ export function deriveEventSlug(event: {
   const stored = event.slug?.trim();
   if (stored && !RESERVED_EVENT_SLUGS.has(stored)) return stored;
 
-  const date = event.date ? event.date.slice(0, 10) : "";
+  const date = event.date ? toDateInputValue(event.date) : "";
   const location = eventLocationShort(event.location);
   const derived = slugifySegment([event.title, location, date].filter(Boolean).join(" "));
   if (derived && !RESERVED_EVENT_SLUGS.has(derived)) return derived;

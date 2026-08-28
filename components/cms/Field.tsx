@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { toDateInputValue } from "@/lib/utils";
+
 /**
  * One labelled row in an editing form. Every field carries a plain-language hint
  * about where the value shows up on the website.
@@ -82,7 +84,7 @@ export function DateField({
         id={name}
         name={name}
         type="date"
-        defaultValue={defaultValue ? defaultValue.slice(0, 10) : ""}
+        defaultValue={toDateInputValue(defaultValue)}
         required={required}
         className={inputClassName}
       />
