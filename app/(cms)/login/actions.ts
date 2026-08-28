@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 
 import { getCmsAuthConfig, isPasswordCorrect } from "@/lib/cms/auth";
+import { CMS_DEFAULT_PATH } from "@/lib/cms/sections";
 import { endCmsSession, startCmsSession } from "@/lib/cms/session";
 
 export interface LoginState {
@@ -12,7 +13,10 @@ export interface LoginState {
 /** Only allow redirects back into the editor, never to an external URL. */
 function safeNextPath(value: FormDataEntryValue | null): string {
   const path = typeof value === "string" ? value : "";
-  return path.startsWith("/admin") ? path : "/admin";
+  if (!path.startsWith("/admin") || path === "/admin" || path === "/admin/") {
+    return CMS_DEFAULT_PATH;
+  }
+  return path;
 }
 
 export async function login(
@@ -39,5 +43,5 @@ export async function login(
 
 export async function logout(): Promise<void> {
   await endCmsSession();
-  redirect("/login");
+  redirect("/admin");
 }

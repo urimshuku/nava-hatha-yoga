@@ -6,8 +6,8 @@ export function SourceBadge({ entry }: { entry: AdminListEntry }) {
   const published = !entry.hidden && !entry.draft;
   const label = published ? "Published" : "Unpublished";
   const tone = published
-    ? "bg-saffron/10 text-saffron-hover"
-    : "bg-clay/20 text-brown";
+    ? "bg-emerald-100 text-emerald-800"
+    : "bg-saffron/10 text-saffron-hover";
 
   return (
     <span

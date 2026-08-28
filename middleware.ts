@@ -1,11 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { CMS_SESSION_COOKIE, isSessionTokenValid } from "@/lib/cms/auth";
+import { CMS_DEFAULT_PATH } from "@/lib/cms/sections";
 
 /**
- * Keeps /admin behind the login. This is the fast first check; the /admin layout
- * and every save action verify the session again, so the CMS stays protected
- * even if a request reaches it without passing through here.
+ * Protects editor routes under /admin/... and CMS APIs. Exact /admin is the
+ * password screen, so it is not matched here.
  *
  * Next 16 deprecates this filename in favour of `proxy.ts`, but the Cloudflare
  * adapter only bundles `middleware.js`, so renaming it would drop the guard from
@@ -18,9 +18,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const loginUrl = new URL("/login", request.url);
+  const loginUrl = new URL("/admin", request.url);
   const returnTo = `${request.nextUrl.pathname}${request.nextUrl.search}`;
-  if (returnTo !== "/admin") {
+  if (returnTo !== "/admin" && returnTo !== "/admin/" && returnTo !== CMS_DEFAULT_PATH) {
     loginUrl.searchParams.set("next", returnTo);
   }
 
@@ -28,5 +28,11 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/:path*", "/api/cms/:path*"],
+  matcher: [
+    "/admin/events/:path*",
+    "/admin/programs/:path*",
+    "/admin/retreats/:path*",
+    "/admin/pages/:path*",
+    "/api/cms/:path*",
+  ],
 };

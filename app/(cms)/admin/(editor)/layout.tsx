@@ -6,7 +6,7 @@ import { CMS_SECTIONS } from "@/lib/cms/sections";
 import { hasCmsSession } from "@/lib/cms/session";
 import { SITE_NAME } from "@/lib/constants";
 
-import { logout } from "../login/actions";
+import { logout } from "../../login/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +16,7 @@ export default async function AdminLayout({
   // The middleware already turned away anyone without a session; this is the
   // authoritative check, so the editor is safe even if a request bypasses it.
   if (!(await hasCmsSession())) {
-    redirect("/login");
+    redirect("/admin");
   }
 
   return (
@@ -26,12 +26,7 @@ export default async function AdminLayout({
           <p className="text-xs uppercase tracking-widest text-brown">
             {SITE_NAME}
           </p>
-          <Link
-            href="/admin"
-            className="font-heading text-2xl text-charcoal hover:text-saffron"
-          >
-            Website Editor
-          </Link>
+          <p className="font-heading text-2xl text-charcoal">Website Editor</p>
         </div>
 
         <CmsNav sections={CMS_SECTIONS} />

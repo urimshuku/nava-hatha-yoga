@@ -15,6 +15,9 @@ export interface CmsNavSection {
   items: CmsNavItem[];
 }
 
+/** There is no editor hub: login and /admin open Events. */
+export const CMS_DEFAULT_PATH = "/admin/events";
+
 export const CMS_SECTIONS: CmsNavSection[] = [
   {
     heading: "Content",

@@ -38,7 +38,7 @@ export default async function PagesPage() {
                 <span
                   className={
                     stored
-                      ? "inline-flex items-center rounded-full bg-saffron/10 px-2.5 py-0.5 text-xs font-medium text-saffron-hover"
+                      ? "inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800"
                       : "inline-flex items-center rounded-full bg-sand/50 px-2.5 py-0.5 text-xs font-medium text-brown"
                   }
                 >
