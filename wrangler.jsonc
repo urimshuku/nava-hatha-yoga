@@ -8,8 +8,6 @@
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
     "NEXT_PUBLIC_SITE_URL": "https://navahathayoga.com",
-    "NEXT_PUBLIC_SANITY_PROJECT_ID": "zji6f648",
-    "NEXT_PUBLIC_SANITY_DATASET": "production",
     "RESEND_FROM_EMAIL": "Nava Hatha Yoga <info@navahathayoga.com>",
     "FORM_NOTIFICATION_EMAIL": "info@navahathayoga.com"
   },
@@ -26,6 +24,13 @@
       "database_name": "nava-hatha-yoga-forms",
       "database_id": "854ccf09-a56c-4b5a-97de-28bb6e3deaeb",
       "migrations_dir": "migrations"
+    }
+  ],
+  // Images uploaded through the built-in CMS, served from /media/<key>.
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "nava-hatha-yoga-media"
     }
   ],
   // Retry pending form emails every 5 minutes.

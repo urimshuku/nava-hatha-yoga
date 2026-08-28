@@ -5,7 +5,7 @@ import { Section } from "@/components/layout/Section";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 import { placeholderAboutPage } from "@/lib/placeholders";
 import type { ResolvedTeacherStory } from "@/lib/teacher-story";
-import type { AboutHighlightCard } from "@/sanity/lib/types";
+import type { AboutHighlightCard } from "@/lib/cms/content-types";
 
 const DEFAULT_RIBBON_TITLES = [
   "1750+ hours of teacher training (Sadhguru Gurukulam India)",

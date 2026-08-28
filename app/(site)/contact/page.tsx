@@ -10,7 +10,10 @@ import { resolveInstagramHref, whatsappLink } from "@/lib/constants";
 import { placeholderContactPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
 import { PHASE1_CONTACT_SEO } from "@/lib/seo-phase1";
-import { getContactPage, getPrograms, getSiteSettings } from "@/sanity/lib/fetch";
+import { getContactPage, getPrograms, getSiteSettings } from "@/lib/cms/site-content";
+
+// Rendered per request so edits made in /admin are live the moment they are saved.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getContactPage();

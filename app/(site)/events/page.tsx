@@ -19,7 +19,7 @@ import {
   getPrograms,
   getSiteSettings,
   getUpcomingEvents,
-} from "@/sanity/lib/fetch";
+} from "@/lib/cms/site-content";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getEventsPage();
@@ -31,7 +31,8 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export const revalidate = 60;
+// Rendered per request so edits made in /admin are live the moment they are saved.
+export const dynamic = "force-dynamic";
 
 export default async function EventsPage() {
   const [events, settings, programs, page] = await Promise.all([

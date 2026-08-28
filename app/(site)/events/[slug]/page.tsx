@@ -15,23 +15,16 @@ import {
   buildEventJsonLd,
 } from "@/lib/structured-data";
 import { formatRegistrationEventLabel } from "@/lib/utils";
-import { urlForImage } from "@/sanity/lib/image";
-import {
-  getEventBySlug,
-  getEventSlugs,
-  getSiteSettings,
-} from "@/sanity/lib/fetch";
+import { urlForImage } from "@/lib/cms/image-url";
+import { getEventBySlug, getSiteSettings } from "@/lib/cms/site-content";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export const revalidate = 60;
-
-export async function generateStaticParams() {
-  const slugs = await getEventSlugs();
-  return slugs.map((slug) => ({ slug }));
-}
+// Rendered per request so edits made in /admin are live the moment they are
+// saved, which also means there are no params to pre-generate.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -42,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const description =
     event.description?.trim() || formatRegistrationEventLabel(event);
-  const sanityOg = urlForImage(event.image)?.width(1200).height(630).fit("crop").url();
+  const ogImage = urlForImage(event.image)?.width(1200).height(630).fit("crop").url();
   const localOg = event.relatedProgram?.slug
     ? programImageSrc(event.relatedProgram.slug)
     : undefined;
@@ -51,8 +44,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: event.title,
     description,
     path: `/events/${event.slug}`,
-    image: sanityOg
-      ? { url: sanityOg, width: 1200, height: 630, alt: event.title }
+    image: ogImage
+      ? { url: ogImage, width: 1200, height: 630, alt: event.title }
       : localOg
         ? { url: localOg, width: 1200, height: 630, alt: event.title }
         : undefined,

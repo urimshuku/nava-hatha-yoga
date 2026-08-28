@@ -1,5 +1,5 @@
 import { ProgramCard } from "@/components/cards/ProgramCard";
-import type { ProgramListItem } from "@/sanity/lib/types";
+import type { ProgramListItem } from "@/lib/cms/content-types";
 
 export function ProgramGrid({ programs }: { programs: ProgramListItem[] }) {
   return (

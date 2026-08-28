@@ -3,7 +3,7 @@ import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
 import { MotionItem, MotionStagger } from "@/components/ui/Motion";
 import { MotionReveal } from "@/components/ui/MotionReveal";
-import type { CtaLink, OfferingItem } from "@/sanity/lib/types";
+import type { CtaLink, OfferingItem } from "@/lib/cms/content-types";
 
 const DEFAULT_OFFERINGS: OfferingItem[] = [
   {

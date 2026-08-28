@@ -1,7 +1,7 @@
 import { SanityImage } from "@/components/ui/SanityImage";
 import { LocalProgramImage } from "@/components/ui/LocalProgramImage";
-import { urlForImage } from "@/sanity/lib/image";
-import type { SanityImage as SanityImageType } from "@/sanity/lib/types";
+import { urlForImage } from "@/lib/cms/image-url";
+import type { SanityImage as SanityImageType } from "@/lib/cms/content-types";
 
 type ProgramImageProps = {
   slug: string;
@@ -15,7 +15,7 @@ type ProgramImageProps = {
 };
 
 /**
- * Program photo: uses the image uploaded in Sanity when present, otherwise
+ * Program photo: uses the uploaded image when present, otherwise
  * falls back to the built-in file in /public/images/programs/.
  */
 export function ProgramImage({

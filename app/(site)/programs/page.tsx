@@ -10,7 +10,10 @@ import { partitionProgramsByCategory } from "@/lib/constants";
 import { placeholderHomePage, placeholderProgramsPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
 import { PHASE1_PROGRAMS_PAGE_SEO } from "@/lib/seo-phase1";
-import { getHomePage, getPrograms, getProgramsPage } from "@/sanity/lib/fetch";
+import { getHomePage, getPrograms, getProgramsPage } from "@/lib/cms/site-content";
+
+// Rendered per request so edits made in /admin are live the moment they are saved.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getProgramsPage();

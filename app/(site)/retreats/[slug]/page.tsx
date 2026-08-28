@@ -16,19 +16,16 @@ import {
   buildRetreatEventJsonLd,
 } from "@/lib/structured-data";
 import { formatDateRange } from "@/lib/utils";
-import { urlForImage } from "@/sanity/lib/image";
-import { getRetreatBySlug, getRetreatSlugs, getSiteSettings } from "@/sanity/lib/fetch";
+import { urlForImage } from "@/lib/cms/image-url";
+import { getRetreatBySlug, getSiteSettings } from "@/lib/cms/site-content";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  const slugs = await getRetreatSlugs();
-  return slugs.map((slug) => ({ slug }));
-}
-
-export const revalidate = 60;
+// Retreats can be added and edited in the built-in CMS at any time, so these
+// pages are rendered on request rather than fixed at build time.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;

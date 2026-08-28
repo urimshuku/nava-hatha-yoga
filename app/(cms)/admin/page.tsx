@@ -1,0 +1,86 @@
+import Link from "next/link";
+
+import {
+  listEventEntries,
+  listProgramEntries,
+  listRetreatEntries,
+} from "@/lib/cms/admin-list";
+import { EDITABLE_PAGES } from "@/lib/cms/editable-pages";
+import { getDocument } from "@/lib/cms/repository";
+import { CMS_SECTIONS } from "@/lib/cms/sections";
+
+export const dynamic = "force-dynamic";
+
+function countEdited(entries: { source: string }[]): number {
+  return entries.filter((entry) => entry.source === "cms").length;
+}
+
+export default async function AdminHomePage() {
+  const [events, programs, retreats, editedPages] = await Promise.all([
+    listEventEntries(),
+    listProgramEntries(),
+    listRetreatEntries(),
+    Promise.all(
+      EDITABLE_PAGES.map((page) => getDocument(page.type, page.slug)),
+    ),
+  ]);
+
+  const counts: Record<string, { total: number; edited: number }> = {
+    "/admin/pages": {
+      total: EDITABLE_PAGES.length,
+      edited: editedPages.filter(Boolean).length,
+    },
+    "/admin/events": { total: events.length, edited: countEdited(events) },
+    "/admin/programs": { total: programs.length, edited: countEdited(programs) },
+    "/admin/retreats": { total: retreats.length, edited: countEdited(retreats) },
+  };
+
+  return (
+    <div>
+      <h1 className="font-heading text-display-sm text-charcoal">
+        What would you like to change?
+      </h1>
+      <p className="mt-3 max-w-prose text-brown">
+        Pick a section below. Everything you save here appears on the website
+        straight away.
+      </p>
+
+      {CMS_SECTIONS.map((section) => (
+        <div key={section.heading} className="mt-10">
+          <h2 className="mb-4 text-xs uppercase tracking-widest text-brown">
+            {section.heading}
+          </h2>
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {section.items.map((item) => {
+              const count = counts[item.href];
+
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="block h-full rounded-lg border border-border bg-white p-5 transition-shadow hover:shadow-card"
+                  >
+                    <p className="font-heading text-xl text-charcoal">
+                      {item.label}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-brown">
+                      {item.description}
+                    </p>
+                    {count ? (
+                      <p className="mt-4 text-xs text-brown">
+                        {count.total} on the website
+                        {count.edited > 0
+                          ? ` · ${count.edited} edited here`
+                          : ""}
+                      </p>
+                    ) : null}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+}

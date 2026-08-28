@@ -1,9 +1,9 @@
 /**
- * Emergency editorial fallbacks used only when a Sanity document cannot be
- * fetched (CMS down, misconfigured project, or empty fetch result).
+ * Emergency editorial fallbacks used only when a CMS document cannot be
+ * fetched (database down, or empty fetch result).
  *
- * Production content lives in Sanity. These values must match the current
- * CMS wording so a fallback never silently changes the public website.
+ * Production content lives in the built-in CMS. These values must match the
+ * current wording so a fallback never silently changes the public website.
  */
 import type { PortableTextBlock } from "@portabletext/types";
 
@@ -21,7 +21,7 @@ import type {
   RetreatsPage,
   SiteSettings,
   YogaEvent,
-} from "@/sanity/lib/types";
+} from "@/lib/cms/content-types";
 import {
   CONTACT,
   getBeforeProgramNotes,

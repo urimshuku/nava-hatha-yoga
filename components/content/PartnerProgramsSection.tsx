@@ -6,7 +6,7 @@ import { MotionReveal } from "@/components/ui/MotionReveal";
 import { Ornament } from "@/components/ui/Ornament";
 import { whatsappLink } from "@/lib/constants";
 import { placeholderRetreatsPage } from "@/lib/placeholders";
-import type { RetreatsPage } from "@/sanity/lib/types";
+import type { RetreatsPage } from "@/lib/cms/content-types";
 
 type PartnerProgramsSectionProps = {
   whatsappNumber?: string;

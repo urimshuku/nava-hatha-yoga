@@ -1,6 +1,6 @@
 /**
- * Resolves the registration form copy: CMS content (Register Page in Sanity)
- * layered over the built-in defaults from `lib/register-content.ts`.
+ * Resolves the registration form copy: CMS content layered over the built-in
+ * defaults from `lib/register-content.ts`.
  */
 
 import {
@@ -32,7 +32,7 @@ import type {
   GuidelineBlockData,
   GuidelineSectionData,
   RegisterPage,
-} from "@/sanity/lib/types";
+} from "@/lib/cms/content-types";
 
 export interface RegisterContent {
   healthIntro: readonly string[];

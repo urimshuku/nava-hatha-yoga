@@ -22,7 +22,7 @@ import {
 } from "@/lib/structured-data";
 import { ensureTrailingPeriod } from "@/lib/utils";
 import { programImageSrc } from "@/lib/local-images";
-import { urlForImage } from "@/sanity/lib/image";
+import { urlForImage } from "@/lib/cms/image-url";
 import {
   PROGRAM_AFTER_PROGRAM_TITLE,
   PROGRAM_BONUS_ITEMS,
@@ -43,16 +43,17 @@ import {
 } from "@/lib/constants";
 import {
   getProgramBySlug,
-  getProgramSlugs,
   getSiteSettings,
   getUpcomingEventsByProgram,
-} from "@/sanity/lib/fetch";
+} from "@/lib/cms/site-content";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export const revalidate = 60;
+// Rendered per request so edits made in /admin are live the moment they are
+// saved, which also means there are no params to pre-generate.
+export const dynamic = "force-dynamic";
 
 function ProgramSection({
   title,
@@ -75,17 +76,12 @@ function hasRichText(value?: PortableTextBlock[]) {
   return Boolean(value && value.length > 0);
 }
 
-export async function generateStaticParams() {
-  const slugs = await getProgramSlugs();
-  return slugs.map((slug) => ({ slug }));
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const program = await getProgramBySlug(slug);
   if (!program) return buildMetadata({ title: "Program", path: `/programs/${slug}` });
 
-  const sanityOg = urlForImage(program.image)?.width(1200).height(630).fit("crop").url();
+  const ogImage = urlForImage(program.image)?.width(1200).height(630).fit("crop").url();
   const localOg = programImageSrc(program.slug);
 
   const phase1 = PHASE1_PROGRAM_SEO[program.slug];
@@ -95,8 +91,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: phase1?.description ?? program.shortIntro,
     seo: program.seo,
     path: `/programs/${program.slug}`,
-    image: sanityOg
-      ? { url: sanityOg, width: 1200, height: 630, alt: program.title }
+    image: ogImage
+      ? { url: ogImage, width: 1200, height: 630, alt: program.title }
       : localOg
         ? { url: localOg, width: 1200, height: 630, alt: program.title }
         : undefined,

@@ -1,7 +1,13 @@
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+
 const projectRoot = dirname(fileURLToPath(import.meta.url));
+
+// Exposes the Cloudflare bindings (D1 `DB`, vars, secrets) to `next dev`, so the
+// built-in CMS reads and writes the local D1 database instead of failing.
+initOpenNextCloudflareForDev();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -21,6 +27,16 @@ const nextConfig = {
         destination: "/events/free-introduction-to-hatha-yoga-tirane-2026-09-10",
         permanent: true,
       },
+      {
+        source: "/studio",
+        destination: "/login",
+        permanent: false,
+      },
+      {
+        source: "/studio/:path*",
+        destination: "/login",
+        permanent: false,
+      },
     ];
   },
   // Static metadata icons are emitted as /icon.png and /apple-icon.png; keep the
@@ -35,11 +51,6 @@ const nextConfig = {
     loader: "custom",
     loaderFile: "./image-loader.ts",
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cdn.sanity.io",
-        pathname: "/**",
-      },
       {
         protocol: "https",
         hostname: "i.ytimg.com",

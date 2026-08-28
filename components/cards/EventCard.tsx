@@ -16,7 +16,7 @@ import {
   formatRegistrationEventLabel,
   normalizeEventSessionSchedule,
 } from "@/lib/utils";
-import type { YogaEvent } from "@/sanity/lib/types";
+import type { YogaEvent } from "@/lib/cms/content-types";
 
 interface EventCardProps {
   event: YogaEvent;

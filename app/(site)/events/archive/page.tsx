@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHero } from "@/components/ui/PageHero";
 import { buildMetadata } from "@/lib/seo";
-import { getPastEvents, getEventsPage } from "@/sanity/lib/fetch";
+import { getPastEvents, getEventsPage } from "@/lib/cms/site-content";
 
 export const metadata: Metadata = buildMetadata({
   title: "Past Classical Hatha Yoga Events in Albania",
@@ -16,7 +16,8 @@ export const metadata: Metadata = buildMetadata({
   path: "/events/archive",
 });
 
-export const revalidate = 60;
+// Rendered per request so edits made in /admin are live the moment they are saved.
+export const dynamic = "force-dynamic";
 
 export default async function EventsArchivePage() {
   const [events, page] = await Promise.all([getPastEvents(), getEventsPage()]);

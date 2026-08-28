@@ -1,5 +1,5 @@
 import { SanityImage } from "@/components/ui/SanityImage";
-import type { SanityImage as SanityImageType } from "@/sanity/lib/types";
+import type { SanityImage as SanityImageType } from "@/lib/cms/content-types";
 
 export function Gallery({
   images,

@@ -1,5 +1,5 @@
 import { buildOrganizationJsonLd } from "@/lib/structured-data";
-import type { SiteSettings } from "@/sanity/lib/types";
+import type { SiteSettings } from "@/lib/cms/content-types";
 
 /**
  * Organization / LocalBusiness structured data for SEO and local discovery.

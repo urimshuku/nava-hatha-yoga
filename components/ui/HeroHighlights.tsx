@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
-import type { HighlightItem } from "@/sanity/lib/types";
+import type { HighlightItem } from "@/lib/cms/content-types";
 
 const iconProps = {
   viewBox: "0 0 24 24",

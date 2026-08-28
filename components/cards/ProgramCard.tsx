@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ElementType } from "react";
 
 import { ProgramImage } from "@/components/ui/ProgramImage";
-import type { ProgramListItem } from "@/sanity/lib/types";
+import type { ProgramListItem } from "@/lib/cms/content-types";
 
 export function ProgramCard({
   program,

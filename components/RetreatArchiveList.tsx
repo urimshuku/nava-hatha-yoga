@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { formatDateRange } from "@/lib/utils";
-import type { RetreatListItem } from "@/sanity/lib/types";
+import type { RetreatListItem } from "@/lib/cms/content-types";
 
 export function RetreatArchiveList({
   retreats,

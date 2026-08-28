@@ -16,9 +16,12 @@ import {
   DEFAULT_TEACHER_STORY,
   type ResolvedTeacherStory,
 } from "@/lib/teacher-story";
-import { getAboutPage } from "@/sanity/lib/fetch";
-import { urlForImage } from "@/sanity/lib/image";
-import type { TeacherStory } from "@/sanity/lib/types";
+import { getAboutPage } from "@/lib/cms/site-content";
+import { urlForImage } from "@/lib/cms/image-url";
+import type { TeacherStory } from "@/lib/cms/content-types";
+
+// Rendered per request so edits made in /admin are live the moment they are saved.
+export const dynamic = "force-dynamic";
 
 function resolveTeacherStory(story?: TeacherStory): ResolvedTeacherStory {
   const photo = urlForImage(story?.photo);

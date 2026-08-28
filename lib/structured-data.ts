@@ -9,13 +9,13 @@ import {
 import { eventEndTimestamp, eventStartTimestamp, isPastEvent } from "@/lib/event-boundary";
 import { programImageSrc } from "@/lib/local-images";
 import { formatRegistrationEventLabel } from "@/lib/utils";
-import { urlForImage } from "@/sanity/lib/image";
+import { urlForImage } from "@/lib/cms/image-url";
 import type {
   Program,
   Retreat,
   SiteSettings,
   YogaEvent,
-} from "@/sanity/lib/types";
+} from "@/lib/cms/content-types";
 
 type JsonLd = Record<string, unknown>;
 
@@ -138,7 +138,7 @@ export function buildEventJsonLd(
   const offer = parseEuroOffer(event.priceLabel);
   const imageBuilder = urlForImage(event.image);
   const imageUrl = imageBuilder
-    ? imageBuilder.width(1200).height(630).url()
+    ? absoluteUrl(imageBuilder.width(1200).height(630).url())
     : event.relatedProgram?.slug
       ? absoluteUrl(programImageSrc(event.relatedProgram.slug) ?? BRAND_LOGO.src)
       : absoluteUrl(BRAND_LOGO.src);
@@ -195,9 +195,9 @@ export function buildCourseJsonLd(
   const url = absoluteUrl(`/programs/${program.slug}`);
   const priceLabel = getProgramPriceLabel(program.slug, program.priceLabel);
   const offer = parseEuroOffer(priceLabel);
-  const sanityImage = urlForImage(program.image);
-  const imageUrl = sanityImage
-    ? sanityImage.width(1200).height(800).url()
+  const programImage = urlForImage(program.image);
+  const imageUrl = programImage
+    ? absoluteUrl(programImage.width(1200).height(800).url())
     : absoluteUrl(programImageSrc(program.slug) ?? BRAND_LOGO.src);
 
   return {
@@ -261,7 +261,7 @@ export function buildRetreatEventJsonLd(
   const past = isPastEvent({ date: retreat.date, endDate: retreat.endDate });
   const imageBuilder = urlForImage(retreat.image);
   const imageUrl = imageBuilder
-    ? imageBuilder.width(1200).height(630).url()
+    ? absoluteUrl(imageBuilder.width(1200).height(630).url())
     : absoluteUrl(BRAND_LOGO.src);
   const url = absoluteUrl(`/retreats/${retreat.slug}`);
   const offer = parseEuroOffer(retreat.priceLabel);

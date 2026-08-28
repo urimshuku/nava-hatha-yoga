@@ -13,7 +13,7 @@ import { PageHero } from "@/components/ui/PageHero";
 import { placeholderRetreatsPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
 import { PHASE1_RETREATS_SEO } from "@/lib/seo-phase1";
-import { getRetreats, getRetreatsPage, getSiteSettings } from "@/sanity/lib/fetch";
+import { getRetreats, getRetreatsPage, getSiteSettings } from "@/lib/cms/site-content";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getRetreatsPage();
@@ -25,7 +25,8 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export const revalidate = 60;
+// Rendered per request so edits made in /admin are live the moment they are saved.
+export const dynamic = "force-dynamic";
 
 export default async function RetreatsPage() {
   const [retreats, page, settings] = await Promise.all([

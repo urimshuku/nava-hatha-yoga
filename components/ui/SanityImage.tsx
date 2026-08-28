@@ -1,7 +1,7 @@
 import Image from "next/image";
 
-import { urlForImage } from "@/sanity/lib/image";
-import type { SanityImage as SanityImageType } from "@/sanity/lib/types";
+import { urlForImage } from "@/lib/cms/image-url";
+import type { SanityImage as SanityImageType } from "@/lib/cms/content-types";
 import { cn } from "@/lib/utils";
 
 interface SanityImageProps {
@@ -15,8 +15,8 @@ interface SanityImageProps {
 }
 
 /**
- * Renders a Sanity image when available, otherwise a calm decorative placeholder
- * so layouts stay intact before media is added in the CMS.
+ * Renders a CMS image when available, otherwise a calm decorative placeholder
+ * so layouts stay intact before media is added in the editor.
  */
 export function SanityImage({
   image,

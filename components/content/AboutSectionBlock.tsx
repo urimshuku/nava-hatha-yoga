@@ -5,7 +5,7 @@ import { AboutSectionImage } from "@/components/ui/AboutSectionImage";
 import { Button } from "@/components/ui/Button";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 import { cn } from "@/lib/utils";
-import type { CtaLink, SanityImage as SanityImageType } from "@/sanity/lib/types";
+import type { CtaLink, SanityImage as SanityImageType } from "@/lib/cms/content-types";
 
 type AboutSectionBlockProps = {
   title: string;

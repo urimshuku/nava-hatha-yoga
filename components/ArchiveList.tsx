@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { formatDateRange } from "@/lib/utils";
-import type { PastEvent } from "@/sanity/lib/types";
+import type { PastEvent } from "@/lib/cms/content-types";
 
 export function ArchiveList({ events }: { events: PastEvent[] }) {
   return (

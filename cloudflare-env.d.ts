@@ -5,10 +5,6 @@ interface __BaseEnv_CloudflareEnv {
 	DB: D1Database;
 	ASSETS: Fetcher;
 	NEXT_PUBLIC_SITE_URL: string;
-	NEXT_PUBLIC_SANITY_PROJECT_ID: string;
-	NEXT_PUBLIC_SANITY_DATASET: string;
-	NEXT_PUBLIC_SANITY_API_VERSION: string;
-	SANITY_API_READ_TOKEN: string;
 	RESEND_API_KEY: string;
 	RESEND_FROM_EMAIL: string;
 	FORM_NOTIFICATION_EMAIL: string;
@@ -24,7 +20,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "NEXT_PUBLIC_SITE_URL" | "NEXT_PUBLIC_SANITY_PROJECT_ID" | "NEXT_PUBLIC_SANITY_DATASET" | "NEXT_PUBLIC_SANITY_API_VERSION" | "SANITY_API_READ_TOKEN" | "RESEND_API_KEY" | "RESEND_FROM_EMAIL" | "FORM_NOTIFICATION_EMAIL">> {}
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "NEXT_PUBLIC_SITE_URL" | "RESEND_API_KEY" | "RESEND_FROM_EMAIL" | "FORM_NOTIFICATION_EMAIL">> {}
 }
 
 // Begin runtime types

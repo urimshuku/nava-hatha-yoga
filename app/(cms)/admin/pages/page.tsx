@@ -1,0 +1,55 @@
+import Link from "next/link";
+
+import { EDITABLE_PAGES } from "@/lib/cms/editable-pages";
+import { getDocument } from "@/lib/cms/repository";
+
+export const dynamic = "force-dynamic";
+
+export default async function PagesPage() {
+  const entries = await Promise.all(
+    EDITABLE_PAGES.map(async (page) => ({
+      page,
+      stored: await getDocument(page.type, page.slug),
+    })),
+  );
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="font-heading text-3xl text-charcoal">Pages</h1>
+        <p className="mt-1 max-w-2xl text-sm text-brown">
+          Every page of the website. Open one to change its wording, photos and
+          buttons. Changes appear on the website as soon as you save.
+        </p>
+      </div>
+
+      <ul className="divide-y divide-border overflow-hidden rounded-lg border border-border bg-white">
+        {entries.map(({ page, stored }) => (
+          <li key={page.id}>
+            <Link
+              href={`/admin/pages/${page.id}`}
+              className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-4 transition-colors hover:bg-cream/50"
+            >
+              <div className="min-w-0">
+                <p className="font-medium text-charcoal">{page.label}</p>
+                <p className="mt-0.5 text-sm text-brown">{page.summary}</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <span
+                  className={
+                    stored
+                      ? "inline-flex items-center rounded-full bg-saffron/10 px-2.5 py-0.5 text-xs font-medium text-saffron-hover"
+                      : "inline-flex items-center rounded-full bg-sand/50 px-2.5 py-0.5 text-xs font-medium text-brown"
+                  }
+                >
+                  {stored ? "Edited here" : "Original wording"}
+                </span>
+                <span className="text-sm text-brown">Edit</span>
+              </div>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}

@@ -21,7 +21,7 @@ import {
   getPrograms,
   getSiteSettings,
   getUpcomingEvents,
-} from "@/sanity/lib/fetch";
+} from "@/lib/cms/site-content";
 import { SITE_NAME, SPECIAL_PROGRAM_SLUGS } from "@/lib/constants";
 import { placeholderHomePage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
@@ -74,7 +74,8 @@ const HERO_GLOW = {
 const DEFAULT_INTRO_HEADING = "What is Classical Hatha Yoga?";
 const DEFAULT_INTRO_VIDEO_TITLE = "The Incredible Power of Classical Hatha Yoga";
 
-export const revalidate = 60;
+// Rendered per request so edits made in /admin are live the moment they are saved.
+export const dynamic = "force-dynamic";
 
 function IntroHeading({ heading }: { heading?: string }) {
   const text = heading ?? DEFAULT_INTRO_HEADING;

@@ -43,7 +43,7 @@ export default {
     request: Request,
     env: CloudflareEnv,
     ctx: ExecutionContext,
-  ): ReturnType<typeof handler.fetch> {
+  ): Response | Promise<Response> {
     const httpsRedirect = redirectHttpToHttps(request);
     if (httpsRedirect) return httpsRedirect;
     return handler.fetch(request, env, ctx);

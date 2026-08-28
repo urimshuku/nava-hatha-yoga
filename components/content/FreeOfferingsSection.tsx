@@ -4,7 +4,7 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { MotionItem, MotionStagger } from "@/components/ui/Motion";
 import { MotionReveal } from "@/components/ui/MotionReveal";
-import type { FreeOfferingItem } from "@/sanity/lib/types";
+import type { FreeOfferingItem } from "@/lib/cms/content-types";
 
 const iconProps = {
   viewBox: "0 0 24 24",

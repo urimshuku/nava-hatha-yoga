@@ -3,7 +3,7 @@ import type { ElementType } from "react";
 
 import { SanityImage } from "@/components/ui/SanityImage";
 import { formatDateRange } from "@/lib/utils";
-import type { RetreatListItem } from "@/sanity/lib/types";
+import type { RetreatListItem } from "@/lib/cms/content-types";
 
 export function RetreatCard({
   retreat,

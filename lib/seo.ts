@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/constants";
-import { urlForImage } from "@/sanity/lib/image";
-import type { SeoFields } from "@/sanity/lib/types";
+import { urlForImage } from "@/lib/cms/image-url";
+import type { SeoFields } from "@/lib/cms/content-types";
 
 /** Default social share image (static PNG — reliable on OpenNext/Cloudflare Workers). */
 export const DEFAULT_OG_IMAGE = {

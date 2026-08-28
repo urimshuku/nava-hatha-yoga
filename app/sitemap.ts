@@ -5,7 +5,10 @@ import {
   getEventSlugEntries,
   getProgramSlugEntries,
   getRetreatSlugEntries,
-} from "@/sanity/lib/fetch";
+} from "@/lib/cms/site-content";
+
+// Built per request so programs and events added in /admin are listed straight away.
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [programEntries, retreatEntries, eventEntries] = await Promise.all([

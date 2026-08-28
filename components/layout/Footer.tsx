@@ -12,7 +12,7 @@ import {
   resolveInstagramHref,
   whatsappLink,
 } from "@/lib/constants";
-import type { SiteSettings } from "@/sanity/lib/types";
+import type { SiteSettings } from "@/lib/cms/content-types";
 
 export function Footer({ settings }: { settings?: SiteSettings }) {
   const brand = settings?.brandName || SITE_NAME;

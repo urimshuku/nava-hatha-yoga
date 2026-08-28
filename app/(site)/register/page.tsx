@@ -7,7 +7,10 @@ import { PageHero } from "@/components/ui/PageHero";
 import { resolveRegisterContent } from "@/lib/register-config";
 import { buildMetadata } from "@/lib/seo";
 import { splitRegistrationEventTitle } from "@/lib/utils";
-import { getRegisterPage } from "@/sanity/lib/fetch";
+import { getRegisterPage } from "@/lib/cms/site-content";
+
+// Rendered per request so edits made in /admin are live the moment they are saved.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = buildMetadata({
   title: "Register",

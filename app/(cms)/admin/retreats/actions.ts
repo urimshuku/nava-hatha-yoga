@@ -1,0 +1,97 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+
+import { checkbox, resolveSlug, text } from "@/lib/cms/form-values";
+import {
+  deleteDocument,
+  saveDocument,
+  setDocumentHidden,
+} from "@/lib/cms/repository";
+import { readDocument } from "@/lib/cms/schema-parse";
+import { retreatSchema } from "@/lib/cms/schemas";
+import { assertCmsSession } from "@/lib/cms/session";
+import type { Retreat } from "@/lib/cms/content-types";
+
+export interface RetreatFormState {
+  error?: string;
+}
+
+function refreshAffectedPages(slug: string) {
+  revalidatePath("/retreats");
+  revalidatePath("/retreats/archive");
+  revalidatePath(`/retreats/${slug}`);
+  revalidatePath("/admin/retreats");
+}
+
+export async function saveRetreat(
+  _state: RetreatFormState,
+  formData: FormData,
+): Promise<RetreatFormState> {
+  await assertCmsSession();
+
+  const data = readDocument<Retreat>(retreatSchema, formData);
+  if (!data.title) {
+    return { error: "Please give the retreat a title." };
+  }
+
+  const originalSlug = text(formData, "originalSlug");
+  const slug = resolveSlug(text(formData, "slug"), [data.title]);
+  if (!slug) {
+    return {
+      error:
+        "This retreat needs a web address. Add a title, or type one in the Web address field.",
+    };
+  }
+
+  const retreat: Retreat = {
+    ...data,
+    _id: `cms.retreat.${slug}`,
+    slug,
+  };
+
+  try {
+    await saveDocument({
+      type: "retreat",
+      slug,
+      data: retreat,
+      published: checkbox(formData, "published"),
+    });
+
+    if (originalSlug && originalSlug !== slug) {
+      await deleteDocument("retreat", originalSlug);
+      refreshAffectedPages(originalSlug);
+    }
+  } catch (error) {
+    console.error("Failed to save retreat.", error);
+    return { error: "The retreat could not be saved. Please try again." };
+  }
+
+  refreshAffectedPages(slug);
+  redirect(`/admin/retreats?saved=${encodeURIComponent(slug)}`);
+}
+
+export async function hideRetreat(formData: FormData): Promise<void> {
+  await assertCmsSession();
+
+  const slug = text(formData, "slug");
+  if (!slug) return;
+
+  await setDocumentHidden("retreat", slug, true);
+
+  refreshAffectedPages(slug);
+  redirect("/admin/retreats");
+}
+
+export async function restoreRetreat(formData: FormData): Promise<void> {
+  await assertCmsSession();
+
+  const slug = text(formData, "slug");
+  if (!slug) return;
+
+  await setDocumentHidden("retreat", slug, false);
+
+  refreshAffectedPages(slug);
+  redirect("/admin/retreats");
+}

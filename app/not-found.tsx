@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { NotFoundContent } from "@/components/content/NotFoundContent";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { getSiteSettings } from "@/sanity/lib/fetch";
+import { getSiteSettings } from "@/lib/cms/site-content";
 
 export const metadata: Metadata = {
   title: "Page not found",

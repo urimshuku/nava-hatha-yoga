@@ -6,8 +6,8 @@ import {
   aboutSectionImageObjectPositionClass,
   aboutSectionImageSrc,
 } from "@/lib/local-images";
-import { urlForImage } from "@/sanity/lib/image";
-import type { SanityImage as SanityImageType } from "@/sanity/lib/types";
+import { urlForImage } from "@/lib/cms/image-url";
+import type { SanityImage as SanityImageType } from "@/lib/cms/content-types";
 import { cn } from "@/lib/utils";
 
 type AboutSectionImageProps = {
@@ -29,7 +29,7 @@ function aboutSectionImageKey(title: string): string {
 
 /**
  * About section photos live in /public/images/about/{key}.jpg (or .webp / .png).
- * Falls back to Sanity when a CMS image is set.
+ * Falls back to the CMS image when set.
  */
 export function AboutSectionImage({
   title,

@@ -1,6 +1,6 @@
 import type { PortableTextBlock } from "@portabletext/types";
 
-import type { LegalPage } from "@/sanity/lib/types";
+import type { LegalPage } from "@/lib/cms/content-types";
 
 import legalData from "./legal-content.json";
 

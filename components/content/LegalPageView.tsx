@@ -2,7 +2,7 @@ import { CMSRichText } from "@/components/content/CMSRichText";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/ui/PageHero";
-import type { LegalPage } from "@/sanity/lib/types";
+import type { LegalPage } from "@/lib/cms/content-types";
 
 export function LegalPageView({
   page,
