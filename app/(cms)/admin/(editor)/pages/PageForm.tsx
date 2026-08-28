@@ -31,7 +31,7 @@ export function PageForm({
     <form action={formAction} className="space-y-6">
       <input type="hidden" name="pageId" value={pageId} />
 
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="font-heading text-3xl text-charcoal">{schema.title}</h1>
           {schema.description ? (

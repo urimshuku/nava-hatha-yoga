@@ -52,7 +52,7 @@ export function ProgramForm({
         <input type="hidden" name="originalSlug" value={originalSlug} />
       ) : null}
 
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <h1 className="font-heading text-3xl text-charcoal">
           {isNew ? "New program" : (program?.title ?? "Edit program")}
         </h1>
