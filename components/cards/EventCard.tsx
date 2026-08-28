@@ -150,8 +150,14 @@ function EventTimeBlock({ time }: { time: string }) {
 
   type DayGroup = { day: string; hours: string[] };
   const dayGroups: DayGroup[] = [];
+  const extraLines: string[] = [];
 
   for (const line of schedulePart.split("\n").map((entry) => entry.trim()).filter(Boolean)) {
+    if (/^duration:/i.test(line)) {
+      extraLines.push(line);
+      continue;
+    }
+
     if (isSessionDateLine(line)) {
       const match = line.match(
         /^(\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)(?:\s+\d{4})?):\s*(.+)$/i,
@@ -182,6 +188,9 @@ function EventTimeBlock({ time }: { time: string }) {
 
   return (
     <div>
+      {extraLines.length > 0 ? (
+        <p className="mb-2 leading-snug">{extraLines.join("\n")}</p>
+      ) : null}
       <ul className="space-y-1">
         {dayGroups.map((group) => (
           <li key={group.day}>

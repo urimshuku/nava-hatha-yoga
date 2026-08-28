@@ -395,11 +395,49 @@ export type EventSessionInput = {
   hours?: string | null;
 };
 
+const SESSION_DATE_LINE = new RegExp(
+  `^(\\d{1,2}\\s+(?:${SESSION_MONTHS})(?:\\s+\\d{4})?):\\s*(.+)$`,
+  "i",
+);
+
+/** Session dates and duration copied into the description (legacy / placeholder). */
+export function scheduleTextFromDescription(
+  description?: string | null,
+): string | undefined {
+  if (!description) return undefined;
+
+  const lines = description
+    .split(/\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter(
+      (line) => /^duration:/i.test(line) || SESSION_DATE_LINE.test(line),
+    );
+
+  return lines.length > 0 ? lines.join("\n") : undefined;
+}
+
+export function sessionsFromDescription(
+  description?: string | null,
+): EventSessionInput[] {
+  if (!description) return [];
+
+  return description
+    .split(/\n/)
+    .map((line) => line.trim())
+    .flatMap((line) => {
+      const match = SESSION_DATE_LINE.exec(line);
+      if (!match) return [];
+      return [{ day: match[1].trim(), hours: match[2].trim() }];
+    });
+}
+
 /** Build the display schedule from structured CMS session rows (preferred). */
 export function composeEventTimeLabel(input: {
   sessions?: EventSessionInput[] | null;
   sessionNote?: string | null;
   time?: string | null;
+  description?: string | null;
 }): string | undefined {
   const hasStructuredSessions = Array.isArray(input.sessions);
   const sessionLines = (input.sessions ?? [])
@@ -414,6 +452,12 @@ export function composeEventTimeLabel(input: {
   if (sessionLines.length > 0) {
     const note = input.sessionNote?.trim();
     return note ? [...sessionLines, "", note].join("\n") : sessionLines.join("\n");
+  }
+
+  const fromDescription = scheduleTextFromDescription(input.description);
+  if (fromDescription) {
+    const note = input.sessionNote?.trim();
+    return note ? `${fromDescription}\n\n${note}` : fromDescription;
   }
 
   // Empty Session Schedule is intentional — do not revive the hidden legacy `time` field.

@@ -16,6 +16,7 @@ import {
 } from "@/components/cms/RepeatableFields";
 import { FormError, FormNotice, SaveBar, WorkingCopyBanner } from "@/components/cms/SaveBar";
 import type { YogaEvent } from "@/lib/cms/content-types";
+import { sessionsFromDescription } from "@/lib/utils";
 
 import { saveEvent, type EventFormState } from "./actions";
 
@@ -126,7 +127,14 @@ export function EventForm({
         <SessionsField
           label="Session times"
           hint="One row per session. Each row becomes its own line on the event card."
-          defaultValues={event?.sessions}
+          defaultValues={
+            event?.sessions?.some((session) => session.day && session.hours)
+              ? event.sessions
+              : sessionsFromDescription(event?.description).map((session) => ({
+                  day: session.day ?? undefined,
+                  hours: session.hours ?? undefined,
+                }))
+          }
         />
         <TextField
           name="sessionNote"
