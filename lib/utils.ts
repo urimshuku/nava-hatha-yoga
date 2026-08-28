@@ -432,6 +432,69 @@ export function sessionsFromDescription(
     });
 }
 
+const MANDATORY_SESSION_NOTE = /\bAll\s+\d+\s+sessions\b[^\n]*/i;
+
+/** "All 5 sessions are mandatory" copied into the old schedule text. */
+export function sessionNoteFromSchedule(
+  ...sources: Array<string | null | undefined>
+): string | undefined {
+  for (const source of sources) {
+    const match = source?.match(MANDATORY_SESSION_NOTE);
+    if (match?.[0]?.trim()) return match[0].trim();
+  }
+  return undefined;
+}
+
+/** First source that contains session date lines (schedule field, then description). */
+export function sessionsFromSchedule(
+  ...sources: Array<string | null | undefined>
+): EventSessionInput[] {
+  for (const source of sources) {
+    const sessions = sessionsFromDescription(source);
+    if (sessions.length > 0) return sessions;
+  }
+  return [];
+}
+
+export function hasCompleteSessions(
+  sessions?: EventSessionInput[] | null,
+): boolean {
+  return Boolean(sessions?.some((session) => session.day?.trim() && session.hours?.trim()));
+}
+
+/**
+ * Fill Session times and Note under the times from the old schedule text
+ * when those CMS fields were never stored separately.
+ */
+export function hydrateEventSessionFields(input: {
+  sessions?: EventSessionInput[] | null;
+  sessionNote?: string | null;
+  time?: string | null;
+  description?: string | null;
+}): { sessions: EventSessionInput[]; sessionNote?: string } {
+  const sessions = hasCompleteSessions(input.sessions)
+    ? (input.sessions ?? []).map((session) => ({
+        day: session.day?.trim() || undefined,
+        hours: session.hours?.trim() || undefined,
+      }))
+    : sessionsFromSchedule(input.time, input.description);
+
+  const sessionNote =
+    input.sessionNote?.trim() ||
+    sessionNoteFromSchedule(input.time, input.description) ||
+    (sessions.length >= 2
+      ? `All ${sessions.length} sessions are mandatory`
+      : undefined);
+
+  return { sessions, sessionNote };
+}
+
+function withSessionNote(schedule: string, note?: string): string {
+  if (!note) return schedule;
+  if (schedule.toLowerCase().includes(note.toLowerCase())) return schedule;
+  return `${schedule}\n\n${note}`;
+}
+
 /** Build the display schedule from structured CMS session rows (preferred). */
 export function composeEventTimeLabel(input: {
   sessions?: EventSessionInput[] | null;
@@ -439,8 +502,8 @@ export function composeEventTimeLabel(input: {
   time?: string | null;
   description?: string | null;
 }): string | undefined {
-  const hasStructuredSessions = Array.isArray(input.sessions);
-  const sessionLines = (input.sessions ?? [])
+  const hydrated = hydrateEventSessionFields(input);
+  const sessionLines = hydrated.sessions
     .map((session) => {
       const day = session.day?.trim();
       const hours = session.hours?.trim();
@@ -450,22 +513,17 @@ export function composeEventTimeLabel(input: {
     .filter((line): line is string => Boolean(line));
 
   if (sessionLines.length > 0) {
-    const note = input.sessionNote?.trim();
-    return note ? [...sessionLines, "", note].join("\n") : sessionLines.join("\n");
+    return withSessionNote(sessionLines.join("\n"), hydrated.sessionNote);
   }
+
+  const fromTime = input.time?.trim();
+  if (fromTime) return fromTime;
 
   const fromDescription = scheduleTextFromDescription(input.description);
   if (fromDescription) {
-    const note = input.sessionNote?.trim();
-    return note ? `${fromDescription}\n\n${note}` : fromDescription;
+    return withSessionNote(fromDescription, hydrated.sessionNote);
   }
 
-  // Empty Session Schedule is intentional — do not revive the hidden legacy `time` field.
-  if (hasStructuredSessions) {
-    return input.sessionNote?.trim() || undefined;
-  }
-
-  const legacy = input.time?.trim();
-  return legacy || undefined;
+  return hydrated.sessionNote;
 }
 

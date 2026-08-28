@@ -16,7 +16,7 @@ import {
 } from "@/components/cms/RepeatableFields";
 import { FormError, FormNotice, SaveBar, WorkingCopyBanner } from "@/components/cms/SaveBar";
 import type { YogaEvent } from "@/lib/cms/content-types";
-import { sessionsFromDescription } from "@/lib/utils";
+import { hydrateEventSessionFields } from "@/lib/utils";
 
 import { saveEvent, type EventFormState } from "./actions";
 
@@ -46,6 +46,13 @@ export function EventForm({
     saveEvent,
     {},
   );
+
+  const scheduleFields = hydrateEventSessionFields({
+    sessions: event?.sessions,
+    sessionNote: event?.sessionNote,
+    time: event?.time,
+    description: event?.description,
+  });
 
   return (
     <form action={formAction} className="space-y-6">
@@ -127,20 +134,16 @@ export function EventForm({
         <SessionsField
           label="Session times"
           hint="One row per session. Each row becomes its own line on the event card."
-          defaultValues={
-            event?.sessions?.some((session) => session.day && session.hours)
-              ? event.sessions
-              : sessionsFromDescription(event?.description).map((session) => ({
-                  day: session.day ?? undefined,
-                  hours: session.hours ?? undefined,
-                }))
-          }
+          defaultValues={scheduleFields.sessions.map((session) => ({
+            day: session.day ?? undefined,
+            hours: session.hours ?? undefined,
+          }))}
         />
         <TextField
           name="sessionNote"
           label="Note under the times"
           hint="Optional, for example: All 3 sessions are mandatory."
-          defaultValue={event?.sessionNote}
+          defaultValue={scheduleFields.sessionNote}
         />
         <TextField
           name="location"
