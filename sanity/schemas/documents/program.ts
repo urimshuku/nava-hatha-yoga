@@ -163,11 +163,12 @@ export const program = defineType({
       name: "relatedPrograms",
       title: "Related Programs",
       type: "array",
+      hidden: true,
       group: "content",
       fieldset: "sidebar",
       of: [{ type: "ctaLink" }],
       description:
-        "Shown in the sidebar as Related links. Use a program path (for example /programs/upa-yoga) or another site page such as /about.",
+        "LEGACY / STORED / NOT CURRENTLY DISPLAYED. Related links are no longer shown on program pages. Kept so existing values are not lost.",
     }),
     defineField({
       name: "published",

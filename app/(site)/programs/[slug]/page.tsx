@@ -143,12 +143,6 @@ export default async function ProgramDetailPage({ params }: PageProps) {
     program.intensity ?? getProgramIntensity(program.slug);
   const hasAfterProgram = hasRichText(program.practiceIndependently);
   const hasSidebarSessions = hasRichText(program.privateAndGroupSessions);
-  const phase1 = PHASE1_PROGRAM_SEO[program.slug];
-  const relatedPrograms = (
-    program.relatedPrograms?.filter((item) => item.href && item.label).length
-      ? program.relatedPrograms
-      : (phase1?.related ?? [])
-  ).filter((item) => item.href && item.label);
 
   return (
     <>
@@ -334,23 +328,6 @@ export default async function ProgramDetailPage({ params }: PageProps) {
                   <Button href="/contact" variant="secondary" className="w-full">
                     Register interest
                   </Button>
-                  {relatedPrograms.length ? (
-                    <p className="pt-2 text-sm leading-relaxed text-brown">
-                      Related:{" "}
-                      {relatedPrograms.map((item, index) => (
-                        <span key={item.href}>
-                          {index > 0 ? ", " : null}
-                          <Link
-                            href={item.href!}
-                            className="font-medium text-saffron underline underline-offset-2 hover:text-saffron-hover"
-                          >
-                            {item.label}
-                          </Link>
-                        </span>
-                      ))}
-                      .
-                    </p>
-                  ) : null}
                 </div>
               </div>
             </aside>

@@ -28,7 +28,6 @@ export const programBySlugQuery = groq`
     "slug": slug.current,
     shortIntro,
     contextLine,
-    relatedPrograms[]{ label, href },
     category,
     intensity,
     image${imageFields},
