@@ -1,4 +1,7 @@
 import { getCmsEnv } from "./env";
+import { CMS_SESSION_COOKIE } from "./session-cookie";
+
+export { CMS_SESSION_COOKIE };
 
 /**
  * Login for the built-in CMS: one shared password, and a signed cookie that
@@ -8,8 +11,6 @@ import { getCmsEnv } from "./env";
  *
  * Uses Web Crypto only, so it runs unchanged in middleware and on the worker.
  */
-
-export const CMS_SESSION_COOKIE = "nhy_cms_session";
 
 /** Sessions last 30 days; the client stays logged in between visits. */
 export const CMS_SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;

@@ -13,7 +13,7 @@
     "test:resend": "node --env-file=.env.local scripts/test-resend.mjs",
     "cloudflare:www-redirect-308": "node scripts/cloudflare-www-redirect-308.mjs",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "node scripts/ensure-forms-d1.mjs && opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --keep-vars",
+    "deploy": "node scripts/ensure-forms-d1.mjs && opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --keep-vars && node scripts/warmup-production.mjs",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "cms:migrate:local": "wrangler d1 migrations apply nava-hatha-yoga-forms --local",

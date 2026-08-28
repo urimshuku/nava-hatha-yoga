@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import { getCmsDb, isMissingTableError } from "./db";
 
 /**
@@ -64,6 +66,38 @@ interface CmsRow {
 const SELECT_COLUMNS =
   "type, slug, data, published, hidden, sort_order, updated_at";
 
+/** Cross-request reuse inside a warm isolate. 30s is short enough that a save
+ *  on another isolate is visible quickly, and long enough that a crawl does
+ *  not re-parse every CMS document on each page. */
+const READ_TTL_MS = 30_000;
+
+type ListCacheEntry = {
+  expires: number;
+  documents: CmsDocument<unknown>[];
+};
+
+const listCache = new Map<string, ListCacheEntry>();
+
+/** Drop cached CMS reads after a write so the editor sees what they just saved. */
+export function invalidateCmsDocumentCache(): void {
+  listCache.clear();
+}
+
+function rememberList(
+  type: CmsDocumentType,
+  documents: CmsDocument<unknown>[],
+): void {
+  listCache.set(type, { expires: Date.now() + READ_TTL_MS, documents });
+}
+
+function listFromIsolateCache(
+  type: CmsDocumentType,
+): CmsDocument<unknown>[] | undefined {
+  const hit = listCache.get(type);
+  if (!hit || hit.expires <= Date.now()) return undefined;
+  return hit.documents;
+}
+
 function parseRow<T>(row: CmsRow): CmsDocument<T> | null {
   try {
     return {
@@ -84,11 +118,15 @@ function parseRow<T>(row: CmsRow): CmsDocument<T> | null {
   }
 }
 
-/** Every document of a type, ordered as the editor lists them. Never throws. */
-export async function listDocuments<T>(
+async function listDocumentsFromDb<T>(
   type: CmsDocumentType,
   db?: D1Database,
 ): Promise<CmsDocument<T>[]> {
+  if (!db) {
+    const cached = listFromIsolateCache(type);
+    if (cached) return cached as CmsDocument<T>[];
+  }
+
   const database = await getCmsDb(db);
   if (!database) return [];
 
@@ -103,10 +141,12 @@ export async function listDocuments<T>(
       .bind(type)
       .all<CmsRow>();
 
-    return (results ?? []).flatMap((row) => {
+    const documents = (results ?? []).flatMap((row) => {
       const parsed = parseRow<T>(row);
       return parsed ? [parsed] : [];
     });
+    if (!db) rememberList(type, documents);
+    return documents;
   } catch (error) {
     if (!isMissingTableError(error)) {
       console.error(`Failed to list CMS documents of type "${type}".`, error);
@@ -115,12 +155,33 @@ export async function listDocuments<T>(
   }
 }
 
-/** A single document, or undefined when it does not exist. Never throws. */
-export async function getDocument<T>(
+const listDocumentsCached = cache((type: CmsDocumentType) =>
+  listDocumentsFromDb(type),
+);
+
+/** Every document of a type, ordered as the editor lists them. Never throws. */
+export function listDocuments<T>(
+  type: CmsDocumentType,
+  db?: D1Database,
+): Promise<CmsDocument<T>[]> {
+  if (db) return listDocumentsFromDb(type, db);
+  return listDocumentsCached(type) as Promise<CmsDocument<T>[]>;
+}
+
+async function getDocumentFromDb<T>(
   type: CmsDocumentType,
   slug: string,
   db?: D1Database,
 ): Promise<CmsDocument<T> | undefined> {
+  if (!db) {
+    const cached = listFromIsolateCache(type);
+    if (cached) {
+      return cached.find((entry) => entry.slug === slug) as
+        | CmsDocument<T>
+        | undefined;
+    }
+  }
+
   const database = await getCmsDb(db);
   if (!database) return undefined;
 
@@ -142,6 +203,20 @@ export async function getDocument<T>(
     }
     return undefined;
   }
+}
+
+const getDocumentCached = cache((type: CmsDocumentType, slug: string) =>
+  getDocumentFromDb(type, slug),
+);
+
+/** A single document, or undefined when it does not exist. Never throws. */
+export function getDocument<T>(
+  type: CmsDocumentType,
+  slug: string,
+  db?: D1Database,
+): Promise<CmsDocument<T> | undefined> {
+  if (db) return getDocumentFromDb(type, slug, db);
+  return getDocumentCached(type, slug) as Promise<CmsDocument<T> | undefined>;
 }
 
 /** Creates or replaces a document. Throws when the write cannot be completed. */
@@ -178,6 +253,8 @@ export async function saveDocument<T>(
       new Date().toISOString(),
     )
     .run();
+
+  invalidateCmsDocumentCache();
 }
 
 /** Removes a document outright. Throws when the write cannot be completed. */
@@ -197,6 +274,8 @@ export async function deleteDocument(
     .prepare(`DELETE FROM cms_documents WHERE type = ? AND slug = ?`)
     .bind(type, slug)
     .run();
+
+  invalidateCmsDocumentCache();
 }
 
 /**

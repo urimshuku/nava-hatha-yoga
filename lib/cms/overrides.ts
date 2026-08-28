@@ -7,7 +7,7 @@ import type {
   YogaEvent,
 } from "./content-types";
 
-import { listDocuments, type CmsDocument } from "./repository";
+import { getDocument, listDocuments, type CmsDocument } from "./repository";
 
 /**
  * Turns published CMS documents into the lists the website renders.
@@ -183,8 +183,7 @@ export type RetreatOverride =
 export async function getRetreatOverride(
   slug: string,
 ): Promise<RetreatOverride> {
-  const documents = await listDocuments<Retreat>("retreat");
-  const document = documents.find((entry) => entry.slug === slug);
+  const document = await getDocument<Retreat>("retreat", slug);
 
   if (!document) return { status: "none" };
   if (document.hidden) return { status: "hidden" };
@@ -205,8 +204,7 @@ export type ProgramOverride =
 export async function getProgramOverride(
   slug: string,
 ): Promise<ProgramOverride> {
-  const documents = await listDocuments<Program>("program");
-  const document = documents.find((entry) => entry.slug === slug);
+  const document = await getDocument<Program>("program", slug);
 
   if (!document) return { status: "none" };
   if (document.hidden) return { status: "hidden" };

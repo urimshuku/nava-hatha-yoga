@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import { MAIN_PROGRAM_SLUGS } from "@/lib/constants";
 import {
   eventEndTimestamp,
@@ -5,21 +7,6 @@ import {
   isPastEvent,
   isUpcomingEvent,
 } from "@/lib/event-boundary";
-import {
-  placeholderAboutPage,
-  placeholderContactPage,
-  placeholderEvents,
-  placeholderEventsPage,
-  placeholderHomePage,
-  placeholderLegalPages,
-  placeholderPastEvents,
-  placeholderProgramBySlug,
-  placeholderPrograms,
-  placeholderProgramsPage,
-  placeholderRetreats,
-  placeholderRetreatsPage,
-  placeholderSiteSettings,
-} from "@/lib/placeholders";
 import { composeEventTimeLabel, deriveEventSlug } from "@/lib/utils";
 
 import {
@@ -54,7 +41,12 @@ import type {
 /**
  * Public content for the website. Every getter reads the built-in CMS and falls
  * back to lib/placeholders.ts only when that type has no published documents.
+ *
+ * Placeholders are loaded only on that fallback path so the Worker does not
+ * parse the full seed content on every request.
  */
+
+const loadPlaceholders = cache(() => import("@/lib/placeholders"));
 
 type EventBoundary = {
   date: string;
@@ -94,12 +86,13 @@ function getPastFrom<T extends EventBoundary>(events: T[]): T[] {
     .sort((a, b) => eventEndTimestamp(b) - eventEndTimestamp(a));
 }
 
-async function getAllEvents(): Promise<YogaEvent[]> {
+const getAllEvents = cache(async (): Promise<YogaEvent[]> => {
   const fromCms = await applyEventOverrides([]);
   if (fromCms.length > 0) return fromCms;
   if ((await listDocuments("event")).length > 0) return fromCms;
+  const { placeholderEvents } = await loadPlaceholders();
   return withUniqueEventSlugs(placeholderEvents.map(withComposedEventTime));
-}
+});
 
 function toPastEvent(event: YogaEvent): PastEvent {
   return {
@@ -115,14 +108,16 @@ function toPastEvent(event: YogaEvent): PastEvent {
   };
 }
 
-export async function getSiteSettings(): Promise<SiteSettings> {
-  return (await getPageOverride<SiteSettings>("siteSettings")) ?? placeholderSiteSettings;
-}
+export const getSiteSettings = cache(async (): Promise<SiteSettings> => {
+  return (
+    (await getPageOverride<SiteSettings>("siteSettings")) ??
+    (await loadPlaceholders()).placeholderSiteSettings
+  );
+});
 
-export async function getHomePage(): Promise<HomePage> {
-  const fallback = placeholderHomePage;
+export const getHomePage = cache(async (): Promise<HomePage> => {
   const override = await getPageOverride<HomePage>("homePage");
-  if (!override) return fallback;
+  if (!override) return (await loadPlaceholders()).placeholderHomePage;
 
   const { featuredProgramSlugs, ...page } = override;
   const bySlug = new Map((await getPrograms()).map((p) => [p.slug, p]));
@@ -138,22 +133,29 @@ export async function getHomePage(): Promise<HomePage> {
   }
 
   const featured = await getFeaturedPrograms();
+  if (featured.length > 0) {
+    return { ...page, featuredPrograms: featured };
+  }
+
   return {
     ...page,
-    featuredPrograms: featured.length > 0 ? featured : fallback.featuredPrograms,
+    featuredPrograms: (await loadPlaceholders()).placeholderHomePage.featuredPrograms,
   };
-}
+});
 
 export async function getAboutPage(): Promise<AboutPage> {
-  return (await getPageOverride<AboutPage>("aboutPage")) ?? placeholderAboutPage;
+  return (
+    (await getPageOverride<AboutPage>("aboutPage")) ??
+    (await loadPlaceholders()).placeholderAboutPage
+  );
 }
 
-export async function getPrograms(): Promise<ProgramListItem[]> {
+export const getPrograms = cache(async (): Promise<ProgramListItem[]> => {
   const fromCms = await applyProgramOverrides([]);
   if (fromCms.length > 0) return fromCms;
   if ((await listDocuments("program")).length > 0) return fromCms;
-  return placeholderPrograms;
-}
+  return (await loadPlaceholders()).placeholderPrograms;
+});
 
 export async function getFeaturedPrograms(): Promise<ProgramListItem[]> {
   const programs = await getPrograms();
@@ -176,7 +178,7 @@ export async function getProgramSlugEntries(): Promise<SlugEntry[]> {
   const fromCms = await applyProgramSlugOverrides([]);
   if (fromCms.length > 0) return fromCms;
   if ((await listDocuments("program")).length > 0) return fromCms;
-  return placeholderPrograms.map((p) => ({ slug: p.slug }));
+  return (await loadPlaceholders()).placeholderPrograms.map((p) => ({ slug: p.slug }));
 }
 
 export async function getProgramSlugs(): Promise<string[]> {
@@ -189,7 +191,7 @@ export async function getProgramBySlug(slug: string): Promise<Program | undefine
   if (override.status === "hidden") return undefined;
 
   if ((await listDocuments("program")).length === 0) {
-    return placeholderProgramBySlug(slug);
+    return (await loadPlaceholders()).placeholderProgramBySlug(slug);
   }
   return undefined;
 }
@@ -229,6 +231,7 @@ export async function getEventBySlug(slug: string): Promise<YogaEvent | undefine
 
 export async function getPastEvents(): Promise<PastEvent[]> {
   const events = await getAllEvents();
+  const { placeholderPastEvents } = await loadPlaceholders();
   return getPastFrom([...placeholderPastEvents, ...events.map(toPastEvent)]);
 }
 
@@ -242,7 +245,7 @@ async function getAllPublishedRetreats(): Promise<RetreatListItem[]> {
   const fromCms = await applyRetreatOverrides([]);
   if (fromCms.length > 0) return fromCms;
   if ((await listDocuments("retreat")).length > 0) return fromCms;
-  return placeholderRetreats;
+  return (await loadPlaceholders()).placeholderRetreats;
 }
 
 export async function getRetreats(): Promise<RetreatListItem[]> {
@@ -273,24 +276,36 @@ export async function getRetreatBySlug(slug: string): Promise<Retreat | undefine
 export async function getLegalPage(slug: string): Promise<LegalPage | undefined> {
   return (
     (await getPageOverride<LegalPage>("legalPage", slug)) ??
-    placeholderLegalPages[slug]
+    (await loadPlaceholders()).placeholderLegalPages[slug]
   );
 }
 
 export async function getContactPage(): Promise<ContactPage> {
-  return (await getPageOverride<ContactPage>("contactPage")) ?? placeholderContactPage;
+  return (
+    (await getPageOverride<ContactPage>("contactPage")) ??
+    (await loadPlaceholders()).placeholderContactPage
+  );
 }
 
 export async function getProgramsPage(): Promise<ProgramsPage> {
-  return (await getPageOverride<ProgramsPage>("programsPage")) ?? placeholderProgramsPage;
+  return (
+    (await getPageOverride<ProgramsPage>("programsPage")) ??
+    (await loadPlaceholders()).placeholderProgramsPage
+  );
 }
 
 export async function getEventsPage(): Promise<EventsPage> {
-  return (await getPageOverride<EventsPage>("eventsPage")) ?? placeholderEventsPage;
+  return (
+    (await getPageOverride<EventsPage>("eventsPage")) ??
+    (await loadPlaceholders()).placeholderEventsPage
+  );
 }
 
 export async function getRetreatsPage(): Promise<RetreatsPage> {
-  return (await getPageOverride<RetreatsPage>("retreatsPage")) ?? placeholderRetreatsPage;
+  return (
+    (await getPageOverride<RetreatsPage>("retreatsPage")) ??
+    (await loadPlaceholders()).placeholderRetreatsPage
+  );
 }
 
 /** Returns null when the CMS has no registration copy; callers use code defaults. */

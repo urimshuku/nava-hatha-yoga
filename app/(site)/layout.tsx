@@ -4,12 +4,12 @@ import { StructuredData } from "@/components/StructuredData";
 import { getSiteSettings } from "@/lib/cms/site-content";
 
 /**
- * Every page under this layout renders per request.
+ * Every page under this layout renders per request from D1.
  *
- * The header and footer read the site settings, and each page reads content that
- * the built-in CMS can change at any moment. The Cloudflare deployment has no
- * shared incremental cache, so a cached page could not be revalidated across
- * isolates: rendering on request is what makes an edit appear immediately.
+ * Pages stay dynamic so a production build without D1 cannot bake placeholder
+ * copy into the Worker. The Worker caches public HTML for a minute (and serves
+ * stale HTML while refreshing) so visitors are not billed a full Next.js render
+ * on every hit — that path is what caused intermittent Error 1102.
  */
 export const dynamic = "force-dynamic";
 
