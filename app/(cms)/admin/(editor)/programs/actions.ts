@@ -82,7 +82,6 @@ export async function saveProgram(
   const categoryInput = text(formData, "category");
   const intensityInput = text(formData, "intensity");
   const image = imageValue(formData, "image");
-  const seoImage = imageValue(formData, "seo.image");
 
   const program: Program = {
     ...base,
@@ -103,12 +102,7 @@ export async function saveProgram(
     benefits: textList(formData, "benefits"),
     beforeProgramTitle: text(formData, "beforeProgramTitle"),
     beforeProgramNotes: textList(formData, "beforeProgramNotes"),
-    seo: {
-      title: text(formData, "seo.title"),
-      description: text(formData, "seo.description"),
-      image:
-        seoImage === null ? undefined : (seoImage ?? base.seo?.image),
-    },
+    seo: base.seo,
   };
 
   const publish = isPublishIntent(formData);

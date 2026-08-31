@@ -114,3 +114,12 @@ export function resolveSlug(
 
   return candidate;
 }
+
+/** Keep stored SEO when the editor no longer shows sharing fields. */
+export function preserveSeo<T extends { seo?: unknown }>(
+  data: T,
+  existing?: T | null,
+): T {
+  if (data.seo !== undefined || existing?.seo === undefined) return data;
+  return { ...data, seo: existing.seo };
+}

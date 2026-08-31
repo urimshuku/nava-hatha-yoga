@@ -29,16 +29,16 @@ export const CMS_SECTIONS: CmsNavSection[] = [
           "Dates, times and prices for sessions. Shown on the Events page and the home page.",
       },
       {
-        label: "Programs",
-        href: "/admin/programs",
-        description:
-          "The yoga programs and their descriptions. Shown on the Programs pages.",
-      },
-      {
         label: "Retreats",
         href: "/admin/retreats",
         description:
           "Retreats with their dates, photos and descriptions. Shown on the Retreats pages.",
+      },
+      {
+        label: "Programs",
+        href: "/admin/programs",
+        description:
+          "The yoga programs and their descriptions. Shown on the Programs pages.",
       },
     ],
   },

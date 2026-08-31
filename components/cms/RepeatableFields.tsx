@@ -195,20 +195,16 @@ export function SessionsField({
           return (
             <div
               key={row.id}
-              className="flex flex-wrap gap-2 sm:flex-nowrap"
+              className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto_auto] items-center gap-2"
             >
               {continuation ? (
-                <>
+                <div>
                   <input
                     type="hidden"
                     name="sessionDay"
                     value={row.value.day ?? ""}
                   />
-                  <div
-                    className="hidden min-w-0 flex-1 sm:block"
-                    aria-hidden="true"
-                  />
-                </>
+                </div>
               ) : (
                 <input
                   type="text"
@@ -218,7 +214,7 @@ export function SessionsField({
                   onChange={(event) =>
                     updateRow(row.id, { day: event.target.value })
                   }
-                  className={`${inputClassName} min-w-0 flex-1`}
+                  className={`${inputClassName} min-w-0`}
                 />
               )}
               <input
@@ -229,7 +225,7 @@ export function SessionsField({
                 onChange={(event) =>
                   updateRow(row.id, { hours: event.target.value })
                 }
-                className={`${inputClassName} min-w-0 flex-1`}
+                className={`${inputClassName} min-w-0`}
               />
               <button
                 type="button"

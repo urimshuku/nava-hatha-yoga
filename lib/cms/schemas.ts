@@ -9,34 +9,6 @@ import type { DocumentSchema, FieldDef } from "./schema";
  * the value shows up.
  */
 
-const seoGroup = (what: string): FieldDef => ({
-  kind: "group",
-  name: "seo",
-  label: "Search engines and sharing",
-  hint: `Used by Google and when ${what} is shared on WhatsApp or Facebook. Leave empty to use the page's own heading and text.`,
-  fields: [
-    {
-      kind: "text",
-      name: "title",
-      label: "Title in search results",
-      hint: "Around 60 characters works best.",
-    },
-    {
-      kind: "textarea",
-      name: "description",
-      label: "Description in search results",
-      hint: "Around 155 characters works best.",
-      rows: 2,
-    },
-    {
-      kind: "image",
-      name: "image",
-      label: "Sharing image",
-      hint: "Shown when the link is shared. A wide image works best.",
-    },
-  ],
-});
-
 const ctaGroup = (
   name: string,
   label: string,
@@ -200,7 +172,6 @@ export const siteSettingsSchema: DocumentSchema = {
         },
       ],
     },
-    { title: "Search engines and sharing", fields: [seoGroup("the website")] },
   ],
 };
 
@@ -386,7 +357,6 @@ export const homePageSchema: DocumentSchema = {
         },
       ],
     },
-    { title: "Search engines and sharing", fields: [seoGroup("the home page")] },
   ],
 };
 
@@ -505,7 +475,6 @@ export const aboutPageSchema: DocumentSchema = {
         },
       ],
     },
-    { title: "Search engines and sharing", fields: [seoGroup("the about page")] },
   ],
 };
 
@@ -561,7 +530,6 @@ export const programsPageSchema: DocumentSchema = {
         },
       ],
     },
-    { title: "Search engines and sharing", fields: [seoGroup("the programs page")] },
   ],
 };
 
@@ -587,7 +555,6 @@ export const eventsPageSchema: DocumentSchema = {
       ],
     },
     { title: "Past events page", fields: archiveFields("events") },
-    { title: "Search engines and sharing", fields: [seoGroup("the events page")] },
   ],
 };
 
@@ -688,7 +655,6 @@ export const retreatsPageSchema: DocumentSchema = {
       ],
     },
     { title: "Past retreats page", fields: archiveFields("retreats") },
-    { title: "Search engines and sharing", fields: [seoGroup("the retreats page")] },
   ],
 };
 
@@ -758,7 +724,6 @@ export const contactPageSchema: DocumentSchema = {
         },
       ],
     },
-    { title: "Search engines and sharing", fields: [seoGroup("the contact page")] },
   ],
 };
 
@@ -988,7 +953,6 @@ export const legalPageSchema = (previewPath: string): DocumentSchema => ({
         },
       ],
     },
-    { title: "Search engines and sharing", fields: [seoGroup("this page")] },
   ],
 });
 
@@ -1046,6 +1010,5 @@ export const retreatSchema: DocumentSchema = {
         },
       ],
     },
-    { title: "Search engines and sharing", fields: [seoGroup("this retreat")] },
   ],
 };

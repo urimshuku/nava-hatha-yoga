@@ -9,7 +9,6 @@ import {
   TextField,
 } from "@/components/cms/Field";
 import { FormSection } from "@/components/cms/FormSection";
-import { ImageField } from "@/components/cms/ImageField";
 import {
   SessionsField,
   TextListField,
@@ -215,6 +214,13 @@ export function EventForm({
             "No prior yoga experience required!"
           }
         />
+        <TextListField
+          name="notes"
+          label="Reminders on the card"
+          hint="Short lines shown on the event card."
+          addLabel="Add another reminder"
+          defaultValues={event?.notes ?? []}
+        />
       </FormSection>
 
       <FormSection title="Price">
@@ -239,22 +245,6 @@ export function EventForm({
           hint="Always /events/ plus the program, city, and first day. It updates as you change those fields."
           value={slug}
           readOnly
-        />
-      </FormSection>
-
-      <FormSection title="Sharing Details (Optional)">
-        <TextListField
-          name="notes"
-          label="Reminders on the card"
-          hint="Short lines shown on the event card."
-          addLabel="Add another reminder"
-          defaultValues={event?.notes ?? []}
-        />
-        <ImageField
-          name="image"
-          label="Photo"
-          hint="Used when the event is shared on WhatsApp or Facebook."
-          value={event?.image as Record<string, unknown> | undefined}
         />
       </FormSection>
 

@@ -193,28 +193,6 @@ export function ProgramForm({
         />
       </FormSection>
 
-      <FormSection title="Search engines and sharing">
-        <TextField
-          name="seo.title"
-          label="Title in search results"
-          hint="Around 60 characters works best. Leave empty to use the program title."
-          defaultValue={program?.seo?.title}
-        />
-        <TextAreaField
-          name="seo.description"
-          label="Description in search results"
-          hint="Around 155 characters works best."
-          defaultValue={program?.seo?.description}
-          rows={2}
-        />
-        <ImageField
-          name="seo.image"
-          label="Sharing image"
-          hint="Shown when the program is shared. A wide image works best."
-          value={program?.seo?.image as Record<string, unknown> | undefined}
-        />
-      </FormSection>
-
       <SaveBar
         cancelHref="/admin/programs"
         action={formAction}

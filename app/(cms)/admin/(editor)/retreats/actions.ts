@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { isPublishIntent, resolveSlug, text } from "@/lib/cms/form-values";
+import { isPublishIntent, preserveSeo, resolveSlug, text } from "@/lib/cms/form-values";
 import { nextAvailableSlug, titleForCopy } from "@/lib/cms/copy";
 import {
   deleteDocument,
@@ -48,8 +48,15 @@ export async function saveRetreat(
     };
   }
 
+  const stored = await getDocument<Retreat>(
+    "retreat",
+    originalSlug || slug,
+  );
+  const existing =
+    stored && !isTombstone(stored.data) ? stored.data : undefined;
+
   const retreat: Retreat = {
-    ...data,
+    ...preserveSeo(data, existing),
     _id: `cms.retreat.${slug}`,
     slug,
   };
