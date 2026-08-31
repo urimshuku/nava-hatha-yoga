@@ -1,4 +1,5 @@
 import { eventStartTimestamp, isPastEvent } from "@/lib/event-boundary";
+import { resolveEventCardEndDate } from "@/lib/utils";
 import type {
   ProgramListItem,
   RetreatListItem,
@@ -47,7 +48,7 @@ function toEntry<T extends { title?: string; date?: string; endDate?: string }>(
     unpublishedChanges: hasUnpublishedChanges(document),
     updatedAt: document.updatedAt,
     date: data?.date,
-    endDate: data?.endDate,
+    endDate: resolveEventCardEndDate(data ?? {}) ?? data?.endDate,
   };
 }
 
