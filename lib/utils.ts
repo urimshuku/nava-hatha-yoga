@@ -267,6 +267,39 @@ export function cityCountryFromLocation(location?: string | null): string | unde
   return parts[0];
 }
 
+/**
+ * City/country vs street address for a retreat. Older documents stored
+ * "Saranda, Albania" in `location` alone; that value becomes city/country and
+ * leaves address empty until one is added.
+ */
+export function splitRetreatPlace(retreat: {
+  cityCountry?: string | null;
+  location?: string | null;
+}): { cityCountry?: string; location?: string } {
+  const city = retreat.cityCountry?.trim() || undefined;
+  const address = retreat.location?.trim() || undefined;
+
+  if (city) {
+    const same = address && address.toLowerCase() === city.toLowerCase();
+    return {
+      cityCountry: city,
+      ...(address && !same ? { location: address } : {}),
+    };
+  }
+
+  if (!address) return {};
+
+  const inferred = cityCountryFromLocation(address);
+  if (inferred && inferred.toLowerCase() === address.toLowerCase()) {
+    return { cityCountry: inferred };
+  }
+
+  return {
+    ...(inferred ? { cityCountry: inferred } : {}),
+    location: address,
+  };
+}
+
 /** Short city/region label for the event card badge. */
 export function eventLocationBadge(
   location?: string | null,

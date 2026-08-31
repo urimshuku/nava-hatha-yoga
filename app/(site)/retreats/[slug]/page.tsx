@@ -59,7 +59,9 @@ export default async function RetreatDetailPage({ params }: PageProps) {
     endDate: retreat.endDate,
   });
   const dateLabel = formatDateRange(retreat.date, retreat.endDate);
-  const meta = [dateLabel, retreat.location, retreat.priceLabel]
+  const cityLabel = retreat.cityCountry?.trim();
+  const addressLabel = retreat.location?.trim();
+  const meta = [dateLabel, cityLabel, retreat.priceLabel]
     .filter(Boolean)
     .join(" · ");
 
@@ -152,11 +154,19 @@ export default async function RetreatDetailPage({ params }: PageProps) {
                         </dd>
                       </div>
                     ) : null}
-                    {retreat.location ? (
+                    {cityLabel ? (
                       <div className="flex justify-between gap-4 border-b border-border pb-3">
-                        <dt className="text-brown">Location</dt>
+                        <dt className="text-brown">City, country</dt>
                         <dd className="text-right font-medium text-charcoal">
-                          {retreat.location}
+                          {cityLabel}
+                        </dd>
+                      </div>
+                    ) : null}
+                    {addressLabel ? (
+                      <div className="flex justify-between gap-4 border-b border-border pb-3">
+                        <dt className="text-brown">Address</dt>
+                        <dd className="text-right font-medium text-charcoal">
+                          {addressLabel}
                         </dd>
                       </div>
                     ) : null}

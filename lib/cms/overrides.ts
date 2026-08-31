@@ -1,4 +1,4 @@
-import { composeEventTimeLabel } from "@/lib/utils";
+import { composeEventTimeLabel, splitRetreatPlace } from "@/lib/utils";
 import { eventStartTimestamp } from "@/lib/event-boundary";
 import type {
   Program,
@@ -112,6 +112,7 @@ function normalizeRetreat(document: CmsDocument<Retreat>): Retreat {
 
   return {
     ...retreat,
+    ...splitRetreatPlace(retreat),
     _id: retreat._id ?? cmsDocumentId("retreat", document.slug),
     slug: document.slug,
   };

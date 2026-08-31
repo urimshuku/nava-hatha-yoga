@@ -97,7 +97,7 @@ export function EventForm({
       ) : null}
       <FormError message={state.error} />
 
-      <FormSection title="The basics">
+      <FormSection title="Basic details">
         <TextField
           name="title"
           label="Title"
@@ -141,7 +141,7 @@ export function EventForm({
         <div className="grid gap-5 sm:grid-cols-2">
           <DateField
             name="date"
-            label="First Day"
+            label="Start date"
             hint="The day the event starts."
             value={firstDay}
             required
@@ -149,8 +149,8 @@ export function EventForm({
           />
           <DateField
             name="endDate"
-            label="Last day"
-            hint="Only for events running over more than one day."
+            label="End date"
+            hint="Leave empty for a single-day event."
             defaultValue={event?.endDate}
             onChange={(change) => setLastDay(change.target.value)}
           />

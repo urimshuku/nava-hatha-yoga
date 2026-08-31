@@ -113,6 +113,11 @@ export default async function RetreatsPage() {
                     Explore programs
                   </Button>
                 </div>
+                <div className="mt-6">
+                  <Button href="/retreats/archive" variant="ghost">
+                    View past retreats &rarr;
+                  </Button>
+                </div>
               </MotionReveal>
             </Container>
           </Section>

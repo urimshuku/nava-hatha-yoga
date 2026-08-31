@@ -72,7 +72,7 @@ export function ProgramForm({
       ) : null}
       <FormError message={state.error} />
 
-      <FormSection title="The basics">
+      <FormSection title="Basic details">
         <TextField
           name="title"
           label="Title"

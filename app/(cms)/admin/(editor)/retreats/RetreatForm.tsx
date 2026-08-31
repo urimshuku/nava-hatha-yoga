@@ -7,6 +7,7 @@ import { FormSection } from "@/components/cms/FormSection";
 import { FormError, FormNotice, SaveBar, WorkingCopyBanner } from "@/components/cms/SaveBar";
 import { SchemaFields } from "@/components/cms/SchemaFields";
 import { retreatSchema } from "@/lib/cms/schemas";
+import { splitRetreatPlace } from "@/lib/utils";
 
 import { saveRetreat, type RetreatFormState } from "./actions";
 
@@ -32,6 +33,13 @@ export function RetreatForm({
   );
 
   const title = (retreat as { title?: string } | undefined)?.title;
+  const values =
+    retreat && typeof retreat === "object"
+      ? {
+          ...(retreat as Record<string, unknown>),
+          ...splitRetreatPlace(retreat as { cityCountry?: string; location?: string }),
+        }
+      : retreat;
 
   return (
     <form action={formAction} className="space-y-6">
@@ -65,7 +73,7 @@ export function RetreatForm({
           title={section.title}
           description={section.description}
         >
-          <SchemaFields fields={section.fields} values={retreat} />
+          <SchemaFields fields={section.fields} values={values} />
         </FormSection>
       ))}
 

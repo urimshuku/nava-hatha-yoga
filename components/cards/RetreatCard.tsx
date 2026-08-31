@@ -31,11 +31,11 @@ export function RetreatCard({
         />
       </div>
       <div className="flex flex-1 flex-col p-3 sm:p-6">
-        {retreat.date || retreat.location ? (
+        {retreat.date || retreat.cityCountry || retreat.location ? (
           <p className="mb-1 text-[10px] uppercase tracking-wide text-brown sm:mb-2 sm:text-xs">
             {[
               formatDateRange(retreat.date, retreat.endDate),
-              retreat.location,
+              retreat.cityCountry || retreat.location,
             ]
               .filter(Boolean)
               .join(" · ")}

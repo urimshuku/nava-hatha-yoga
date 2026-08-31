@@ -234,6 +234,7 @@ export interface RetreatListItem {
   slug: string;
   date?: string;
   endDate?: string;
+  cityCountry?: string;
   location?: string;
   priceLabel?: string;
   description?: string;

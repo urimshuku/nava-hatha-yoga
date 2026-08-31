@@ -290,7 +290,7 @@ export function buildRetreatEventJsonLd(
     eventStatus: past
       ? "https://schema.org/EventCompleted"
       : "https://schema.org/EventScheduled",
-    location: placeFromLocation(retreat.location),
+    location: placeFromLocation(retreat.location, retreat.cityCountry),
     image: [imageUrl],
     url,
     organizer: organizer(settings),

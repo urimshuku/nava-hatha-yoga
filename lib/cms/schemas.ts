@@ -74,7 +74,7 @@ export const siteSettingsSchema: DocumentSchema = {
     "Details that appear across the whole website: contact information, and the notes reused on program and event pages.",
   sections: [
     {
-      title: "The basics",
+      title: "Basic details",
       fields: [
         { kind: "text", name: "brandName", label: "Name of the school" },
         {
@@ -960,7 +960,7 @@ export const retreatSchema: DocumentSchema = {
   title: "Retreat",
   sections: [
     {
-      title: "The basics",
+      title: "Basic details",
       fields: [
         { kind: "text", name: "title", label: "Title", required: true },
         {
@@ -977,7 +977,20 @@ export const retreatSchema: DocumentSchema = {
           label: "End date",
           hint: "Leave empty for a single-day retreat.",
         },
-        { kind: "text", name: "location", label: "Where it takes place" },
+        {
+          kind: "text",
+          name: "cityCountry",
+          label: "City, country",
+          hint: "The small place label, for example: Saranda, Albania.",
+          placeholder: "Saranda, Albania",
+        },
+        {
+          kind: "text",
+          name: "location",
+          label: "Address",
+          hint: "The street address of the venue.",
+          placeholder: "Rruga Skenderbeu 31, 9701, Saranda",
+        },
         {
           kind: "text",
           name: "priceLabel",
@@ -987,7 +1000,7 @@ export const retreatSchema: DocumentSchema = {
       ],
     },
     {
-      title: "The retreat page",
+      title: "Retreat information",
       fields: [
         { kind: "image", name: "image", label: "Main photo" },
         { kind: "richtext", name: "body", label: "Full description" },
