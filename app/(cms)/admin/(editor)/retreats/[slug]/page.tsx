@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 import { getDocument, hasUnpublishedChanges, isTombstone } from "@/lib/cms/repository";
 import type { Retreat } from "@/lib/cms/content-types";
 
-import { hideRetreat } from "../actions";
+import { RemoveFromWebsite } from "@/components/cms/RemoveFromWebsite";
+
+import { deleteRetreat, hideRetreat } from "../actions";
 import { RetreatForm } from "../RetreatForm";
 
 export const dynamic = "force-dynamic";
@@ -48,24 +50,12 @@ export default async function EditRetreatPage({
         />
       </div>
 
-      <section className="mt-10 rounded-lg border border-border bg-white p-5 sm:p-6">
-        <h2 className="font-heading text-xl text-charcoal">
-          Remove from the website
-        </h2>
-        <p className="mt-2 max-w-prose text-sm text-brown">
-          Hiding this retreat takes it off the website. You can put it back at
-          any time.
-        </p>
-        <form action={hideRetreat} className="mt-4">
-          <input type="hidden" name="slug" value={slug} />
-          <button
-            type="submit"
-            className="rounded border border-border-strong px-4 py-2.5 text-sm text-brown transition-colors hover:border-saffron hover:text-saffron"
-          >
-            Hide this retreat
-          </button>
-        </form>
-      </section>
+      <RemoveFromWebsite
+        slug={slug}
+        noun="retreat"
+        hide={hideRetreat}
+        remove={deleteRetreat}
+      />
     </div>
   );
 }

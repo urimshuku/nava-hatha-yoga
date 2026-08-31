@@ -5,7 +5,9 @@ import { getDocument, hasUnpublishedChanges, isTombstone } from "@/lib/cms/repos
 import { getPrograms } from "@/lib/cms/site-content";
 import type { YogaEvent } from "@/lib/cms/content-types";
 
-import { hideEvent } from "../actions";
+import { RemoveFromWebsite } from "@/components/cms/RemoveFromWebsite";
+
+import { deleteEvent, hideEvent } from "../actions";
 import { EventForm } from "../EventForm";
 
 export const dynamic = "force-dynamic";
@@ -58,24 +60,12 @@ export default async function EditEventPage({
         />
       </div>
 
-      <section className="mt-10 rounded-lg border border-border bg-white p-5 sm:p-6">
-        <h2 className="font-heading text-xl text-charcoal">
-          Remove from the website
-        </h2>
-        <p className="mt-2 max-w-prose text-sm text-brown">
-          Hiding this event takes it off the website. You can put it back at any
-          time.
-        </p>
-        <form action={hideEvent} className="mt-4">
-          <input type="hidden" name="slug" value={slug} />
-          <button
-            type="submit"
-            className="rounded border border-border-strong px-4 py-2.5 text-sm text-brown transition-colors hover:border-saffron hover:text-saffron"
-          >
-            Hide this event
-          </button>
-        </form>
-      </section>
+      <RemoveFromWebsite
+        slug={slug}
+        noun="event"
+        hide={hideEvent}
+        remove={deleteEvent}
+      />
     </div>
   );
 }
