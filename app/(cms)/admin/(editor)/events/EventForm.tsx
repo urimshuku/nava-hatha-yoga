@@ -16,13 +16,14 @@ import {
 } from "@/components/cms/RepeatableFields";
 import { FormError, FormNotice, SaveBar, WorkingCopyBanner } from "@/components/cms/SaveBar";
 import type { YogaEvent } from "@/lib/cms/content-types";
-import { hydrateEventSessionFields } from "@/lib/utils";
+import { cityCountryFromLocation, hydrateEventSessionFields } from "@/lib/utils";
 
 import { saveEvent, type EventFormState } from "./actions";
 
 export interface ProgramOption {
   slug: string;
   title: string;
+  intensity?: string;
 }
 
 export function EventForm({
@@ -105,7 +106,7 @@ export function EventForm({
         <SelectField
           name="relatedProgram"
           label="Related program"
-          hint="Sets the symbol and intensity shown on the event card."
+          hint="Sets the symbol shown on the event card."
           defaultValue={event?.relatedProgram?.slug ?? ""}
           placeholder="None"
           options={programs.map((program) => ({
@@ -146,10 +147,42 @@ export function EventForm({
           defaultValue={scheduleFields.sessionNote}
         />
         <TextField
+          name="cityCountry"
+          label="City, country"
+          hint="The small label on the event card, for example: Tiranë, Albania."
+          placeholder="Tiranë, Albania"
+          defaultValue={
+            event?.cityCountry?.trim() || cityCountryFromLocation(event?.location)
+          }
+        />
+        <TextField
           name="location"
-          label="Location"
-          placeholder="Saranda, Albania"
+          label="Address"
+          hint="The street address shown under the pin on the event card."
+          placeholder="Albania Yoga Center, 8RGM+54V, Tiranë, Albania"
           defaultValue={event?.location}
+        />
+        <TextField
+          name="intensity"
+          label="Intensity"
+          hint="Shown on the event card, for example: Medium."
+          placeholder="Medium"
+          defaultValue={
+            event?.intensity?.trim() ||
+            programs.find((program) => program.slug === event?.relatedProgram?.slug)
+              ?.intensity ||
+            ""
+          }
+        />
+        <TextField
+          name="yogaExperience"
+          label="Yoga Experience"
+          hint="Shown under the checkmark on the event card."
+          placeholder="No prior yoga experience required!"
+          defaultValue={
+            event?.yogaExperience?.trim() ||
+            "No prior yoga experience required!"
+          }
         />
       </FormSection>
 
@@ -191,7 +224,7 @@ export function EventForm({
         <TextField
           name="slug"
           label="Web address"
-          hint="The part after /events/. Leave it empty and it is built from the title, location and date."
+          hint="The part after /events/. Leave it empty and it is built from the title, city and date."
           defaultValue={originalSlug}
         />
       </FormSection>

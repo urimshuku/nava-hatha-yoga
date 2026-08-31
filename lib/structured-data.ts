@@ -57,16 +57,27 @@ function toIsoDateTime(ms: number): string {
   return new Date(ms).toISOString();
 }
 
-function placeFromLocation(location?: string | null): JsonLd {
-  const name = location?.trim() || CONTACT.location;
+function placeFromLocation(
+  location?: string | null,
+  cityCountry?: string | null,
+): JsonLd {
+  const placeName = cityCountry?.trim() || location?.trim() || CONTACT.location;
+  const address = location?.trim();
+  const localitySource = cityCountry?.trim() || location || "";
+  const addressLocality = /tiran/i.test(localitySource)
+    ? "Tirana"
+    : /saranda/i.test(localitySource)
+      ? "Saranda"
+      : placeName.split(",")[0]?.trim() || "Saranda";
+
   return {
     "@type": "Place",
-    name,
+    name: placeName,
     address: {
       "@type": "PostalAddress",
-      addressLocality: name.includes("Tirana") ? "Tirana" : "Saranda",
+      addressLocality,
       addressCountry: "AL",
-      ...(name ? { streetAddress: name } : {}),
+      ...(address ? { streetAddress: address } : {}),
     },
   };
 }
@@ -155,7 +166,7 @@ export function buildEventJsonLd(
       : {}),
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     eventStatus: "https://schema.org/EventScheduled",
-    location: placeFromLocation(event.location),
+    location: placeFromLocation(event.location, event.cityCountry),
     image: [imageUrl],
     organizer: organizer(settings),
     ...(offer

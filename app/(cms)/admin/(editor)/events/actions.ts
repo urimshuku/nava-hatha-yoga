@@ -82,7 +82,7 @@ export async function saveEvent(
   const originalSlug = text(formData, "originalSlug");
   const slug = resolveSlug(text(formData, "slug"), [
     title,
-    text(formData, "location"),
+    text(formData, "cityCountry"),
     text(formData, "date"),
   ]);
   if (!slug) {
@@ -115,7 +115,10 @@ export async function saveEvent(
     sessionNote: text(formData, "sessionNote"),
     // The composed schedule replaces the legacy free-text time field.
     time: undefined,
+    cityCountry: text(formData, "cityCountry"),
     location: text(formData, "location"),
+    intensity: text(formData, "intensity"),
+    yogaExperience: text(formData, "yogaExperience"),
     priceLabel: text(formData, "priceLabel"),
     paymentNote: text(formData, "paymentNote"),
     ageRequirement: text(formData, "ageRequirement"),

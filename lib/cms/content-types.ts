@@ -197,6 +197,9 @@ export interface YogaEvent {
   sessionNote?: string;
   time?: string;
   location?: string;
+  cityCountry?: string;
+  intensity?: string;
+  yogaExperience?: string;
   priceLabel?: string;
   paymentNote?: string;
   teacher?: string;
@@ -220,6 +223,7 @@ export interface PastEvent {
   sessionNote?: string;
   time?: string;
   location?: string;
+  cityCountry?: string;
   category?: EventCategory;
   relatedProgram?: { title?: string; slug?: string; intensity?: ProgramIntensity } | null;
 }

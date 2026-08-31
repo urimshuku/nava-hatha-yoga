@@ -53,6 +53,7 @@ export default async function EditEventPage({
           programs={programs.map((program) => ({
             slug: program.slug,
             title: program.title,
+            intensity: program.intensity,
           }))}
         />
       </div>

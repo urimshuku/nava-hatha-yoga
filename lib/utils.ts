@@ -151,6 +151,31 @@ export function formatEventDateBadge(
     if (sameMonth) {
       return { days: `${startParts.day}\u2013${endParts.day}`, monthYear };
     }
+
+    const startMon = new Intl.DateTimeFormat("en-GB", {
+      month: "short",
+      timeZone: EVENT_TIMEZONE,
+    })
+      .format(start)
+      .toUpperCase();
+    const endMon = new Intl.DateTimeFormat("en-GB", {
+      month: "short",
+      timeZone: EVENT_TIMEZONE,
+    })
+      .format(end)
+      .toUpperCase();
+
+    if (startParts.year === endParts.year) {
+      return {
+        days: `${startParts.day}\u2013${endParts.day}`,
+        monthYear: `${startMon}\u2013${endMon} ${startParts.year}`,
+      };
+    }
+
+    return {
+      days: `${startParts.day}\u2013${endParts.day}`,
+      monthYear: `${startMon} ${startParts.year}\u2013${endMon} ${endParts.year}`,
+    };
   }
 
   const days = new Intl.DateTimeFormat("en-GB", {
@@ -181,6 +206,10 @@ export function formatEventCalendarLine(
     const endParts = zonedDateParts(end);
     const sameMonth =
       startParts.month === endParts.month && startParts.year === endParts.year;
+    const weekdays =
+      weekday(start) === weekday(end)
+        ? weekday(start)
+        : `${weekday(start)}\u2013${weekday(end)}`;
 
     if (sameMonth) {
       const monthYear = new Intl.DateTimeFormat("en-GB", {
@@ -189,11 +218,22 @@ export function formatEventCalendarLine(
         timeZone: EVENT_TIMEZONE,
       }).format(end);
 
-      const weekdays =
-        weekday(start) === weekday(end) ? weekday(start) : `${weekday(start)}\u2013${weekday(end)}`;
-
       return `${weekdays}, ${startParts.day}\u2013${endParts.day} ${monthYear}`;
     }
+
+    const startPart = new Intl.DateTimeFormat("en-GB", {
+      day: "numeric",
+      month: "short",
+      timeZone: EVENT_TIMEZONE,
+    }).format(start);
+    const endPart = new Intl.DateTimeFormat("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      timeZone: EVENT_TIMEZONE,
+    }).format(end);
+
+    return `${weekdays}, ${startPart} \u2013 ${endPart}`;
   }
 
   return formatDate(startString, {
@@ -205,33 +245,50 @@ export function formatEventCalendarLine(
   });
 }
 
-/** Short city/region label for the event card badge. */
-export function eventLocationBadge(location?: string | null): string {
-  if (!location) return "";
+/** City and country for the event card pill, inferred from an address when needed. */
+export function cityCountryFromLocation(location?: string | null): string | undefined {
+  if (!location?.trim()) return undefined;
 
-  if (/saranda/i.test(location)) return "SARANDA, ALBANIA";
-  if (/tiran/i.test(location)) return "TIRANË, ALBANIA";
+  if (/saranda/i.test(location)) return "Saranda, Albania";
+  if (/tiran/i.test(location)) return "Tiranë, Albania";
 
   const parts = location
     .split(",")
     .map((part) => part.trim())
-    .filter((part) => part && !/^\d+$/.test(part));
+    .filter((part) => part && !/^\d+$/.test(part) && !/^[A-Z0-9+]{4,}$/i.test(part));
 
   if (parts.length >= 2) {
-    return `${parts[parts.length - 2]}, ${parts[parts.length - 1]}`.toUpperCase();
+    return `${parts[parts.length - 2]}, ${parts[parts.length - 1]}`;
   }
 
-  return (parts[parts.length - 1] ?? location).toUpperCase();
+  return parts[0];
+}
+
+/** Short city/region label for the event card badge. */
+export function eventLocationBadge(
+  location?: string | null,
+  cityCountry?: string | null,
+): string {
+  const explicit = cityCountry?.trim();
+  if (explicit) return explicit.toUpperCase();
+  if (!location) return "";
+
+  const inferred = cityCountryFromLocation(location);
+  return inferred ? inferred.toUpperCase() : location.toUpperCase();
 }
 
 /** Short city label for registration emails (e.g. Saranda, Tiranë). */
-export function eventLocationShort(location?: string | null): string {
-  if (!location) return "";
+export function eventLocationShort(
+  location?: string | null,
+  cityCountry?: string | null,
+): string {
+  const source = cityCountry?.trim() || location;
+  if (!source) return "";
 
-  if (/saranda/i.test(location)) return "Saranda";
-  if (/tiran/i.test(location)) return "Tiranë";
+  if (/saranda/i.test(source)) return "Saranda";
+  if (/tiran/i.test(source)) return "Tiranë";
 
-  const parts = location
+  const parts = source
     .split(",")
     .map((part) => part.trim())
     .filter((part) => part && !/^\d+$/.test(part) && !/^[A-Z0-9+]+$/i.test(part));
@@ -240,7 +297,7 @@ export function eventLocationShort(location?: string | null): string {
     return parts[parts.length - 2];
   }
 
-  return parts[parts.length - 1] ?? location;
+  return parts[parts.length - 1] ?? source;
 }
 
 /** Compact date range for registration (e.g. 29-30 June). */
@@ -283,12 +340,19 @@ export function formatRegistrationEventDates(
 export function formatRegistrationEventLabel(event: {
   title: string;
   location?: string | null;
+  cityCountry?: string | null;
   date?: string | null;
   endDate?: string | null;
+  sessions?: EventSessionInput[] | null;
+  time?: string | null;
+  description?: string | null;
 }): string {
   const title = event.title.trim();
-  const location = eventLocationShort(event.location);
-  const dates = formatRegistrationEventDates(event.date, event.endDate);
+  const location = eventLocationShort(event.location, event.cityCountry);
+  const dates = formatRegistrationEventDates(
+    event.date,
+    resolveEventCardEndDate(event),
+  );
 
   if (location && dates) return `${title}, ${location} (${dates})`;
   if (location) return `${title}, ${location}`;
@@ -329,12 +393,13 @@ export function deriveEventSlug(event: {
   slug?: string | null;
   date?: string | null;
   location?: string | null;
+  cityCountry?: string | null;
 }): string {
   const stored = event.slug?.trim();
   if (stored && !RESERVED_EVENT_SLUGS.has(stored)) return stored;
 
   const date = event.date ? toDateInputValue(event.date) : "";
-  const location = eventLocationShort(event.location);
+  const location = eventLocationShort(event.location, event.cityCountry);
   const derived = slugifySegment([event.title, location, date].filter(Boolean).join(" "));
   if (derived && !RESERVED_EVENT_SLUGS.has(derived)) return derived;
 
@@ -487,6 +552,81 @@ export function hydrateEventSessionFields(input: {
       : undefined);
 
   return { sessions, sessionNote };
+}
+
+const SESSION_DAY_LABEL = new RegExp(
+  `^(\\d{1,2})\\s+(${SESSION_MONTHS})(?:\\s+(\\d{4}))?$`,
+  "i",
+);
+
+const MONTH_NUMBER: Record<string, number> = {
+  january: 1,
+  february: 2,
+  march: 3,
+  april: 4,
+  may: 5,
+  june: 6,
+  july: 7,
+  august: 8,
+  september: 9,
+  october: 10,
+  november: 11,
+  december: 12,
+};
+
+function parseSessionDayLabel(
+  label: string,
+  defaultYear: number,
+): { year: number; month: number; day: number } | null {
+  const match = SESSION_DAY_LABEL.exec(label.trim());
+  if (!match) return null;
+  const month = MONTH_NUMBER[match[2].toLowerCase()];
+  if (!month) return null;
+  return {
+    day: Number(match[1]),
+    month,
+    year: match[3] ? Number(match[3]) : defaultYear,
+  };
+}
+
+function calendarDayValue(parts: { year: number; month: number; day: number }): number {
+  return parts.year * 10_000 + parts.month * 100 + parts.day;
+}
+
+/**
+ * Last calendar day on the event card. Uses the last session row so the badge
+ * matches the times (e.g. 25–27 Sept), then falls back to Last day.
+ */
+export function resolveEventCardEndDate(event: {
+  date?: string | null;
+  endDate?: string | null;
+  sessions?: EventSessionInput[] | null;
+  time?: string | null;
+  description?: string | null;
+}): string | undefined {
+  const start = event.date ? parseEventDate(event.date) : null;
+  const startParts = start ? zonedDateParts(start) : null;
+  const defaultYear = startParts?.year;
+  const sessions = hydrateEventSessionFields(event).sessions;
+
+  if (sessions.length > 0 && defaultYear) {
+    let last: { year: number; month: number; day: number } | null = null;
+
+    for (const session of sessions) {
+      const parsed = parseSessionDayLabel(session.day ?? "", defaultYear);
+      if (!parsed) continue;
+      if (!/\d{4}/.test(session.day ?? "") && startParts && parsed.month < startParts.month) {
+        parsed.year = defaultYear + 1;
+      }
+      if (!last || calendarDayValue(parsed) >= calendarDayValue(last)) last = parsed;
+    }
+
+    if (last) {
+      return new Date(Date.UTC(last.year, last.month - 1, last.day, 12, 0, 0)).toISOString();
+    }
+  }
+
+  return event.endDate ?? undefined;
 }
 
 function withSessionNote(schedule: string, note?: string): string {

@@ -944,6 +944,7 @@ export const placeholderEvents: YogaEvent[] = scheduledEvents.flatMap((event) =>
 
   const { sessionLines, sessionCount, time, durationLabel } = resolveEventSchedule(event);
   const { date, endDate } = resolveEventDates(event, time);
+  const location = event.location ?? eventLocation;
 
   return [
     {
@@ -953,7 +954,10 @@ export const placeholderEvents: YogaEvent[] = scheduledEvents.flatMap((event) =>
       date,
       endDate,
       time,
-      location: event.location ?? eventLocation,
+      location,
+      cityCountry: /tiran/i.test(location) ? "Tiranë, Albania" : "Saranda, Albania",
+      intensity: getProgramIntensity(event.programSlug) ?? undefined,
+      yogaExperience: "No prior yoga experience required!",
       priceLabel: event.priceLabel ?? program.priceLabel ?? getProgramPriceLabel(event.programSlug),
       paymentNote: eventPaymentNote,
       teacher: "Erlinda Mustafaraj",

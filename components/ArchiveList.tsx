@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { formatDateRange } from "@/lib/utils";
+import { formatDateRange, resolveEventCardEndDate } from "@/lib/utils";
 import type { PastEvent } from "@/lib/cms/content-types";
 
 export function ArchiveList({ events }: { events: PastEvent[] }) {
@@ -35,7 +35,7 @@ export function ArchiveList({ events }: { events: PastEvent[] }) {
               </span>
             ) : null}
             <time dateTime={event.date}>
-              {formatDateRange(event.date, event.endDate)}
+              {formatDateRange(event.date, resolveEventCardEndDate(event))}
             </time>
           </div>
         </li>

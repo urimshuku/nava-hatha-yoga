@@ -15,6 +15,7 @@ import {
   formatEventDateBadge,
   formatRegistrationEventLabel,
   normalizeEventSessionSchedule,
+  resolveEventCardEndDate,
 } from "@/lib/utils";
 import type { YogaEvent } from "@/lib/cms/content-types";
 
@@ -219,17 +220,22 @@ export function EventCard({
   showRegistration = true,
 }: EventCardProps) {
   const TitleTag = `h${headingLevel}` as ElementType;
-  const dateBadge = formatEventDateBadge(event.date, event.endDate);
-  const locationBadge = eventLocationBadge(event.location);
+  const displayEndDate = resolveEventCardEndDate(event);
+  const dateBadge = formatEventDateBadge(event.date, displayEndDate);
+  const locationBadge = eventLocationBadge(event.location, event.cityCountry);
   const summary = eventCardSummary(event.description);
   const registrationEvent = formatRegistrationEventLabel(event);
   const shareAnchorId = eventAnchorId(event._id);
   const programSlug = event.relatedProgram?.slug;
   const symbolSrc = programSlug ? programSymbolSrc(programSlug) : null;
   const intensity =
-    event.relatedProgram?.intensity ?? getProgramIntensity(programSlug);
+    event.intensity?.trim() ||
+    event.relatedProgram?.intensity ||
+    getProgramIntensity(programSlug);
   const experienceLabel =
-    experienceNote?.trim() || "No prior yoga experience required!";
+    event.yogaExperience?.trim() ||
+    experienceNote?.trim() ||
+    (intensity ? "No prior yoga experience required!" : undefined);
   const sessionHref =
     linkTitle && event.slug ? `/events/${event.slug}` : undefined;
 
@@ -298,11 +304,11 @@ export function EventCard({
           <div className="space-y-2.5 sm:space-y-3">
             {event.date ? (
               <EventDetailRow icon={<IconCalendar />} label="Date">
-                {formatEventCalendarLine(event.date, event.endDate)}
+                {formatEventCalendarLine(event.date, displayEndDate)}
               </EventDetailRow>
             ) : null}
             {event.location ? (
-              <EventDetailRow icon={<IconPin />} label="Location">
+              <EventDetailRow icon={<IconPin />} label="Address">
                 <span className="whitespace-pre-line">{event.location}</span>
               </EventDetailRow>
             ) : null}
@@ -312,14 +318,14 @@ export function EventCard({
               </EventDetailRow>
             ) : null}
             {intensity ? (
-              <>
-                <EventDetailRow icon={<IconIntensity />} label="Intensity">
-                  Intensity: {intensity}
-                </EventDetailRow>
-                <EventDetailRow icon={<IconExperience />} label="Experience">
-                  {experienceLabel}
-                </EventDetailRow>
-              </>
+              <EventDetailRow icon={<IconIntensity />} label="Intensity">
+                Intensity: {intensity}
+              </EventDetailRow>
+            ) : null}
+            {experienceLabel ? (
+              <EventDetailRow icon={<IconExperience />} label="Experience">
+                {experienceLabel}
+              </EventDetailRow>
             ) : null}
           </div>
 

@@ -103,6 +103,7 @@ function toPastEvent(event: YogaEvent): PastEvent {
     endDate: event.endDate,
     time: event.time,
     location: event.location,
+    cityCountry: event.cityCountry,
     category: event.category,
     relatedProgram: event.relatedProgram,
   };
