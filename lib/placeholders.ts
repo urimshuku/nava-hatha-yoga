@@ -708,21 +708,8 @@ function buildSessionSchedule(startDay: number, endDay: number, month: number) {
   return { sessionLines, sessionCount, time };
 }
 
-function buildProgramEventDescription(
-  program: ProgramSeed,
-  sessionLines: string[],
-  sessionCount: number,
-  durationLabel?: string,
-): string {
-  return [
-    ...program.aboutThePractice,
-    "",
-    "Benefits:",
-    ...program.benefits.map((benefit) => `\u2022 ${benefit}`),
-    "",
-    `Duration: ${durationLabel ?? `${sessionCount} sessions / 2 hours.`}`,
-    ...sessionLines,
-  ].join("\n");
+function buildProgramEventDescription(program: ProgramSeed): string {
+  return program.aboutThePractice.join("\n");
 }
 
 function resolveEventSchedule(event: ScheduledEvent) {
@@ -964,12 +951,7 @@ export const placeholderEvents: YogaEvent[] = scheduledEvents.flatMap((event) =>
       ageRequirement: event.ageRequirement,
       category: "Workshop",
       relatedProgram: { title: program.title, slug: program.slug },
-      description: buildProgramEventDescription(
-        program,
-        sessionLines,
-        sessionCount,
-        durationLabel,
-      ),
+      description: buildProgramEventDescription(program),
       registrationLink: "/contact",
       whatsappEnabled: false,
     },

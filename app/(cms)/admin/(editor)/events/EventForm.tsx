@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState, type FormEvent } from "react";
 
 import {
   DateField,
@@ -16,9 +16,27 @@ import {
 } from "@/components/cms/RepeatableFields";
 import { FormError, FormNotice, SaveBar, WorkingCopyBanner } from "@/components/cms/SaveBar";
 import type { YogaEvent } from "@/lib/cms/content-types";
-import { cityCountryFromLocation, hydrateEventSessionFields } from "@/lib/utils";
+import {
+  cityCountryFromLocation,
+  eventWebAddress,
+  hydrateEventSessionFields,
+  stripEventDescriptionExtras,
+  toDateInputValue,
+} from "@/lib/utils";
 
 import { saveEvent, type EventFormState } from "./actions";
+
+function formValue(form: HTMLFormElement, name: string): string {
+  const field = form.elements.namedItem(name);
+  if (
+    field instanceof HTMLInputElement ||
+    field instanceof HTMLTextAreaElement ||
+    field instanceof HTMLSelectElement
+  ) {
+    return field.value;
+  }
+  return "";
+}
 
 export interface ProgramOption {
   slug: string;
@@ -55,8 +73,37 @@ export function EventForm({
     description: event?.description,
   });
 
+  const defaultCity =
+    event?.cityCountry?.trim() || cityCountryFromLocation(event?.location);
+  const [slug, setSlug] = useState(
+    () =>
+      eventWebAddress(event?.title, defaultCity, toDateInputValue(event?.date)) ||
+      originalSlug ||
+      "",
+  );
+
+  function syncWebAddress(form: HTMLFormElement) {
+    const next = eventWebAddress(
+      formValue(form, "title"),
+      formValue(form, "cityCountry"),
+      formValue(form, "date"),
+    );
+    if (next) setSlug(next);
+  }
+
+  function onFormInput(formEvent: FormEvent<HTMLFormElement>) {
+    const target = formEvent.target;
+    if (target instanceof HTMLInputElement && target.name === "slug") return;
+    syncWebAddress(formEvent.currentTarget);
+  }
+
   return (
-    <form action={formAction} className="space-y-6">
+    <form
+      action={formAction}
+      className="space-y-6"
+      onInput={onFormInput}
+      onChange={onFormInput}
+    >
       {originalSlug ? (
         <input type="hidden" name="originalSlug" value={originalSlug} />
       ) : null}
@@ -89,12 +136,12 @@ export function EventForm({
           name="description"
           label="Short description"
           hint="The summary shown on the event card."
-          defaultValue={event?.description}
+          defaultValue={stripEventDescriptionExtras(event?.description)}
           rows={4}
         />
         <SelectField
           name="category"
-          label="Type of event"
+          label="Event Type"
           defaultValue={event?.category}
           placeholder="Choose one"
           options={[
@@ -105,7 +152,7 @@ export function EventForm({
         />
         <SelectField
           name="relatedProgram"
-          label="Related program"
+          label="Program"
           hint="Sets the symbol shown on the event card."
           defaultValue={event?.relatedProgram?.slug ?? ""}
           placeholder="None"
@@ -163,6 +210,12 @@ export function EventForm({
           defaultValue={event?.location}
         />
         <TextField
+          name="ageRequirement"
+          label="Age requirement"
+          hint="Optional, for example: 14+"
+          defaultValue={event?.ageRequirement}
+        />
+        <TextField
           name="intensity"
           label="Intensity"
           hint="Shown on the event card, for example: Medium."
@@ -186,7 +239,7 @@ export function EventForm({
         />
       </FormSection>
 
-      <FormSection title="Price and notes">
+      <FormSection title="Price">
         <TextField
           name="priceLabel"
           label="Price"
@@ -199,12 +252,9 @@ export function EventForm({
           hint="Optional, shown in brackets next to the price."
           defaultValue={event?.paymentNote}
         />
-        <TextField
-          name="ageRequirement"
-          label="Age requirement"
-          hint="Optional, for example: 14+"
-          defaultValue={event?.ageRequirement}
-        />
+      </FormSection>
+
+      <FormSection title="Sharing">
         <TextListField
           name="notes"
           label="Reminders on the card"
@@ -224,8 +274,9 @@ export function EventForm({
         <TextField
           name="slug"
           label="Web address"
-          hint="The part after /events/. Leave it empty and it is built from the title, city and date."
-          defaultValue={originalSlug}
+          hint="Updates from the title, city, and start date. This is the part after /events/."
+          value={slug}
+          onChange={(change) => setSlug(change.target.value)}
         />
       </FormSection>
 

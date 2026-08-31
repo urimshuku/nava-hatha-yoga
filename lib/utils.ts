@@ -386,6 +386,24 @@ export function slugifySegment(value: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+/**
+ * Public /events/ address from the title, city, and start date
+ * (e.g. yogasanas-tirane-2026-09-25).
+ */
+export function eventWebAddress(
+  title?: string | null,
+  cityCountry?: string | null,
+  date?: string | null,
+): string {
+  const city = eventLocationShort(undefined, cityCountry);
+  const day = date
+    ? /^\d{4}-\d{2}-\d{2}$/.test(date.trim())
+      ? date.trim()
+      : toDateInputValue(date)
+    : "";
+  return slugifySegment([title?.trim(), city, day].filter(Boolean).join(" "));
+}
+
 /** Public session URL slug. Uses the CMS slug when set, otherwise title + place + date. */
 export function deriveEventSlug(event: {
   _id: string;
@@ -406,11 +424,21 @@ export function deriveEventSlug(event: {
   return slugifySegment(event._id.replace(/^drafts\./, "")) || eventAnchorId(event._id);
 }
 
+/** Intro copy only: drop Benefits, Duration, and session lines pasted into the description. */
+export function stripEventDescriptionExtras(description?: string | null): string {
+  if (!description) return "";
+
+  let text = description.replace(/\r\n/g, "\n").trim();
+  text = text.split(/\n\s*Benefits:\s*/i)[0] ?? text;
+  text = text.split(/\n\s*Duration:\s*/i)[0] ?? text;
+  return text.trim();
+}
+
 /** Short card copy: intro only, capped at a few sentences. */
 export function eventCardSummary(description?: string | null, maxSentences = 3): string {
   if (!description) return "";
 
-  const intro = description.split(/\n\nBenefits:/i)[0]?.trim() ?? description;
+  const intro = stripEventDescriptionExtras(description);
   const text = intro.replace(/\n+/g, " ").trim();
   const sentences =
     text.match(/[^.!?]+[.!?]+/g)?.map((sentence) => sentence.trim()).filter(Boolean) ?? [text];

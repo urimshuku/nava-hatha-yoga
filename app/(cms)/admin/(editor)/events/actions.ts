@@ -23,6 +23,7 @@ import {
 import { assertCmsSession } from "@/lib/cms/session";
 import { getPrograms } from "@/lib/cms/site-content";
 import type { EventCategory, YogaEvent } from "@/lib/cms/content-types";
+import { eventWebAddress, stripEventDescriptionExtras } from "@/lib/utils";
 
 export interface EventFormState {
   error?: string;
@@ -80,11 +81,10 @@ export async function saveEvent(
   if (!date) return { error: "Please choose the date of the event." };
 
   const originalSlug = text(formData, "originalSlug");
-  const slug = resolveSlug(text(formData, "slug"), [
-    title,
-    text(formData, "cityCountry"),
-    text(formData, "date"),
-  ]);
+  const slug = resolveSlug(
+    eventWebAddress(title, text(formData, "cityCountry"), text(formData, "date")),
+    [title, text(formData, "cityCountry"), text(formData, "date")],
+  );
   if (!slug) {
     return {
       error:
@@ -110,7 +110,7 @@ export async function saveEvent(
     slug,
     date,
     endDate: dateToTimestamp(text(formData, "endDate"), "end"),
-    description: text(formData, "description"),
+    description: stripEventDescriptionExtras(text(formData, "description")) || undefined,
     sessions,
     sessionNote: text(formData, "sessionNote"),
     // The composed schedule replaces the legacy free-text time field.

@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { titleCaseLabel } from "./Field";
+
 /** Groups related fields under a heading, so a long form reads as short steps. */
 export function FormSection({
   title,
@@ -12,7 +14,7 @@ export function FormSection({
 }) {
   return (
     <section className="rounded-lg border border-border bg-white p-5 sm:p-6">
-      <h2 className="font-heading text-xl text-charcoal">{title}</h2>
+      <h2 className="font-heading text-xl text-charcoal">{titleCaseLabel(title)}</h2>
       {description ? (
         <p className="mt-1 max-w-2xl text-sm text-brown">{description}</p>
       ) : null}

@@ -13,6 +13,7 @@ import {
   SelectField,
   DateField,
   inputClassName,
+  titleCaseLabel,
 } from "./Field";
 import { ImageField } from "./ImageField";
 import { RichTextField } from "./RichTextField";
@@ -214,7 +215,7 @@ function SchemaField({
       return (
         <fieldset className="rounded border border-border bg-cream/40 p-4">
           <legend className="px-1 text-sm font-semibold text-charcoal">
-            {field.label}
+            {titleCaseLabel(field.label)}
           </legend>
           {field.hint ? (
             <p className="mb-3 text-xs text-brown">{field.hint}</p>
@@ -403,7 +404,7 @@ function RowsField({
   return (
     <div>
       <div className="mb-2">
-        <p className="text-sm font-medium text-charcoal">{label}</p>
+        <p className="text-sm font-medium text-charcoal">{titleCaseLabel(label)}</p>
         {hint ? <p className="mt-1 text-xs text-brown">{hint}</p> : null}
       </div>
 

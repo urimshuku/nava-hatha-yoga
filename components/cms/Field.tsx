@@ -1,6 +1,13 @@
-import type { ReactNode } from "react";
+import type { ChangeEvent, ReactNode } from "react";
 
 import { toDateInputValue } from "@/lib/utils";
+
+/** Each word in a field or section title starts with a capital letter. */
+export function titleCaseLabel(label: string): string {
+  return label.replace(/[A-Za-zÀ-ÿ]+(?:'[A-Za-zÀ-ÿ]+)?/g, (word) =>
+    word.charAt(0).toUpperCase() + word.slice(1),
+  );
+}
 
 /**
  * One labelled row in an editing form. Every field carries a plain-language hint
@@ -23,7 +30,7 @@ export function Field({
         htmlFor={htmlFor}
         className="mb-1.5 block text-sm font-medium text-charcoal"
       >
-        {label}
+        {titleCaseLabel(label)}
       </label>
       {hint ? <p className="mb-2 text-xs text-brown">{hint}</p> : null}
       {children}
@@ -39,15 +46,21 @@ export function TextField({
   label,
   hint,
   defaultValue,
+  value,
+  onChange,
   required,
   placeholder,
+  readOnly,
 }: {
   name: string;
   label: string;
   hint?: string;
   defaultValue?: string;
+  value?: string;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
   placeholder?: string;
+  readOnly?: boolean;
 }) {
   return (
     <Field label={label} hint={hint} htmlFor={name}>
@@ -55,10 +68,13 @@ export function TextField({
         id={name}
         name={name}
         type="text"
-        defaultValue={defaultValue}
         required={required}
         placeholder={placeholder}
+        readOnly={readOnly}
         className={inputClassName}
+        {...(value != null
+          ? { value, onChange }
+          : { defaultValue })}
       />
     </Field>
   );
@@ -174,7 +190,7 @@ export function CheckboxField({
       />
       <div>
         <label htmlFor={name} className="text-sm font-medium text-charcoal">
-          {label}
+          {titleCaseLabel(label)}
         </label>
         {hint ? <p className="mt-1 text-xs text-brown">{hint}</p> : null}
       </div>
