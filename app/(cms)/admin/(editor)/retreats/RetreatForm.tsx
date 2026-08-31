@@ -26,7 +26,7 @@ export function RetreatForm({
   published?: boolean;
   unpublishedChanges?: boolean;
 }) {
-  const [state, formAction] = useActionState<RetreatFormState, FormData>(
+  const [state, formAction, pending] = useActionState<RetreatFormState, FormData>(
     saveRetreat,
     {},
   );
@@ -43,7 +43,11 @@ export function RetreatForm({
         <h1 className="font-heading text-3xl text-charcoal">
           {isNew ? "New retreat" : (title ?? "Edit retreat")}
         </h1>
-        <SaveBar cancelHref="/admin/retreats" />
+        <SaveBar
+          cancelHref="/admin/retreats"
+          action={formAction}
+          pending={pending}
+        />
       </div>
 
       <FormNotice kind={notice} />
@@ -74,7 +78,11 @@ export function RetreatForm({
         />
       </FormSection>
 
-      <SaveBar cancelHref="/admin/retreats" />
+      <SaveBar
+        cancelHref="/admin/retreats"
+        action={formAction}
+        pending={pending}
+      />
     </form>
   );
 }

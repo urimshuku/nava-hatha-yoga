@@ -41,7 +41,7 @@ export function ProgramForm({
   published?: boolean;
   unpublishedChanges?: boolean;
 }) {
-  const [state, formAction] = useActionState<ProgramFormState, FormData>(
+  const [state, formAction, pending] = useActionState<ProgramFormState, FormData>(
     saveProgram,
     {},
   );
@@ -56,7 +56,11 @@ export function ProgramForm({
         <h1 className="font-heading text-3xl text-charcoal">
           {isNew ? "New program" : (program?.title ?? "Edit program")}
         </h1>
-        <SaveBar cancelHref="/admin/programs" />
+        <SaveBar
+          cancelHref="/admin/programs"
+          action={formAction}
+          pending={pending}
+        />
       </div>
 
       <FormNotice kind={notice} />
@@ -211,7 +215,11 @@ export function ProgramForm({
         />
       </FormSection>
 
-      <SaveBar cancelHref="/admin/programs" />
+      <SaveBar
+        cancelHref="/admin/programs"
+        action={formAction}
+        pending={pending}
+      />
     </form>
   );
 }

@@ -17,11 +17,7 @@ export function checkbox(formData: FormData, name: string): boolean {
 
 /** True when the Publish button submitted the form, rather than Save. */
 export function isPublishIntent(formData: FormData): boolean {
-  const intents = formData
-    .getAll("intent")
-    .filter((value): value is string => typeof value === "string");
-  if (intents.length === 0) return false;
-  return intents.every((value) => value === "publish");
+  return formData.get("intent") === "publish";
 }
 
 /**

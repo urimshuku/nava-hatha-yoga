@@ -22,7 +22,7 @@ export function PageForm({
   values: unknown;
   notice?: "saved" | "published";
 }) {
-  const [state, formAction] = useActionState<PageFormState, FormData>(
+  const [state, formAction, pending] = useActionState<PageFormState, FormData>(
     savePage,
     {},
   );
@@ -40,7 +40,11 @@ export function PageForm({
             </p>
           ) : null}
         </div>
-        <SaveBar cancelHref="/admin/pages" />
+        <SaveBar
+          cancelHref="/admin/pages"
+          action={formAction}
+          pending={pending}
+        />
       </div>
 
       <FormNotice kind={notice} />
@@ -56,7 +60,11 @@ export function PageForm({
         </FormSection>
       ))}
 
-      <SaveBar cancelHref="/admin/pages" />
+      <SaveBar
+        cancelHref="/admin/pages"
+        action={formAction}
+        pending={pending}
+      />
     </form>
   );
 }

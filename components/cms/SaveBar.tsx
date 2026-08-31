@@ -1,61 +1,51 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type MouseEvent } from "react";
+import { useState } from "react";
 import { useFormStatus } from "react-dom";
 
 /**
  * Save keeps a working copy in the editor. Publish writes the current form
  * and puts it on the website in one step — no separate Save is required.
- * Repeated at the top and bottom of long forms so the buttons stay within reach.
  *
- * React's server-action FormData often omits the clicked submit button, so
- * intent is stored on a hidden field updated synchronously on click.
+ * Each button uses its own formAction so the intent is on FormData. React's
+ * server-action submit does not include the clicked button's name/value.
  */
-function markFormIntent(
-  form: HTMLFormElement | null,
-  intent: "save" | "publish",
-) {
-  if (!form) return;
-  const fields = form.querySelectorAll<HTMLInputElement>(
-    "input[data-cms-intent]",
-  );
-  for (const field of fields) {
-    field.value = intent;
-  }
-}
-
-export function SaveBar({ cancelHref }: { cancelHref: string }) {
-  const { pending } = useFormStatus();
+export function SaveBar({
+  cancelHref,
+  action,
+  pending: pendingProp,
+}: {
+  cancelHref: string;
+  action: (formData: FormData) => void;
+  pending?: boolean;
+}) {
+  const { pending: formPending } = useFormStatus();
+  const pending = pendingProp ?? formPending;
   const [intent, setIntent] = useState<"save" | "publish" | null>(null);
 
-  function onIntentClick(next: "save" | "publish") {
-    return (event: MouseEvent<HTMLButtonElement>) => {
+  function submitWith(next: "save" | "publish") {
+    return (formData: FormData) => {
       setIntent(next);
-      markFormIntent(event.currentTarget.form, next);
+      formData.set("intent", next);
+      action(formData);
     };
   }
 
   return (
     <div className="ml-auto flex shrink-0 items-center gap-3">
-      <input
-        type="hidden"
-        name="intent"
-        data-cms-intent=""
-        defaultValue="save"
-      />
       <button
         type="submit"
+        formAction={submitWith("save")}
         disabled={pending}
-        onClick={onIntentClick("save")}
         className="rounded border border-border-strong bg-white px-5 py-2.5 text-sm font-medium text-charcoal transition-colors hover:border-saffron hover:text-saffron disabled:opacity-60"
       >
         {pending && intent === "save" ? "Saving…" : "Save"}
       </button>
       <button
         type="submit"
+        formAction={submitWith("publish")}
         disabled={pending}
-        onClick={onIntentClick("publish")}
         className="rounded bg-saffron px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-saffron-hover disabled:opacity-60"
       >
         {pending && intent === "publish" ? "Publishing…" : "Publish"}

@@ -49,7 +49,7 @@ export function EventForm({
   published?: boolean;
   unpublishedChanges?: boolean;
 }) {
-  const [state, formAction] = useActionState<EventFormState, FormData>(
+  const [state, formAction, pending] = useActionState<EventFormState, FormData>(
     saveEvent,
     {},
   );
@@ -82,7 +82,11 @@ export function EventForm({
         <h1 className="font-heading text-3xl text-charcoal">
           {isNew ? "New event" : (event?.title ?? "Edit event")}
         </h1>
-        <SaveBar cancelHref="/admin/events" />
+        <SaveBar
+          cancelHref="/admin/events"
+          action={formAction}
+          pending={pending}
+        />
       </div>
 
       <FormNotice kind={notice} />
@@ -254,7 +258,11 @@ export function EventForm({
         />
       </FormSection>
 
-      <SaveBar cancelHref="/admin/events" />
+      <SaveBar
+        cancelHref="/admin/events"
+        action={formAction}
+        pending={pending}
+      />
     </form>
   );
 }
