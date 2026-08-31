@@ -25,8 +25,25 @@ function toRows<T>(values: T[], empty: T): { id: string; value: T }[] {
 const removeButtonClassName =
   "shrink-0 rounded border border-border px-2.5 py-2 text-xs text-brown transition-colors hover:border-saffron hover:text-saffron";
 
+const iconButtonClassName =
+  "inline-flex h-[2.625rem] w-[2.625rem] shrink-0 items-center justify-center rounded border border-border text-brown transition-colors hover:border-saffron hover:text-saffron";
+
 const addButtonClassName =
   "mt-1 rounded border border-dashed border-border-strong px-3 py-2 text-sm text-brown transition-colors hover:border-saffron hover:text-saffron";
+
+function IconPlus() {
+  return (
+    <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden="true">
+      <path
+        d="M8 3.25v9.5M3.25 8h9.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
 
 export function TextListField({
   name,
@@ -92,6 +109,13 @@ export interface SessionRow {
   hours?: string;
 }
 
+function sameSessionDay(left?: string, right?: string): boolean {
+  const a = left?.trim();
+  const b = right?.trim();
+  if (!a || !b) return false;
+  return a.toLowerCase() === b.toLowerCase();
+}
+
 export function SessionsField({
   label,
   hint,
@@ -122,44 +146,116 @@ export function SessionsField({
     });
   }, [firstDay, lastDay]);
 
+  function updateRow(id: string, patch: SessionRow) {
+    setRows((current) => {
+      const index = current.findIndex((row) => row.id === id);
+      if (index < 0) return current;
+
+      const previousDay = current[index].value.day;
+      let stillInGroup = true;
+
+      return current.map((row, rowIndex) => {
+        if (rowIndex < index) return row;
+        if (rowIndex === index) {
+          return { ...row, value: { ...row.value, ...patch } };
+        }
+        if (patch.day === undefined) return row;
+        if (!stillInGroup || !sameSessionDay(row.value.day, previousDay)) {
+          stillInGroup = false;
+          return row;
+        }
+        return { ...row, value: { ...row.value, day: patch.day } };
+      });
+    });
+  }
+
+  function addTimeOnSameDay(id: string) {
+    setRows((current) => {
+      const index = current.findIndex((row) => row.id === id);
+      if (index < 0) return current;
+      const day = current[index].value.day?.trim() ?? "";
+      const next = [...current];
+      next.splice(index + 1, 0, {
+        id: nextRowId(),
+        value: { day, hours: "" },
+      });
+      return next;
+    });
+  }
+
   return (
     <Field label={label} hint={hint}>
       <div className="space-y-2">
-        {rows.map((row) => (
-          <div
-            key={`${row.id}-${row.value.day ?? ""}`}
-            className="flex flex-wrap gap-2 sm:flex-nowrap"
-          >
-            <input
-              type="text"
-              name="sessionDay"
-              defaultValue={row.value.day ?? ""}
-              placeholder="14 August"
-              className={inputClassName}
-            />
-            <input
-              type="text"
-              name="sessionHours"
-              defaultValue={row.value.hours ?? ""}
-              placeholder="16:30 – 18:30"
-              className={inputClassName}
-            />
-            <button
-              type="button"
-              onClick={() =>
-                setRows((current) =>
-                  current.length === 1
-                    ? current
-                    : current.filter((entry) => entry.id !== row.id),
-                )
-              }
-              className={removeButtonClassName}
-              aria-label="Remove session"
+        {rows.map((row, index) => {
+          const continuation = sameSessionDay(
+            rows[index - 1]?.value.day,
+            row.value.day,
+          );
+
+          return (
+            <div
+              key={row.id}
+              className="flex flex-wrap gap-2 sm:flex-nowrap"
             >
-              Remove
-            </button>
-          </div>
-        ))}
+              {continuation ? (
+                <>
+                  <input
+                    type="hidden"
+                    name="sessionDay"
+                    value={row.value.day ?? ""}
+                  />
+                  <div
+                    className="hidden min-w-0 flex-1 sm:block"
+                    aria-hidden="true"
+                  />
+                </>
+              ) : (
+                <input
+                  type="text"
+                  name="sessionDay"
+                  value={row.value.day ?? ""}
+                  placeholder="14 August"
+                  onChange={(event) =>
+                    updateRow(row.id, { day: event.target.value })
+                  }
+                  className={`${inputClassName} min-w-0 flex-1`}
+                />
+              )}
+              <input
+                type="text"
+                name="sessionHours"
+                value={row.value.hours ?? ""}
+                placeholder="16:30 – 18:30"
+                onChange={(event) =>
+                  updateRow(row.id, { hours: event.target.value })
+                }
+                className={`${inputClassName} min-w-0 flex-1`}
+              />
+              <button
+                type="button"
+                onClick={() => addTimeOnSameDay(row.id)}
+                className={iconButtonClassName}
+                aria-label="Add another time on this day"
+              >
+                <IconPlus />
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setRows((current) =>
+                    current.length === 1
+                      ? current
+                      : current.filter((entry) => entry.id !== row.id),
+                  )
+                }
+                className={removeButtonClassName}
+                aria-label="Remove session"
+              >
+                Remove
+              </button>
+            </div>
+          );
+        })}
         <button
           type="button"
           onClick={() =>

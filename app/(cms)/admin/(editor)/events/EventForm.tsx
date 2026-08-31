@@ -158,7 +158,7 @@ export function EventForm({
         </div>
         <SessionsField
           label="Session times"
-          hint="One row per session. Each row becomes its own line on the event card."
+          hint="One row per session. The plus adds another time on the same day."
           firstDay={firstDay}
           lastDay={lastDay}
           defaultValues={scheduleFields.sessions.map((session) => ({
