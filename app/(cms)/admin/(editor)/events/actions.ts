@@ -82,8 +82,12 @@ export async function saveEvent(
 
   const originalSlug = text(formData, "originalSlug");
   const slug = resolveSlug(
-    eventWebAddress(title, text(formData, "cityCountry"), text(formData, "date")),
-    [title, text(formData, "cityCountry"), text(formData, "date")],
+    eventWebAddress(
+      text(formData, "relatedProgram") || title,
+      text(formData, "cityCountry"),
+      text(formData, "date"),
+    ),
+    [text(formData, "relatedProgram") || title, text(formData, "cityCountry"), text(formData, "date")],
   );
   if (!slug) {
     return {

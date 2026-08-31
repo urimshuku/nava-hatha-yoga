@@ -387,7 +387,7 @@ export function slugifySegment(value: string): string {
 }
 
 /**
- * Public /events/ address from the title, city, and start date
+ * Public /events/ address from the program, city, and first day
  * (e.g. yogasanas-tirane-2026-09-25).
  */
 export function eventWebAddress(

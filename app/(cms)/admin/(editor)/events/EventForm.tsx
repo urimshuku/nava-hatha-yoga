@@ -77,14 +77,18 @@ export function EventForm({
     event?.cityCountry?.trim() || cityCountryFromLocation(event?.location);
   const [slug, setSlug] = useState(
     () =>
-      eventWebAddress(event?.title, defaultCity, toDateInputValue(event?.date)) ||
+      eventWebAddress(
+        event?.relatedProgram?.slug || event?.title,
+        defaultCity,
+        toDateInputValue(event?.date),
+      ) ||
       originalSlug ||
       "",
   );
 
   function syncWebAddress(form: HTMLFormElement) {
     const next = eventWebAddress(
-      formValue(form, "title"),
+      formValue(form, "relatedProgram") || formValue(form, "title"),
       formValue(form, "cityCountry"),
       formValue(form, "date"),
     );
@@ -163,11 +167,11 @@ export function EventForm({
         />
       </FormSection>
 
-      <FormSection title="When and where">
+      <FormSection title="Program Details">
         <div className="grid gap-5 sm:grid-cols-2">
           <DateField
             name="date"
-            label="Date"
+            label="First Day"
             hint="The day the event starts."
             defaultValue={event?.date}
             required
@@ -189,7 +193,7 @@ export function EventForm({
         />
         <TextField
           name="sessionNote"
-          label="Note under the times"
+          label="Timing Note"
           hint="Optional, for example: All 3 sessions are mandatory."
           defaultValue={scheduleFields.sessionNote}
         />
@@ -254,7 +258,17 @@ export function EventForm({
         />
       </FormSection>
 
-      <FormSection title="Sharing">
+      <FormSection title="Web address">
+        <TextField
+          name="slug"
+          label="Web address"
+          hint="Updates from the program, city, and first day. This is the part after /events/."
+          value={slug}
+          onChange={(change) => setSlug(change.target.value)}
+        />
+      </FormSection>
+
+      <FormSection title="Sharing Details (Optional)">
         <TextListField
           name="notes"
           label="Reminders on the card"
@@ -267,16 +281,6 @@ export function EventForm({
           label="Photo"
           hint="Used when the event is shared on WhatsApp or Facebook."
           value={event?.image as Record<string, unknown> | undefined}
-        />
-      </FormSection>
-
-      <FormSection title="Web address">
-        <TextField
-          name="slug"
-          label="Web address"
-          hint="Updates from the title, city, and start date. This is the part after /events/."
-          value={slug}
-          onChange={(change) => setSlug(change.target.value)}
         />
       </FormSection>
 
