@@ -14,10 +14,8 @@ import {
   formatEventCalendarLine,
   formatEventDateBadge,
   formatRegistrationEventLabel,
-  formatSessionDayDisplay,
   normalizeEventSessionSchedule,
   resolveEventCardEndDate,
-  toDateInputValue,
 } from "@/lib/utils";
 import type { YogaEvent } from "@/lib/cms/content-types";
 
@@ -143,7 +141,7 @@ function isSessionTimeLine(line: string): boolean {
   return /^\d{1,2}:\d{2}\s*[–-]\s*\d{1,2}:\d{2}/.test(line);
 }
 
-function EventTimeBlock({ time, year }: { time: string; year: number }) {
+function EventTimeBlock({ time }: { time: string }) {
   const normalized = normalizeEventSessionSchedule(time);
   const mandatoryMatch = normalized.match(/\n\s*(All\s+\d+\s+sessions\b[^\n]*)/i);
   const mandatoryPart = mandatoryMatch?.[1]?.trim();
@@ -202,11 +200,7 @@ function EventTimeBlock({ time, year }: { time: string; year: number }) {
                 key={`${group.day}-${hours}-${index}`}
                 className="grid grid-cols-[minmax(6.5rem,7.75rem)_1fr] gap-x-3 sm:grid-cols-[8rem_1fr] sm:gap-x-4"
               >
-                <span>
-                  {index === 0
-                    ? `${formatSessionDayDisplay(group.day, year)}:`
-                    : ""}
-                </span>
+                <span>{index === 0 ? `${group.day}:` : ""}</span>
                 <span>{hours}</span>
               </div>
             ))}
@@ -276,14 +270,10 @@ export function EventCard({
 
           {dateBadge ? (
             <div className="shrink-0 text-right leading-none">
-              <p className="font-heading text-2xl text-gold sm:text-4xl">
-                {dateBadge.days}
+              <p className="font-heading text-2xl text-gold sm:text-4xl">{dateBadge.days}</p>
+              <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.14em] text-brown">
+                {dateBadge.monthYear}
               </p>
-              {dateBadge.monthYear ? (
-                <p className="mt-1 text-[11px] font-medium tracking-[0.08em] text-brown">
-                  {dateBadge.monthYear}
-                </p>
-              ) : null}
             </div>
           ) : null}
         </div>
@@ -342,13 +332,7 @@ export function EventCard({
           {event.time ? (
             <div className="sm:pt-0">
               <EventDetailRow icon={<IconClock />} label="Time">
-                <EventTimeBlock
-                  time={event.time}
-                  year={
-                    Number(toDateInputValue(event.date).slice(0, 4)) ||
-                    new Date().getFullYear()
-                  }
-                />
+                <EventTimeBlock time={event.time} />
               </EventDetailRow>
             </div>
           ) : null}

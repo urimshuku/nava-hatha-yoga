@@ -10,7 +10,7 @@ import {
   listRetreatEntries,
   type AdminListEntry,
 } from "@/lib/cms/admin-list";
-import { formatDateRange } from "@/lib/utils";
+import { formatCmsDateRange } from "@/lib/utils";
 
 import { deleteRetreat, duplicateRetreat, restoreRetreat } from "./actions";
 
@@ -28,7 +28,7 @@ function RetreatRow({ entry }: { entry: AdminListEntry }) {
         </Link>
         <p className="mt-1 text-sm text-brown">
           {entry.date
-            ? formatDateRange(entry.date, entry.endDate)
+            ? formatCmsDateRange(entry.date, entry.endDate)
             : `/retreats/${entry.slug}`}
         </p>
       </div>

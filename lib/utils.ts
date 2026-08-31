@@ -11,38 +11,88 @@ export function ensureTrailingPeriod(text: string): string {
   return `${trimmed}.`;
 }
 
-function pad2(n: number): string {
-  return String(n).padStart(2, "0");
-}
-
-function formatDdMmYy(parts: { year: number; month: number; day: number }): string {
-  return `${pad2(parts.day)}/${pad2(parts.month)}/${String(parts.year).slice(-2)}`;
-}
-
-/** Public date label: always day/month/year, e.g. 12/09/26. */
-export function formatDate(dateString?: string | null): string {
+/** Format an ISO date string into a calm, readable label. */
+export function formatDate(
+  dateString?: string | null,
+  options: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  },
+): string {
   if (!dateString) return "";
-  const date = parseEventDate(dateString);
-  if (!date) return "";
-  return formatDdMmYy(zonedDateParts(date));
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: EVENT_TIMEZONE,
+    ...options,
+  }).format(date);
 }
 
 export function formatShortDate(dateString?: string | null): string {
-  return formatDate(dateString);
+  return formatDate(dateString, { day: "numeric", month: "short", year: "numeric" });
 }
 
-/** Public date range: 12/09/26 or 12/09/26 – 12/12/26. */
+/**
+ * Format a date range into a compact, readable label, collapsing shared
+ * month/year parts (e.g. "27-29 June 2026" or "27 June - 2 July 2026").
+ * Falls back to a single formatted date when there is no valid end date.
+ */
 export function formatDateRange(
   startString?: string | null,
   endString?: string | null,
 ): string {
   const start = startString ? parseEventDate(startString) : null;
   const end = endString ? parseEventDate(endString) : null;
-  const startLabel = formatDate(startString);
-  if (!start || !end || end.getTime() <= start.getTime() || isSameZonedDay(start, end)) {
-    return startLabel;
+
+  if (!start) return formatDate(startString);
+  if (!end || end.getTime() <= start.getTime() || isSameZonedDay(start, end)) {
+    return formatDate(startString);
   }
-  return `${startLabel} \u2013 ${formatDate(endString)}`;
+
+  const startParts = zonedDateParts(start);
+  const endParts = zonedDateParts(end);
+  const sameYear = startParts.year === endParts.year;
+  const sameMonth = sameYear && startParts.month === endParts.month;
+
+  const formatZoned = (date: Date, options: Intl.DateTimeFormatOptions) =>
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: EVENT_TIMEZONE,
+      ...options,
+    }).format(date);
+
+  if (sameMonth) {
+    const startDay = formatZoned(start, { day: "numeric" });
+    const endPart = formatZoned(end, {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    return `${startDay}\u2013${endPart}`;
+  }
+
+  if (sameYear) {
+    const startPart = formatZoned(start, { day: "numeric", month: "long" });
+    const endPart = formatZoned(end, {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    return `${startPart} \u2013 ${endPart}`;
+  }
+
+  const startPart = formatZoned(start, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const endPart = formatZoned(end, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  return `${startPart} \u2013 ${endPart}`;
 }
 
 const EVENT_TIMEZONE = "Europe/Tirane";
@@ -85,7 +135,37 @@ export function toDateInputValue(value?: string | null): string {
   return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
-/** Top-right event card dates from First Day and Last Day (dd/mm/yy). */
+function pad2(n: number): string {
+  return String(n).padStart(2, "0");
+}
+
+function formatDdMmYy(parts: { year: number; month: number; day: number }): string {
+  return `${pad2(parts.day)}/${pad2(parts.month)}/${String(parts.year).slice(-2)}`;
+}
+
+/** CMS date label: always day/month/year, e.g. 12/09/26. */
+export function formatCmsDate(dateString?: string | null): string {
+  if (!dateString) return "";
+  const date = parseEventDate(dateString);
+  if (!date) return "";
+  return formatDdMmYy(zonedDateParts(date));
+}
+
+/** CMS date range: 12/09/26 or 12/09/26 – 12/12/26. */
+export function formatCmsDateRange(
+  startString?: string | null,
+  endString?: string | null,
+): string {
+  const start = startString ? parseEventDate(startString) : null;
+  const end = endString ? parseEventDate(endString) : null;
+  const startLabel = formatCmsDate(startString);
+  if (!start || !end || end.getTime() <= start.getTime() || isSameZonedDay(start, end)) {
+    return startLabel;
+  }
+  return `${startLabel} \u2013 ${formatCmsDate(endString)}`;
+}
+
+/** Compact day + month badge for the top-right of event cards (e.g. 27–29 / JUN 2026). */
 export function formatEventDateBadge(
   startString?: string | null,
   endString?: string | null,
@@ -94,20 +174,78 @@ export function formatEventDateBadge(
   if (!start) return null;
 
   const end = endString ? parseEventDate(endString) : null;
-  const startLabel = formatDate(startString);
-  if (!end || end.getTime() <= start.getTime() || isSameZonedDay(start, end)) {
-    return { days: startLabel, monthYear: "" };
+  const monthYear = new Intl.DateTimeFormat("en-GB", {
+    month: "short",
+    year: "numeric",
+    timeZone: EVENT_TIMEZONE,
+  })
+    .format(start)
+    .toUpperCase();
+
+  if (end && end.getTime() > start.getTime() && !isSameZonedDay(start, end)) {
+    const startParts = zonedDateParts(start);
+    const endParts = zonedDateParts(end);
+    const sameMonth =
+      startParts.month === endParts.month && startParts.year === endParts.year;
+
+    if (sameMonth) {
+      return { days: `${startParts.day}\u2013${endParts.day}`, monthYear };
+    }
+
+    const startMon = new Intl.DateTimeFormat("en-GB", {
+      month: "short",
+      timeZone: EVENT_TIMEZONE,
+    })
+      .format(start)
+      .toUpperCase();
+    const endMon = new Intl.DateTimeFormat("en-GB", {
+      month: "short",
+      timeZone: EVENT_TIMEZONE,
+    })
+      .format(end)
+      .toUpperCase();
+
+    if (startParts.year === endParts.year) {
+      return {
+        days: `${startParts.day}\u2013${endParts.day}`,
+        monthYear: `${startMon}\u2013${endMon} ${startParts.year}`,
+      };
+    }
+
+    return {
+      days: `${startParts.day}\u2013${endParts.day}`,
+      monthYear: `${startMon} ${startParts.year}\u2013${endMon} ${endParts.year}`,
+    };
   }
 
-  return { days: startLabel, monthYear: formatDate(endString) };
+  const days = new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    timeZone: EVENT_TIMEZONE,
+  }).format(start);
+
+  return { days, monthYear };
 }
 
-/** Calendar line on the event card: same First Day / Last Day as the badge. */
+/** Calendar line: compact range for multi-day events, short weekday for a single day. */
 export function formatEventCalendarLine(
   startString?: string | null,
   endString?: string | null,
 ): string {
-  return formatDateRange(startString, endString);
+  const start = startString ? parseEventDate(startString) : null;
+  if (!start) return "";
+
+  const end = endString ? parseEventDate(endString) : null;
+  if (end && end.getTime() > start.getTime() && !isSameZonedDay(start, end)) {
+    return formatDateRange(startString, endString);
+  }
+
+  return formatDate(startString, {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: EVENT_TIMEZONE,
+  });
 }
 
 /** City and country for the event card pill, inferred from an address when needed. */
@@ -165,12 +303,40 @@ export function eventLocationShort(
   return parts[parts.length - 1] ?? source;
 }
 
-/** Compact date range for registration (dd/mm/yy). */
+/** Compact date range for registration (e.g. 29-30 June). */
 export function formatRegistrationEventDates(
   startString?: string | null,
   endString?: string | null,
 ): string {
-  return formatDateRange(startString, endString);
+  const start = startString ? parseEventDate(startString) : null;
+  if (!start) return "";
+
+  const end = endString ? parseEventDate(endString) : null;
+  const monthName = (date: Date) =>
+    new Intl.DateTimeFormat("en-GB", {
+      month: "long",
+      timeZone: EVENT_TIMEZONE,
+    }).format(date);
+  const day = (date: Date) =>
+    new Intl.DateTimeFormat("en-GB", {
+      day: "numeric",
+      timeZone: EVENT_TIMEZONE,
+    }).format(date);
+
+  if (end && end.getTime() > start.getTime() && !isSameZonedDay(start, end)) {
+    const startParts = zonedDateParts(start);
+    const endParts = zonedDateParts(end);
+    const sameMonth =
+      startParts.month === endParts.month && startParts.year === endParts.year;
+
+    if (sameMonth) {
+      return `${day(start)}-${day(end)} ${monthName(start)}`;
+    }
+
+    return `${day(start)} ${monthName(start)} - ${day(end)} ${monthName(end)}`;
+  }
+
+  return `${day(start)} ${monthName(start)}`;
 }
 
 /** Full event label for registration links and notification emails. */
@@ -539,16 +705,6 @@ export function resolveEventCardEndDate(event: {
   }
 
   return undefined;
-}
-
-/** Session row day label for the public card, e.g. 12/09/26. */
-export function formatSessionDayDisplay(
-  label: string,
-  defaultYear: number,
-): string {
-  const parsed = parseSessionDayLabel(label, defaultYear);
-  if (!parsed) return label.trim();
-  return formatDdMmYy(parsed);
 }
 
 function withSessionNote(schedule: string, note?: string): string {
