@@ -82,7 +82,17 @@ export function formatDateRange(
     return `${startPart} \u2013 ${endPart}`;
   }
 
-  return `${formatDate(startString)} \u2013 ${formatDate(endString)}`;
+  const startPart = formatZoned(start, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const endPart = formatZoned(end, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  return `${startPart} \u2013 ${endPart}`;
 }
 
 const EVENT_TIMEZONE = "Europe/Tirane";
@@ -186,7 +196,7 @@ export function formatEventDateBadge(
   return { days, monthYear };
 }
 
-/** Calendar line with weekdays when the event spans multiple days. */
+/** Calendar line: compact range for multi-day events, short weekday for a single day. */
 export function formatEventCalendarLine(
   startString?: string | null,
   endString?: string | null,
@@ -195,45 +205,8 @@ export function formatEventCalendarLine(
   if (!start) return "";
 
   const end = endString ? parseEventDate(endString) : null;
-  const weekday = (date: Date) =>
-    new Intl.DateTimeFormat("en-GB", {
-      weekday: "short",
-      timeZone: EVENT_TIMEZONE,
-    }).format(date);
-
   if (end && end.getTime() > start.getTime() && !isSameZonedDay(start, end)) {
-    const startParts = zonedDateParts(start);
-    const endParts = zonedDateParts(end);
-    const sameMonth =
-      startParts.month === endParts.month && startParts.year === endParts.year;
-    const weekdays =
-      weekday(start) === weekday(end)
-        ? weekday(start)
-        : `${weekday(start)}\u2013${weekday(end)}`;
-
-    if (sameMonth) {
-      const monthYear = new Intl.DateTimeFormat("en-GB", {
-        month: "short",
-        year: "numeric",
-        timeZone: EVENT_TIMEZONE,
-      }).format(end);
-
-      return `${weekdays}, ${startParts.day}\u2013${endParts.day} ${monthYear}`;
-    }
-
-    const startPart = new Intl.DateTimeFormat("en-GB", {
-      day: "numeric",
-      month: "short",
-      timeZone: EVENT_TIMEZONE,
-    }).format(start);
-    const endPart = new Intl.DateTimeFormat("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      timeZone: EVENT_TIMEZONE,
-    }).format(end);
-
-    return `${weekdays}, ${startPart} \u2013 ${endPart}`;
+    return formatDateRange(startString, endString);
   }
 
   return formatDate(startString, {
@@ -553,6 +526,51 @@ export function hasCompleteSessions(
   sessions?: EventSessionInput[] | null,
 ): boolean {
   return Boolean(sessions?.some((session) => session.day?.trim() && session.hours?.trim()));
+}
+
+/**
+ * One session-day label per calendar day between First Day and Last Day.
+ * Empty when the span is a single day or longer than a typical workshop, so a
+ * far-future last day does not create dozens of rows.
+ */
+const MAX_AUTO_SESSION_DAYS = 14;
+
+export function sessionDayLabelsBetween(
+  startYmd?: string | null,
+  endYmd?: string | null,
+): string[] {
+  if (
+    !startYmd ||
+    !endYmd ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(startYmd) ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(endYmd)
+  ) {
+    return [];
+  }
+
+  const start = new Date(`${startYmd}T12:00:00.000Z`);
+  const end = new Date(`${endYmd}T12:00:00.000Z`);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return [];
+  if (end.getTime() <= start.getTime()) return [];
+
+  const includeYear = startYmd.slice(0, 4) !== endYmd.slice(0, 4);
+  const labels: string[] = [];
+  const cursor = new Date(start);
+
+  while (cursor.getTime() <= end.getTime()) {
+    labels.push(
+      new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "long",
+        ...(includeYear ? { year: "numeric" as const } : {}),
+        timeZone: "UTC",
+      }).format(cursor),
+    );
+    if (labels.length > MAX_AUTO_SESSION_DAYS) return [];
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+
+  return labels.length >= 2 ? labels : [];
 }
 
 /**

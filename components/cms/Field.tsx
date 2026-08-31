@@ -71,7 +71,11 @@ export function TextField({
         required={required}
         placeholder={placeholder}
         readOnly={readOnly}
-        className={inputClassName}
+        className={
+          readOnly
+            ? `${inputClassName} cursor-default bg-sand/50 text-brown`
+            : inputClassName
+        }
         {...(value != null
           ? { value, onChange }
           : { defaultValue })}
@@ -85,14 +89,19 @@ export function DateField({
   label,
   hint,
   defaultValue,
+  value,
   required,
+  onChange,
 }: {
   name: string;
   label: string;
   hint?: string;
   /** Any ISO timestamp; only the date part is used. */
   defaultValue?: string;
+  /** YYYY-MM-DD when the date is driven by React state. */
+  value?: string;
   required?: boolean;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <Field label={label} hint={hint} htmlFor={name}>
@@ -100,9 +109,12 @@ export function DateField({
         id={name}
         name={name}
         type="date"
-        defaultValue={toDateInputValue(defaultValue)}
         required={required}
+        onChange={onChange}
         className={inputClassName}
+        {...(value != null
+          ? { value }
+          : { defaultValue: toDateInputValue(defaultValue) })}
       />
     </Field>
   );
@@ -139,6 +151,8 @@ export function SelectField({
   label,
   hint,
   defaultValue,
+  value,
+  onChange,
   options,
   placeholder,
 }: {
@@ -146,6 +160,8 @@ export function SelectField({
   label: string;
   hint?: string;
   defaultValue?: string;
+  value?: string;
+  onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
   options: { value: string; label: string }[];
   placeholder?: string;
 }) {
@@ -154,8 +170,10 @@ export function SelectField({
       <select
         id={name}
         name={name}
-        defaultValue={defaultValue ?? ""}
         className={inputClassName}
+        {...(value != null
+          ? { value, onChange }
+          : { defaultValue: defaultValue ?? "" })}
       >
         {placeholder ? <option value="">{placeholder}</option> : null}
         {options.map((option) => (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState, type FormEvent } from "react";
+import { useActionState, useState } from "react";
 
 import {
   DateField,
@@ -25,18 +25,6 @@ import {
 } from "@/lib/utils";
 
 import { saveEvent, type EventFormState } from "./actions";
-
-function formValue(form: HTMLFormElement, name: string): string {
-  const field = form.elements.namedItem(name);
-  if (
-    field instanceof HTMLInputElement ||
-    field instanceof HTMLTextAreaElement ||
-    field instanceof HTMLSelectElement
-  ) {
-    return field.value;
-  }
-  return "";
-}
 
 export interface ProgramOption {
   slug: string;
@@ -75,39 +63,17 @@ export function EventForm({
 
   const defaultCity =
     event?.cityCountry?.trim() || cityCountryFromLocation(event?.location);
-  const [slug, setSlug] = useState(
-    () =>
-      eventWebAddress(
-        event?.relatedProgram?.slug || event?.title,
-        defaultCity,
-        toDateInputValue(event?.date),
-      ) ||
-      originalSlug ||
-      "",
+  const [programSlug, setProgramSlug] = useState(
+    () => event?.relatedProgram?.slug ?? "",
   );
-
-  function syncWebAddress(form: HTMLFormElement) {
-    const next = eventWebAddress(
-      formValue(form, "relatedProgram") || formValue(form, "title"),
-      formValue(form, "cityCountry"),
-      formValue(form, "date"),
-    );
-    if (next) setSlug(next);
-  }
-
-  function onFormInput(formEvent: FormEvent<HTMLFormElement>) {
-    const target = formEvent.target;
-    if (target instanceof HTMLInputElement && target.name === "slug") return;
-    syncWebAddress(formEvent.currentTarget);
-  }
+  const [cityCountry, setCityCountry] = useState(() => defaultCity ?? "");
+  const [firstDay, setFirstDay] = useState(() => toDateInputValue(event?.date));
+  const [lastDay, setLastDay] = useState(() => toDateInputValue(event?.endDate));
+  const slug =
+    eventWebAddress(programSlug, cityCountry, firstDay) || originalSlug || "";
 
   return (
-    <form
-      action={formAction}
-      className="space-y-6"
-      onInput={onFormInput}
-      onChange={onFormInput}
-    >
+    <form action={formAction} className="space-y-6">
       {originalSlug ? (
         <input type="hidden" name="originalSlug" value={originalSlug} />
       ) : null}
@@ -157,8 +123,9 @@ export function EventForm({
         <SelectField
           name="relatedProgram"
           label="Program"
-          hint="Sets the symbol shown on the event card."
-          defaultValue={event?.relatedProgram?.slug ?? ""}
+          hint="Sets the symbol shown on the event card, and the start of the web address."
+          value={programSlug}
+          onChange={(change) => setProgramSlug(change.target.value)}
           placeholder="None"
           options={programs.map((program) => ({
             value: program.slug,
@@ -173,19 +140,23 @@ export function EventForm({
             name="date"
             label="First Day"
             hint="The day the event starts."
-            defaultValue={event?.date}
+            value={firstDay}
             required
+            onChange={(change) => setFirstDay(change.target.value)}
           />
           <DateField
             name="endDate"
             label="Last day"
             hint="Only for events running over more than one day."
             defaultValue={event?.endDate}
+            onChange={(change) => setLastDay(change.target.value)}
           />
         </div>
         <SessionsField
           label="Session times"
           hint="One row per session. Each row becomes its own line on the event card."
+          firstDay={firstDay}
+          lastDay={lastDay}
           defaultValues={scheduleFields.sessions.map((session) => ({
             day: session.day ?? undefined,
             hours: session.hours ?? undefined,
@@ -202,9 +173,8 @@ export function EventForm({
           label="City, country"
           hint="The small label on the event card, for example: Tiranë, Albania."
           placeholder="Tiranë, Albania"
-          defaultValue={
-            event?.cityCountry?.trim() || cityCountryFromLocation(event?.location)
-          }
+          value={cityCountry}
+          onChange={(change) => setCityCountry(change.target.value)}
         />
         <TextField
           name="location"
@@ -262,9 +232,9 @@ export function EventForm({
         <TextField
           name="slug"
           label="Web address"
-          hint="Updates from the program, city, and first day. This is the part after /events/."
+          hint="Always /events/ plus the program, city, and first day. It updates as you change those fields."
           value={slug}
-          onChange={(change) => setSlug(change.target.value)}
+          readOnly
         />
       </FormSection>
 

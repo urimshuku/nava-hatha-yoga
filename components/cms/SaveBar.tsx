@@ -1,36 +1,61 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 import { useFormStatus } from "react-dom";
 
 /**
- * Save keeps a working copy in the editor. Publish puts that copy on the
- * website. Repeated at the top and bottom of long forms so the buttons stay
- * within reach.
+ * Save keeps a working copy in the editor. Publish writes the current form
+ * and puts it on the website in one step — no separate Save is required.
+ * Repeated at the top and bottom of long forms so the buttons stay within reach.
+ *
+ * React's server-action FormData often omits the clicked submit button, so
+ * intent is stored on a hidden field updated synchronously on click.
  */
+function markFormIntent(
+  form: HTMLFormElement | null,
+  intent: "save" | "publish",
+) {
+  if (!form) return;
+  const fields = form.querySelectorAll<HTMLInputElement>(
+    "input[data-cms-intent]",
+  );
+  for (const field of fields) {
+    field.value = intent;
+  }
+}
+
 export function SaveBar({ cancelHref }: { cancelHref: string }) {
   const { pending } = useFormStatus();
   const [intent, setIntent] = useState<"save" | "publish" | null>(null);
 
+  function onIntentClick(next: "save" | "publish") {
+    return (event: MouseEvent<HTMLButtonElement>) => {
+      setIntent(next);
+      markFormIntent(event.currentTarget.form, next);
+    };
+  }
+
   return (
     <div className="ml-auto flex shrink-0 items-center gap-3">
+      <input
+        type="hidden"
+        name="intent"
+        data-cms-intent=""
+        defaultValue="save"
+      />
       <button
         type="submit"
-        name="intent"
-        value="save"
         disabled={pending}
-        onClick={() => setIntent("save")}
+        onClick={onIntentClick("save")}
         className="rounded border border-border-strong bg-white px-5 py-2.5 text-sm font-medium text-charcoal transition-colors hover:border-saffron hover:text-saffron disabled:opacity-60"
       >
         {pending && intent === "save" ? "Saving…" : "Save"}
       </button>
       <button
         type="submit"
-        name="intent"
-        value="publish"
         disabled={pending}
-        onClick={() => setIntent("publish")}
+        onClick={onIntentClick("publish")}
         className="rounded bg-saffron px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-saffron-hover disabled:opacity-60"
       >
         {pending && intent === "publish" ? "Publishing…" : "Publish"}

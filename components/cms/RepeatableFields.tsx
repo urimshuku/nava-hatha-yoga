@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { sessionDayLabelsBetween } from "@/lib/utils";
 
 import { Field, inputClassName } from "./Field";
 
@@ -94,18 +96,40 @@ export function SessionsField({
   label,
   hint,
   defaultValues = [],
+  firstDay,
+  lastDay,
 }: {
   label: string;
   hint?: string;
   defaultValues?: SessionRow[];
+  firstDay?: string;
+  lastDay?: string;
 }) {
   const [rows, setRows] = useState(() => toRows<SessionRow>(defaultValues, {}));
+
+  useEffect(() => {
+    const labels = sessionDayLabelsBetween(firstDay, lastDay);
+    if (labels.length === 0) return;
+
+    setRows((current) => {
+      if (current.some((row) => row.value.hours?.trim() || row.value.day?.trim())) {
+        return current;
+      }
+      return labels.map((day) => ({
+        id: nextRowId(),
+        value: { day, hours: "" },
+      }));
+    });
+  }, [firstDay, lastDay]);
 
   return (
     <Field label={label} hint={hint}>
       <div className="space-y-2">
         {rows.map((row) => (
-          <div key={row.id} className="flex flex-wrap gap-2 sm:flex-nowrap">
+          <div
+            key={`${row.id}-${row.value.day ?? ""}`}
+            className="flex flex-wrap gap-2 sm:flex-nowrap"
+          >
             <input
               type="text"
               name="sessionDay"
