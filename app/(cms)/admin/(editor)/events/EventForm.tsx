@@ -143,7 +143,7 @@ export function EventForm({
           <DateField
             name="date"
             label="First Day"
-            hint="The day the event starts."
+            hint="The day the event starts. Dates on the site are day/month/year."
             value={firstDay}
             required
             onChange={(change) => setFirstDay(change.target.value)}

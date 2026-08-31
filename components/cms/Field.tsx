@@ -109,6 +109,7 @@ export function DateField({
         id={name}
         name={name}
         type="date"
+        lang="en-GB"
         required={required}
         onChange={onChange}
         className={inputClassName}
