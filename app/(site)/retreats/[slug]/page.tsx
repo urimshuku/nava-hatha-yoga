@@ -194,6 +194,12 @@ export default async function RetreatDetailPage({ params }: PageProps) {
               </div>
             </aside>
           </div>
+
+          <div className="mt-12 text-center sm:mt-16">
+            <Button href="/contact" variant="ghost">
+              Questions? Get in touch
+            </Button>
+          </div>
         </Container>
       </Section>
     </>

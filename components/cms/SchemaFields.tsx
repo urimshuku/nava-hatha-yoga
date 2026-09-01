@@ -233,6 +233,7 @@ function SchemaField({
           label={field.label}
           hint={field.hint}
           itemLabel={field.itemLabel}
+          titleField={field.titleField}
           fields={field.fields}
           defaultValues={asRows(value)}
         />
@@ -388,6 +389,7 @@ function RowsField({
   label,
   hint,
   itemLabel,
+  titleField,
   fields,
   defaultValues,
 }: {
@@ -395,6 +397,7 @@ function RowsField({
   label: string;
   hint?: string;
   itemLabel: string;
+  titleField?: string;
   fields: FieldDef[];
   defaultValues: Record<string, unknown>[];
 }) {
@@ -418,7 +421,9 @@ function RowsField({
 
             <div className="mb-3 flex items-center justify-between gap-2 border-b border-border pb-2">
               <p className="text-xs font-semibold uppercase tracking-wide text-brown">
-                {itemLabel} {position + 1}
+                {titleField && asString(row.value[titleField])?.trim()
+                  ? asString(row.value[titleField])
+                  : `${itemLabel} ${position + 1}`}
               </p>
               <div className="flex gap-2">
                 <button

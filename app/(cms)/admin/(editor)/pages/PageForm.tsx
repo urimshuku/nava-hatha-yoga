@@ -9,6 +9,14 @@ import type { DocumentSchema } from "@/lib/cms/schema";
 
 import { savePage, type PageFormState } from "./actions";
 
+function jumpToSection(id: string) {
+  const node = document.getElementById(id);
+  if (node instanceof HTMLDetailsElement && !node.open) {
+    node.querySelector("summary")?.click();
+  }
+  node?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 /** Editing form for any single page, built from the page's schema. */
 export function PageForm({
   pageId,
@@ -27,6 +35,9 @@ export function PageForm({
   const [state, formAction, pending] = useActionState<PageFormState, FormData>(
     savePage,
     {},
+  );
+  const jumpLinks = schema.sections.filter(
+    (section) => section.collapsible && section.id,
   );
 
   return (
@@ -52,11 +63,32 @@ export function PageForm({
       <FormNotice kind={notice} />
       <FormError message={state.error} />
 
+      {jumpLinks.length > 0 ? (
+        <nav
+          aria-label="Form steps"
+          className="flex flex-wrap gap-2 rounded-lg border border-border bg-white px-4 py-3"
+        >
+          {jumpLinks.map((section) => (
+            <button
+              key={section.id}
+              type="button"
+              onClick={() => jumpToSection(section.id as string)}
+              className="rounded border border-border px-3 py-1.5 text-sm text-brown transition-colors hover:border-saffron hover:text-saffron"
+            >
+              {section.navTitle ?? section.title}
+            </button>
+          ))}
+        </nav>
+      ) : null}
+
       {schema.sections.map((section) => (
         <FormSection
-          key={section.title}
+          key={section.id ?? section.title}
+          id={section.id}
           title={section.title}
           description={section.description}
+          collapsible={section.collapsible}
+          defaultOpen={section.defaultOpen}
         >
           <SchemaFields fields={section.fields} values={values} />
         </FormSection>

@@ -727,21 +727,127 @@ export const contactPageSchema: DocumentSchema = {
   ],
 };
 
+const registerInputTypeOptions = [
+  { value: "text", label: "Short text" },
+  { value: "textarea", label: "Long text" },
+  { value: "email", label: "Email" },
+  { value: "tel", label: "Phone" },
+  { value: "select", label: "Dropdown" },
+];
+
+const formFieldRowFields: FieldDef[] = [
+  {
+    kind: "text",
+    name: "key",
+    label: "Field id",
+    hint: "Used in the notification email. Keep this when you only change the name people see. For a new field, use a short name such as dietaryNeeds.",
+  },
+  { kind: "text", name: "label", label: "Name on the form" },
+  { kind: "checkbox", name: "required", label: "Required" },
+  {
+    kind: "select",
+    name: "type",
+    label: "Kind of box",
+    options: registerInputTypeOptions,
+  },
+  {
+    kind: "list",
+    name: "options",
+    label: "Dropdown choices",
+    hint: "Only used for a dropdown. One choice per line.",
+  },
+  { kind: "text", name: "placeholder", label: "Hint inside the box" },
+];
+
+function lasting(field: FieldDef): FieldDef {
+  if (field.kind === "text" || field.kind === "textarea" || field.kind === "list") {
+    return { ...field, keepEmpty: true };
+  }
+  if (field.kind === "group") {
+    return { ...field, fields: field.fields.map(lasting) };
+  }
+  if (field.kind === "rows") {
+    return {
+      ...field,
+      keepEmpty: true,
+      fields: field.fields.map(lasting),
+    };
+  }
+  return field;
+}
+
+function lastingSection(section: SchemaSection): SchemaSection {
+  return { ...section, fields: section.fields.map(lasting) };
+}
+
 function registerFormSections(
   pageName: string,
   fullForm: boolean,
 ): SchemaSection[] {
   const hero: SchemaSection = {
+    id: "page-heading",
     title: "The top of the page",
     fields: heroFields(pageName),
   };
-  if (!fullForm) return [hero];
 
-  return [
+  const step1: SchemaSection = {
+    id: "step-1",
+    navTitle: "Step 1",
+    defaultOpen: true,
+    title: "Step 1 — Personal Information",
+    description:
+      "These are the same fields people fill in on the website. Rename one, add a new one, or remove one to change the live form.",
+    collapsible: true,
+    fields: [
+      {
+        kind: "text",
+        name: "step1Title",
+        label: "Step title",
+        hint: "Shown at the top of this step on the website.",
+      },
+      {
+        kind: "rows",
+        name: "personalFields",
+        label: "Fields",
+        itemLabel: "field",
+        titleField: "label",
+        hint: "The order here is the order on the website.",
+        fields: formFieldRowFields,
+      },
+      ...(fullForm
+        ? ([
+            {
+              kind: "text",
+              name: "emergencyHeading",
+              label: "Emergency contact heading",
+            },
+            {
+              kind: "rows",
+              name: "emergencyFields",
+              label: "Emergency contact fields",
+              itemLabel: "field",
+              titleField: "label",
+              fields: formFieldRowFields,
+            },
+          ] as FieldDef[])
+        : []),
+    ],
+  };
+
+  if (!fullForm) return [hero, step1].map(lastingSection);
+
+  return ([
     hero,
+    step1,
     {
-      title: "Health questions",
+      id: "step-2",
+      navTitle: "Step 2",
+      title: "Step 2 — Health-Related Information",
+      description:
+        "Questions, tick-boxes and the medical disclaimer on the second step of the form.",
+      collapsible: true,
       fields: [
+        { kind: "text", name: "step2Title", label: "Step title" },
         {
           kind: "list",
           name: "healthIntro",
@@ -749,10 +855,26 @@ function registerFormSections(
           hint: "One paragraph per line.",
         },
         {
+          kind: "text",
+          name: "healthConditionsLegend",
+          label: "Heading above the conditions",
+        },
+        {
           kind: "list",
           name: "healthConditions",
           label: "Conditions people can tick",
-          hint: "One condition per line.",
+          hint: "One condition per line. Add or remove lines to change the list.",
+        },
+        { kind: "text", name: "otherConditionLabel", label: "The 'Other' option" },
+        {
+          kind: "text",
+          name: "notApplicableLabel",
+          label: "The 'not applicable' option",
+        },
+        {
+          kind: "text",
+          name: "specifyPlaceholder",
+          label: "Hint inside the 'please specify' box",
         },
         {
           kind: "text",
@@ -775,18 +897,32 @@ function registerFormSections(
           name: "pregnancyLabel",
           label: "Question about pregnancy",
         },
-      ],
-    },
-    {
-      title: "Health disclaimer",
-      fields: [
-        { kind: "text", name: "disclaimerTitle", label: "Heading" },
+        { kind: "text", name: "yesLabel", label: "Yes option" },
+        { kind: "text", name: "noLabel", label: "No option" },
+        {
+          kind: "textarea",
+          name: "disclaimerIntro",
+          label: "Line before the disclaimer link",
+          rows: 2,
+        },
+        {
+          kind: "text",
+          name: "disclaimerLinkLabel",
+          label: "Disclaimer link wording",
+        },
+        {
+          kind: "text",
+          name: "disclaimerConfirmLead",
+          label: "Line above the summary ticks",
+        },
+        { kind: "text", name: "disclaimerTitle", label: "Disclaimer heading" },
         {
           kind: "rows",
           name: "disclaimerDocument",
           label: "The full disclaimer",
           hint: "Each part appears as a titled block in the document people can open and read.",
           itemLabel: "part",
+          titleField: "title",
           fields: [
             { kind: "text", name: "title", label: "Title of this part" },
             { kind: "textarea", name: "intro", label: "Introduction", rows: 2 },
@@ -795,6 +931,7 @@ function registerFormSections(
               name: "items",
               label: "Points",
               itemLabel: "point",
+              titleField: "title",
               fields: [
                 { kind: "text", name: "title", label: "Title" },
                 { kind: "textarea", name: "lead", label: "Text", rows: 2 },
@@ -825,8 +962,63 @@ function registerFormSections(
       ],
     },
     {
-      title: "Refund policy",
+      id: "step-3",
+      navTitle: "Step 3",
+      title: "Step 3 — Program-Related Information",
+      description: "How they heard about the program and their practice history.",
+      collapsible: true,
       fields: [
+        { kind: "text", name: "step3Title", label: "Step title" },
+        {
+          kind: "text",
+          name: "howHeardLabel",
+          label: "Question about how they heard",
+        },
+        {
+          kind: "rows",
+          name: "howHeardGroups",
+          label: "Groups of choices",
+          itemLabel: "group",
+          titleField: "heading",
+          hint: "Add or remove a group or a choice inside it.",
+          fields: [
+            { kind: "text", name: "heading", label: "Group heading" },
+            {
+              kind: "list",
+              name: "options",
+              label: "Choices",
+              hint: "One choice per line.",
+            },
+          ],
+        },
+        { kind: "text", name: "howHeardOtherLabel", label: "The 'Other' option" },
+        {
+          kind: "textarea",
+          name: "priorPracticeLabel",
+          label: "Question about prior practice",
+          rows: 2,
+        },
+        {
+          kind: "text",
+          name: "otherIshaLabel",
+          label: "Question about other Isha practices",
+        },
+        {
+          kind: "text",
+          name: "otherIshaDetailsLabel",
+          label: "Follow-up if they answered yes",
+        },
+      ],
+    },
+    {
+      id: "step-4",
+      navTitle: "Step 4",
+      title: "Step 4 — Agreement",
+      description: "The refund policy and the participant agreement.",
+      collapsible: true,
+      fields: [
+        { kind: "text", name: "step4Title", label: "Step title" },
+        { kind: "text", name: "refundPolicyTitle", label: "Refund policy heading" },
         {
           kind: "list",
           name: "refundPolicyBullets",
@@ -836,15 +1028,10 @@ function registerFormSections(
         {
           kind: "textarea",
           name: "refundPolicyConsentLabel",
-          label: "Wording of the tick box",
+          label: "Wording of the refund tick box",
           rows: 2,
         },
-      ],
-    },
-    {
-      title: "Agreement",
-      fields: [
-        { kind: "text", name: "agreementTitle", label: "Heading" },
+        { kind: "text", name: "agreementTitle", label: "Agreement heading" },
         {
           kind: "list",
           name: "agreementBullets",
@@ -854,19 +1041,25 @@ function registerFormSections(
         {
           kind: "textarea",
           name: "agreementConsentLabel",
-          label: "Wording of the tick box",
+          label: "Wording of the agreement tick box",
           rows: 2,
         },
       ],
     },
     {
-      title: "Before your session",
+      id: "step-5",
+      navTitle: "Step 5",
+      title: "Step 5 — Before the Start of the Session",
+      description: "The notes and full guidelines shown on the last step.",
+      collapsible: true,
       fields: [
+        { kind: "text", name: "step5Title", label: "Step title" },
         {
           kind: "rows",
           name: "beforeSessionBlocks",
-          label: "Blocks",
+          label: "Blocks on this step",
           itemLabel: "block",
+          titleField: "heading",
           fields: [
             { kind: "text", name: "heading", label: "Heading" },
             {
@@ -880,6 +1073,7 @@ function registerFormSections(
               name: "lists",
               label: "Lists",
               itemLabel: "list",
+              titleField: "label",
               fields: [
                 { kind: "text", name: "label", label: "Heading of the list" },
                 {
@@ -892,17 +1086,25 @@ function registerFormSections(
             },
           ],
         },
-      ],
-    },
-    {
-      title: "Full session guidelines",
-      fields: [
-        { kind: "text", name: "guidelinesTitle", label: "Heading" },
+        {
+          kind: "textarea",
+          name: "guidelinesPrompt",
+          label: "Sentence before the read and download links",
+          rows: 2,
+        },
+        { kind: "text", name: "guidelinesReadLabel", label: "Read link wording" },
+        {
+          kind: "text",
+          name: "guidelinesDownloadLabel",
+          label: "Download link wording",
+        },
+        { kind: "text", name: "guidelinesTitle", label: "Full guidelines heading" },
         {
           kind: "rows",
           name: "guidelinesDocument",
           label: "The guidelines",
           itemLabel: "part",
+          titleField: "title",
           fields: [
             { kind: "text", name: "title", label: "Title of this part" },
             {
@@ -910,6 +1112,7 @@ function registerFormSections(
               name: "blocks",
               label: "Blocks",
               itemLabel: "block",
+              titleField: "heading",
               fields: [
                 { kind: "text", name: "heading", label: "Heading" },
                 {
@@ -923,6 +1126,7 @@ function registerFormSections(
                   name: "lists",
                   label: "Lists",
                   itemLabel: "list",
+                  titleField: "label",
                   fields: [
                     { kind: "text", name: "label", label: "Heading of the list" },
                     {
@@ -939,7 +1143,7 @@ function registerFormSections(
         },
       ],
     },
-  ];
+  ] as SchemaSection[]).map(lastingSection);
 }
 
 export function createRegisterPageSchema(options: {
@@ -960,7 +1164,7 @@ export function createRegisterPageSchema(options: {
 export const workshopRegisterPageSchema = createRegisterPageSchema({
   title: "Workshop Registration",
   description:
-    "The full five-step workshop form: health questions, the disclaimer and the guidelines. Please change the medical and legal text with care.",
+    "The same five steps people complete on the website. Open a step to rename, add or remove fields. Please change the medical and legal text with care.",
   previewPath: "/register?kind=workshop",
   pageName: "workshop registration",
 });
@@ -968,7 +1172,7 @@ export const workshopRegisterPageSchema = createRegisterPageSchema({
 export const freeOfferingRegisterPageSchema = createRegisterPageSchema({
   title: "Free Offering Registration",
   description:
-    "The one-page registration form used for free sessions. Only the heading of the page is edited here; people then fill in their personal details.",
+    "The one-page registration form used for free sessions. The heading and the personal details fields are the same as on the website.",
   previewPath: "/register?kind=free",
   pageName: "free offering registration",
   fullForm: false,

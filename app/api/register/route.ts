@@ -1,7 +1,21 @@
 import { NextResponse } from "next/server";
 
-import { findEventForRegistration, getRetreatBySlug } from "@/lib/cms/site-content";
+import {
+  findEventForRegistration,
+  getRegisterPage,
+  getRetreatBySlug,
+} from "@/lib/cms/site-content";
 import { deliverRegistration } from "@/lib/registration";
+import {
+  firstEmailValue,
+  displayNameValue,
+  hasInvalidRegisterFields,
+  labeledValuesForFields,
+  parseExtraFields,
+  REGISTER_EMAIL_RE,
+  resolveRegisterContent,
+  valueForRegisterField,
+} from "@/lib/register-config";
 import {
   isSimplifiedRegistrationKind,
   parseRegistrationKind,
@@ -23,6 +37,7 @@ interface RegisterPayload {
   emergencyName?: string;
   emergencyRelationship?: string;
   emergencyPhone?: string;
+  extraFields?: unknown;
   healthConditions?: string[];
   healthConditionsOther?: string;
   healthDetails?: string;
@@ -40,12 +55,26 @@ interface RegisterPayload {
   company?: string;
 }
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 function deliveryErrorHeader(error: unknown): string {
   const message = error instanceof Error ? error.message : "Unknown delivery error";
 
   return message.replace(/[^\x20-\x7E]/g, " ").slice(0, 400);
+}
+
+function knownValues(data: RegisterPayload): Record<string, string | undefined> {
+  return {
+    fullName: data.fullName,
+    preferredName: data.preferredName,
+    email: data.email,
+    phone: data.phone,
+    address: data.address,
+    gender: data.gender,
+    age: data.age,
+    occupation: data.occupation,
+    emergencyName: data.emergencyName,
+    emergencyRelationship: data.emergencyRelationship,
+    emergencyPhone: data.emergencyPhone,
+  };
 }
 
 export async function POST(request: Request) {
@@ -81,6 +110,7 @@ export async function POST(request: Request) {
     isRetreat,
     eventLabel: event,
   });
+  const content = resolveRegisterContent(await getRegisterPage(kind));
   const simplified = isSimplifiedRegistrationKind(kind);
   const category =
     matchedEvent?.category ??
@@ -89,13 +119,33 @@ export async function POST(request: Request) {
       : kind === "free"
         ? "Free Session"
         : undefined);
-  const fullName = data.fullName?.trim();
-  const email = data.email?.trim();
-  const phone = data.phone?.trim();
-  const address = data.address?.trim();
-  const age = data.age?.trim();
-  const emergencyName = data.emergencyName?.trim();
-  const emergencyPhone = data.emergencyPhone?.trim();
+  const extra = parseExtraFields(data.extraFields);
+  const known = knownValues(data);
+  const personalFields = content.personalFields;
+  const emergencyFields = simplified ? [] : content.emergencyFields;
+
+  if (
+    hasInvalidRegisterFields(personalFields, known, extra) ||
+    hasInvalidRegisterFields(emergencyFields, known, extra)
+  ) {
+    return NextResponse.json(
+      { error: "Please complete all required fields." },
+      { status: 400 },
+    );
+  }
+
+  const email = firstEmailValue(
+    [...personalFields, ...emergencyFields],
+    known,
+    extra,
+  );
+  if (email && !REGISTER_EMAIL_RE.test(email)) {
+    return NextResponse.json(
+      { error: "Please enter a valid email address." },
+      { status: 400 },
+    );
+  }
+
   const healthDetails = data.healthDetails?.trim();
   const majorSurgery = data.majorSurgery?.trim();
   const pregnant = data.pregnant?.trim();
@@ -109,53 +159,77 @@ export async function POST(request: Request) {
     ? data.healthConditions.filter((c) => typeof c === "string" && c.trim())
     : [];
 
-  if (!fullName || !email || !phone || !address || !age) {
-    return NextResponse.json(
-      { error: "Please complete all required fields." },
-      { status: 400 },
-    );
+  if (!simplified) {
+    const healthChoices = [
+      ...content.healthConditions,
+      content.otherConditionLabel,
+      content.notApplicableLabel,
+    ].filter(Boolean);
+    if (healthChoices.length > 0 && healthConditions.length === 0) {
+      return NextResponse.json(
+        { error: "Please select at least one health option." },
+        { status: 400 },
+      );
+    }
+    if (
+      content.otherConditionLabel &&
+      healthConditions.includes(content.otherConditionLabel) &&
+      !data.healthConditionsOther?.trim()
+    ) {
+      return NextResponse.json(
+        { error: "Please complete all required fields." },
+        { status: 400 },
+      );
+    }
+    if (content.majorSurgeryQuestion && !majorSurgery) {
+      return NextResponse.json(
+        { error: "Please complete all required fields." },
+        { status: 400 },
+      );
+    }
+
+    const howHeardShown =
+      content.howHeardGroups.length > 0 || Boolean(content.howHeardOtherLabel);
+    if (howHeardShown && howHeard.length === 0 && !howHeardOther) {
+      return NextResponse.json(
+        { error: "Please complete all required fields." },
+        { status: 400 },
+      );
+    }
+    if (content.priorPracticeLabel && !priorPractice) {
+      return NextResponse.json(
+        { error: "Please complete all required fields." },
+        { status: 400 },
+      );
+    }
+    if (content.otherIshaLabel && !otherIshaPractices) {
+      return NextResponse.json(
+        { error: "Please complete all required fields." },
+        { status: 400 },
+      );
+    }
+
+    if (
+      (content.disclaimerConsentLabel && data.medicalConsent !== "yes") ||
+      (content.refundPolicyConsentLabel && data.refundConsent !== "yes") ||
+      (content.agreementConsentLabel && data.agreementConsent !== "yes")
+    ) {
+      return NextResponse.json(
+        { error: "Please agree to all required terms to continue." },
+        { status: 400 },
+      );
+    }
   }
 
-  if (
-    !simplified &&
-    (!emergencyName ||
-      !emergencyPhone ||
-      !majorSurgery ||
-      (howHeard.length === 0 && !howHeardOther) ||
-      !priorPractice ||
-      !otherIshaPractices)
-  ) {
-    return NextResponse.json(
-      { error: "Please complete all required fields." },
-      { status: 400 },
+  const fullName =
+    displayNameValue(personalFields, known, extra) ||
+    valueForRegisterField(
+      { key: "fullName", label: "Full name", type: "text" },
+      known,
+      extra,
     );
-  }
-
-  if (!EMAIL_RE.test(email)) {
-    return NextResponse.json(
-      { error: "Please enter a valid email address." },
-      { status: 400 },
-    );
-  }
-
-  if (!simplified && healthConditions.length === 0) {
-    return NextResponse.json(
-      { error: "Please select at least one health option." },
-      { status: 400 },
-    );
-  }
-
-  if (
-    !simplified &&
-    (data.medicalConsent !== "yes" ||
-      data.refundConsent !== "yes" ||
-      data.agreementConsent !== "yes")
-  ) {
-    return NextResponse.json(
-      { error: "Please agree to all required terms to continue." },
-      { status: 400 },
-    );
-  }
+  const personalLines = labeledValuesForFields(personalFields, known, extra);
+  const emergencyLines = labeledValuesForFields(emergencyFields, known, extra);
 
   try {
     await deliverRegistration({
@@ -164,14 +238,16 @@ export async function POST(request: Request) {
       fullName,
       preferredName: data.preferredName?.trim(),
       email,
-      phone,
-      address,
+      phone: data.phone?.trim() ?? "",
+      address: data.address?.trim() ?? "",
       gender: data.gender?.trim(),
-      age,
+      age: data.age?.trim() ?? "",
       occupation: data.occupation?.trim(),
-      emergencyName,
+      emergencyName: data.emergencyName?.trim(),
       emergencyRelationship: data.emergencyRelationship?.trim(),
-      emergencyPhone,
+      emergencyPhone: data.emergencyPhone?.trim(),
+      personalLines,
+      emergencyLines,
       healthConditions,
       healthConditionsOther: data.healthConditionsOther?.trim(),
       healthDetails,

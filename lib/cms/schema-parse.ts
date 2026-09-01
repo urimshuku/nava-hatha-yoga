@@ -15,11 +15,16 @@ import { joinPath, type DocumentSchema, type FieldDef } from "./schema";
  *   repeatable rows`sections__index`    (repeated, one per surviving row)
  */
 
-function readText(formData: FormData, path: string): string | undefined {
+function readText(
+  formData: FormData,
+  path: string,
+  keepEmpty = false,
+): string | undefined {
   const value = formData.get(path);
-  if (typeof value !== "string") return undefined;
+  if (typeof value !== "string") return keepEmpty ? "" : undefined;
   const trimmed = value.trim();
-  return trimmed ? trimmed : undefined;
+  if (trimmed) return trimmed;
+  return keepEmpty ? "" : undefined;
 }
 
 function readJson(formData: FormData, path: string): unknown {
@@ -41,7 +46,8 @@ function readIndices(formData: FormData, path: string): number[] {
 
 /** True when a row carries no content and should not be saved. */
 function isEmpty(value: unknown): boolean {
-  if (value === undefined || value === null || value === "") return true;
+  if (value === undefined || value === null || value === "" || value === false)
+    return true;
   if (Array.isArray(value)) return value.every(isEmpty);
   if (typeof value === "object") {
     return Object.entries(value as Record<string, unknown>)
@@ -65,7 +71,7 @@ function readField(
   switch (field.kind) {
     case "text":
     case "textarea":
-      return readText(formData, path);
+      return readText(formData, path, Boolean(field.keepEmpty));
 
     case "date": {
       const value = readText(formData, path);
@@ -96,7 +102,8 @@ function readField(
         .filter((value): value is string => typeof value === "string")
         .map((value) => value.trim())
         .filter(Boolean);
-      return items.length > 0 ? items : undefined;
+      if (items.length > 0) return items;
+      return field.keepEmpty ? [] : undefined;
     }
 
     case "image":
@@ -120,7 +127,8 @@ function readField(
         .map((index) => readFields(field.fields, formData, `${path}.${index}`))
         .filter((row) => !isEmpty(row))
         .map((row) => ({ _key: newKey(), ...row }));
-      return rows.length > 0 ? rows : undefined;
+      if (rows.length > 0) return rows;
+      return field.keepEmpty ? [] : undefined;
     }
   }
 }

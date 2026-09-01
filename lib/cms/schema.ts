@@ -22,8 +22,10 @@ export type FieldDef =
       kind: "text";
       required?: boolean;
       placeholder?: string;
+      /** Save a blank value so clearing the box can hide the field on the site. */
+      keepEmpty?: boolean;
     })
-  | (FieldBase & { kind: "textarea"; rows?: number })
+  | (FieldBase & { kind: "textarea"; rows?: number; keepEmpty?: boolean })
   | (FieldBase & { kind: "richtext" })
   | (FieldBase & { kind: "date" })
   | (FieldBase & { kind: "checkbox" })
@@ -34,7 +36,7 @@ export type FieldDef =
       placeholder?: string;
     })
   /** A list of plain lines, such as bullet points. */
-  | (FieldBase & { kind: "list"; placeholder?: string })
+  | (FieldBase & { kind: "list"; placeholder?: string; keepEmpty?: boolean })
   | (FieldBase & { kind: "image" })
   /** A list of images, such as a retreat gallery. */
   | (FieldBase & { kind: "gallery" })
@@ -48,12 +50,21 @@ export type FieldDef =
       fields: FieldDef[];
       /** Field to show in the collapsed row header. Defaults to the first text field. */
       titleField?: string;
+      keepEmpty?: boolean;
     });
 
 export interface SchemaSection {
   title: string;
   description?: string;
   fields: FieldDef[];
+  /** Jump-link target and collapsible container id. */
+  id?: string;
+  /** Closed by default so long forms (such as registration) stay scannable. */
+  collapsible?: boolean;
+  /** Shorter label for the jump nav. Defaults to `title`. */
+  navTitle?: string;
+  /** When collapsible, start open. */
+  defaultOpen?: boolean;
 }
 
 export interface DocumentSchema {

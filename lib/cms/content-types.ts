@@ -369,22 +369,65 @@ export interface RegisterPage {
   heroEyebrow?: string;
   heroTitle?: string;
   heroDescription?: string;
+  step1Title?: string;
+  personalFields?: RegisterFormFieldData[];
+  emergencyHeading?: string;
+  emergencyFields?: RegisterFormFieldData[];
+  step2Title?: string;
   healthIntro?: string[];
+  healthConditionsLegend?: string;
   healthConditions?: string[];
+  otherConditionLabel?: string;
+  notApplicableLabel?: string;
+  specifyPlaceholder?: string;
   healthDetailsLabel?: string;
   majorSurgeryQuestion?: string;
   majorSurgeryHint?: string;
   pregnancyLabel?: string;
+  yesLabel?: string;
+  noLabel?: string;
+  disclaimerIntro?: string;
+  disclaimerLinkLabel?: string;
+  disclaimerConfirmLead?: string;
   disclaimerTitle?: string;
   disclaimerDocument?: DisclaimerSectionData[];
   disclaimerBullets?: string[];
   disclaimerConsentLabel?: string;
+  step3Title?: string;
+  howHeardLabel?: string;
+  howHeardGroups?: HowHeardGroupData[];
+  howHeardOtherLabel?: string;
+  priorPracticeLabel?: string;
+  otherIshaLabel?: string;
+  otherIshaDetailsLabel?: string;
+  step4Title?: string;
+  refundPolicyTitle?: string;
   refundPolicyBullets?: string[];
   refundPolicyConsentLabel?: string;
   agreementTitle?: string;
   agreementBullets?: string[];
   agreementConsentLabel?: string;
+  step5Title?: string;
   beforeSessionBlocks?: GuidelineBlockData[];
+  guidelinesPrompt?: string;
+  guidelinesReadLabel?: string;
+  guidelinesDownloadLabel?: string;
   guidelinesTitle?: string;
   guidelinesDocument?: GuidelineSectionData[];
+}
+
+export type RegisterInputType = "text" | "textarea" | "email" | "tel" | "select";
+
+export interface RegisterFormFieldData {
+  key?: string;
+  label?: string;
+  required?: boolean;
+  type?: RegisterInputType | string;
+  options?: string[];
+  placeholder?: string;
+}
+
+export interface HowHeardGroupData {
+  heading?: string;
+  options?: string[];
 }

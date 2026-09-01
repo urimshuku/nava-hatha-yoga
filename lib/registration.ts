@@ -27,6 +27,9 @@ export interface RegistrationSubmission {
   emergencyName?: string;
   emergencyRelationship?: string;
   emergencyPhone?: string;
+  /** CMS field labels and values, in the order they appear on the form. */
+  personalLines?: { label: string; value: string }[];
+  emergencyLines?: { label: string; value: string }[];
 
   // Step 2 — Health-Related Information
   healthConditions: string[];
@@ -52,23 +55,42 @@ export function formatRegistration(s: RegistrationSubmission): string {
     `Event: ${s.event || "-"}`,
     "",
     "--- Personal Information ---",
-    `Full name: ${s.fullName}`,
-    `Preferred name: ${s.preferredName || "-"}`,
-    `Email: ${s.email}`,
-    `Phone: ${s.phone}`,
-    `Residential address: ${s.address}`,
-    `Gender: ${s.gender || "-"}`,
-    `Age: ${s.age}`,
-    `Occupation: ${s.occupation || "-"}`,
   ];
+
+  if (s.personalLines && s.personalLines.length > 0) {
+    for (const field of s.personalLines) {
+      lines.push(`${field.label}: ${field.value || "-"}`);
+    }
+  } else {
+    lines.push(
+      `Full name: ${s.fullName}`,
+      `Preferred name: ${s.preferredName || "-"}`,
+      `Email: ${s.email}`,
+      `Phone: ${s.phone}`,
+      `Residential address: ${s.address}`,
+      `Gender: ${s.gender || "-"}`,
+      `Age: ${s.age}`,
+      `Occupation: ${s.occupation || "-"}`,
+    );
+  }
 
   if (!simplified) {
     const conditions =
       s.healthConditions.length > 0 ? s.healthConditions.join(", ") : "-";
     const howHeard = s.howHeard.length > 0 ? s.howHeard.join(", ") : "-";
 
+    if (s.emergencyLines && s.emergencyLines.length > 0) {
+      lines.push("");
+      for (const field of s.emergencyLines) {
+        lines.push(`${field.label}: ${field.value || "-"}`);
+      }
+    } else {
+      lines.push(
+        `Emergency contact: ${s.emergencyName || "-"} (${s.emergencyRelationship || "-"}) — ${s.emergencyPhone || "-"}`,
+      );
+    }
+
     lines.push(
-      `Emergency contact: ${s.emergencyName || "-"} (${s.emergencyRelationship || "-"}) — ${s.emergencyPhone || "-"}`,
       "",
       "--- Health-Related Information ---",
       `Conditions: ${conditions}`,
@@ -93,13 +115,15 @@ export function formatRegistration(s: RegistrationSubmission): string {
 export async function deliverRegistration(
   submission: RegistrationSubmission,
 ): Promise<void> {
-  const fullName = submission.fullName.replace(/\s+/g, " ").trim();
+  const fullName = (submission.fullName || "Registration")
+    .replace(/\s+/g, " ")
+    .trim();
   const eventName = submission.event?.replace(/\s+/g, " ").trim();
 
   await acceptSubmission({
     type: "registration",
     subject: `New registration: ${eventName || "Program registration"} - ${fullName}`,
-    replyTo: submission.email,
+    replyTo: submission.email || "noreply@navahathayoga.com",
     body: formatRegistration(submission),
     payload: submission,
   });

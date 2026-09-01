@@ -25,14 +25,14 @@ import {
   formStackClass,
 } from "@/components/forms/form-styles";
 import { MedicalDisclaimerModal } from "@/components/forms/MedicalDisclaimerModal";
+import { RegisterFieldControl } from "@/components/forms/RegisterFieldControl";
 import { Button } from "@/components/ui/Button";
 import {
   DEFAULT_REGISTER_CONTENT,
   type RegisterContent,
+  type RegisterFormField,
 } from "@/lib/register-config";
 import {
-  HEALTH_CONDITION_NOT_APPLICABLE,
-  MEDICAL_DISCLAIMER_INTRO,
   SHOW_PAYMENT_DETAILS_STEP,
   isSimplifiedRegistration,
 } from "@/lib/register-content";
@@ -55,46 +55,25 @@ const labelClass = formLabelClass;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const FULL_STEPS = [
-  "Personal Information",
-  "Health-Related Information",
-  "Program-Related Information",
-  "Agreement",
-  ...(SHOW_PAYMENT_DETAILS_STEP ? (["Payment Details"] as const) : []),
-  "Before the Start of the Session",
+const KNOWN_KEYS = [
+  "fullName",
+  "preferredName",
+  "email",
+  "phone",
+  "address",
+  "gender",
+  "age",
+  "occupation",
+  "emergencyName",
+  "emergencyRelationship",
+  "emergencyPhone",
 ] as const;
 
-const OTHER_CONDITION = "Other";
+type KnownKey = (typeof KNOWN_KEYS)[number];
 
-const HOW_HEARD_GROUPS: { heading: string; options: readonly string[] }[] = [
-  {
-    heading: "Personal",
-    options: [
-      "Friend or family recommendation",
-      "Another participant / past student",
-      "Another yoga teacher",
-    ],
-  },
-  {
-    heading: "Online / social",
-    options: [
-      "Instagram",
-      "Website (ishafoundation.org)",
-      "YouTube",
-      "Website (navahathayoga.com)",
-      "Facebook",
-    ],
-  },
-  {
-    heading: "Local / in person",
-    options: [
-      "Flyer / poster",
-      "Local community or group",
-      "Saw a class or practice in person",
-      "Yoga / wellness event or retreat",
-    ],
-  },
-];
+function isKnownKey(key: string): key is KnownKey {
+  return (KNOWN_KEYS as readonly string[]).includes(key);
+}
 
 interface FormState {
   fullName: string;
@@ -122,6 +101,7 @@ interface FormState {
   refundConsent: boolean;
   agreementConsent: boolean;
   company: string;
+  extra: Record<string, string>;
 }
 
 const initialState: FormState = {
@@ -150,9 +130,10 @@ const initialState: FormState = {
   refundConsent: false,
   agreementConsent: false,
   company: "",
+  extra: {},
 };
 
-type Errors = Partial<Record<keyof FormState, string>>;
+type Errors = Partial<Record<string, string>>;
 
 function Required() {
   return <span className="text-saffron">*</span>;
@@ -176,7 +157,19 @@ export function RegistrationForm({
 }: RegistrationFormProps) {
   const simplified =
     simplifiedProp ?? isSimplifiedRegistration(event, undefined, kind);
-  const steps = simplified ? (["Personal Information"] as const) : FULL_STEPS;
+  const steps = simplified
+    ? [content.step1Title]
+    : [
+        content.step1Title,
+        content.step2Title,
+        content.step3Title,
+        content.step4Title,
+        ...(SHOW_PAYMENT_DETAILS_STEP ? ["Payment Details"] : []),
+        content.step5Title,
+      ];
+  const otherCondition = content.otherConditionLabel;
+  const notApplicable = content.notApplicableLabel;
+  const yesNo = [content.yesLabel, content.noLabel].filter(Boolean);
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>(initialState);
   const [errors, setErrors] = useState<Errors>({});
@@ -189,7 +182,32 @@ export function RegistrationForm({
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => (prev[key as string] ? { ...prev, [key]: undefined } : prev));
+  }
+
+  function fieldValue(key: string): string {
+    if (isKnownKey(key)) return form[key];
+    return form.extra[key] ?? "";
+  }
+
+  function setFieldValue(key: string, value: string) {
+    if (isKnownKey(key)) {
+      update(key, value);
+      return;
+    }
+    setForm((prev) => ({ ...prev, extra: { ...prev.extra, [key]: value } }));
     setErrors((prev) => (prev[key] ? { ...prev, [key]: undefined } : prev));
+  }
+
+  function validateFields(fields: readonly RegisterFormField[], next: Errors) {
+    for (const field of fields) {
+      const value = fieldValue(field.key).trim();
+      if (field.required && !value) {
+        next[field.key] = `Please complete ${field.label.toLowerCase()}.`;
+      } else if (field.type === "email" && value && !EMAIL_RE.test(value)) {
+        next[field.key] = "Please enter a valid email address.";
+      }
+    }
   }
 
   function toggleCondition(condition: string) {
@@ -220,51 +238,51 @@ export function RegistrationForm({
     const next: Errors = {};
 
     if (current === 0) {
-      if (!form.fullName.trim()) next.fullName = "Please enter your full name.";
-      if (!form.email.trim()) next.email = "Please enter your email.";
-      else if (!EMAIL_RE.test(form.email.trim()))
-        next.email = "Please enter a valid email address.";
-      if (!form.phone.trim()) next.phone = "Please enter your phone number.";
-      if (!form.address.trim())
-        next.address = "Please enter your residential address.";
-      if (!form.age.trim()) next.age = "Please enter your age.";
-      if (!simplified) {
-        if (!form.emergencyName.trim())
-          next.emergencyName = "Please enter an emergency contact name.";
-        if (!form.emergencyPhone.trim())
-          next.emergencyPhone = "Please enter an emergency contact phone number.";
-      }
+      validateFields(content.personalFields, next);
+      if (!simplified) validateFields(content.emergencyFields, next);
     }
 
     if (!simplified && current === 1) {
-      if (form.healthConditions.length === 0)
+      const healthChoices = [
+        ...content.healthConditions,
+        otherCondition,
+        content.notApplicableLabel,
+      ].filter(Boolean);
+      if (healthChoices.length > 0 && form.healthConditions.length === 0)
         next.healthConditions =
-          "Please select at least one option (or 'NOT APPLICABLE').";
+          `Please select at least one option${content.notApplicableLabel ? ` (or '${content.notApplicableLabel}')` : ""}.`;
       if (
-        form.healthConditions.includes(OTHER_CONDITION) &&
+        otherCondition &&
+        form.healthConditions.includes(otherCondition) &&
         !form.healthConditionsOther.trim()
       )
         next.healthConditionsOther = "Please specify your other condition.";
-      if (!form.majorSurgery.trim())
+      if (content.majorSurgeryQuestion && !form.majorSurgery.trim())
         next.majorSurgery = "This field is required.";
-      if (!form.medicalConsent)
+      if (content.disclaimerConsentLabel && !form.medicalConsent)
         next.medicalConsent =
           "Please confirm you have read and agree to the disclaimer.";
     }
 
     if (!simplified && current === 2) {
-      if (form.howHeard.length === 0 && !form.howHeardOther.trim())
+      const howHeardShown =
+        content.howHeardGroups.length > 0 || Boolean(content.howHeardOtherLabel);
+      if (
+        howHeardShown &&
+        form.howHeard.length === 0 &&
+        !form.howHeardOther.trim()
+      )
         next.howHeard = "Please select at least one option or fill in Other.";
-      if (!form.priorPractice.trim())
+      if (content.priorPracticeLabel && !form.priorPractice.trim())
         next.priorPractice = "This field is required.";
-      if (!form.otherIshaPractices)
+      if (content.otherIshaLabel && !form.otherIshaPractices)
         next.otherIshaPractices = "Please select an option.";
     }
 
     if (!simplified && current === 3) {
-      if (!form.refundConsent)
+      if (content.refundPolicyConsentLabel && !form.refundConsent)
         next.refundConsent = "Please confirm you agree to the Refund Policy.";
-      if (!form.agreementConsent)
+      if (content.agreementConsentLabel && !form.agreementConsent)
         next.agreementConsent = "Please confirm you agree.";
     }
 
@@ -304,6 +322,18 @@ export function RegistrationForm({
     setStatus("submitting");
     setSubmitError(null);
 
+    const extraFields = [
+      ...content.personalFields,
+      ...(simplified ? [] : content.emergencyFields),
+    ]
+      .filter((field) => !isKnownKey(field.key))
+      .map((field) => ({
+        key: field.key,
+        label: field.label,
+        value: fieldValue(field.key),
+      }))
+      .filter((field) => field.value.trim());
+
     const payload = {
       event,
       eventSlug,
@@ -319,6 +349,7 @@ export function RegistrationForm({
       emergencyName: form.emergencyName,
       emergencyRelationship: form.emergencyRelationship,
       emergencyPhone: form.emergencyPhone,
+      extraFields,
       healthConditions: form.healthConditions,
       healthConditionsOther: form.healthConditionsOther,
       healthDetails: form.healthDetails,
@@ -444,7 +475,7 @@ export function RegistrationForm({
         <div className="mt-2 flex gap-1 sm:mt-3 sm:gap-1.5" aria-hidden="true">
           {steps.map((label, i) => (
             <span
-              key={label}
+              key={`${i}-${label}`}
               className={cn(
                 "h-1.5 flex-1 rounded-full transition-colors duration-300",
                 i <= step ? "bg-saffron" : "bg-border-strong/40",
@@ -463,177 +494,39 @@ export function RegistrationForm({
       {step === 0 ? (
         <div className={formStackClass}>
           <div className={formGridClass}>
-            <div>
-              <label htmlFor="fullName" className={labelClass}>
-                Full name <Required />
-              </label>
-              <input
-                id="fullName"
-                type="text"
-                autoComplete="name"
-                className={fieldClass}
-                value={form.fullName}
-                onChange={(e) => update("fullName", e.target.value)}
+            {content.personalFields.map((field) => (
+              <RegisterFieldControl
+                key={field.key}
+                field={field}
+                id={field.key}
+                value={fieldValue(field.key)}
+                onChange={(value) => setFieldValue(field.key, value)}
+                error={errors[field.key]}
               />
-              <FieldError message={errors.fullName} />
-            </div>
-            <div>
-              <label htmlFor="preferredName" className={labelClass}>
-                Name you prefer to be called
-              </label>
-              <input
-                id="preferredName"
-                type="text"
-                className={fieldClass}
-                value={form.preferredName}
-                onChange={(e) => update("preferredName", e.target.value)}
-              />
-            </div>
+            ))}
           </div>
 
-          <div className={formGridClass}>
-            <div>
-              <label htmlFor="email" className={labelClass}>
-                Email <Required />
-              </label>
-              <input
-                id="email"
-                type="email"
-                autoComplete="email"
-                className={fieldClass}
-                value={form.email}
-                onChange={(e) => update("email", e.target.value)}
-              />
-              <FieldError message={errors.email} />
-            </div>
-            <div>
-              <label htmlFor="phone" className={labelClass}>
-                Phone number <Required />
-              </label>
-              <input
-                id="phone"
-                type="tel"
-                autoComplete="tel"
-                className={fieldClass}
-                value={form.phone}
-                onChange={(e) => update("phone", e.target.value)}
-              />
-              <FieldError message={errors.phone} />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="address" className={labelClass}>
-              Residential address <Required />
-            </label>
-            <textarea
-              id="address"
-              rows={2}
-              className={cn(fieldClass, "resize-y")}
-              value={form.address}
-              onChange={(e) => update("address", e.target.value)}
-            />
-            <FieldError message={errors.address} />
-          </div>
-
-          <div className={formGridClass}>
-            <div>
-              <label htmlFor="gender" className={labelClass}>
-                Gender
-              </label>
-              <select
-                id="gender"
-                className={fieldClass}
-                value={form.gender}
-                onChange={(e) => update("gender", e.target.value)}
-              >
-                <option value="">Select (optional)</option>
-                <option value="Female">Female</option>
-                <option value="Male">Male</option>
-                <option value="Other">Other</option>
-                <option value="Prefer not to say">Prefer not to say</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="age" className={labelClass}>
-                Age <Required />
-              </label>
-              <input
-                id="age"
-                type="text"
-                inputMode="numeric"
-                className={fieldClass}
-                value={form.age}
-                onChange={(e) => update("age", e.target.value)}
-              />
-              <FieldError message={errors.age} />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="occupation" className={labelClass}>
-              Occupation
-            </label>
-            <input
-              id="occupation"
-              type="text"
-              className={fieldClass}
-              value={form.occupation}
-              onChange={(e) => update("occupation", e.target.value)}
-            />
-          </div>
-
-          {simplified ? null : (
-          <fieldset className={formBoxClass}>
-            <legend className="px-1.5 text-xs font-medium text-charcoal sm:px-2 sm:text-sm">
-              Emergency contact
-            </legend>
-            <div className="space-y-3 sm:space-y-5">
-              <div className={formGridClass}>
-                <div>
-                  <label htmlFor="emergencyName" className={labelClass}>
-                    Full name <Required />
-                  </label>
-                  <input
-                    id="emergencyName"
-                    type="text"
-                    className={fieldClass}
-                    value={form.emergencyName}
-                    onChange={(e) => update("emergencyName", e.target.value)}
+          {!simplified && content.emergencyFields.length > 0 ? (
+            <fieldset className={formBoxClass}>
+              {content.emergencyHeading ? (
+                <legend className="px-1.5 text-xs font-medium text-charcoal sm:px-2 sm:text-sm">
+                  {content.emergencyHeading}
+                </legend>
+              ) : null}
+              <div className={cn("space-y-3 sm:space-y-5", formGridClass)}>
+                {content.emergencyFields.map((field) => (
+                  <RegisterFieldControl
+                    key={field.key}
+                    field={field}
+                    id={field.key}
+                    value={fieldValue(field.key)}
+                    onChange={(value) => setFieldValue(field.key, value)}
+                    error={errors[field.key]}
                   />
-                  <FieldError message={errors.emergencyName} />
-                </div>
-                <div>
-                  <label htmlFor="emergencyRelationship" className={labelClass}>
-                    Relationship
-                  </label>
-                  <input
-                    id="emergencyRelationship"
-                    type="text"
-                    className={fieldClass}
-                    value={form.emergencyRelationship}
-                    onChange={(e) =>
-                      update("emergencyRelationship", e.target.value)
-                    }
-                  />
-                </div>
+                ))}
               </div>
-              <div>
-                <label htmlFor="emergencyPhone" className={labelClass}>
-                  Phone number <Required />
-                </label>
-                <input
-                  id="emergencyPhone"
-                  type="tel"
-                  className={fieldClass}
-                  value={form.emergencyPhone}
-                  onChange={(e) => update("emergencyPhone", e.target.value)}
-                />
-                <FieldError message={errors.emergencyPhone} />
-              </div>
-            </div>
-          </fieldset>
-          )}
+            </fieldset>
+          ) : null}
         </div>
       ) : null}
 
@@ -642,159 +535,191 @@ export function RegistrationForm({
       {/* ---------------------------------------------------------------- */}
       {!simplified && step === 1 ? (
         <div className="space-y-4 sm:space-y-6">
-          <div className="space-y-2 sm:space-y-3">
-            {content.healthIntro.map((para) => (
-              <p key={para} className={formBodyTextClass}>
-                {para}
-              </p>
-            ))}
-          </div>
+          {content.healthIntro.length > 0 ? (
+            <div className="space-y-2 sm:space-y-3">
+              {content.healthIntro.map((para) => (
+                <p key={para} className={formBodyTextClass}>
+                  {para}
+                </p>
+              ))}
+            </div>
+          ) : null}
 
-          <fieldset>
-            <legend className={labelClass}>
-              Health conditions <Required />
-            </legend>
-            <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5">
-              {content.healthConditions.map((condition) => (
-                <label key={condition} className={formChoiceLabelClass}>
+          {content.healthConditions.length > 0 ||
+          otherCondition ||
+          notApplicable ? (
+            <fieldset>
+              {content.healthConditionsLegend ? (
+                <legend className={labelClass}>
+                  {content.healthConditionsLegend} <Required />
+                </legend>
+              ) : null}
+              <div className="grid gap-2 sm:grid-cols-2 sm:gap-2.5">
+                {content.healthConditions.map((condition) => (
+                  <label key={condition} className={formChoiceLabelClass}>
+                    <input
+                      type="checkbox"
+                      className={formCheckboxClass}
+                      checked={form.healthConditions.includes(condition)}
+                      onChange={() => toggleCondition(condition)}
+                    />
+                    <span>{condition}</span>
+                  </label>
+                ))}
+                {otherCondition ? (
+                  <label className={formChoiceLabelClass}>
+                    <input
+                      type="checkbox"
+                      className={formCheckboxClass}
+                      checked={form.healthConditions.includes(otherCondition)}
+                      onChange={() => toggleCondition(otherCondition)}
+                    />
+                    <span>{otherCondition}</span>
+                  </label>
+                ) : null}
+                {notApplicable ? (
+                  <label className={formChoiceLabelClass}>
+                    <input
+                      type="checkbox"
+                      className={formCheckboxClass}
+                      checked={form.healthConditions.includes(notApplicable)}
+                      onChange={() => toggleCondition(notApplicable)}
+                    />
+                    <span>{notApplicable}</span>
+                  </label>
+                ) : null}
+              </div>
+              {otherCondition &&
+              form.healthConditions.includes(otherCondition) ? (
+                <div className="mt-2 sm:mt-3">
+                  <input
+                    type="text"
+                    placeholder={content.specifyPlaceholder}
+                    className={fieldClass}
+                    value={form.healthConditionsOther}
+                    onChange={(e) =>
+                      update("healthConditionsOther", e.target.value)
+                    }
+                  />
+                  <FieldError message={errors.healthConditionsOther} />
+                </div>
+              ) : null}
+              <FieldError message={errors.healthConditions} />
+            </fieldset>
+          ) : null}
+
+          {content.healthDetailsLabel ? (
+            <div>
+              <label htmlFor="healthDetails" className={labelClass}>
+                {content.healthDetailsLabel}
+              </label>
+              <textarea
+                id="healthDetails"
+                rows={3}
+                className={cn(fieldClass, "resize-y")}
+                value={form.healthDetails}
+                onChange={(e) => update("healthDetails", e.target.value)}
+              />
+              <FieldError message={errors.healthDetails} />
+            </div>
+          ) : null}
+
+          {content.majorSurgeryQuestion ? (
+            <div>
+              <label htmlFor="majorSurgery" className={labelClass}>
+                {content.majorSurgeryQuestion} <Required />
+              </label>
+              {content.majorSurgeryHint ? (
+                <p className={formHintClass}>{content.majorSurgeryHint}</p>
+              ) : null}
+              <textarea
+                id="majorSurgery"
+                rows={2}
+                className={cn(fieldClass, "resize-y")}
+                value={form.majorSurgery}
+                onChange={(e) => update("majorSurgery", e.target.value)}
+              />
+              <FieldError message={errors.majorSurgery} />
+            </div>
+          ) : null}
+
+          {content.pregnancyLabel && yesNo.length > 0 ? (
+            <fieldset>
+              <legend className={labelClass}>{content.pregnancyLabel}</legend>
+              <div className="flex gap-4 sm:gap-6">
+                {yesNo.map((option) => (
+                  <label key={option} className={formRadioLabelClass}>
+                    <input
+                      type="radio"
+                      name="pregnant"
+                      value={option}
+                      className={formRadioClass}
+                      checked={form.pregnant === option}
+                      onChange={(e) => update("pregnant", e.target.value)}
+                    />
+                    <span>{option}</span>
+                  </label>
+                ))}
+              </div>
+              <FieldError message={errors.pregnant} />
+            </fieldset>
+          ) : null}
+
+          {content.disclaimerIntro ||
+          content.disclaimerBullets.length > 0 ||
+          content.disclaimerConsentLabel ? (
+            <div className={formBoxClass}>
+              {content.disclaimerIntro ? (
+                <p className={formBodyTextCharcoalClass}>
+                  {content.disclaimerIntro}
+                  {content.disclaimerLinkLabel ? (
+                    <>
+                      {" "}
+                      <button
+                        type="button"
+                        onClick={() => setDisclaimerOpen(true)}
+                        className="text-saffron underline underline-offset-2 hover:text-saffron-hover focus-visible:outline-none"
+                      >
+                        {content.disclaimerLinkLabel}
+                      </button>
+                    </>
+                  ) : null}
+                </p>
+              ) : null}
+              {content.disclaimerConfirmLead ? (
+                <p className="mt-3 text-xs font-medium text-charcoal sm:mt-4 sm:text-sm">
+                  {content.disclaimerConfirmLead}
+                </p>
+              ) : null}
+              {content.disclaimerBullets.length > 0 ? (
+                <ul className={formBulletListClass}>
+                  {content.disclaimerBullets.map((bullet) => (
+                    <li key={bullet} className={formBulletItemClass}>
+                      <span
+                        aria-hidden="true"
+                        className="mt-[0.35rem] h-1.5 w-1.5 shrink-0 rounded-full bg-clay sm:mt-[0.45rem]"
+                      />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              {content.disclaimerConsentLabel ? (
+                <label className={formConsentRowClass}>
                   <input
                     type="checkbox"
                     className={formCheckboxClass}
-                    checked={form.healthConditions.includes(condition)}
-                    onChange={() => toggleCondition(condition)}
+                    checked={form.medicalConsent}
+                    onChange={(e) => update("medicalConsent", e.target.checked)}
                   />
-                  <span>{condition}</span>
+                  <span>
+                    {content.disclaimerConsentLabel} <Required />
+                  </span>
                 </label>
-              ))}
-              <label className={formChoiceLabelClass}>
-                <input
-                  type="checkbox"
-                  className={formCheckboxClass}
-                  checked={form.healthConditions.includes(OTHER_CONDITION)}
-                  onChange={() => toggleCondition(OTHER_CONDITION)}
-                />
-                <span>Other</span>
-              </label>
-              <label className={formChoiceLabelClass}>
-                <input
-                  type="checkbox"
-                  className={formCheckboxClass}
-                  checked={form.healthConditions.includes(
-                    HEALTH_CONDITION_NOT_APPLICABLE,
-                  )}
-                  onChange={() =>
-                    toggleCondition(HEALTH_CONDITION_NOT_APPLICABLE)
-                  }
-                />
-                <span>{HEALTH_CONDITION_NOT_APPLICABLE}</span>
-              </label>
+              ) : null}
+              <FieldError message={errors.medicalConsent} />
             </div>
-            {form.healthConditions.includes(OTHER_CONDITION) ? (
-              <div className="mt-2 sm:mt-3">
-                <input
-                  type="text"
-                  placeholder="Please specify"
-                  className={fieldClass}
-                  value={form.healthConditionsOther}
-                  onChange={(e) =>
-                    update("healthConditionsOther", e.target.value)
-                  }
-                />
-                <FieldError message={errors.healthConditionsOther} />
-              </div>
-            ) : null}
-            <FieldError message={errors.healthConditions} />
-          </fieldset>
-
-          <div>
-            <label htmlFor="healthDetails" className={labelClass}>
-              {content.healthDetailsLabel}
-            </label>
-            <textarea
-              id="healthDetails"
-              rows={3}
-              className={cn(fieldClass, "resize-y")}
-              value={form.healthDetails}
-              onChange={(e) => update("healthDetails", e.target.value)}
-            />
-            <FieldError message={errors.healthDetails} />
-          </div>
-
-          <div>
-            <label htmlFor="majorSurgery" className={labelClass}>
-              {content.majorSurgeryQuestion} <Required />
-            </label>
-            <p className={formHintClass}>
-              {content.majorSurgeryHint}
-            </p>
-            <textarea
-              id="majorSurgery"
-              rows={2}
-              className={cn(fieldClass, "resize-y")}
-              value={form.majorSurgery}
-              onChange={(e) => update("majorSurgery", e.target.value)}
-            />
-            <FieldError message={errors.majorSurgery} />
-          </div>
-
-          <fieldset>
-            <legend className={labelClass}>{content.pregnancyLabel}</legend>
-            <div className="flex gap-4 sm:gap-6">
-              {["Yes", "No"].map((option) => (
-                <label key={option} className={formRadioLabelClass}>
-                  <input
-                    type="radio"
-                    name="pregnant"
-                    value={option}
-                    className={formRadioClass}
-                    checked={form.pregnant === option}
-                    onChange={(e) => update("pregnant", e.target.value)}
-                  />
-                  <span>{option}</span>
-                </label>
-              ))}
-            </div>
-            <FieldError message={errors.pregnant} />
-          </fieldset>
-
-          <div className={formBoxClass}>
-            <p className={formBodyTextCharcoalClass}>
-              {MEDICAL_DISCLAIMER_INTRO}{" "}
-              <button
-                type="button"
-                onClick={() => setDisclaimerOpen(true)}
-                className="text-saffron underline underline-offset-2 hover:text-saffron-hover focus-visible:outline-none"
-              >
-                Click Here
-              </button>
-            </p>
-            <p className="mt-3 text-xs font-medium text-charcoal sm:mt-4 sm:text-sm">
-              By registering for the program, I confirm that:
-            </p>
-            <ul className={formBulletListClass}>
-              {content.disclaimerBullets.map((bullet) => (
-                <li key={bullet} className={formBulletItemClass}>
-                  <span
-                    aria-hidden="true"
-                    className="mt-[0.35rem] h-1.5 w-1.5 shrink-0 rounded-full bg-clay sm:mt-[0.45rem]"
-                  />
-                  <span>{bullet}</span>
-                </li>
-              ))}
-            </ul>
-            <label className={formConsentRowClass}>
-              <input
-                type="checkbox"
-                className={formCheckboxClass}
-                checked={form.medicalConsent}
-                onChange={(e) => update("medicalConsent", e.target.checked)}
-              />
-              <span>
-                {content.disclaimerConsentLabel} <Required />
-              </span>
-            </label>
-            <FieldError message={errors.medicalConsent} />
-          </div>
+          ) : null}
         </div>
       ) : null}
 
@@ -803,112 +728,126 @@ export function RegistrationForm({
       {/* ---------------------------------------------------------------- */}
       {!simplified && step === 2 ? (
         <div className={formStackClass}>
-          <fieldset>
-            <legend className={labelClass}>
-              How did you come to know of this program? <Required />
-            </legend>
-            <div className="space-y-4 sm:space-y-5">
-              {HOW_HEARD_GROUPS.map((group) => (
-                <div key={group.heading}>
-                  <p className="mb-2 text-sm font-medium text-charcoal">
-                    {group.heading}
-                  </p>
-                  <div
-                    className={
-                      group.heading === "Personal"
-                        ? "grid gap-2"
-                        : "grid gap-2 sm:grid-cols-2 sm:gap-2.5"
-                    }
-                  >
-                    {group.options.map((option) => (
-                      <label key={option} className={formChoiceLabelClass}>
-                        <input
-                          type="checkbox"
-                          className={formCheckboxClass}
-                          checked={form.howHeard.includes(option)}
-                          onChange={() => toggleHowHeard(option)}
-                        />
-                        <span>{option}</span>
-                      </label>
-                    ))}
+          {content.howHeardGroups.length > 0 || content.howHeardOtherLabel ? (
+            <fieldset>
+              {content.howHeardLabel ? (
+                <legend className={labelClass}>
+                  {content.howHeardLabel} <Required />
+                </legend>
+              ) : null}
+              <div className="space-y-4 sm:space-y-5">
+                {content.howHeardGroups.map((group) => (
+                  <div key={group.heading}>
+                    <p className="mb-2 text-sm font-medium text-charcoal">
+                      {group.heading}
+                    </p>
+                    <div
+                      className={
+                        group.options.length <= 3
+                          ? "grid gap-2"
+                          : "grid gap-2 sm:grid-cols-2 sm:gap-2.5"
+                      }
+                    >
+                      {group.options.map((option) => (
+                        <label key={option} className={formChoiceLabelClass}>
+                          <input
+                            type="checkbox"
+                            className={formCheckboxClass}
+                            checked={form.howHeard.includes(option)}
+                            onChange={() => toggleHowHeard(option)}
+                          />
+                          <span>{option}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-              <div>
-                <label htmlFor="howHeardOther" className="mb-2 block text-sm font-medium text-charcoal">
-                  Other
-                </label>
-                <input
-                  id="howHeardOther"
-                  type="text"
-                  placeholder="Please specify"
-                  className={fieldClass}
-                  value={form.howHeardOther}
-                  onChange={(e) => {
-                    update("howHeardOther", e.target.value);
-                    setErrors((prev) =>
-                      prev.howHeard ? { ...prev, howHeard: undefined } : prev,
-                    );
-                  }}
-                />
+                ))}
+                {content.howHeardOtherLabel ? (
+                  <div>
+                    <label
+                      htmlFor="howHeardOther"
+                      className="mb-2 block text-sm font-medium text-charcoal"
+                    >
+                      {content.howHeardOtherLabel}
+                    </label>
+                    <input
+                      id="howHeardOther"
+                      type="text"
+                      placeholder={content.specifyPlaceholder}
+                      className={fieldClass}
+                      value={form.howHeardOther}
+                      onChange={(e) => {
+                        update("howHeardOther", e.target.value);
+                        setErrors((prev) =>
+                          prev.howHeard ? { ...prev, howHeard: undefined } : prev,
+                        );
+                      }}
+                    />
+                  </div>
+                ) : null}
               </div>
+              <FieldError message={errors.howHeard} />
+            </fieldset>
+          ) : null}
+
+          {content.priorPracticeLabel ? (
+            <div>
+              <label htmlFor="priorPractice" className={labelClass}>
+                {content.priorPracticeLabel} <Required />
+              </label>
+              <textarea
+                id="priorPractice"
+                rows={2}
+                className={cn(fieldClass, "resize-y")}
+                value={form.priorPractice}
+                onChange={(e) => update("priorPractice", e.target.value)}
+              />
+              <FieldError message={errors.priorPractice} />
             </div>
-            <FieldError message={errors.howHeard} />
-          </fieldset>
+          ) : null}
 
-          <div>
-            <label htmlFor="priorPractice" className={labelClass}>
-              Please give details of yoga or meditation you have practiced and
-              how long you have been practicing <Required />
-            </label>
-            <textarea
-              id="priorPractice"
-              rows={2}
-              className={cn(fieldClass, "resize-y")}
-              value={form.priorPractice}
-              onChange={(e) => update("priorPractice", e.target.value)}
-            />
-            <FieldError message={errors.priorPractice} />
-          </div>
+          {content.otherIshaLabel && yesNo.length > 0 ? (
+            <fieldset>
+              <legend className={labelClass}>
+                {content.otherIshaLabel} <Required />
+              </legend>
+              <div className="flex gap-4 sm:gap-6">
+                {yesNo.map((option) => (
+                  <label key={option} className={formRadioLabelClass}>
+                    <input
+                      type="radio"
+                      name="otherIshaPractices"
+                      value={option}
+                      className={formRadioClass}
+                      checked={form.otherIshaPractices === option}
+                      onChange={(e) =>
+                        update("otherIshaPractices", e.target.value)
+                      }
+                    />
+                    <span>{option}</span>
+                  </label>
+                ))}
+              </div>
+              <FieldError message={errors.otherIshaPractices} />
+            </fieldset>
+          ) : null}
 
-          <fieldset>
-            <legend className={labelClass}>
-              Have you learnt any other Isha Yoga practices? <Required />
-            </legend>
-            <div className="flex gap-4 sm:gap-6">
-              {["Yes", "No"].map((option) => (
-                <label key={option} className={formRadioLabelClass}>
-                  <input
-                    type="radio"
-                    name="otherIshaPractices"
-                    value={option}
-                    className={formRadioClass}
-                    checked={form.otherIshaPractices === option}
-                    onChange={(e) =>
-                      update("otherIshaPractices", e.target.value)
-                    }
-                  />
-                  <span>{option}</span>
-                </label>
-              ))}
+          {content.otherIshaDetailsLabel ? (
+            <div>
+              <label htmlFor="otherIshaPracticesDetails" className={formHintClass}>
+                {content.otherIshaDetailsLabel}
+              </label>
+              <textarea
+                id="otherIshaPracticesDetails"
+                rows={2}
+                className={cn(fieldClass, "resize-y")}
+                value={form.otherIshaPracticesDetails}
+                onChange={(e) =>
+                  update("otherIshaPracticesDetails", e.target.value)
+                }
+              />
             </div>
-            <FieldError message={errors.otherIshaPractices} />
-          </fieldset>
-
-          <div>
-            <label htmlFor="otherIshaPracticesDetails" className={formHintClass}>
-              If yes, please give details below
-            </label>
-            <textarea
-              id="otherIshaPracticesDetails"
-              rows={2}
-              className={cn(fieldClass, "resize-y")}
-              value={form.otherIshaPracticesDetails}
-              onChange={(e) =>
-                update("otherIshaPracticesDetails", e.target.value)
-              }
-            />
-          </div>
+          ) : null}
         </div>
       ) : null}
 
@@ -917,59 +856,79 @@ export function RegistrationForm({
       {/* ---------------------------------------------------------------- */}
       {!simplified && step === 3 ? (
         <div className="space-y-4 sm:space-y-6">
-          <div className={formBoxClass}>
-            <p className={formSectionTitleClass}>Refund Policy:</p>
-            <ul className={formBulletListClass}>
-              {content.refundPolicyBullets.map((bullet) => (
-                <li key={bullet} className={formBulletItemClass}>
-                  <span
-                    aria-hidden="true"
-                    className="mt-[0.35rem] h-1.5 w-1.5 shrink-0 rounded-full bg-clay sm:mt-[0.45rem]"
+          {content.refundPolicyTitle ||
+          content.refundPolicyBullets.length > 0 ||
+          content.refundPolicyConsentLabel ? (
+            <div className={formBoxClass}>
+              {content.refundPolicyTitle ? (
+                <p className={formSectionTitleClass}>{content.refundPolicyTitle}</p>
+              ) : null}
+              {content.refundPolicyBullets.length > 0 ? (
+                <ul className={formBulletListClass}>
+                  {content.refundPolicyBullets.map((bullet) => (
+                    <li key={bullet} className={formBulletItemClass}>
+                      <span
+                        aria-hidden="true"
+                        className="mt-[0.35rem] h-1.5 w-1.5 shrink-0 rounded-full bg-clay sm:mt-[0.45rem]"
+                      />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              {content.refundPolicyConsentLabel ? (
+                <label className={formConsentRowClass}>
+                  <input
+                    type="checkbox"
+                    className={formCheckboxClass}
+                    checked={form.refundConsent}
+                    onChange={(e) => update("refundConsent", e.target.checked)}
                   />
-                  <span>{bullet}</span>
-                </li>
-              ))}
-            </ul>
-            <label className={formConsentRowClass}>
-              <input
-                type="checkbox"
-                className={formCheckboxClass}
-                checked={form.refundConsent}
-                onChange={(e) => update("refundConsent", e.target.checked)}
-              />
-              <span>
-                {content.refundPolicyConsentLabel} <Required />
-              </span>
-            </label>
-            <FieldError message={errors.refundConsent} />
-          </div>
+                  <span>
+                    {content.refundPolicyConsentLabel} <Required />
+                  </span>
+                </label>
+              ) : null}
+              <FieldError message={errors.refundConsent} />
+            </div>
+          ) : null}
 
-          <div className={formBoxClass}>
-            <p className={formSectionTitleClass}>{content.agreementTitle}</p>
-            <ul className={formBulletListClass}>
-              {content.agreementBullets.map((bullet) => (
-                <li key={bullet} className={formBulletItemClass}>
-                  <span
-                    aria-hidden="true"
-                    className="mt-[0.35rem] h-1.5 w-1.5 shrink-0 rounded-full bg-clay sm:mt-[0.45rem]"
+          {content.agreementTitle ||
+          content.agreementBullets.length > 0 ||
+          content.agreementConsentLabel ? (
+            <div className={formBoxClass}>
+              {content.agreementTitle ? (
+                <p className={formSectionTitleClass}>{content.agreementTitle}</p>
+              ) : null}
+              {content.agreementBullets.length > 0 ? (
+                <ul className={formBulletListClass}>
+                  {content.agreementBullets.map((bullet) => (
+                    <li key={bullet} className={formBulletItemClass}>
+                      <span
+                        aria-hidden="true"
+                        className="mt-[0.35rem] h-1.5 w-1.5 shrink-0 rounded-full bg-clay sm:mt-[0.45rem]"
+                      />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              {content.agreementConsentLabel ? (
+                <label className={formConsentRowClass}>
+                  <input
+                    type="checkbox"
+                    className={formCheckboxClass}
+                    checked={form.agreementConsent}
+                    onChange={(e) => update("agreementConsent", e.target.checked)}
                   />
-                  <span>{bullet}</span>
-                </li>
-              ))}
-            </ul>
-            <label className={formConsentRowClass}>
-              <input
-                type="checkbox"
-                className={formCheckboxClass}
-                checked={form.agreementConsent}
-                onChange={(e) => update("agreementConsent", e.target.checked)}
-              />
-              <span>
-                {content.agreementConsentLabel} <Required />
-              </span>
-            </label>
-            <FieldError message={errors.agreementConsent} />
-          </div>
+                  <span>
+                    {content.agreementConsentLabel} <Required />
+                  </span>
+                </label>
+              ) : null}
+              <FieldError message={errors.agreementConsent} />
+            </div>
+          ) : null}
         </div>
       ) : null}
 
@@ -977,10 +936,7 @@ export function RegistrationForm({
         <BankDetailsCard />
       ) : null}
 
-      {/* ---------------------------------------------------------------- */}
-      {/* Before the Start of the Session                                  */}
-      {/* ---------------------------------------------------------------- */}
-      {!simplified && currentStep === "Before the Start of the Session" ? (
+      {!simplified && currentStep === content.step5Title ? (
         <div className="space-y-4 sm:space-y-6">
           {content.beforeSessionBlocks.map((block) => (
             <div key={block.heading} className={cn(formBoxClass, "sm:p-6")}>
@@ -1010,29 +966,38 @@ export function RegistrationForm({
             </div>
           ))}
 
-          <div className={formBoxClass}>
-            <p className={formBodyTextCharcoalClass}>
-              For the full guidelines on what to know before, during, and after the
-              program, please{" "}
-              <button
-                type="button"
-                onClick={() => setBeforeProgramOpen(true)}
-                className="text-saffron underline underline-offset-2 hover:text-saffron-hover focus-visible:outline-none"
-              >
-                read
-              </button>{" "}
-              or{" "}
-              <a
-                href={GUIDELINES_PDF_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-saffron underline underline-offset-2 hover:text-saffron-hover focus-visible:outline-none"
-              >
-                download the PDF
-              </a>
-              .
-            </p>
-          </div>
+          {content.guidelinesPrompt ||
+          content.guidelinesReadLabel ||
+          content.guidelinesDownloadLabel ? (
+            <div className={formBoxClass}>
+              <p className={formBodyTextCharcoalClass}>
+                {content.guidelinesPrompt ? `${content.guidelinesPrompt} ` : null}
+                {content.guidelinesReadLabel ? (
+                  <button
+                    type="button"
+                    onClick={() => setBeforeProgramOpen(true)}
+                    className="text-saffron underline underline-offset-2 hover:text-saffron-hover focus-visible:outline-none"
+                  >
+                    {content.guidelinesReadLabel}
+                  </button>
+                ) : null}
+                {content.guidelinesReadLabel && content.guidelinesDownloadLabel
+                  ? " or "
+                  : null}
+                {content.guidelinesDownloadLabel ? (
+                  <a
+                    href={GUIDELINES_PDF_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-saffron underline underline-offset-2 hover:text-saffron-hover focus-visible:outline-none"
+                  >
+                    {content.guidelinesDownloadLabel}
+                  </a>
+                ) : null}
+                {content.guidelinesPrompt ? "." : null}
+              </p>
+            </div>
+          ) : null}
         </div>
       ) : null}
 
