@@ -372,9 +372,9 @@ export function formatRegistrationEventDates(
   return `${day(start)} ${monthName(start)}`;
 }
 
-/** Full event label for registration links and notification emails. */
-export function formatRegistrationEventLabel(event: {
+type RegistrationEventInput = {
   title: string;
+  slug?: string | null;
   location?: string | null;
   cityCountry?: string | null;
   date?: string | null;
@@ -382,7 +382,12 @@ export function formatRegistrationEventLabel(event: {
   sessions?: EventSessionInput[] | null;
   time?: string | null;
   description?: string | null;
-}): string {
+};
+
+/** Full event label for registration links and notification emails. */
+export function formatRegistrationEventLabel(
+  event: RegistrationEventInput,
+): string {
   const title = event.title.trim();
   const location = eventLocationShort(event.location, event.cityCountry);
   const dates = formatRegistrationEventDates(
@@ -394,6 +399,15 @@ export function formatRegistrationEventLabel(event: {
   if (location) return `${title}, ${location}`;
   if (dates) return `${title} (${dates})`;
   return title;
+}
+
+/** Registration URL, including the event slug so Free Sessions get the short form. */
+export function eventRegisterHref(event: RegistrationEventInput): string {
+  const params = new URLSearchParams({
+    event: formatRegistrationEventLabel(event),
+  });
+  if (event.slug) params.set("slug", event.slug);
+  return `/register?${params.toString()}`;
 }
 
 /** Split a registration label into the heading and a second-line date. */
@@ -422,6 +436,13 @@ export function slugifySegment(value: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+function webAddressDate(date?: string | null): string {
+  if (!date) return "";
+  const trimmed = date.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+  return toDateInputValue(date);
+}
+
 /**
  * Public /events/ address from the program, city, and first day
  * (e.g. yogasanas-tirane-2026-09-25).
@@ -432,12 +453,24 @@ export function eventWebAddress(
   date?: string | null,
 ): string {
   const city = eventLocationShort(undefined, cityCountry);
-  const day = date
-    ? /^\d{4}-\d{2}-\d{2}$/.test(date.trim())
-      ? date.trim()
-      : toDateInputValue(date)
-    : "";
-  return slugifySegment([title?.trim(), city, day].filter(Boolean).join(" "));
+  return slugifySegment(
+    [title?.trim(), city, webAddressDate(date)].filter(Boolean).join(" "),
+  );
+}
+
+/**
+ * Public /retreats/ address from the city, retreat title, and first day
+ * (e.g. saranda-summer-retreat-2026-09-10).
+ */
+export function retreatWebAddress(
+  cityCountry?: string | null,
+  title?: string | null,
+  date?: string | null,
+): string {
+  const city = eventLocationShort(undefined, cityCountry);
+  return slugifySegment(
+    [city, title?.trim(), webAddressDate(date)].filter(Boolean).join(" "),
+  );
 }
 
 /** Public session URL slug. Uses the CMS slug when set, otherwise title + place + date. */

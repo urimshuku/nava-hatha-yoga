@@ -113,7 +113,7 @@ export const LEGAL_LINKS = [
   { label: "Cookie Policy", href: "/cookie-policy" },
 ] as const;
 
-export const EVENT_CATEGORIES = ["Workshop", "Retreat", "Free Session"] as const;
+export const EVENT_CATEGORIES = ["Workshop", "Free Session"] as const;
 export type EventCategory = (typeof EVENT_CATEGORIES)[number];
 
 export const PROGRAM_BEFORE_PROGRAM_TITLE = "Before the Program";

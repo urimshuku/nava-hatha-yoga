@@ -1024,7 +1024,7 @@ export const placeholderEventsPage: EventsPage = {
 
 export const placeholderRetreatsPage: RetreatsPage = {
   heroEyebrow: "Retreats & Partner Programs",
-  heroTitle: "Classical Hatha Yoga retreats",
+  heroTitle: "Retreat details",
   heroDescription:
     "Upcoming immersive Classical Hatha Yoga retreats in Albania — devoted to traditional practice, quiet settings, and inner transformation.",
   comingSoonEyebrow: "Coming Soon",

@@ -9,10 +9,7 @@ import {
   TextField,
 } from "@/components/cms/Field";
 import { FormSection } from "@/components/cms/FormSection";
-import {
-  SessionsField,
-  TextListField,
-} from "@/components/cms/RepeatableFields";
+import { SessionsField } from "@/components/cms/RepeatableFields";
 import { FormError, FormNotice, SaveBar, WorkingCopyBanner } from "@/components/cms/SaveBar";
 import type { YogaEvent } from "@/lib/cms/content-types";
 import {
@@ -23,7 +20,7 @@ import {
   toDateInputValue,
 } from "@/lib/utils";
 
-import { saveEvent, type EventFormState } from "./actions";
+import { saveEvent, discardEventChanges, type EventFormState } from "./actions";
 
 export interface ProgramOption {
   slug: string;
@@ -83,6 +80,7 @@ export function EventForm({
         </h1>
         <SaveBar
           cancelHref="/admin/events"
+          cancelAction={discardEventChanges}
           action={formAction}
           pending={pending}
         />
@@ -115,11 +113,11 @@ export function EventForm({
         <SelectField
           name="category"
           label="Event Type"
+          hint="Free sessions use the one-page registration form. Workshops use the full form."
           defaultValue={event?.category}
           placeholder="Choose one"
           options={[
             { value: "Workshop", label: "Workshop" },
-            { value: "Retreat", label: "Retreat" },
             { value: "Free Session", label: "Free Session" },
           ]}
         />
@@ -214,13 +212,6 @@ export function EventForm({
             "No prior yoga experience required!"
           }
         />
-        <TextListField
-          name="notes"
-          label="Reminders on the card"
-          hint="Short lines shown on the event card."
-          addLabel="Add another reminder"
-          defaultValues={event?.notes ?? []}
-        />
       </FormSection>
 
       <FormSection title="Price">
@@ -248,11 +239,12 @@ export function EventForm({
         />
       </FormSection>
 
-      <SaveBar
-        cancelHref="/admin/events"
-        action={formAction}
-        pending={pending}
-      />
+        <SaveBar
+          cancelHref="/admin/events"
+          cancelAction={discardEventChanges}
+          action={formAction}
+          pending={pending}
+        />
     </form>
   );
 }

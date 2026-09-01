@@ -4,10 +4,11 @@ import { RegistrationForm } from "@/components/forms/RegistrationForm";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/ui/PageHero";
+import { findEventForRegistration, getRegisterPage } from "@/lib/cms/site-content";
 import { resolveRegisterContent } from "@/lib/register-config";
+import { isSimplifiedRegistration } from "@/lib/register-content";
 import { buildMetadata } from "@/lib/seo";
-import { splitRegistrationEventTitle } from "@/lib/utils";
-import { getRegisterPage } from "@/lib/cms/site-content";
+import { formatRegistrationEventLabel, splitRegistrationEventTitle } from "@/lib/utils";
 
 // Rendered per request so edits made in /admin are live the moment they are saved.
 export const dynamic = "force-dynamic";
@@ -20,19 +21,26 @@ export const metadata: Metadata = buildMetadata({
 });
 
 interface RegisterPageProps {
-  searchParams: Promise<{ event?: string }>;
+  searchParams: Promise<{ event?: string; slug?: string }>;
 }
 
 export default async function RegisterPage({ searchParams }: RegisterPageProps) {
-  const [{ event }, registerPage] = await Promise.all([
+  const [{ event, slug }, registerPage] = await Promise.all([
     searchParams,
     getRegisterPage(),
   ]);
-  const eventName = event?.trim() || undefined;
+  const matched = await findEventForRegistration({
+    slug,
+    label: event,
+  });
+  const eventName =
+    event?.trim() ||
+    (matched ? formatRegistrationEventLabel(matched) : undefined);
   const eventTitle = eventName
     ? splitRegistrationEventTitle(eventName)
     : undefined;
   const content = resolveRegisterContent(registerPage);
+  const simplified = isSimplifiedRegistration(eventName, matched?.category);
 
   return (
     <>
@@ -62,7 +70,12 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
       <Section tone="cream">
         <Container size="narrow">
           <div className="rounded-2xl border border-border bg-ivory p-3 shadow-soft sm:p-8">
-            <RegistrationForm event={eventName} content={content} />
+            <RegistrationForm
+              event={eventName}
+              eventSlug={matched?.slug ?? slug}
+              simplified={simplified}
+              content={content}
+            />
           </div>
         </Container>
       </Section>

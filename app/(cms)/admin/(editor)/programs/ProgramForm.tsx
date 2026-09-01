@@ -14,7 +14,7 @@ import { RichTextField } from "@/components/cms/RichTextField";
 import { FormError, FormNotice, SaveBar, WorkingCopyBanner } from "@/components/cms/SaveBar";
 import type { Program } from "@/lib/cms/content-types";
 
-import { saveProgram, type ProgramFormState } from "./actions";
+import { saveProgram, discardProgramChanges, type ProgramFormState } from "./actions";
 
 /** The program's long sections, already converted to editable text. */
 export interface ProgramRichText {
@@ -58,6 +58,7 @@ export function ProgramForm({
         </h1>
         <SaveBar
           cancelHref="/admin/programs"
+          cancelAction={discardProgramChanges}
           action={formAction}
           pending={pending}
         />
@@ -195,6 +196,7 @@ export function ProgramForm({
 
       <SaveBar
         cancelHref="/admin/programs"
+        cancelAction={discardProgramChanges}
         action={formAction}
         pending={pending}
       />

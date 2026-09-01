@@ -13,16 +13,19 @@ import { useFormStatus } from "react-dom";
  */
 export function SaveBar({
   cancelHref,
+  cancelAction,
   action,
   pending: pendingProp,
 }: {
   cancelHref: string;
+  /** Drops unpublished working-copy changes, then returns to cancelHref. */
+  cancelAction?: (formData: FormData) => void | Promise<void>;
   action: (formData: FormData) => void;
   pending?: boolean;
 }) {
   const { pending: formPending } = useFormStatus();
   const pending = pendingProp ?? formPending;
-  const [intent, setIntent] = useState<"save" | "publish" | null>(null);
+  const [intent, setIntent] = useState<"save" | "publish" | "cancel" | null>(null);
 
   function submitWith(next: "save" | "publish") {
     return (formData: FormData) => {
@@ -30,6 +33,11 @@ export function SaveBar({
       formData.set("intent", next);
       action(formData);
     };
+  }
+
+  function submitCancel(formData: FormData) {
+    setIntent("cancel");
+    cancelAction?.(formData);
   }
 
   return (
@@ -50,9 +58,21 @@ export function SaveBar({
       >
         {pending && intent === "publish" ? "Publishing…" : "Publish"}
       </button>
-      <Link href={cancelHref} className="text-sm text-brown hover:text-saffron">
-        Cancel
-      </Link>
+      {cancelAction ? (
+        <button
+          type="submit"
+          formAction={submitCancel}
+          formNoValidate
+          disabled={pending}
+          className="text-sm text-brown hover:text-saffron disabled:opacity-60"
+        >
+          {pending && intent === "cancel" ? "Cancelling…" : "Cancel"}
+        </button>
+      ) : (
+        <Link href={cancelHref} className="text-sm text-brown hover:text-saffron">
+          Cancel
+        </Link>
+      )}
     </div>
   );
 }

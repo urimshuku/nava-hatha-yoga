@@ -1,15 +1,19 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState, type FormEvent } from "react";
 
 import { TextField } from "@/components/cms/Field";
 import { FormSection } from "@/components/cms/FormSection";
 import { FormError, FormNotice, SaveBar, WorkingCopyBanner } from "@/components/cms/SaveBar";
 import { SchemaFields } from "@/components/cms/SchemaFields";
 import { retreatSchema } from "@/lib/cms/schemas";
-import { splitRetreatPlace } from "@/lib/utils";
+import {
+  retreatWebAddress,
+  splitRetreatPlace,
+  toDateInputValue,
+} from "@/lib/utils";
 
-import { saveRetreat, type RetreatFormState } from "./actions";
+import { saveRetreat, discardRetreatChanges, type RetreatFormState } from "./actions";
 
 export function RetreatForm({
   retreat,
@@ -32,27 +36,58 @@ export function RetreatForm({
     {},
   );
 
-  const title = (retreat as { title?: string } | undefined)?.title;
+  const retreatValues = retreat as
+    | {
+        title?: string;
+        cityCountry?: string;
+        location?: string;
+        date?: string;
+      }
+    | undefined;
+  const place = splitRetreatPlace(retreatValues ?? {});
+  const [title, setTitle] = useState(() => retreatValues?.title ?? "");
+  const [cityCountry, setCityCountry] = useState(() => place.cityCountry ?? "");
+  const [firstDay, setFirstDay] = useState(() =>
+    toDateInputValue(retreatValues?.date),
+  );
+  const slug =
+    retreatWebAddress(cityCountry, title, firstDay) || originalSlug || "";
+
   const values =
     retreat && typeof retreat === "object"
       ? {
           ...(retreat as Record<string, unknown>),
-          ...splitRetreatPlace(retreat as { cityCountry?: string; location?: string }),
+          ...place,
         }
       : retreat;
 
+  function syncWebAddress(event: FormEvent<HTMLFormElement>) {
+    const target = event.target;
+    if (
+      !(target instanceof HTMLInputElement) &&
+      !(target instanceof HTMLTextAreaElement)
+    ) {
+      return;
+    }
+
+    if (target.name === "title") setTitle(target.value);
+    if (target.name === "cityCountry") setCityCountry(target.value);
+    if (target.name === "date") setFirstDay(target.value);
+  }
+
   return (
-    <form action={formAction} className="space-y-6">
+    <form action={formAction} onInput={syncWebAddress} className="space-y-6">
       {originalSlug ? (
         <input type="hidden" name="originalSlug" value={originalSlug} />
       ) : null}
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <h1 className="font-heading text-3xl text-charcoal">
-          {isNew ? "New retreat" : (title ?? "Edit retreat")}
+          {isNew ? "New retreat" : (retreatValues?.title ?? "Edit retreat")}
         </h1>
         <SaveBar
           cancelHref="/admin/retreats"
+          cancelAction={discardRetreatChanges}
           action={formAction}
           pending={pending}
         />
@@ -81,13 +116,15 @@ export function RetreatForm({
         <TextField
           name="slug"
           label="Web address"
-          hint="The part after /retreats/. Changing this moves the page, so existing links will stop working."
-          defaultValue={originalSlug}
+          hint="Always /retreats/ plus the city, title, and first day. It updates as you change those fields."
+          value={slug}
+          readOnly
         />
       </FormSection>
 
       <SaveBar
         cancelHref="/admin/retreats"
+        cancelAction={discardRetreatChanges}
         action={formAction}
         pending={pending}
       />

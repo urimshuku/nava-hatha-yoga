@@ -12,6 +12,8 @@ import { isSimplifiedRegistration } from "@/lib/register-content";
 export interface RegistrationSubmission {
   /** Program, location, and dates (from the ?event= query param). */
   event?: string;
+  /** CMS event type, when known. Free Session uses the short form. */
+  category?: string;
 
   // Step 1 — Personal Information
   fullName: string;
@@ -44,7 +46,7 @@ export interface RegistrationSubmission {
 }
 
 export function formatRegistration(s: RegistrationSubmission): string {
-  const simplified = isSimplifiedRegistration(s.event);
+  const simplified = isSimplifiedRegistration(s.event, s.category);
 
   const lines = [
     `Event: ${s.event || "-"}`,

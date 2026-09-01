@@ -9,6 +9,7 @@ import {
   deleteDocument,
   getDocument,
   isTombstone,
+  revertWorkingCopy,
   saveDocument,
   setDocumentHidden,
 } from "@/lib/cms/repository";
@@ -16,6 +17,7 @@ import { readDocument } from "@/lib/cms/schema-parse";
 import { retreatSchema } from "@/lib/cms/schemas";
 import { assertCmsSession } from "@/lib/cms/session";
 import type { Retreat } from "@/lib/cms/content-types";
+import { retreatWebAddress } from "@/lib/utils";
 
 export interface RetreatFormState {
   error?: string;
@@ -40,11 +42,18 @@ export async function saveRetreat(
   }
 
   const originalSlug = text(formData, "originalSlug");
-  const slug = resolveSlug(text(formData, "slug"), [data.title]);
+  const slug = resolveSlug(
+    retreatWebAddress(
+      text(formData, "cityCountry"),
+      data.title,
+      text(formData, "date"),
+    ),
+    [text(formData, "cityCountry"), data.title, text(formData, "date")],
+  );
   if (!slug) {
     return {
       error:
-        "This retreat needs a web address. Add a title, or type one in the Web address field.",
+        "This retreat needs a web address. Add a title, or type a city and start date.",
     };
   }
 
@@ -157,4 +166,18 @@ export async function deleteRetreat(formData: FormData): Promise<void> {
 
   refreshAffectedPages(slug);
   redirect("/admin/retreats?deleted=1");
+}
+
+/** Throws away a saved working copy and returns to the retreats list. */
+export async function discardRetreatChanges(formData: FormData): Promise<void> {
+  await assertCmsSession();
+
+  const slug = text(formData, "originalSlug");
+  if (slug) {
+    await revertWorkingCopy("retreat", slug);
+    revalidatePath("/admin/retreats");
+    revalidatePath(`/admin/retreats/${slug}`);
+  }
+
+  redirect("/admin/retreats");
 }

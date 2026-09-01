@@ -16,6 +16,7 @@ import {
   deleteDocument,
   getDocument,
   isTombstone,
+  revertWorkingCopy,
   saveDocument,
   setDocumentHidden,
 } from "@/lib/cms/repository";
@@ -201,4 +202,18 @@ export async function deleteProgram(formData: FormData): Promise<void> {
 
   refreshAffectedPages(slug);
   redirect("/admin/programs?deleted=1");
+}
+
+/** Throws away a saved working copy and returns to the programs list. */
+export async function discardProgramChanges(formData: FormData): Promise<void> {
+  await assertCmsSession();
+
+  const slug = text(formData, "originalSlug");
+  if (slug) {
+    await revertWorkingCopy("program", slug);
+    revalidatePath("/admin/programs");
+    revalidatePath(`/admin/programs/${slug}`);
+  }
+
+  redirect("/admin/programs");
 }

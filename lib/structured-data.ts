@@ -8,7 +8,7 @@ import {
 } from "@/lib/constants";
 import { eventEndTimestamp, eventStartTimestamp, isPastEvent } from "@/lib/event-boundary";
 import { programImageSrc } from "@/lib/local-images";
-import { formatRegistrationEventLabel } from "@/lib/utils";
+import { eventRegisterHref } from "@/lib/utils";
 import { urlForImage } from "@/lib/cms/image-url";
 import type {
   Program,
@@ -142,10 +142,7 @@ export function buildEventJsonLd(
   if (!Number.isFinite(startMs) || startMs === Number.POSITIVE_INFINITY) return null;
 
   const endMs = eventEndTimestamp(event);
-  const registrationEvent = formatRegistrationEventLabel(event);
-  const offerUrl = absoluteUrl(
-    `/register?event=${encodeURIComponent(registrationEvent)}`,
-  );
+  const offerUrl = absoluteUrl(eventRegisterHref(event));
   const offer = parseEuroOffer(event.priceLabel);
   const imageBuilder = urlForImage(event.image);
   const imageUrl = imageBuilder

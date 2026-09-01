@@ -11,9 +11,9 @@ import {
   eventAnchorId,
   eventCardSummary,
   eventLocationBadge,
+  eventRegisterHref,
   formatEventCalendarLine,
   formatEventDateBadge,
-  formatRegistrationEventLabel,
   normalizeEventSessionSchedule,
   resolveEventCardEndDate,
 } from "@/lib/utils";
@@ -224,7 +224,6 @@ export function EventCard({
   const dateBadge = formatEventDateBadge(event.date, displayEndDate);
   const locationBadge = eventLocationBadge(event.location, event.cityCountry);
   const summary = eventCardSummary(event.description);
-  const registrationEvent = formatRegistrationEventLabel(event);
   const shareAnchorId = eventAnchorId(event._id);
   const programSlug = event.relatedProgram?.slug;
   const symbolSrc = programSlug ? programSymbolSrc(programSlug) : null;
@@ -337,25 +336,6 @@ export function EventCard({
             </div>
           ) : null}
         </div>
-
-        {event.notes && event.notes.length > 0 ? (
-          <div className="mt-4 rounded-lg border border-border/70 bg-cream/60 px-3.5 py-3 sm:mt-5 sm:px-5 sm:py-3.5">
-            <ul className="space-y-2">
-              {event.notes.map((note) => (
-                <li
-                  key={note}
-                  className="flex gap-3 text-sm leading-relaxed text-charcoal/90"
-                >
-                  <span
-                    aria-hidden="true"
-                    className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-clay"
-                  />
-                  <span>{note}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
       </div>
 
       <div className="relative z-10 flex flex-col gap-3 border-t border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-7 sm:py-4">
@@ -398,7 +378,7 @@ export function EventCard({
           {showRegistration ? (
             <div className="flex flex-wrap justify-end gap-2">
               <Button
-                href={`/register?event=${encodeURIComponent(registrationEvent)}`}
+                href={eventRegisterHref(event)}
                 size="sm"
               >
                 Register

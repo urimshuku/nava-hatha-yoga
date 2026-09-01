@@ -1,9 +1,18 @@
 import Link from "next/link";
+import type { ElementType } from "react";
 
 import { formatDateRange, resolveEventCardEndDate } from "@/lib/utils";
 import type { PastEvent } from "@/lib/cms/content-types";
 
-export function ArchiveList({ events }: { events: PastEvent[] }) {
+export function ArchiveList({
+  events,
+  headingLevel = 2,
+}: {
+  events: PastEvent[];
+  headingLevel?: 2 | 3;
+}) {
+  const TitleTag = `h${headingLevel}` as ElementType;
+
   return (
     <ul className="divide-y divide-border border-y border-border">
       {events.map((event) => (
@@ -13,16 +22,18 @@ export function ArchiveList({ events }: { events: PastEvent[] }) {
         >
           <div className="min-w-0">
             {event.slug ? (
-              <h2 className="font-heading text-xl text-charcoal">
+              <TitleTag className="font-heading text-xl text-charcoal">
                 <Link
                   href={`/events/${event.slug}`}
                   className="transition-colors hover:text-saffron"
                 >
                   {event.title}
                 </Link>
-              </h2>
+              </TitleTag>
             ) : (
-              <h2 className="font-heading text-xl text-charcoal">{event.title}</h2>
+              <TitleTag className="font-heading text-xl text-charcoal">
+                {event.title}
+              </TitleTag>
             )}
             {event.relatedProgram?.title ? (
               <p className="text-sm text-brown">{event.relatedProgram.title}</p>

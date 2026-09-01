@@ -312,6 +312,30 @@ export function getDocument<T>(
   return getDocumentCached(type, slug) as Promise<CmsDocument<T> | undefined>;
 }
 
+/**
+ * Drops a saved working copy and restores the last published snapshot.
+ * Used when the editor cancels instead of publishing.
+ */
+export async function revertWorkingCopy(
+  type: CmsDocumentType,
+  slug: string,
+  db?: D1Database,
+): Promise<void> {
+  const existing = await getDocument<unknown>(type, slug, db);
+  if (!existing?.liveData) return;
+
+  await saveDocument(
+    {
+      type,
+      slug,
+      data: existing.liveData,
+      hidden: existing.hidden,
+      sortOrder: existing.sortOrder,
+    },
+    db,
+  );
+}
+
 /** Creates or replaces a document. Throws when the write cannot be completed. */
 export async function saveDocument<T>(
   input: SaveCmsDocumentInput<T>,

@@ -188,8 +188,23 @@ export const AGREEMENT_CONSENT_LABEL =
 
 export const SHOW_PAYMENT_DETAILS_STEP = false;
 
-/** Short registration: personal details only, no emergency contact. */
-export function isSimplifiedRegistration(event?: string | null): boolean {
+export const FREE_SESSION_CATEGORY = "Free Session";
+
+export function isFreeSessionCategory(category?: string | null): boolean {
+  return (category ?? "").trim().toLowerCase() === FREE_SESSION_CATEGORY.toLowerCase();
+}
+
+/**
+ * Short registration: personal details only.
+ * Free Session events always use it. Workshops always use the full form.
+ * The title match keeps older intro-session links working when no type is set.
+ */
+export function isSimplifiedRegistration(
+  event?: string | null,
+  category?: string | null,
+): boolean {
+  if (isFreeSessionCategory(category)) return true;
+  if ((category ?? "").trim().toLowerCase() === "workshop") return false;
   return /free\s+introduction\s+to\s+hatha\s+yoga/i.test(event ?? "");
 }
 

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { ArchiveList } from "@/components/ArchiveList";
+import { CollapsibleArchive } from "@/components/CollapsibleArchive";
 import { EventCard } from "@/components/cards/EventCard";
 import { EventHashScroll } from "@/components/cards/EventHashScroll";
 import { JsonLd } from "@/components/JsonLd";
@@ -16,6 +18,7 @@ import { PHASE1_EVENTS_SEO } from "@/lib/seo-phase1";
 import { buildEventsJsonLd } from "@/lib/structured-data";
 import {
   getEventsPage,
+  getPastEvents,
   getPrograms,
   getSiteSettings,
   getUpcomingEvents,
@@ -35,8 +38,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export const dynamic = "force-dynamic";
 
 export default async function EventsPage() {
-  const [events, settings, programs, page] = await Promise.all([
+  const [events, pastEvents, settings, programs, page] = await Promise.all([
     getUpcomingEvents(),
+    getPastEvents(),
     getSiteSettings(),
     getPrograms(),
     getEventsPage(),
@@ -86,11 +90,14 @@ export default async function EventsPage() {
             </EmptyState>
           )}
 
-          <div className="mt-8 text-center sm:mt-12">
-            <Button href="/events/archive" variant="ghost">
-              View past events &rarr;
-            </Button>
-          </div>
+          <CollapsibleArchive
+            id="past-events"
+            className="mx-auto max-w-4xl"
+            title={page.archiveTitle?.trim() || "Past events"}
+            count={pastEvents.length}
+          >
+            <ArchiveList events={pastEvents} headingLevel={3} />
+          </CollapsibleArchive>
         </Container>
       </Section>
 

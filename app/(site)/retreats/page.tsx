@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { RetreatArchiveList } from "@/components/RetreatArchiveList";
+import { CollapsibleArchive } from "@/components/CollapsibleArchive";
 import { RetreatCard } from "@/components/cards/RetreatCard";
 import { PartnerProgramsSection } from "@/components/content/PartnerProgramsSection";
 import { Container } from "@/components/layout/Container";
@@ -13,7 +15,12 @@ import { PageHero } from "@/components/ui/PageHero";
 import { placeholderRetreatsPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
 import { PHASE1_RETREATS_SEO } from "@/lib/seo-phase1";
-import { getRetreats, getRetreatsPage, getSiteSettings } from "@/lib/cms/site-content";
+import {
+  getPastRetreats,
+  getRetreats,
+  getRetreatsPage,
+  getSiteSettings,
+} from "@/lib/cms/site-content";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getRetreatsPage();
@@ -29,12 +36,14 @@ export async function generateMetadata(): Promise<Metadata> {
 export const dynamic = "force-dynamic";
 
 export default async function RetreatsPage() {
-  const [retreats, page, settings] = await Promise.all([
+  const [retreats, pastRetreats, page, settings] = await Promise.all([
     getRetreats(),
+    getPastRetreats(),
     getRetreatsPage(),
     getSiteSettings(),
   ]);
   const hasRetreats = retreats.length > 0;
+  const pastRetreatsTitle = page.archiveTitle?.trim() || "Past retreats";
 
   const expectations =
     page.expectations?.filter((item) => item.title?.trim()) ??
@@ -72,11 +81,13 @@ export default async function RetreatsPage() {
                   </MotionItem>
                 ))}
               </MotionStagger>
-              <div className="mt-8 text-center sm:mt-12">
-                <Button href="/retreats/archive" variant="ghost">
-                  View past retreats &rarr;
-                </Button>
-              </div>
+              <CollapsibleArchive
+                id="past-retreats"
+                title={pastRetreatsTitle}
+                count={pastRetreats.length}
+              >
+                <RetreatArchiveList retreats={pastRetreats} headingLevel={3} />
+              </CollapsibleArchive>
             </Container>
           </Section>
           <CTASection
@@ -113,12 +124,14 @@ export default async function RetreatsPage() {
                     Explore programs
                   </Button>
                 </div>
-                <div className="mt-6">
-                  <Button href="/retreats/archive" variant="ghost">
-                    View past retreats &rarr;
-                  </Button>
-                </div>
               </MotionReveal>
+              <CollapsibleArchive
+                id="past-retreats"
+                title={pastRetreatsTitle}
+                count={pastRetreats.length}
+              >
+                <RetreatArchiveList retreats={pastRetreats} headingLevel={3} />
+              </CollapsibleArchive>
             </Container>
           </Section>
 

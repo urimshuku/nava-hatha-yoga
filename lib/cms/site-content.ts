@@ -7,7 +7,11 @@ import {
   isPastEvent,
   isUpcomingEvent,
 } from "@/lib/event-boundary";
-import { composeEventTimeLabel, deriveEventSlug } from "@/lib/utils";
+import {
+  composeEventTimeLabel,
+  deriveEventSlug,
+  formatRegistrationEventLabel,
+} from "@/lib/utils";
 
 import {
   applyEventOverrides,
@@ -228,6 +232,24 @@ export async function getEventBySlug(slug: string): Promise<YogaEvent | undefine
   if (!slug || slug === "archive") return undefined;
   const events = await getAllEvents();
   return events.find((event) => event.slug === slug);
+}
+
+/** Resolve the event a registration URL refers to (slug first, then the label). */
+export async function findEventForRegistration(input: {
+  slug?: string | null;
+  label?: string | null;
+}): Promise<YogaEvent | undefined> {
+  const slug = input.slug?.trim();
+  if (slug) {
+    const bySlug = await getEventBySlug(slug);
+    if (bySlug) return bySlug;
+  }
+
+  const label = input.label?.trim();
+  if (!label) return undefined;
+
+  const events = await getAllEvents();
+  return events.find((event) => formatRegistrationEventLabel(event) === label);
 }
 
 export async function getPastEvents(): Promise<PastEvent[]> {

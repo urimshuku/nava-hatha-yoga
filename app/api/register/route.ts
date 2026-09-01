@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 
+import { findEventForRegistration } from "@/lib/cms/site-content";
 import { isSimplifiedRegistration } from "@/lib/register-content";
 import { deliverRegistration } from "@/lib/registration";
 
 interface RegisterPayload {
   event?: string;
+  eventSlug?: string;
   fullName?: string;
   preferredName?: string;
   email?: string;
@@ -55,7 +57,12 @@ export async function POST(request: Request) {
   }
 
   const event = data.event?.trim();
-  const simplified = isSimplifiedRegistration(event);
+  const eventSlug = data.eventSlug?.trim();
+  const matched = await findEventForRegistration({
+    slug: eventSlug,
+    label: event,
+  });
+  const simplified = isSimplifiedRegistration(event, matched?.category);
   const fullName = data.fullName?.trim();
   const email = data.email?.trim();
   const phone = data.phone?.trim();
@@ -127,6 +134,7 @@ export async function POST(request: Request) {
   try {
     await deliverRegistration({
       event,
+      category: matched?.category,
       fullName,
       preferredName: data.preferredName?.trim(),
       email,

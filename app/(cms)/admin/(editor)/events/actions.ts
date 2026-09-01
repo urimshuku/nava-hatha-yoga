@@ -11,12 +11,12 @@ import {
   pairedList,
   resolveSlug,
   text,
-  textList,
 } from "@/lib/cms/form-values";
 import {
   deleteDocument,
   getDocument,
   isTombstone,
+  revertWorkingCopy,
   saveDocument,
   setDocumentHidden,
 } from "@/lib/cms/repository";
@@ -29,7 +29,7 @@ export interface EventFormState {
   error?: string;
 }
 
-const CATEGORIES: EventCategory[] = ["Workshop", "Retreat", "Free Session"];
+const CATEGORIES: EventCategory[] = ["Workshop", "Free Session"];
 
 /** Clears the router cache so the client sees her change the moment she looks. */
 function refreshAffectedPages(slug: string) {
@@ -128,7 +128,7 @@ export async function saveEvent(
     ageRequirement: text(formData, "ageRequirement"),
     category,
     relatedProgram: await resolveRelatedProgram(text(formData, "relatedProgram")),
-    notes: textList(formData, "notes"),
+    notes: undefined,
   };
 
   const publish = isPublishIntent(formData);
@@ -234,4 +234,18 @@ export async function deleteEvent(formData: FormData): Promise<void> {
 
   refreshAffectedPages(slug);
   redirect("/admin/events?deleted=1");
+}
+
+/** Throws away a saved working copy and returns to the events list. */
+export async function discardEventChanges(formData: FormData): Promise<void> {
+  await assertCmsSession();
+
+  const slug = text(formData, "originalSlug");
+  if (slug) {
+    await revertWorkingCopy("event", slug);
+    revalidatePath("/admin/events");
+    revalidatePath(`/admin/events/${slug}`);
+  }
+
+  redirect("/admin/events");
 }

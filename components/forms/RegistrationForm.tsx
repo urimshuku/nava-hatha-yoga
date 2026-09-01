@@ -44,6 +44,8 @@ import { apiUrl } from "@/lib/api-url";
 
 interface RegistrationFormProps {
   event?: string;
+  eventSlug?: string;
+  simplified?: boolean;
   content?: RegisterContent;
 }
 
@@ -166,9 +168,11 @@ function FieldError({ message }: { message?: string }) {
 
 export function RegistrationForm({
   event,
+  eventSlug,
+  simplified: simplifiedProp,
   content = DEFAULT_REGISTER_CONTENT,
 }: RegistrationFormProps) {
-  const simplified = isSimplifiedRegistration(event);
+  const simplified = simplifiedProp ?? isSimplifiedRegistration(event);
   const steps = simplified ? (["Personal Information"] as const) : FULL_STEPS;
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>(initialState);
@@ -299,6 +303,7 @@ export function RegistrationForm({
 
     const payload = {
       event,
+      eventSlug,
       fullName: form.fullName,
       preferredName: form.preferredName,
       email: form.email,
