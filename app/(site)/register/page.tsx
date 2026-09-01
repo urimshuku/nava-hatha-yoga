@@ -4,9 +4,17 @@ import { RegistrationForm } from "@/components/forms/RegistrationForm";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/ui/PageHero";
-import { findEventForRegistration, getRegisterPage } from "@/lib/cms/site-content";
+import {
+  findEventForRegistration,
+  getRegisterPage,
+  getRetreatBySlug,
+} from "@/lib/cms/site-content";
 import { resolveRegisterContent } from "@/lib/register-config";
-import { isSimplifiedRegistration } from "@/lib/register-content";
+import {
+  isSimplifiedRegistrationKind,
+  parseRegistrationKind,
+  resolveRegistrationKind,
+} from "@/lib/registration-kind";
 import { buildMetadata } from "@/lib/seo";
 import { formatRegistrationEventLabel, splitRegistrationEventTitle } from "@/lib/utils";
 
@@ -21,26 +29,54 @@ export const metadata: Metadata = buildMetadata({
 });
 
 interface RegisterPageProps {
-  searchParams: Promise<{ event?: string; slug?: string }>;
+  searchParams: Promise<{ event?: string; slug?: string; kind?: string }>;
 }
 
 export default async function RegisterPage({ searchParams }: RegisterPageProps) {
-  const [{ event, slug }, registerPage] = await Promise.all([
-    searchParams,
-    getRegisterPage(),
+  const { event, slug, kind: kindParam } = await searchParams;
+  const requestedKind = parseRegistrationKind(kindParam);
+
+  const [matchedEvent, retreatBySlug] = await Promise.all([
+    requestedKind === "retreat"
+      ? Promise.resolve(undefined)
+      : findEventForRegistration({
+          slug,
+          label: event,
+        }),
+    slug ? getRetreatBySlug(slug) : Promise.resolve(undefined),
   ]);
-  const matched = await findEventForRegistration({
-    slug,
-    label: event,
+
+  const matchedRetreat =
+    requestedKind === "retreat" || !matchedEvent ? retreatBySlug : undefined;
+
+  const kind = resolveRegistrationKind({
+    kind: kindParam,
+    category: matchedEvent?.category,
+    isRetreat: Boolean(matchedRetreat),
+    eventLabel: event,
   });
+
+  const registerPage = await getRegisterPage(kind);
   const eventName =
     event?.trim() ||
-    (matched ? formatRegistrationEventLabel(matched) : undefined);
+    (matchedRetreat
+      ? formatRegistrationEventLabel(matchedRetreat)
+      : matchedEvent
+        ? formatRegistrationEventLabel(matchedEvent)
+        : undefined);
   const eventTitle = eventName
     ? splitRegistrationEventTitle(eventName)
     : undefined;
   const content = resolveRegisterContent(registerPage);
-  const simplified = isSimplifiedRegistration(eventName, matched?.category);
+  const simplified = isSimplifiedRegistrationKind(kind);
+  const defaultTitle =
+    kind === "free"
+      ? "Free offering registration"
+      : kind === "module"
+        ? "Module registration"
+        : kind === "retreat"
+          ? "Retreat registration"
+          : "Program registration";
 
   return (
     <>
@@ -58,7 +94,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
               ) : null}
             </>
           ) : (
-            registerPage?.heroTitle?.trim() || "Program registration"
+            registerPage?.heroTitle?.trim() || defaultTitle
           )
         }
         description={
@@ -72,7 +108,8 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
           <div className="rounded-2xl border border-border bg-ivory p-3 shadow-soft sm:p-8">
             <RegistrationForm
               event={eventName}
-              eventSlug={matched?.slug ?? slug}
+              eventSlug={matchedRetreat?.slug ?? matchedEvent?.slug ?? slug}
+              kind={kind}
               simplified={simplified}
               content={content}
             />

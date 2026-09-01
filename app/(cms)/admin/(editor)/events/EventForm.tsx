@@ -113,7 +113,7 @@ export function EventForm({
         <SelectField
           name="category"
           label="Event Type"
-          hint="Free sessions use the one-page registration form. Workshops use the full form."
+          hint="Free sessions use the one-page Free Offering registration. Workshops use the full Workshop Registration form."
           defaultValue={event?.category}
           placeholder="Choose one"
           options={[

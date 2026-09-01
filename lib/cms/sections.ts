@@ -3,6 +3,8 @@
  * finding something to change means thinking about where it appears on the site.
  */
 
+import { LEGAL_PAGES, REGISTRATION_PAGES } from "./editable-pages";
+
 export interface CmsNavItem {
   label: string;
   href: string;
@@ -43,25 +45,30 @@ export const CMS_SECTIONS: CmsNavSection[] = [
     ],
   },
   {
-    heading: "Pages",
+    heading: "Registration",
+    items: REGISTRATION_PAGES.map((page) => ({
+      label: page.label,
+      href: `/admin/pages/${page.id}`,
+      description: page.summary,
+    })),
+  },
+  {
+    heading: "Main Pages",
     items: [
       {
-        label: "All pages",
+        label: "Main Pages",
         href: "/admin/pages",
         description:
-          "The wording, photos and buttons on each page of the website.",
+          "The wording, photos and buttons on each main page of the website.",
       },
     ],
   },
   {
-    heading: "Settings",
-    items: [
-      {
-        label: "Site settings",
-        href: "/admin/pages/settings",
-        description:
-          "Contact details and the notes reused across program and event pages.",
-      },
-    ],
+    heading: "Legal",
+    items: LEGAL_PAGES.map((page) => ({
+      label: page.label,
+      href: `/admin/pages/${page.id}`,
+      description: page.summary,
+    })),
   },
 ];

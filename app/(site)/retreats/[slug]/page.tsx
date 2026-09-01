@@ -15,7 +15,10 @@ import {
   buildBreadcrumbJsonLd,
   buildRetreatEventJsonLd,
 } from "@/lib/structured-data";
-import { formatDateRange } from "@/lib/utils";
+import {
+  formatDateRange,
+  retreatRegisterHref,
+} from "@/lib/utils";
 import { urlForImage } from "@/lib/cms/image-url";
 import { getRetreatBySlug, getSiteSettings } from "@/lib/cms/site-content";
 
@@ -181,7 +184,7 @@ export default async function RetreatDetailPage({ params }: PageProps) {
                   </dl>
                   {!past ? (
                     <Button
-                      href={retreat.registrationLink || "/contact"}
+                      href={retreatRegisterHref(retreat)}
                       className="w-full"
                     >
                       Register

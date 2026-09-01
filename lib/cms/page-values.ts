@@ -12,6 +12,11 @@ import {
 } from "@/lib/cms/site-content";
 import { getDocument, isTombstone } from "@/lib/cms/repository";
 import type { HomePage, RegisterPage } from "@/lib/cms/content-types";
+import {
+  REGISTER_DOCUMENT_SLUG,
+  registerPageCopiesWorkshop,
+  registrationKindFromDocumentSlug,
+} from "@/lib/registration-kind";
 
 import type { EditablePage } from "./editable-pages";
 
@@ -27,6 +32,18 @@ export async function loadPageValues(
   const stored = await getDocument<Record<string, unknown>>(page.type, page.slug);
   if (stored && !isTombstone(stored.data)) {
     return valuesFromWorkingCopy(page, stored.data);
+  }
+
+  // Module and Retreat Registration start as a copy of Workshop Registration
+  // until they are saved on their own.
+  if (page.type === "registerPage" && registerPageCopiesWorkshop(page.slug)) {
+    const workshop = await getDocument<Record<string, unknown>>(
+      "registerPage",
+      REGISTER_DOCUMENT_SLUG.workshop,
+    );
+    if (workshop && !isTombstone(workshop.data)) {
+      return valuesFromWorkingCopy(page, workshop.data);
+    }
   }
 
   return valuesFromPublicSite(page);
@@ -93,7 +110,9 @@ async function valuesFromPublicSite(
       return { ...(await getSiteSettings()) };
 
     case "registerPage": {
-      const stored = await getRegisterPage();
+      const stored = await getRegisterPage(
+        registrationKindFromDocumentSlug(page.slug),
+      );
       return {
         heroEyebrow: stored?.heroEyebrow,
         heroTitle: stored?.heroTitle,

@@ -1,10 +1,17 @@
 /**
  * Emergency registration-form copy.
  *
- * Production form text lives in the built-in CMS registration page.
+ * Production form text lives in the built-in CMS registration pages.
  * This file is used only when that document cannot be fetched, or when a
  * specific field on it is empty. Keep these strings aligned with the CMS.
  */
+
+import { resolveRegistrationKind } from "@/lib/registration-kind";
+
+export {
+  FREE_SESSION_CATEGORY,
+  isFreeSessionCategory,
+} from "@/lib/registration-kind";
 
 /* ------------------------------------------------------------------ */
 /* Step 2 — Health-Related Information                                  */
@@ -188,24 +195,23 @@ export const AGREEMENT_CONSENT_LABEL =
 
 export const SHOW_PAYMENT_DETAILS_STEP = false;
 
-export const FREE_SESSION_CATEGORY = "Free Session";
-
-export function isFreeSessionCategory(category?: string | null): boolean {
-  return (category ?? "").trim().toLowerCase() === FREE_SESSION_CATEGORY.toLowerCase();
-}
-
 /**
  * Short registration: personal details only.
- * Free Session events always use it. Workshops always use the full form.
+ * Free offerings always use it. Workshops and retreats use the full form.
  * The title match keeps older intro-session links working when no type is set.
  */
 export function isSimplifiedRegistration(
   event?: string | null,
   category?: string | null,
+  kind?: string | null,
 ): boolean {
-  if (isFreeSessionCategory(category)) return true;
-  if ((category ?? "").trim().toLowerCase() === "workshop") return false;
-  return /free\s+introduction\s+to\s+hatha\s+yoga/i.test(event ?? "");
+  return (
+    resolveRegistrationKind({
+      kind,
+      category,
+      eventLabel: event,
+    }) === "free"
+  );
 }
 
 export const BANK_DETAILS = [

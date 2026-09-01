@@ -1,4 +1,4 @@
-import type { DocumentSchema, FieldDef } from "./schema";
+import type { DocumentSchema, FieldDef, SchemaSection } from "./schema";
 
 /**
  * Every editable page on the website, described as data.
@@ -176,7 +176,7 @@ export const siteSettingsSchema: DocumentSchema = {
 };
 
 export const homePageSchema: DocumentSchema = {
-  title: "Home page",
+  title: "Home Page",
   previewPath: "/",
   sections: [
     {
@@ -361,7 +361,7 @@ export const homePageSchema: DocumentSchema = {
 };
 
 export const aboutPageSchema: DocumentSchema = {
-  title: "About page",
+  title: "About Page",
   previewPath: "/about",
   sections: [
     {
@@ -479,7 +479,7 @@ export const aboutPageSchema: DocumentSchema = {
 };
 
 export const programsPageSchema: DocumentSchema = {
-  title: "Programs page",
+  title: "Programs & Offerings Page",
   description:
     "The wording of the Programs page. The programs themselves are edited under Programs.",
   previewPath: "/programs",
@@ -534,7 +534,7 @@ export const programsPageSchema: DocumentSchema = {
 };
 
 export const eventsPageSchema: DocumentSchema = {
-  title: "Events page",
+  title: "Events & Partner Program Page",
   description:
     "The wording of the Events page and its archive. The events themselves are edited under Events.",
   previewPath: "/events",
@@ -559,7 +559,7 @@ export const eventsPageSchema: DocumentSchema = {
 };
 
 export const retreatsPageSchema: DocumentSchema = {
-  title: "Retreats page",
+  title: "Retreats Page",
   previewPath: "/retreats",
   sections: [
     { title: "The top of the page", fields: heroFields("Retreats") },
@@ -659,7 +659,7 @@ export const retreatsPageSchema: DocumentSchema = {
 };
 
 export const contactPageSchema: DocumentSchema = {
-  title: "Contact page",
+  title: "Contact Page",
   previewPath: "/contact",
   sections: [
     {
@@ -727,13 +727,18 @@ export const contactPageSchema: DocumentSchema = {
   ],
 };
 
-export const registerPageSchema: DocumentSchema = {
-  title: "Registration page",
-  description:
-    "The wording of the registration form, including the health questions and the agreements people accept. Please change the medical and legal text with care.",
-  previewPath: "/register",
-  sections: [
-    { title: "The top of the page", fields: heroFields("registration") },
+function registerFormSections(
+  pageName: string,
+  fullForm: boolean,
+): SchemaSection[] {
+  const hero: SchemaSection = {
+    title: "The top of the page",
+    fields: heroFields(pageName),
+  };
+  if (!fullForm) return [hero];
+
+  return [
+    hero,
     {
       title: "Health questions",
       fields: [
@@ -934,8 +939,56 @@ export const registerPageSchema: DocumentSchema = {
         },
       ],
     },
-  ],
-};
+  ];
+}
+
+export function createRegisterPageSchema(options: {
+  title: string;
+  description: string;
+  previewPath: string;
+  pageName: string;
+  fullForm?: boolean;
+}): DocumentSchema {
+  return {
+    title: options.title,
+    description: options.description,
+    previewPath: options.previewPath,
+    sections: registerFormSections(options.pageName, options.fullForm ?? true),
+  };
+}
+
+export const workshopRegisterPageSchema = createRegisterPageSchema({
+  title: "Workshop Registration",
+  description:
+    "The full five-step workshop form: health questions, the disclaimer and the guidelines. Please change the medical and legal text with care.",
+  previewPath: "/register?kind=workshop",
+  pageName: "workshop registration",
+});
+
+export const freeOfferingRegisterPageSchema = createRegisterPageSchema({
+  title: "Free Offering Registration",
+  description:
+    "The one-page registration form used for free sessions. Only the heading of the page is edited here; people then fill in their personal details.",
+  previewPath: "/register?kind=free",
+  pageName: "free offering registration",
+  fullForm: false,
+});
+
+export const moduleRegisterPageSchema = createRegisterPageSchema({
+  title: "Module Registration",
+  description:
+    "The full five-step form for module registration. Starts as a copy of Workshop Registration; change it independently after that.",
+  previewPath: "/register?kind=module",
+  pageName: "module registration",
+});
+
+export const retreatRegisterPageSchema = createRegisterPageSchema({
+  title: "Retreat Registration",
+  description:
+    "The full five-step form people complete when they register for a retreat. Starts as a copy of Workshop Registration; change it independently after that.",
+  previewPath: "/register?kind=retreat",
+  pageName: "retreat registration",
+});
 
 export const legalPageSchema = (previewPath: string): DocumentSchema => ({
   title: "Legal page",
@@ -1030,7 +1083,7 @@ export const retreatSchema: DocumentSchema = {
           kind: "text",
           name: "registrationLink",
           label: "Registration link",
-          hint: "Leave empty to send people to the registration page on this site.",
+          hint: "Leave empty to send people to Retreat Registration on this site.",
         },
       ],
     },

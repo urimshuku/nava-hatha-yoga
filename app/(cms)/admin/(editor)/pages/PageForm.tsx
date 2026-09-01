@@ -15,12 +15,14 @@ export function PageForm({
   schema,
   values,
   notice,
+  cancelHref = "/admin/pages",
 }: {
   pageId: string;
   schema: DocumentSchema;
   /** The page as it stands today, from the CMS or from Sanity. */
   values: unknown;
   notice?: "saved" | "published";
+  cancelHref?: string;
 }) {
   const [state, formAction, pending] = useActionState<PageFormState, FormData>(
     savePage,
@@ -41,7 +43,7 @@ export function PageForm({
           ) : null}
         </div>
         <SaveBar
-          cancelHref="/admin/pages"
+          cancelHref={cancelHref}
           action={formAction}
           pending={pending}
         />
@@ -61,7 +63,7 @@ export function PageForm({
       ))}
 
       <SaveBar
-        cancelHref="/admin/pages"
+        cancelHref={cancelHref}
         action={formAction}
         pending={pending}
       />

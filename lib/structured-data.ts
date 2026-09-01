@@ -8,7 +8,7 @@ import {
 } from "@/lib/constants";
 import { eventEndTimestamp, eventStartTimestamp, isPastEvent } from "@/lib/event-boundary";
 import { programImageSrc } from "@/lib/local-images";
-import { eventRegisterHref } from "@/lib/utils";
+import { eventRegisterHref, retreatRegisterHref } from "@/lib/utils";
 import { urlForImage } from "@/lib/cms/image-url";
 import type {
   Program,
@@ -295,7 +295,7 @@ export function buildRetreatEventJsonLd(
       ? {
           offers: {
             ...offer,
-            url: retreat.registrationLink || absoluteUrl("/contact"),
+            url: absoluteUrl(retreatRegisterHref(retreat)),
           },
         }
       : {}),

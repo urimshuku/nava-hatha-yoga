@@ -8,6 +8,10 @@ import {
   isUpcomingEvent,
 } from "@/lib/event-boundary";
 import {
+  REGISTER_DOCUMENT_SLUG,
+  type RegistrationKind,
+} from "@/lib/registration-kind";
+import {
   composeEventTimeLabel,
   deriveEventSlug,
   formatRegistrationEventLabel,
@@ -332,6 +336,20 @@ export async function getRetreatsPage(): Promise<RetreatsPage> {
 }
 
 /** Returns null when the CMS has no registration copy; callers use code defaults. */
-export async function getRegisterPage(): Promise<RegisterPage | null> {
-  return (await getPageOverride<RegisterPage>("registerPage")) ?? null;
+export async function getRegisterPage(
+  kind: RegistrationKind = "workshop",
+): Promise<RegisterPage | null> {
+  const slug = REGISTER_DOCUMENT_SLUG[kind];
+  const page =
+    (await getPageOverride<RegisterPage>("registerPage", slug)) ?? null;
+  if (page) return page;
+  if (kind === "retreat" || kind === "module") {
+    return (
+      (await getPageOverride<RegisterPage>(
+        "registerPage",
+        REGISTER_DOCUMENT_SLUG.workshop,
+      )) ?? null
+    );
+  }
+  return null;
 }

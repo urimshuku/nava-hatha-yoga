@@ -26,12 +26,24 @@ export default async function EditPagePage({
     searchParams,
   ]);
 
+  const isRegistration = page.section === "registration";
+  const isLegal = page.section === "legal";
+  const startsAsWorkshopCopy =
+    !stored &&
+    (page.id === "register-retreat" || page.id === "register-module");
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-        <Link href="/admin/pages" className="text-brown hover:text-saffron">
-          Pages
-        </Link>
+        {isRegistration ? (
+          <span className="text-brown">Registration</span>
+        ) : isLegal ? (
+          <span className="text-brown">Legal</span>
+        ) : (
+          <Link href="/admin/pages" className="text-brown hover:text-saffron">
+            Main Pages
+          </Link>
+        )}
         <span className="text-border-strong">/</span>
         <span className="text-charcoal">{page.label}</span>
         {page.schema.previewPath ? (
@@ -47,8 +59,9 @@ export default async function EditPagePage({
 
       {!stored ? (
         <p className="rounded border border-border bg-cream/60 px-4 py-3 text-sm text-brown">
-          This page still uses the wording currently on the website. Save keeps
-          a working copy here. Publish puts this wording on the website.
+          {startsAsWorkshopCopy
+            ? `This form starts as a copy of Workshop Registration. Save keeps a working copy here. Publish puts this wording on the ${page.label.toLowerCase()} form.`
+            : "This page still uses the wording currently on the website. Save keeps a working copy here. Publish puts this wording on the website."}
         </p>
       ) : hasUnpublishedChanges(stored) ? (
         <p className="rounded border border-saffron/30 bg-saffron/5 px-4 py-3 text-sm text-saffron-hover">

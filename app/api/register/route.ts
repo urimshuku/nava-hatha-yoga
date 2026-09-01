@@ -1,12 +1,17 @@
 import { NextResponse } from "next/server";
 
-import { findEventForRegistration } from "@/lib/cms/site-content";
-import { isSimplifiedRegistration } from "@/lib/register-content";
+import { findEventForRegistration, getRetreatBySlug } from "@/lib/cms/site-content";
 import { deliverRegistration } from "@/lib/registration";
+import {
+  isSimplifiedRegistrationKind,
+  parseRegistrationKind,
+  resolveRegistrationKind,
+} from "@/lib/registration-kind";
 
 interface RegisterPayload {
   event?: string;
   eventSlug?: string;
+  kind?: string;
   fullName?: string;
   preferredName?: string;
   email?: string;
@@ -58,11 +63,32 @@ export async function POST(request: Request) {
 
   const event = data.event?.trim();
   const eventSlug = data.eventSlug?.trim();
-  const matched = await findEventForRegistration({
-    slug: eventSlug,
-    label: event,
+  const requestedKind = parseRegistrationKind(data.kind);
+  const [matchedEvent, matchedRetreat] = await Promise.all([
+    requestedKind === "retreat"
+      ? Promise.resolve(undefined)
+      : findEventForRegistration({
+          slug: eventSlug,
+          label: event,
+        }),
+    eventSlug ? getRetreatBySlug(eventSlug) : Promise.resolve(undefined),
+  ]);
+  const isRetreat =
+    Boolean(matchedRetreat) && (requestedKind === "retreat" || !matchedEvent);
+  const kind = resolveRegistrationKind({
+    kind: data.kind,
+    category: matchedEvent?.category,
+    isRetreat,
+    eventLabel: event,
   });
-  const simplified = isSimplifiedRegistration(event, matched?.category);
+  const simplified = isSimplifiedRegistrationKind(kind);
+  const category =
+    matchedEvent?.category ??
+    (matchedRetreat || kind === "retreat"
+      ? "Retreat"
+      : kind === "free"
+        ? "Free Session"
+        : undefined);
   const fullName = data.fullName?.trim();
   const email = data.email?.trim();
   const phone = data.phone?.trim();
@@ -134,7 +160,7 @@ export async function POST(request: Request) {
   try {
     await deliverRegistration({
       event,
-      category: matched?.category,
+      category,
       fullName,
       preferredName: data.preferredName?.trim(),
       email,

@@ -12,6 +12,11 @@ import { cn } from "@/lib/utils";
  */
 export function CmsNav({ sections }: { sections: CmsNavSection[] }) {
   const pathname = usePathname();
+  const activeHref = sections
+    .flatMap((section) => section.items)
+    .map((item) => item.href)
+    .filter((href) => pathname === href || pathname.startsWith(`${href}/`))
+    .sort((a, b) => b.length - a.length)[0];
 
   return (
     <nav aria-label="Website sections" className="space-y-8">
@@ -22,8 +27,7 @@ export function CmsNav({ sections }: { sections: CmsNavSection[] }) {
           </p>
           <ul className="space-y-1">
             {section.items.map((item) => {
-              const isActive =
-                pathname === item.href || pathname.startsWith(`${item.href}/`);
+              const isActive = item.href === activeHref;
 
               return (
                 <li key={item.href}>

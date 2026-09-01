@@ -1,3 +1,5 @@
+import { registrationKindFromCategory } from "@/lib/registration-kind";
+
 /** Tiny className combiner (no external dependency needed). */
 export function cn(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(" ");
@@ -382,6 +384,8 @@ type RegistrationEventInput = {
   sessions?: EventSessionInput[] | null;
   time?: string | null;
   description?: string | null;
+  category?: string | null;
+  registrationLink?: string | null;
 };
 
 /** Full event label for registration links and notification emails. */
@@ -407,6 +411,20 @@ export function eventRegisterHref(event: RegistrationEventInput): string {
     event: formatRegistrationEventLabel(event),
   });
   if (event.slug) params.set("slug", event.slug);
+  const kind = registrationKindFromCategory(event.category);
+  if (kind && kind !== "workshop") params.set("kind", kind);
+  return `/register?${params.toString()}`;
+}
+
+/** Retreat register button: custom URL when set, otherwise the retreat form. */
+export function retreatRegisterHref(retreat: RegistrationEventInput): string {
+  const custom = retreat.registrationLink?.trim();
+  if (custom) return custom;
+  const params = new URLSearchParams({
+    event: formatRegistrationEventLabel(retreat),
+    kind: "retreat",
+  });
+  if (retreat.slug) params.set("slug", retreat.slug);
   return `/register?${params.toString()}`;
 }
 
