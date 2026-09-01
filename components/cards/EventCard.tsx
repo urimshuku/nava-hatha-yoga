@@ -9,11 +9,12 @@ import { programSymbolSrc } from "@/lib/local-images";
 import {
   cn,
   eventAnchorId,
-  eventCardSummary,
+  eventCardSummaryParagraphs,
   eventLocationBadge,
   eventRegisterHref,
   formatEventCalendarLine,
   formatEventDateBadge,
+  formatSessionHoursRange,
   normalizeEventSessionSchedule,
   resolveEventCardEndDate,
 } from "@/lib/utils";
@@ -166,7 +167,7 @@ function EventTimeBlock({ time }: { time: string }) {
       if (!match) continue;
 
       const day = match[1].trim();
-      const hours = match[2].trim();
+      const hours = formatSessionHoursRange(match[2]);
       const lastGroup = dayGroups[dayGroups.length - 1];
 
       if (lastGroup?.day === day) {
@@ -179,7 +180,7 @@ function EventTimeBlock({ time }: { time: string }) {
 
     const lastGroup = dayGroups[dayGroups.length - 1];
     if (lastGroup && isSessionTimeLine(line)) {
-      lastGroup.hours.push(line);
+      lastGroup.hours.push(formatSessionHoursRange(line));
     }
   }
 
@@ -201,7 +202,7 @@ function EventTimeBlock({ time }: { time: string }) {
                 className="grid grid-cols-[minmax(6.5rem,7.75rem)_1fr] gap-x-3 sm:grid-cols-[8rem_1fr] sm:gap-x-4"
               >
                 <span>{index === 0 ? `${group.day}:` : ""}</span>
-                <span>{hours}</span>
+                <span className="tabular-nums">{hours}</span>
               </div>
             ))}
           </li>
@@ -223,7 +224,7 @@ export function EventCard({
   const displayEndDate = resolveEventCardEndDate(event);
   const dateBadge = formatEventDateBadge(event.date, displayEndDate);
   const locationBadge = eventLocationBadge(event.location, event.cityCountry);
-  const summary = eventCardSummary(event.description);
+  const summaryParagraphs = eventCardSummaryParagraphs(event.description);
   const shareAnchorId = eventAnchorId(event._id);
   const programSlug = event.relatedProgram?.slug;
   const symbolSrc = programSlug ? programSymbolSrc(programSlug) : null;
@@ -293,10 +294,12 @@ export function EventCard({
           </TitleTag>
         </div>
 
-        {summary ? (
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-brown sm:mt-4 sm:text-[0.95rem]">
-            {summary}
-          </p>
+        {summaryParagraphs.length > 0 ? (
+          <div className="mt-3 max-w-3xl space-y-3 text-sm leading-relaxed text-brown sm:mt-4 sm:text-[0.95rem]">
+            {summaryParagraphs.map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
+            ))}
+          </div>
         ) : null}
 
         <div className="mt-4 grid gap-4 sm:mt-5 sm:grid-cols-2 sm:gap-8">

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { CollapsibleAdminSection } from "@/components/cms/CollapsibleAdminSection";
 import { ContentListActions } from "@/components/cms/ContentListActions";
 import { FormNotice } from "@/components/cms/SaveBar";
 import { SourceBadge } from "@/components/cms/SourceBadge";
@@ -49,15 +50,35 @@ function EventRow({ entry }: { entry: AdminListEntry }) {
   );
 }
 
+function EventRows({ entries }: { entries: AdminListEntry[] }) {
+  return (
+    <ul className="overflow-hidden rounded-lg border border-border bg-white">
+      {entries.map((entry) => (
+        <EventRow key={entry.slug} entry={entry} />
+      ))}
+    </ul>
+  );
+}
+
 function EventList({
   title,
   entries,
   emptyMessage,
+  collapsible = false,
 }: {
   title: string;
   entries: AdminListEntry[];
   emptyMessage: string;
+  collapsible?: boolean;
 }) {
+  if (collapsible) {
+    return (
+      <CollapsibleAdminSection title={title} count={entries.length}>
+        <EventRows entries={entries} />
+      </CollapsibleAdminSection>
+    );
+  }
+
   return (
     <section className="mt-10">
       <h2 className="mb-3 text-xs uppercase tracking-widest text-brown">
@@ -68,11 +89,7 @@ function EventList({
           {emptyMessage}
         </p>
       ) : (
-        <ul className="overflow-hidden rounded-lg border border-border bg-white">
-          {entries.map((entry) => (
-            <EventRow key={entry.slug} entry={entry} />
-          ))}
-        </ul>
+        <EventRows entries={entries} />
       )}
     </section>
   );
@@ -136,6 +153,7 @@ export default async function AdminEventsPage({
         title="Past"
         entries={past}
         emptyMessage="No past events."
+        collapsible
       />
     </div>
   );

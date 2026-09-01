@@ -45,15 +45,13 @@ export async function saveRetreat(
   const slug = resolveSlug(
     retreatWebAddress(
       text(formData, "cityCountry"),
-      data.title,
       text(formData, "date"),
     ),
-    [text(formData, "cityCountry"), data.title, text(formData, "date")],
+    [text(formData, "cityCountry"), "retreat", text(formData, "date")],
   );
   if (!slug) {
     return {
-      error:
-        "This retreat needs a web address. Add a title, or type a city and start date.",
+      error: "This retreat needs a web address. Type a city and start date.",
     };
   }
 

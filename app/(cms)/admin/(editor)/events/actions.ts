@@ -23,7 +23,11 @@ import {
 import { assertCmsSession } from "@/lib/cms/session";
 import { getPrograms } from "@/lib/cms/site-content";
 import type { EventCategory, YogaEvent } from "@/lib/cms/content-types";
-import { eventWebAddress, stripEventDescriptionExtras } from "@/lib/utils";
+import {
+  eventWebAddress,
+  formatSessionHoursRange,
+  stripEventDescriptionExtras,
+} from "@/lib/utils";
 
 export interface EventFormState {
   error?: string;
@@ -101,7 +105,7 @@ export async function saveEvent(
 
   const base = await loadBaseEvent(originalSlug ?? slug);
   const sessions = pairedList(formData, "sessionDay", "sessionHours").map(
-    (row) => ({ day: row.first, hours: row.second }),
+    (row) => ({ day: row.first, hours: formatSessionHoursRange(row.second) }),
   );
 
   const image = imageValue(formData, "image");

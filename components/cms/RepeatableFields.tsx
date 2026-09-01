@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { sessionDayLabelsBetween } from "@/lib/utils";
+import { formatSessionHoursRange, sessionDayLabelsBetween } from "@/lib/utils";
 
 import { Field, inputClassName } from "./Field";
 
@@ -224,6 +224,11 @@ export function SessionsField({
                 placeholder="16:30 – 18:30"
                 onChange={(event) =>
                   updateRow(row.id, { hours: event.target.value })
+                }
+                onBlur={(event) =>
+                  updateRow(row.id, {
+                    hours: formatSessionHoursRange(event.target.value),
+                  })
                 }
                 className={`${inputClassName} min-w-0`}
               />

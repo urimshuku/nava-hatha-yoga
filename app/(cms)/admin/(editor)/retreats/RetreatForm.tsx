@@ -45,13 +45,12 @@ export function RetreatForm({
       }
     | undefined;
   const place = splitRetreatPlace(retreatValues ?? {});
-  const [title, setTitle] = useState(() => retreatValues?.title ?? "");
   const [cityCountry, setCityCountry] = useState(() => place.cityCountry ?? "");
   const [firstDay, setFirstDay] = useState(() =>
     toDateInputValue(retreatValues?.date),
   );
   const slug =
-    retreatWebAddress(cityCountry, title, firstDay) || originalSlug || "";
+    retreatWebAddress(cityCountry, firstDay) || originalSlug || "";
 
   const values =
     retreat && typeof retreat === "object"
@@ -70,7 +69,6 @@ export function RetreatForm({
       return;
     }
 
-    if (target.name === "title") setTitle(target.value);
     if (target.name === "cityCountry") setCityCountry(target.value);
     if (target.name === "date") setFirstDay(target.value);
   }
@@ -116,7 +114,7 @@ export function RetreatForm({
         <TextField
           name="slug"
           label="Web address"
-          hint="Always /retreats/ plus the city, title, and first day. It updates as you change those fields."
+          hint="Always /retreats/ plus the city, the word retreat, and the first day. It updates as you change those fields."
           value={slug}
           readOnly
         />

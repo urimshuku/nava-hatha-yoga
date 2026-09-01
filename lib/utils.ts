@@ -459,17 +459,16 @@ export function eventWebAddress(
 }
 
 /**
- * Public /retreats/ address from the city, retreat title, and first day
- * (e.g. saranda-summer-retreat-2026-09-10).
+ * Public /retreats/ address from the city, the word “retreat”, and first day
+ * (e.g. saranda-retreat-2026-09-10).
  */
 export function retreatWebAddress(
   cityCountry?: string | null,
-  title?: string | null,
   date?: string | null,
 ): string {
   const city = eventLocationShort(undefined, cityCountry);
   return slugifySegment(
-    [city, title?.trim(), webAddressDate(date)].filter(Boolean).join(" "),
+    [city, "retreat", webAddressDate(date)].filter(Boolean).join(" "),
   );
 }
 
@@ -503,16 +502,19 @@ export function stripEventDescriptionExtras(description?: string | null): string
   return text.trim();
 }
 
-/** Short card copy: intro only, capped at a few sentences. */
-export function eventCardSummary(description?: string | null, maxSentences = 3): string {
-  if (!description) return "";
+/** Short card copy: intro only, one paragraph per break in the CMS short description. */
+export function eventCardSummaryParagraphs(description?: string | null): string[] {
+  if (!description) return [];
 
-  const intro = stripEventDescriptionExtras(description);
-  const text = intro.replace(/\n+/g, " ").trim();
-  const sentences =
-    text.match(/[^.!?]+[.!?]+/g)?.map((sentence) => sentence.trim()).filter(Boolean) ?? [text];
+  return stripEventDescriptionExtras(description)
+    .split(/\n+/)
+    .map((block) => block.trim())
+    .filter(Boolean);
+}
 
-  return sentences.slice(0, maxSentences).join(" ");
+/** Short card copy as a single string. Prefer eventCardSummaryParagraphs on cards. */
+export function eventCardSummary(description?: string | null): string {
+  return eventCardSummaryParagraphs(description).join(" ");
 }
 
 const SESSION_MONTHS =
@@ -531,6 +533,28 @@ export function formatSessionTimingsTo24Hour(text: string): string {
 
       return `${hour.toString().padStart(2, "0")}:${minutes}`;
     },
+  );
+}
+
+const SESSION_HOURS_RANGE =
+  /(\d{1,2})[.:](\d{2})\s*[–—−-]\s*(\d{1,2})[.:](\d{2})/g;
+
+function padHour(hourText: string): string {
+  return hourText.padStart(2, "0");
+}
+
+/**
+ * One shape for every session time range: 07:30 – 08:45.
+ * Typed hyphens, missing spaces, and unpadded hours are brought in line.
+ */
+export function formatSessionHoursRange(hours: string): string {
+  const trimmed = hours.trim();
+  if (!trimmed) return "";
+
+  return formatSessionTimingsTo24Hour(trimmed).replace(
+    SESSION_HOURS_RANGE,
+    (_, startHour, startMinute, endHour, endMinute) =>
+      `${padHour(startHour)}:${startMinute} – ${padHour(endHour)}:${endMinute}`,
   );
 }
 
@@ -590,7 +614,7 @@ export function sessionsFromDescription(
     .flatMap((line) => {
       const match = SESSION_DATE_LINE.exec(line);
       if (!match) return [];
-      return [{ day: match[1].trim(), hours: match[2].trim() }];
+      return [{ day: match[1].trim(), hours: formatSessionHoursRange(match[2]) }];
     });
 }
 
@@ -682,7 +706,7 @@ export function hydrateEventSessionFields(input: {
   const sessions = hasCompleteSessions(input.sessions)
     ? (input.sessions ?? []).map((session) => ({
         day: session.day?.trim() || undefined,
-        hours: session.hours?.trim() || undefined,
+        hours: formatSessionHoursRange(session.hours ?? "") || undefined,
       }))
     : sessionsFromSchedule(input.time, input.description);
 

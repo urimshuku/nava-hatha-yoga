@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { CollapsibleAdminSection } from "@/components/cms/CollapsibleAdminSection";
 import { ContentListActions } from "@/components/cms/ContentListActions";
 import { FormNotice } from "@/components/cms/SaveBar";
 import { SourceBadge } from "@/components/cms/SourceBadge";
@@ -49,15 +50,35 @@ function RetreatRow({ entry }: { entry: AdminListEntry }) {
   );
 }
 
+function RetreatRows({ entries }: { entries: AdminListEntry[] }) {
+  return (
+    <ul className="overflow-hidden rounded-lg border border-border bg-white">
+      {entries.map((entry) => (
+        <RetreatRow key={entry.slug} entry={entry} />
+      ))}
+    </ul>
+  );
+}
+
 function RetreatList({
   title,
   entries,
   emptyMessage,
+  collapsible = false,
 }: {
   title: string;
   entries: AdminListEntry[];
   emptyMessage: string;
+  collapsible?: boolean;
 }) {
+  if (collapsible) {
+    return (
+      <CollapsibleAdminSection title={title} count={entries.length}>
+        <RetreatRows entries={entries} />
+      </CollapsibleAdminSection>
+    );
+  }
+
   return (
     <section className="mt-10">
       <h2 className="mb-3 text-xs uppercase tracking-widest text-brown">
@@ -68,11 +89,7 @@ function RetreatList({
           {emptyMessage}
         </p>
       ) : (
-        <ul className="overflow-hidden rounded-lg border border-border bg-white">
-          {entries.map((entry) => (
-            <RetreatRow key={entry.slug} entry={entry} />
-          ))}
-        </ul>
+        <RetreatRows entries={entries} />
       )}
     </section>
   );
@@ -142,6 +159,7 @@ export default async function AdminRetreatsPage({
             title="Past"
             entries={past}
             emptyMessage="No past retreats."
+            collapsible
           />
         </>
       )}

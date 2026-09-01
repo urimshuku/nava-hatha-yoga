@@ -967,7 +967,7 @@ export const retreatSchema: DocumentSchema = {
           name: "title",
           label: "Title",
           required: true,
-          hint: "Also used in the web address, with the city and start date.",
+          hint: "The name shown on the website.",
         },
         {
           kind: "textarea",
@@ -980,7 +980,7 @@ export const retreatSchema: DocumentSchema = {
           kind: "date",
           name: "date",
           label: "Start date",
-          hint: "The first day of the retreat. Also used in the web address.",
+          hint: "The first day of the retreat. Also used in the web address, with the city.",
         },
         {
           kind: "date",
@@ -992,7 +992,7 @@ export const retreatSchema: DocumentSchema = {
           kind: "text",
           name: "cityCountry",
           label: "City, country",
-          hint: "The small place label, for example: Saranda, Albania. Also used in the web address.",
+          hint: "The small place label, for example: Saranda, Albania. Also used in the web address, with the start date.",
           placeholder: "Saranda, Albania",
         },
         {
