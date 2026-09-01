@@ -202,7 +202,7 @@ function EventTimeBlock({ time }: { time: string }) {
                 className="grid grid-cols-[minmax(6.5rem,7.75rem)_1fr] gap-x-3 sm:grid-cols-[8rem_1fr] sm:gap-x-4"
               >
                 <span>{index === 0 ? `${group.day}:` : ""}</span>
-                <span className="tabular-nums">{hours}</span>
+                <span>{hours}</span>
               </div>
             ))}
           </li>

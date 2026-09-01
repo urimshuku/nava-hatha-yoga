@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { CmsNav } from "@/components/cms/CmsNav";
+import { CmsViewport } from "@/components/cms/CmsViewport";
 import { CMS_SECTIONS } from "@/lib/cms/sections";
 import { hasCmsSession } from "@/lib/cms/session";
 import { SITE_NAME } from "@/lib/constants";
@@ -20,7 +21,8 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-container flex-col gap-8 px-5 py-8 lg:flex-row lg:gap-12 lg:px-8 lg:py-12">
+    <div className="mx-auto flex min-h-screen w-full max-w-container flex-col gap-8 overflow-x-clip px-5 py-8 lg:flex-row lg:gap-12 lg:px-8 lg:py-12">
+      <CmsViewport />
       <aside className="lg:w-56 lg:shrink-0">
         <div className="mb-8">
           <p className="text-xs uppercase tracking-widest text-brown">

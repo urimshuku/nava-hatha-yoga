@@ -13,6 +13,11 @@
     scroll-behavior: smooth;
   }
 
+  html.cms-editor {
+    scrollbar-gutter: stable;
+    scroll-behavior: auto;
+  }
+
   body {
     @apply bg-cream text-charcoal font-body antialiased;
     text-rendering: optimizeLegibility;

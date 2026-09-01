@@ -31,9 +31,9 @@ export function CmsNav({ sections }: { sections: CmsNavSection[] }) {
                     href={item.href}
                     aria-current={isActive ? "page" : undefined}
                     className={cn(
-                      "block rounded px-3 py-2 text-sm transition-colors",
+                      "block rounded px-3 py-2 text-sm font-medium transition-colors",
                       isActive
-                        ? "bg-saffron/10 font-medium text-saffron-hover"
+                        ? "bg-saffron/10 text-saffron-hover"
                         : "text-charcoal hover:bg-sand/40",
                     )}
                   >
