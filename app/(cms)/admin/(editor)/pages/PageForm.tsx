@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 
-import { FormSection } from "@/components/cms/FormSection";
+import { FormSection, FormSectionsProvider } from "@/components/cms/FormSection";
 import { FormError, FormNotice, SaveBar } from "@/components/cms/SaveBar";
 import { SchemaFields } from "@/components/cms/SchemaFields";
 import type { DocumentSchema } from "@/lib/cms/schema";
@@ -42,6 +42,7 @@ export function PageForm({
   );
 
   return (
+    <FormSectionsProvider>
     <form action={formAction} className="space-y-6">
       <input type="hidden" name="pageId" value={pageId} />
 
@@ -95,5 +96,6 @@ export function PageForm({
         pending={pending}
       />
     </form>
+    </FormSectionsProvider>
   );
 }

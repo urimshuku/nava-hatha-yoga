@@ -7,7 +7,7 @@ import {
   TextAreaField,
   TextField,
 } from "@/components/cms/Field";
-import { FormSection } from "@/components/cms/FormSection";
+import { FormSection, FormSectionsProvider } from "@/components/cms/FormSection";
 import { ImageField } from "@/components/cms/ImageField";
 import { TextListField } from "@/components/cms/RepeatableFields";
 import { RichTextField } from "@/components/cms/RichTextField";
@@ -43,6 +43,7 @@ export function ProgramForm({
   );
 
   return (
+    <FormSectionsProvider>
     <form action={formAction} className="space-y-6">
       {originalSlug ? (
         <input type="hidden" name="originalSlug" value={originalSlug} />
@@ -191,5 +192,6 @@ export function ProgramForm({
         pending={pending}
       />
     </form>
+    </FormSectionsProvider>
   );
 }

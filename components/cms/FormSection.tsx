@@ -1,6 +1,14 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 
 import { titleCaseLabel } from "./Field";
 
@@ -23,13 +31,73 @@ function IconChevron() {
   );
 }
 
+interface FormSectionsContextValue {
+  epoch: number;
+  wantOpen: boolean | null;
+  expandAll: () => void;
+  collapseAll: () => void;
+}
+
+const FormSectionsContext = createContext<FormSectionsContextValue | null>(null);
+
+/** Lets Collapse all / Expand all reach every section on the editing form. */
+export function FormSectionsProvider({ children }: { children: ReactNode }) {
+  const [epoch, setEpoch] = useState(0);
+  const [wantOpen, setWantOpen] = useState<boolean | null>(null);
+
+  const expandAll = useCallback(() => {
+    setWantOpen(true);
+    setEpoch((value) => value + 1);
+  }, []);
+
+  const collapseAll = useCallback(() => {
+    setWantOpen(false);
+    setEpoch((value) => value + 1);
+  }, []);
+
+  const value = useMemo(
+    () => ({ epoch, wantOpen, expandAll, collapseAll }),
+    [epoch, wantOpen, expandAll, collapseAll],
+  );
+
+  return (
+    <FormSectionsContext.Provider value={value}>
+      {children}
+    </FormSectionsContext.Provider>
+  );
+}
+
+export function SectionToggleButtons() {
+  const sections = useContext(FormSectionsContext);
+  if (!sections) return null;
+
+  return (
+    <div className="flex items-center gap-3">
+      <button
+        type="button"
+        onClick={sections.collapseAll}
+        className="text-sm text-brown hover:text-saffron"
+      >
+        Collapse all
+      </button>
+      <button
+        type="button"
+        onClick={sections.expandAll}
+        className="text-sm text-brown hover:text-saffron"
+      >
+        Expand all
+      </button>
+    </div>
+  );
+}
+
 /** Groups related fields under a heading, so a long form reads as short steps. */
 export function FormSection({
   id,
   title,
   description,
   collapsible = true,
-  defaultOpen = false,
+  defaultOpen = true,
   children,
 }: {
   id?: string;
@@ -76,7 +144,13 @@ function CollapsibleSection({
   defaultOpen?: boolean;
   children: ReactNode;
 }) {
+  const sections = useContext(FormSectionsContext);
   const [open, setOpen] = useState(Boolean(defaultOpen));
+
+  useEffect(() => {
+    if (sections?.wantOpen == null) return;
+    setOpen(sections.wantOpen);
+  }, [sections?.epoch, sections?.wantOpen]);
 
   return (
     <details

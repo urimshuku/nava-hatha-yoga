@@ -3,7 +3,7 @@
 import { useActionState, useState, type FormEvent } from "react";
 
 import { TextField } from "@/components/cms/Field";
-import { FormSection } from "@/components/cms/FormSection";
+import { FormSection, FormSectionsProvider } from "@/components/cms/FormSection";
 import { FormError, FormNotice, SaveBar } from "@/components/cms/SaveBar";
 import { SchemaFields } from "@/components/cms/SchemaFields";
 import { retreatSchema } from "@/lib/cms/schemas";
@@ -70,6 +70,7 @@ export function RetreatForm({
   }
 
   return (
+    <FormSectionsProvider>
     <form action={formAction} onInput={syncWebAddress} className="space-y-6">
       {originalSlug ? (
         <input type="hidden" name="originalSlug" value={originalSlug} />
@@ -117,5 +118,6 @@ export function RetreatForm({
         pending={pending}
       />
     </form>
+    </FormSectionsProvider>
   );
 }

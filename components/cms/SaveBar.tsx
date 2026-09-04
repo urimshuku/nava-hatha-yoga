@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 
+import { SectionToggleButtons } from "@/components/cms/FormSection";
+
 /**
  * Save keeps a working copy in the editor. Publish writes the current form
  * and puts it on the website in one step — no separate Save is required.
@@ -41,38 +43,41 @@ export function SaveBar({
   }
 
   return (
-    <div className="ml-auto flex shrink-0 items-center gap-3">
-      <button
-        type="submit"
-        formAction={submitWith("save")}
-        disabled={pending}
-        className="rounded border border-border-strong bg-white px-5 py-2.5 text-sm font-medium text-charcoal transition-colors hover:border-saffron hover:text-saffron disabled:opacity-60"
-      >
-        {pending && intent === "save" ? "Saving…" : "Save"}
-      </button>
-      <button
-        type="submit"
-        formAction={submitWith("publish")}
-        disabled={pending}
-        className="rounded bg-saffron px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-saffron-hover disabled:opacity-60"
-      >
-        {pending && intent === "publish" ? "Publishing…" : "Publish"}
-      </button>
-      {cancelAction ? (
+    <div className="ml-auto flex shrink-0 flex-col items-end gap-2">
+      <div className="flex items-center gap-3">
         <button
           type="submit"
-          formAction={submitCancel}
-          formNoValidate
+          formAction={submitWith("save")}
           disabled={pending}
-          className="text-sm text-brown hover:text-saffron disabled:opacity-60"
+          className="rounded border border-border-strong bg-white px-5 py-2.5 text-sm font-medium text-charcoal transition-colors hover:border-saffron hover:text-saffron disabled:opacity-60"
         >
-          {pending && intent === "cancel" ? "Cancelling…" : "Cancel"}
+          {pending && intent === "save" ? "Saving…" : "Save"}
         </button>
-      ) : (
-        <Link href={cancelHref} className="text-sm text-brown hover:text-saffron">
-          Cancel
-        </Link>
-      )}
+        <button
+          type="submit"
+          formAction={submitWith("publish")}
+          disabled={pending}
+          className="rounded bg-saffron px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-saffron-hover disabled:opacity-60"
+        >
+          {pending && intent === "publish" ? "Publishing…" : "Publish"}
+        </button>
+        {cancelAction ? (
+          <button
+            type="submit"
+            formAction={submitCancel}
+            formNoValidate
+            disabled={pending}
+            className="text-sm text-brown hover:text-saffron disabled:opacity-60"
+          >
+            {pending && intent === "cancel" ? "Cancelling…" : "Cancel"}
+          </button>
+        ) : (
+          <Link href={cancelHref} className="text-sm text-brown hover:text-saffron">
+            Cancel
+          </Link>
+        )}
+      </div>
+      <SectionToggleButtons />
     </div>
   );
 }
