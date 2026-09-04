@@ -171,6 +171,30 @@ export default async function RetreatDetailPage({ params }: PageProps) {
                         </dd>
                       </div>
                     ) : null}
+                    {retreat.ageRequirement?.trim() ? (
+                      <div className="flex justify-between gap-4 border-b border-border pb-3">
+                        <dt className="text-brown">Age</dt>
+                        <dd className="text-right font-medium text-charcoal">
+                          {retreat.ageRequirement.trim()}
+                        </dd>
+                      </div>
+                    ) : null}
+                    {retreat.intensity?.trim() ? (
+                      <div className="flex justify-between gap-4 border-b border-border pb-3">
+                        <dt className="text-brown">Intensity</dt>
+                        <dd className="text-right font-medium text-charcoal">
+                          {retreat.intensity.trim()}
+                        </dd>
+                      </div>
+                    ) : null}
+                    {retreat.yogaExperience?.trim() ? (
+                      <div className="flex justify-between gap-4 border-b border-border pb-3">
+                        <dt className="text-brown">Experience</dt>
+                        <dd className="text-right font-medium text-charcoal">
+                          {retreat.yogaExperience.trim()}
+                        </dd>
+                      </div>
+                    ) : null}
                     {showPrice ? (
                       <div className="flex justify-between gap-4">
                         <dt className="text-brown">Price</dt>

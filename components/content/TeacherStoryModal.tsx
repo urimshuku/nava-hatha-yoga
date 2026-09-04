@@ -11,6 +11,7 @@ interface TeacherStoryModalProps {
   examplesHeading?: string;
   examples?: readonly string[];
   titleId?: string;
+  italicFirst?: boolean;
 }
 
 function IconClose() {
@@ -34,6 +35,7 @@ export function TeacherStoryModal({
   examplesHeading,
   examples,
   titleId = "teacher-story-title",
+  italicFirst = true,
 }: TeacherStoryModalProps) {
   useEffect(() => {
     if (!open) return;
@@ -88,7 +90,9 @@ export function TeacherStoryModal({
             {paragraphs.map((paragraph, index) => (
               <p
                 key={paragraph}
-                className={index === 0 ? "italic text-charcoal" : undefined}
+                className={
+                  italicFirst && index === 0 ? "italic text-charcoal" : undefined
+                }
               >
                 {paragraph}
               </p>

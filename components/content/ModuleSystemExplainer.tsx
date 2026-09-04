@@ -21,6 +21,7 @@ export function ModuleSystemExplainer() {
         examplesHeading={MODULE_SYSTEM_EXPLAINER.examplesHeading}
         examples={MODULE_SYSTEM_EXPLAINER.examples}
         titleId="module-system-title"
+        italicFirst={false}
       />
       <button
         type="button"

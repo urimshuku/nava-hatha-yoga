@@ -292,6 +292,9 @@ function listingFromRetreat(retreat: RetreatListItem): YogaEvent {
     location: retreat.location,
     priceLabel: retreat.priceLabel,
     description: retreat.description,
+    ageRequirement: retreat.ageRequirement,
+    intensity: retreat.intensity,
+    yogaExperience: retreat.yogaExperience,
     image: retreat.image,
     category: "Retreat",
   };

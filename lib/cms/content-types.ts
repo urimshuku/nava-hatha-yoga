@@ -242,6 +242,9 @@ export interface RetreatListItem {
   location?: string;
   priceLabel?: string;
   description?: string;
+  ageRequirement?: string;
+  intensity?: string;
+  yogaExperience?: string;
   image?: SanityImage;
 }
 

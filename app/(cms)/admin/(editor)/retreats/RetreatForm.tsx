@@ -51,10 +51,11 @@ export function RetreatForm({
   const values =
     retreat && typeof retreat === "object"
       ? {
+          yogaExperience: "No prior yoga experience required!",
           ...(retreat as Record<string, unknown>),
           ...place,
         }
-      : retreat;
+      : { yogaExperience: "No prior yoga experience required!" };
 
   function syncWebAddress(event: FormEvent<HTMLFormElement>) {
     const target = event.target;

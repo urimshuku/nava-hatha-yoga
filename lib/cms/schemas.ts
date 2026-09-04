@@ -782,26 +782,10 @@ function lastingSection(section: SchemaSection): SchemaSection {
   return { ...section, fields: section.fields.map(lasting) };
 }
 
-function whenKind(kind: string, fields: FieldDef[]): FieldDef[] {
-  return fields.map((field) => ({
-    ...field,
-    visibleWhen: { name: "kind", equals: kind },
-  }));
-}
-
-const registerStepKindOptions = [
-  { value: "fields", label: "Extra questions" },
-  { value: "personal", label: "Personal details" },
-  { value: "health", label: "Health" },
-  { value: "program", label: "How they heard" },
-  { value: "agreement", label: "Agreement" },
-  { value: "guidelines", label: "Guidelines" },
-];
-
 const personalStepFields: FieldDef[] = [
   {
     kind: "rows",
-    name: "fields",
+    name: "personalFields",
     label: "Fields",
     itemLabel: "field",
     titleField: "label",
@@ -819,18 +803,6 @@ const personalStepFields: FieldDef[] = [
     label: "Emergency contact fields",
     itemLabel: "field",
     titleField: "label",
-    fields: formFieldRowFields,
-  },
-];
-
-const extraQuestionsStepFields: FieldDef[] = [
-  {
-    kind: "rows",
-    name: "fields",
-    label: "Fields",
-    itemLabel: "field",
-    titleField: "label",
-    hint: "The order here is the order on the website.",
     fields: formFieldRowFields,
   },
 ];
@@ -989,13 +961,6 @@ const programStepFields: FieldDef[] = [
     name: "otherIshaDetailsLabel",
     label: "Follow-up if they answered yes",
   },
-  { kind: "text", name: "yesLabel", label: "Yes option" },
-  { kind: "text", name: "noLabel", label: "No option" },
-  {
-    kind: "text",
-    name: "specifyPlaceholder",
-    label: "Hint inside the 'please specify' box",
-  },
 ];
 
 const agreementStepFields: FieldDef[] = [
@@ -1117,7 +1082,10 @@ const guidelinesStepFields: FieldDef[] = [
   },
 ];
 
-function registerFormSections(pageName: string): SchemaSection[] {
+function registerFormSections(
+  pageName: string,
+  fullForm: boolean,
+): SchemaSection[] {
   const hero: SchemaSection = {
     id: "page-heading",
     title: "The top of the page",
@@ -1125,46 +1093,82 @@ function registerFormSections(pageName: string): SchemaSection[] {
     fields: heroFields(pageName),
   };
 
-  const steps: SchemaSection = {
+  const step1: SchemaSection = {
+    id: "step-1",
+    navTitle: "Step 1",
     defaultOpen: true,
-    title: "Form steps",
+    title: "Step 1 — Personal Information",
     description:
-      "Each row is one page of the form. Add, remove or reorder steps. Choose a type to edit that page, or Extra questions for more fields of your own.",
+      "These are the same fields people fill in on the website. Rename one, add a new one, or remove one to change the live form.",
     collapsible: true,
     fields: [
       {
-        kind: "rows",
-        name: "steps",
-        label: "Steps",
-        itemLabel: "step",
-        titleField: "title",
-        defaultItem: { kind: "fields" },
-        hint: "The order here is the order people move through on the website.",
-        fields: [
-          {
-            kind: "select",
-            name: "kind",
-            label: "Type of step",
-            options: registerStepKindOptions,
-          },
-          {
-            kind: "text",
-            name: "title",
-            label: "Step title",
-            hint: "Shown at the top of this step on the website.",
-          },
-          ...whenKind("personal", personalStepFields),
-          ...whenKind("fields", extraQuestionsStepFields),
-          ...whenKind("health", healthStepFields),
-          ...whenKind("program", programStepFields),
-          ...whenKind("agreement", agreementStepFields),
-          ...whenKind("guidelines", guidelinesStepFields),
-        ],
+        kind: "text",
+        name: "step1Title",
+        label: "Step title",
+        hint: "Shown at the top of this step on the website.",
       },
+      ...(fullForm
+        ? personalStepFields
+        : personalStepFields.filter(
+            (field) =>
+              field.name !== "emergencyHeading" &&
+              field.name !== "emergencyFields",
+          )),
     ],
   };
 
-  return [hero, steps].map(lastingSection);
+  if (!fullForm) return [hero, step1].map(lastingSection);
+
+  return [
+    hero,
+    step1,
+    {
+      id: "step-2",
+      navTitle: "Step 2",
+      title: "Step 2 — Health-Related Information",
+      description:
+        "Questions, tick-boxes and the medical disclaimer on the second step of the form.",
+      collapsible: true,
+      fields: [
+        { kind: "text", name: "step2Title", label: "Step title" },
+        ...healthStepFields,
+      ],
+    },
+    {
+      id: "step-3",
+      navTitle: "Step 3",
+      title: "Step 3 — Program-Related Information",
+      description: "How they heard about the program and their practice history.",
+      collapsible: true,
+      fields: [
+        { kind: "text", name: "step3Title", label: "Step title" },
+        ...programStepFields,
+      ],
+    },
+    {
+      id: "step-4",
+      navTitle: "Step 4",
+      title: "Step 4 — Agreement",
+      description: "The refund policy and the participant agreement.",
+      collapsible: true,
+      fields: [
+        { kind: "text", name: "step4Title", label: "Step title" },
+        ...agreementStepFields,
+      ],
+    },
+    {
+      id: "step-5",
+      navTitle: "Step 5",
+      title: "Step 5 — Before the Start of the Session",
+      description: "The notes and full guidelines shown on the last step.",
+      collapsible: true,
+      fields: [
+        { kind: "text", name: "step5Title", label: "Step title" },
+        ...guidelinesStepFields,
+      ],
+    },
+  ].map(lastingSection);
 }
 
 export function createRegisterPageSchema(options: {
@@ -1178,14 +1182,14 @@ export function createRegisterPageSchema(options: {
     title: options.title,
     description: options.description,
     previewPath: options.previewPath,
-    sections: registerFormSections(options.pageName),
+    sections: registerFormSections(options.pageName, options.fullForm ?? true),
   };
 }
 
 export const workshopRegisterPageSchema = createRegisterPageSchema({
   title: "Workshop Registration",
   description:
-    "The steps people complete on the website. Add, remove or reorder a step, then open it to rename, add or remove fields. Please change the medical and legal text with care.",
+    "The same five steps people complete on the website. Open a step to rename, add or remove fields. Please change the medical and legal text with care.",
   previewPath: "/register?kind=workshop",
   pageName: "workshop registration",
 });
@@ -1193,15 +1197,16 @@ export const workshopRegisterPageSchema = createRegisterPageSchema({
 export const freeOfferingRegisterPageSchema = createRegisterPageSchema({
   title: "Free Offering Registration",
   description:
-    "Starts as a one-page form. Add, remove or reorder steps the same way as the other registration pages.",
+    "The one-page registration form used for free sessions. The heading and the personal details fields are the same as on the website.",
   previewPath: "/register?kind=free",
   pageName: "free offering registration",
+  fullForm: false,
 });
 
 export const moduleRegisterPageSchema = createRegisterPageSchema({
   title: "Module System Registration",
   description:
-    "The steps for Module System registration. Starts as a copy of Workshop Registration; change it independently after that.",
+    "The full five-step form for Module System registration. Starts as a copy of Workshop Registration; change it independently after that.",
   previewPath: "/register?kind=module",
   pageName: "module system registration",
 });
@@ -1209,7 +1214,7 @@ export const moduleRegisterPageSchema = createRegisterPageSchema({
 export const retreatRegisterPageSchema = createRegisterPageSchema({
   title: "Retreat Registration",
   description:
-    "The steps people complete when they register for a retreat. Starts as a copy of Workshop Registration; change it independently after that.",
+    "The full five-step form people complete when they register for a retreat. Starts as a copy of Workshop Registration; change it independently after that.",
   previewPath: "/register?kind=retreat",
   pageName: "retreat registration",
 });
@@ -1278,6 +1283,26 @@ export const retreatSchema: DocumentSchema = {
           label: "Address",
           hint: "The street address of the venue.",
           placeholder: "Rruga Skenderbeu 31, 9701, Saranda",
+        },
+        {
+          kind: "text",
+          name: "ageRequirement",
+          label: "Age requirement",
+          hint: "Optional, for example: 14+",
+        },
+        {
+          kind: "text",
+          name: "intensity",
+          label: "Intensity",
+          hint: "Shown on the event card, for example: Medium.",
+          placeholder: "Medium",
+        },
+        {
+          kind: "text",
+          name: "yogaExperience",
+          label: "Yoga Experience",
+          hint: "Shown under the checkmark on the event card.",
+          placeholder: "No prior yoga experience required!",
         },
         {
           kind: "text",

@@ -1187,80 +1187,64 @@ function guidelineBlocksToEditor(
   }));
 }
 
-function stepToEditor(step: RegisterStep): RegisterStepData {
-  return {
-    kind: step.kind,
-    title: step.title,
-    fields: step.fields?.map(fieldToEditor),
-    emergencyHeading: step.emergencyHeading,
-    emergencyFields: step.emergencyFields?.map(fieldToEditor),
-    healthIntro: step.healthIntro ? [...step.healthIntro] : undefined,
-    healthConditionsLegend: step.healthConditionsLegend,
-    healthConditions: step.healthConditions
-      ? [...step.healthConditions]
-      : undefined,
-    otherConditionLabel: step.otherConditionLabel,
-    notApplicableLabel: step.notApplicableLabel,
-    specifyPlaceholder: step.specifyPlaceholder,
-    healthDetailsLabel: step.healthDetailsLabel,
-    majorSurgeryQuestion: step.majorSurgeryQuestion,
-    majorSurgeryHint: step.majorSurgeryHint,
-    pregnancyLabel: step.pregnancyLabel,
-    yesLabel: step.yesLabel,
-    noLabel: step.noLabel,
-    disclaimerIntro: step.disclaimerIntro,
-    disclaimerLinkLabel: step.disclaimerLinkLabel,
-    disclaimerConfirmLead: step.disclaimerConfirmLead,
-    disclaimerTitle: step.disclaimerTitle,
-    disclaimerDocument: step.disclaimerDocument
-      ? disclaimerToEditor(step.disclaimerDocument)
-      : undefined,
-    disclaimerBullets: step.disclaimerBullets
-      ? [...step.disclaimerBullets]
-      : undefined,
-    disclaimerConsentLabel: step.disclaimerConsentLabel,
-    howHeardLabel: step.howHeardLabel,
-    howHeardGroups: step.howHeardGroups?.map((group) => ({
-      heading: group.heading,
-      options: [...group.options],
-    })),
-    howHeardOtherLabel: step.howHeardOtherLabel,
-    priorPracticeLabel: step.priorPracticeLabel,
-    otherIshaLabel: step.otherIshaLabel,
-    otherIshaDetailsLabel: step.otherIshaDetailsLabel,
-    refundPolicyTitle: step.refundPolicyTitle,
-    refundPolicyBullets: step.refundPolicyBullets
-      ? [...step.refundPolicyBullets]
-      : undefined,
-    refundPolicyConsentLabel: step.refundPolicyConsentLabel,
-    agreementTitle: step.agreementTitle,
-    agreementBullets: step.agreementBullets
-      ? [...step.agreementBullets]
-      : undefined,
-    agreementConsentLabel: step.agreementConsentLabel,
-    beforeSessionBlocks: step.beforeSessionBlocks
-      ? guidelineBlocksToEditor(step.beforeSessionBlocks)
-      : undefined,
-    guidelinesPrompt: step.guidelinesPrompt,
-    guidelinesReadLabel: step.guidelinesReadLabel,
-    guidelinesDownloadLabel: step.guidelinesDownloadLabel,
-    guidelinesTitle: step.guidelinesTitle,
-    guidelinesDocument: step.guidelinesDocument?.map((section) => ({
-      title: section.title,
-      blocks: guidelineBlocksToEditor(section.blocks),
-    })),
-  };
-}
-
-/** Values for the registration editor, with steps in the shape the form saves. */
+/** Values for the registration editor’s named step sections. */
 export function registerPageEditorValues(
   cms: RegisterPage | null | undefined,
   kind?: RegistrationKind,
 ): Record<string, unknown> {
   const content = resolveRegisterContent(cms, kind);
   return {
-    ...content,
-    steps: content.steps.map(stepToEditor),
+    step1Title: content.step1Title,
+    personalFields: content.personalFields.map(fieldToEditor),
+    emergencyHeading: content.emergencyHeading,
+    emergencyFields: content.emergencyFields.map(fieldToEditor),
+    step2Title: content.step2Title,
+    healthIntro: [...content.healthIntro],
+    healthConditionsLegend: content.healthConditionsLegend,
+    healthConditions: [...content.healthConditions],
+    otherConditionLabel: content.otherConditionLabel,
+    notApplicableLabel: content.notApplicableLabel,
+    specifyPlaceholder: content.specifyPlaceholder,
+    healthDetailsLabel: content.healthDetailsLabel,
+    majorSurgeryQuestion: content.majorSurgeryQuestion,
+    majorSurgeryHint: content.majorSurgeryHint,
+    pregnancyLabel: content.pregnancyLabel,
+    yesLabel: content.yesLabel,
+    noLabel: content.noLabel,
+    disclaimerIntro: content.disclaimerIntro,
+    disclaimerLinkLabel: content.disclaimerLinkLabel,
+    disclaimerConfirmLead: content.disclaimerConfirmLead,
+    disclaimerTitle: content.disclaimerTitle,
+    disclaimerDocument: disclaimerToEditor(content.disclaimerDocument),
+    disclaimerBullets: [...content.disclaimerBullets],
+    disclaimerConsentLabel: content.disclaimerConsentLabel,
+    step3Title: content.step3Title,
+    howHeardLabel: content.howHeardLabel,
+    howHeardGroups: content.howHeardGroups.map((group) => ({
+      heading: group.heading,
+      options: [...group.options],
+    })),
+    howHeardOtherLabel: content.howHeardOtherLabel,
+    priorPracticeLabel: content.priorPracticeLabel,
+    otherIshaLabel: content.otherIshaLabel,
+    otherIshaDetailsLabel: content.otherIshaDetailsLabel,
+    step4Title: content.step4Title,
+    refundPolicyTitle: content.refundPolicyTitle,
+    refundPolicyBullets: [...content.refundPolicyBullets],
+    refundPolicyConsentLabel: content.refundPolicyConsentLabel,
+    agreementTitle: content.agreementTitle,
+    agreementBullets: [...content.agreementBullets],
+    agreementConsentLabel: content.agreementConsentLabel,
+    step5Title: content.step5Title,
+    beforeSessionBlocks: guidelineBlocksToEditor(content.beforeSessionBlocks),
+    guidelinesPrompt: content.guidelinesPrompt,
+    guidelinesReadLabel: content.guidelinesReadLabel,
+    guidelinesDownloadLabel: content.guidelinesDownloadLabel,
+    guidelinesTitle: content.guidelinesTitle,
+    guidelinesDocument: content.guidelinesDocument.map((section) => ({
+      title: section.title,
+      blocks: guidelineBlocksToEditor(section.blocks),
+    })),
   };
 }
 
