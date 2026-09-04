@@ -29,8 +29,7 @@ export const PHASE1_RETREATS_SEO = {
   heroTitle: "Retreat details",
   heroDescription:
     "Upcoming immersive Classical Hatha Yoga retreats in Albania — devoted to traditional practice, quiet settings, and inner transformation.",
-  comingSoonHeading:
-    "We are carefully preparing upcoming Classical Hatha Yoga retreats.",
+  comingSoonHeading: "Retreats in preparation",
   comingSoonBody:
     "Check Upcoming Events to see if a retreat is scheduled, or register your interest for a potential retreat in a location of your choice.",
 } as const;

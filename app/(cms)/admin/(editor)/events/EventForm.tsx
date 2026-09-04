@@ -104,7 +104,7 @@ export function EventForm({
         <SelectField
           name="category"
           label="Event Type"
-          hint="Free offerings use the one-page form. Workshops and modular workshops use their matching registration forms."
+          hint="Free offerings use the one-page form. Workshops and Module System use their matching registration forms."
           defaultValue={event?.category}
           placeholder="Choose one"
           options={EVENT_TYPE_OPTIONS.map((option) => ({

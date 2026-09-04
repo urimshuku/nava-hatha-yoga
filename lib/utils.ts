@@ -319,7 +319,13 @@ export function eventLocationBadge(
 export function eventTypeTag(category?: string | null): string {
   const value = (category ?? "").trim().toLowerCase();
   if (value === "free session" || value === "free offering") return "Free Offering";
-  if (value === "modular workshop" || value === "module") return "Modular Workshop";
+  if (
+    value === "modular workshop" ||
+    value === "module" ||
+    value === "module system"
+  ) {
+    return "Module System";
+  }
   if (value === "retreat") return "Retreat";
   return "Workshop";
 }

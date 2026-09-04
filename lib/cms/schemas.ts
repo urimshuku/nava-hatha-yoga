@@ -1199,11 +1199,11 @@ export const freeOfferingRegisterPageSchema = createRegisterPageSchema({
 });
 
 export const moduleRegisterPageSchema = createRegisterPageSchema({
-  title: "Modular Registration",
+  title: "Module System Registration",
   description:
-    "The steps for modular registration. Starts as a copy of Workshop Registration; change it independently after that.",
+    "The steps for Module System registration. Starts as a copy of Workshop Registration; change it independently after that.",
   previewPath: "/register?kind=module",
-  pageName: "modular registration",
+  pageName: "module system registration",
 });
 
 export const retreatRegisterPageSchema = createRegisterPageSchema({

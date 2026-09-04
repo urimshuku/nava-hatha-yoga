@@ -13,14 +13,21 @@ import { buildMetadata } from "@/lib/seo";
 import { PHASE1_RETREATS_SEO } from "@/lib/seo-phase1";
 import { getRetreatsPage, getSiteSettings } from "@/lib/cms/site-content";
 
-const INVITE_HEADING =
-  "We are carefully preparing upcoming Classical Hatha Yoga retreats.";
+const INVITE_HEADING = "Retreats in preparation";
 const INVITE_BODY =
   "Check Upcoming Events to see if a retreat is scheduled, or register your interest for a potential retreat in a location of your choice.";
 
 function inviteHeading(value?: string) {
   const text = value?.trim();
-  if (!text || /^retreats are on their way$/i.test(text)) return INVITE_HEADING;
+  if (
+    !text ||
+    /^retreats are on their way$/i.test(text) ||
+    /^we are carefully preparing upcoming classical hatha yoga retreats\.?$/i.test(
+      text,
+    )
+  ) {
+    return INVITE_HEADING;
+  }
   return text;
 }
 
@@ -69,7 +76,7 @@ export default async function RetreatsPage() {
         }
       />
 
-      <Section tone="ivory">
+      <Section tone="cream">
         <Container>
           <MotionReveal className="text-center">
             <p className="eyebrow mb-4">
@@ -84,7 +91,7 @@ export default async function RetreatsPage() {
           <MotionStagger className="mt-8 grid gap-4 sm:mt-12 sm:gap-6 md:grid-cols-3">
             {expectations.map((item) => (
               <MotionItem key={item.title} className="h-full">
-                <div className="h-full rounded-xl border border-border bg-cream p-5 text-center sm:p-8">
+                <div className="h-full rounded-xl border border-border bg-ivory p-5 text-center sm:p-8">
                   <h3 className="font-heading text-xl text-charcoal sm:text-2xl">
                     {item.title}
                   </h3>

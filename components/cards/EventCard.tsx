@@ -3,9 +3,11 @@ import Link from "next/link";
 import type { ElementType, ReactNode } from "react";
 
 import { EventShareButton } from "@/components/cards/EventShareButton";
+import { ModuleSystemExplainer } from "@/components/content/ModuleSystemExplainer";
 import { Button } from "@/components/ui/Button";
 import { getProgramIntensity } from "@/lib/constants";
 import { programSymbolSrc } from "@/lib/local-images";
+import { isModuleSystemCategory } from "@/lib/registration-kind";
 import {
   cn,
   eventAnchorId,
@@ -227,6 +229,7 @@ export function EventCard({
   const dateBadge = formatEventDateBadge(event.date, displayEndDate);
   const locationBadge = eventLocationBadge(event.location, event.cityCountry);
   const typeTag = eventTypeTag(event.category);
+  const showModuleSystemExplainer = isModuleSystemCategory(event.category);
   const summaryParagraphs = eventCardSummaryParagraphs(event.description);
   const shareAnchorId = eventAnchorId(event._id);
   const programSlug = event.relatedProgram?.slug;
@@ -300,6 +303,12 @@ export function EventCard({
             {summaryParagraphs.map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
             ))}
+          </div>
+        ) : null}
+
+        {showModuleSystemExplainer ? (
+          <div className="mt-3 sm:mt-4">
+            <ModuleSystemExplainer />
           </div>
         ) : null}
 

@@ -45,10 +45,20 @@ export function registrationKindFromCategory(
 ): RegistrationKind | undefined {
   const value = (category ?? "").trim().toLowerCase();
   if (value === "free session" || value === "free offering") return "free";
-  if (value === "modular workshop" || value === "module") return "module";
+  if (
+    value === "modular workshop" ||
+    value === "module" ||
+    value === "module system"
+  ) {
+    return "module";
+  }
   if (value === "retreat") return "retreat";
   if (value === "workshop") return "workshop";
   return undefined;
+}
+
+export function isModuleSystemCategory(category?: string | null): boolean {
+  return registrationKindFromCategory(category) === "module";
 }
 
 export function registrationKindFromDocumentSlug(

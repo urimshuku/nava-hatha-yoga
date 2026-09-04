@@ -174,9 +174,9 @@ export const REGISTRATION_PAGES: EditablePage[] = [
   },
   {
     id: "register-module",
-    label: "Modular Registration",
+    label: "Module System Registration",
     summary:
-      "The full form for modular registration. Starts as a copy of Workshop Registration.",
+      "The full form for Module System registration. Starts as a copy of Workshop Registration.",
     type: "registerPage",
     slug: REGISTER_DOCUMENT_SLUG.module,
     schema: moduleRegisterPageSchema,

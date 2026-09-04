@@ -10,6 +10,7 @@ import type { PortableTextBlock } from "@portabletext/types";
 import type {
   AboutPage,
   ContactPage,
+  EventCategory,
   EventsPage,
   HomePage,
   LegalPage,
@@ -747,6 +748,9 @@ type ScheduledEvent = {
   date?: string;
   endDate?: string;
   location?: string;
+  category?: EventCategory;
+  yogaExperience?: string;
+  description?: string;
 };
 
 const scheduledEvents: ScheduledEvent[] = [
@@ -906,6 +910,33 @@ const scheduledEvents: ScheduledEvent[] = [
       sessionCount: 5,
     },
   },
+  {
+    id: "eye-care-practices-tirane-2026-09-30",
+    programSlug: "eye-care-practices",
+    title: "Eye Care Practices",
+    year: 2026,
+    month: 9,
+    startDay: 30,
+    endDay: 30,
+    location: tiranaEventLocation,
+    date: "2026-09-29T22:00:00.000Z",
+    endDate: "2026-09-30T16:45:00.000Z",
+    ageRequirement: "8+",
+    priceLabel: "50€",
+    category: "Modular Workshop",
+    yogaExperience:
+      "Pre-requisite:    Surya Kriya / Isha Upa-yoga / Angamardana / Surya Shakti / Yogasanas",
+    description:
+      "Eye care practices offer a natural way to improve vision related issues which many a times stem from routine patterns of sitting in front of computers, televisions, phones etc.\n\nThese unique practises, devised by Sadhguru, are designed to have a phenomenal impact on the overall health and capabilities of the eyes.\n\nThe practices can help correct eye problems, such as myopia (nearsightedness) and hyperopia (farsightedness) and strengthen the eye's overall vision and focus; that can be maintained even into old age.",
+    schedule: {
+      durationLabel: "2 sessions / 1 hour 15 min",
+      sessionLines: [
+        "30 September: 07:30 – 08:45",
+        "30 September: 17:30 – 18:45",
+      ],
+      sessionCount: 2,
+    },
+  },
 ];
 
 function resolveEventDates(
@@ -944,14 +975,15 @@ export const placeholderEvents: YogaEvent[] = scheduledEvents.flatMap((event) =>
       location,
       cityCountry: /tiran/i.test(location) ? "Tiranë, Albania" : "Saranda, Albania",
       intensity: getProgramIntensity(event.programSlug) ?? undefined,
-      yogaExperience: "No prior yoga experience required!",
+      yogaExperience:
+        event.yogaExperience ?? "No prior yoga experience required!",
       priceLabel: event.priceLabel ?? program.priceLabel ?? getProgramPriceLabel(event.programSlug),
       paymentNote: eventPaymentNote,
       teacher: "Erlinda Mustafaraj",
       ageRequirement: event.ageRequirement,
-      category: "Workshop",
+      category: event.category ?? "Workshop",
       relatedProgram: { title: program.title, slug: program.slug },
-      description: buildProgramEventDescription(program),
+      description: event.description ?? buildProgramEventDescription(program),
       registrationLink: "/contact",
       whatsappEnabled: false,
     },
@@ -1028,8 +1060,7 @@ export const placeholderRetreatsPage: RetreatsPage = {
   heroDescription:
     "Upcoming immersive Classical Hatha Yoga retreats in Albania — devoted to traditional practice, quiet settings, and inner transformation.",
   comingSoonEyebrow: "Coming Soon",
-  comingSoonHeading:
-    "We are carefully preparing upcoming Classical Hatha Yoga retreats.",
+  comingSoonHeading: "Retreats in preparation",
   comingSoonBody:
     "Check Upcoming Events to see if a retreat is scheduled, or register your interest for a potential retreat in a location of your choice.",
   expectationsEyebrow: "What to expect",
