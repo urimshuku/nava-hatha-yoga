@@ -78,7 +78,6 @@ export default async function AboutPage() {
   return (
     <>
       <PageHero
-        eyebrow={about.heroEyebrow?.trim() || "About"}
         title={<AboutPageHeroTitle title={about.title} />}
         description={heroDescription}
       />

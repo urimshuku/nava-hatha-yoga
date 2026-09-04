@@ -154,7 +154,7 @@ export const REGISTRATION_PAGES: EditablePage[] = [
     id: "register",
     label: "Workshop Registration",
     summary:
-      "The full workshop form: health questions, the disclaimer and the guidelines.",
+      "The workshop form. Add, remove or reorder steps, then edit the fields on each one.",
     type: "registerPage",
     slug: REGISTER_DOCUMENT_SLUG.workshop,
     schema: workshopRegisterPageSchema,
@@ -165,7 +165,7 @@ export const REGISTRATION_PAGES: EditablePage[] = [
     id: "register-free",
     label: "Free Offering Registration",
     summary:
-      "The one-page form for free sessions: personal details only, not the five-step form.",
+      "Starts as a one-page form for free sessions. Add or remove steps the same way as the other registration pages.",
     type: "registerPage",
     slug: REGISTER_DOCUMENT_SLUG.free,
     schema: freeOfferingRegisterPageSchema,

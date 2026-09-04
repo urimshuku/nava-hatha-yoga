@@ -11,7 +11,7 @@ import { FormSection } from "@/components/cms/FormSection";
 import { ImageField } from "@/components/cms/ImageField";
 import { TextListField } from "@/components/cms/RepeatableFields";
 import { RichTextField } from "@/components/cms/RichTextField";
-import { FormError, FormNotice, SaveBar, WorkingCopyBanner } from "@/components/cms/SaveBar";
+import { FormError, FormNotice, SaveBar } from "@/components/cms/SaveBar";
 import type { Program } from "@/lib/cms/content-types";
 
 import { saveProgram, discardProgramChanges, type ProgramFormState } from "./actions";
@@ -30,16 +30,12 @@ export function ProgramForm({
   originalSlug,
   isNew,
   notice,
-  published,
-  unpublishedChanges,
 }: {
   program?: Partial<Program>;
   richText: ProgramRichText;
   originalSlug?: string;
   isNew: boolean;
   notice?: "saved" | "published";
-  published?: boolean;
-  unpublishedChanges?: boolean;
 }) {
   const [state, formAction, pending] = useActionState<ProgramFormState, FormData>(
     saveProgram,
@@ -65,12 +61,6 @@ export function ProgramForm({
       </div>
 
       <FormNotice kind={notice} />
-      {!notice && !isNew ? (
-        <WorkingCopyBanner
-          published={published}
-          unpublishedChanges={unpublishedChanges}
-        />
-      ) : null}
       <FormError message={state.error} />
 
       <FormSection title="Basic details">

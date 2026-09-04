@@ -1,4 +1,4 @@
-import { resolveRegisterContent } from "@/lib/register-config";
+import { registerPageEditorValues } from "@/lib/register-config";
 import {
   getAboutPage,
   getContactPage,
@@ -70,7 +70,7 @@ function valuesFromWorkingCopy(
       heroEyebrow: data.heroEyebrow,
       heroTitle: data.heroTitle,
       heroDescription: data.heroDescription,
-      ...resolveRegisterContent(
+      ...registerPageEditorValues(
         data as RegisterPage,
         registrationKindFromDocumentSlug(page.slug),
       ),
@@ -120,7 +120,7 @@ async function valuesFromPublicSite(
         heroEyebrow: stored?.heroEyebrow,
         heroTitle: stored?.heroTitle,
         heroDescription: stored?.heroDescription,
-        ...resolveRegisterContent(
+        ...registerPageEditorValues(
           stored,
           registrationKindFromDocumentSlug(page.slug),
         ),

@@ -81,7 +81,6 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   return (
     <>
       <PageHero
-        eyebrow={registerPage?.heroEyebrow?.trim() || "Registration"}
         title={
           eventTitle ? (
             <>

@@ -37,6 +37,7 @@ import type {
   RegisterFormFieldData,
   RegisterInputType,
   RegisterPage,
+  RegisterStepData,
 } from "@/lib/cms/content-types";
 import type { RegistrationKind } from "@/lib/registration-kind";
 import { slugifySegment } from "@/lib/utils";
@@ -57,7 +58,61 @@ export interface HowHeardGroup {
   options: readonly string[];
 }
 
+export type RegisterStepKind =
+  | "personal"
+  | "health"
+  | "program"
+  | "agreement"
+  | "guidelines"
+  | "fields";
+
+export interface RegisterStep {
+  kind: RegisterStepKind;
+  title: string;
+  fields?: readonly RegisterFormField[];
+  emergencyHeading?: string;
+  emergencyFields?: readonly RegisterFormField[];
+  healthIntro?: readonly string[];
+  healthConditionsLegend?: string;
+  healthConditions?: readonly string[];
+  otherConditionLabel?: string;
+  notApplicableLabel?: string;
+  specifyPlaceholder?: string;
+  healthDetailsLabel?: string;
+  majorSurgeryQuestion?: string;
+  majorSurgeryHint?: string;
+  pregnancyLabel?: string;
+  yesLabel?: string;
+  noLabel?: string;
+  disclaimerIntro?: string;
+  disclaimerLinkLabel?: string;
+  disclaimerConfirmLead?: string;
+  disclaimerTitle?: string;
+  disclaimerDocument?: readonly DisclaimerSection[];
+  disclaimerBullets?: readonly string[];
+  disclaimerConsentLabel?: string;
+  howHeardLabel?: string;
+  howHeardGroups?: readonly HowHeardGroup[];
+  howHeardOtherLabel?: string;
+  priorPracticeLabel?: string;
+  otherIshaLabel?: string;
+  otherIshaDetailsLabel?: string;
+  refundPolicyTitle?: string;
+  refundPolicyBullets?: readonly string[];
+  refundPolicyConsentLabel?: string;
+  agreementTitle?: string;
+  agreementBullets?: readonly string[];
+  agreementConsentLabel?: string;
+  beforeSessionBlocks?: readonly GuidelineBlock[];
+  guidelinesPrompt?: string;
+  guidelinesReadLabel?: string;
+  guidelinesDownloadLabel?: string;
+  guidelinesTitle?: string;
+  guidelinesDocument?: readonly GuidelineSection[];
+}
+
 export interface RegisterContent {
+  steps: readonly RegisterStep[];
   step1Title: string;
   personalFields: readonly RegisterFormField[];
   emergencyHeading: string;
@@ -208,7 +263,7 @@ const RETREAT_AGREEMENT_BULLETS = [
   "We reserve the right to all the retreat images, videos, text and may use it to create awareness about other retreats.",
 ] as const;
 
-export const DEFAULT_REGISTER_CONTENT: RegisterContent = {
+const DEFAULT_REGISTER_COPY: Omit<RegisterContent, "steps"> = {
   step1Title: "Personal Information",
   personalFields: DEFAULT_PERSONAL_FIELDS,
   emergencyHeading: "Emergency contact",
@@ -258,13 +313,154 @@ export const DEFAULT_REGISTER_CONTENT: RegisterContent = {
   guidelinesDocument: BEFORE_PROGRAM_DOCUMENT,
 };
 
+function lastStep(
+  steps: readonly RegisterStep[],
+  kind: RegisterStepKind,
+): RegisterStep | undefined {
+  for (let index = steps.length - 1; index >= 0; index -= 1) {
+    if (steps[index]?.kind === kind) return steps[index];
+  }
+  return undefined;
+}
+
+function personalStepFrom(
+  content: Omit<RegisterContent, "steps">,
+  options?: { includeEmergency?: boolean },
+): RegisterStep {
+  const includeEmergency = options?.includeEmergency !== false;
+  return {
+    kind: "personal",
+    title: content.step1Title,
+    fields: content.personalFields,
+    emergencyHeading: includeEmergency ? content.emergencyHeading : undefined,
+    emergencyFields: includeEmergency ? content.emergencyFields : [],
+  };
+}
+
+function healthStepFrom(content: Omit<RegisterContent, "steps">): RegisterStep {
+  return {
+    kind: "health",
+    title: content.step2Title,
+    healthIntro: content.healthIntro,
+    healthConditionsLegend: content.healthConditionsLegend,
+    healthConditions: content.healthConditions,
+    otherConditionLabel: content.otherConditionLabel,
+    notApplicableLabel: content.notApplicableLabel,
+    specifyPlaceholder: content.specifyPlaceholder,
+    healthDetailsLabel: content.healthDetailsLabel,
+    majorSurgeryQuestion: content.majorSurgeryQuestion,
+    majorSurgeryHint: content.majorSurgeryHint,
+    pregnancyLabel: content.pregnancyLabel,
+    yesLabel: content.yesLabel,
+    noLabel: content.noLabel,
+    disclaimerIntro: content.disclaimerIntro,
+    disclaimerLinkLabel: content.disclaimerLinkLabel,
+    disclaimerConfirmLead: content.disclaimerConfirmLead,
+    disclaimerTitle: content.disclaimerTitle,
+    disclaimerDocument: content.disclaimerDocument,
+    disclaimerBullets: content.disclaimerBullets,
+    disclaimerConsentLabel: content.disclaimerConsentLabel,
+  };
+}
+
+function programStepFrom(content: Omit<RegisterContent, "steps">): RegisterStep {
+  return {
+    kind: "program",
+    title: content.step3Title,
+    howHeardLabel: content.howHeardLabel,
+    howHeardGroups: content.howHeardGroups,
+    howHeardOtherLabel: content.howHeardOtherLabel,
+    priorPracticeLabel: content.priorPracticeLabel,
+    otherIshaLabel: content.otherIshaLabel,
+    otherIshaDetailsLabel: content.otherIshaDetailsLabel,
+    specifyPlaceholder: content.specifyPlaceholder,
+    yesLabel: content.yesLabel,
+    noLabel: content.noLabel,
+  };
+}
+
+function agreementStepFrom(content: Omit<RegisterContent, "steps">): RegisterStep {
+  return {
+    kind: "agreement",
+    title: content.step4Title,
+    refundPolicyTitle: content.refundPolicyTitle,
+    refundPolicyBullets: content.refundPolicyBullets,
+    refundPolicyConsentLabel: content.refundPolicyConsentLabel,
+    agreementTitle: content.agreementTitle,
+    agreementBullets: content.agreementBullets,
+    agreementConsentLabel: content.agreementConsentLabel,
+  };
+}
+
+function guidelinesStepFrom(content: Omit<RegisterContent, "steps">): RegisterStep {
+  return {
+    kind: "guidelines",
+    title: content.step5Title,
+    beforeSessionBlocks: content.beforeSessionBlocks,
+    guidelinesPrompt: content.guidelinesPrompt,
+    guidelinesReadLabel: content.guidelinesReadLabel,
+    guidelinesDownloadLabel: content.guidelinesDownloadLabel,
+    guidelinesTitle: content.guidelinesTitle,
+    guidelinesDocument: content.guidelinesDocument,
+  };
+}
+
+function defaultTitleForKind(
+  kind: RegisterStepKind,
+  content: Omit<RegisterContent, "steps">,
+): string {
+  switch (kind) {
+    case "personal":
+      return content.step1Title;
+    case "health":
+      return content.step2Title;
+    case "program":
+      return content.step3Title;
+    case "agreement":
+      return content.step4Title;
+    case "guidelines":
+      return content.step5Title;
+    case "fields":
+      return "Questions";
+  }
+}
+
+function stepsFromContent(
+  content: Omit<RegisterContent, "steps">,
+  kind?: RegistrationKind,
+): RegisterStep[] {
+  const personal = personalStepFrom(content, {
+    includeEmergency: kind !== "free",
+  });
+  if (kind === "free") return [personal];
+  return [
+    personal,
+    healthStepFrom(content),
+    programStepFrom(content),
+    agreementStepFrom(content),
+    guidelinesStepFrom(content),
+  ];
+}
+
+export const DEFAULT_REGISTER_CONTENT: RegisterContent = {
+  ...DEFAULT_REGISTER_COPY,
+  steps: stepsFromContent(DEFAULT_REGISTER_COPY, "workshop"),
+};
+
 function defaultsForKind(kind?: RegistrationKind): RegisterContent {
   if (kind === "retreat") {
-    return {
-      ...DEFAULT_REGISTER_CONTENT,
+    const copy = {
+      ...DEFAULT_REGISTER_COPY,
       howHeardLabel: RETREAT_HOW_HEARD_LABEL,
       refundPolicyBullets: RETREAT_REFUND_POLICY_BULLETS,
       agreementBullets: RETREAT_AGREEMENT_BULLETS,
+    };
+    return { ...copy, steps: stepsFromContent(copy, "retreat") };
+  }
+  if (kind === "free") {
+    return {
+      ...DEFAULT_REGISTER_CONTENT,
+      steps: stepsFromContent(DEFAULT_REGISTER_COPY, "free"),
     };
   }
   return DEFAULT_REGISTER_CONTENT;
@@ -473,13 +669,11 @@ function toHowHeardGroups(
   return groups;
 }
 
-/** Merge CMS register-page content over the built-in defaults. */
-export function resolveRegisterContent(
-  cms?: RegisterPage | null,
+function overlayLegacy(
+  cms: RegisterPage,
+  d: RegisterContent,
   kind?: RegistrationKind,
-): RegisterContent {
-  const d = defaultsForKind(kind);
-  if (!cms) return d;
+): Omit<RegisterContent, "steps"> {
   return {
     step1Title: overlayTitle(cms.step1Title, d.step1Title),
     personalFields: toFormFields(cms.personalFields) ?? d.personalFields,
@@ -591,6 +785,482 @@ export function resolveRegisterContent(
     guidelinesTitle: overlayTitle(cms.guidelinesTitle, d.guidelinesTitle),
     guidelinesDocument:
       toGuidelineSections(cms.guidelinesDocument) ?? d.guidelinesDocument,
+  };
+}
+
+const REGISTER_STEP_KINDS: readonly RegisterStepKind[] = [
+  "personal",
+  "health",
+  "program",
+  "agreement",
+  "guidelines",
+  "fields",
+];
+
+function parseStepKind(value?: string): RegisterStepKind | null {
+  return REGISTER_STEP_KINDS.includes(value as RegisterStepKind)
+    ? (value as RegisterStepKind)
+    : null;
+}
+
+function isBlankValue(value: unknown): boolean {
+  if (value === undefined || value === null || value === "") return true;
+  if (typeof value === "boolean") return true;
+  if (Array.isArray(value)) return value.every(isBlankValue);
+  if (typeof value === "object") {
+    return Object.entries(value as Record<string, unknown>)
+      .filter(([key]) => !key.startsWith("_"))
+      .every(([, entry]) => isBlankValue(entry));
+  }
+  return false;
+}
+
+function stepHasCustomContent(data: RegisterStepData): boolean {
+  return Object.entries(data).some(([key, value]) => {
+    if (key === "kind" || key === "title" || key.startsWith("_")) return false;
+    return !isBlankValue(value);
+  });
+}
+
+function nonemptyFields(
+  fields: RegisterFormField[] | undefined,
+): RegisterFormField[] | undefined {
+  if (fields === undefined || fields.length === 0) return undefined;
+  return fields;
+}
+
+function parseCmsStep(
+  data: RegisterStepData,
+  d: RegisterContent,
+  kind?: RegistrationKind,
+): RegisterStep | null {
+  const stepKind = parseStepKind(data.kind);
+  if (!stepKind) return null;
+  const title = overlayTitle(data.title, defaultTitleForKind(stepKind, d));
+  const source = stepHasCustomContent(data) ? data : {};
+
+  if (stepKind === "personal") {
+    return {
+      kind: "personal",
+      title,
+      fields: nonemptyFields(toFormFields(source.fields)) ?? d.personalFields,
+      emergencyHeading: overlayOptional(
+        source.emergencyHeading,
+        d.emergencyHeading,
+      ),
+      emergencyFields: toFormFields(source.emergencyFields) ?? [],
+    };
+  }
+
+  if (stepKind === "fields") {
+    return {
+      kind: "fields",
+      title,
+      fields: toFormFields(source.fields) ?? [],
+    };
+  }
+
+  if (stepKind === "health") {
+    return {
+      ...healthStepFrom(
+        source === data
+          ? {
+              ...d,
+              healthIntro: overlayStrings(source.healthIntro, d.healthIntro),
+              healthConditionsLegend: overlayOptional(
+                source.healthConditionsLegend,
+                d.healthConditionsLegend,
+              ),
+              healthConditions: overlayStrings(
+                source.healthConditions,
+                d.healthConditions,
+              ),
+              otherConditionLabel: overlayOptional(
+                source.otherConditionLabel,
+                d.otherConditionLabel,
+              ),
+              notApplicableLabel: overlayOptional(
+                source.notApplicableLabel,
+                d.notApplicableLabel,
+              ),
+              specifyPlaceholder: overlayOptional(
+                source.specifyPlaceholder,
+                d.specifyPlaceholder,
+              ),
+              healthDetailsLabel: overlayOptional(
+                source.healthDetailsLabel,
+                d.healthDetailsLabel,
+              ),
+              majorSurgeryQuestion: overlayOptional(
+                source.majorSurgeryQuestion,
+                d.majorSurgeryQuestion,
+              ),
+              majorSurgeryHint: overlayOptional(
+                source.majorSurgeryHint,
+                d.majorSurgeryHint,
+              ),
+              pregnancyLabel: overlayOptional(
+                source.pregnancyLabel,
+                d.pregnancyLabel,
+              ),
+              yesLabel: overlayOptional(source.yesLabel, d.yesLabel),
+              noLabel: overlayOptional(source.noLabel, d.noLabel),
+              disclaimerIntro: overlayOptional(
+                source.disclaimerIntro,
+                d.disclaimerIntro,
+              ),
+              disclaimerLinkLabel: overlayOptional(
+                source.disclaimerLinkLabel,
+                d.disclaimerLinkLabel,
+              ),
+              disclaimerConfirmLead: overlayOptional(
+                source.disclaimerConfirmLead,
+                d.disclaimerConfirmLead,
+              ),
+              disclaimerTitle: overlayTitle(
+                source.disclaimerTitle,
+                d.disclaimerTitle,
+              ),
+              disclaimerDocument:
+                toDisclaimerSections(source.disclaimerDocument) ??
+                d.disclaimerDocument,
+              disclaimerBullets: overlayStrings(
+                source.disclaimerBullets,
+                d.disclaimerBullets,
+              ),
+              disclaimerConsentLabel: overlayOptional(
+                source.disclaimerConsentLabel,
+                d.disclaimerConsentLabel,
+              ),
+            }
+          : d,
+      ),
+      title,
+    };
+  }
+
+  if (stepKind === "program") {
+    return {
+      ...programStepFrom(
+        source === data
+          ? {
+              ...d,
+              howHeardLabel: overlayHowHeardLabel(
+                source.howHeardLabel,
+                kind,
+                d.howHeardLabel,
+              ),
+              howHeardGroups:
+                toHowHeardGroups(source.howHeardGroups) ?? d.howHeardGroups,
+              howHeardOtherLabel: overlayOptional(
+                source.howHeardOtherLabel,
+                d.howHeardOtherLabel,
+              ),
+              priorPracticeLabel: overlayOptional(
+                source.priorPracticeLabel,
+                d.priorPracticeLabel,
+              ),
+              otherIshaLabel: overlayOptional(
+                source.otherIshaLabel,
+                d.otherIshaLabel,
+              ),
+              otherIshaDetailsLabel: overlayOptional(
+                source.otherIshaDetailsLabel,
+                d.otherIshaDetailsLabel,
+              ),
+              specifyPlaceholder: overlayOptional(
+                source.specifyPlaceholder,
+                d.specifyPlaceholder,
+              ),
+              yesLabel: overlayOptional(source.yesLabel, d.yesLabel),
+              noLabel: overlayOptional(source.noLabel, d.noLabel),
+            }
+          : d,
+      ),
+      title,
+    };
+  }
+
+  if (stepKind === "agreement") {
+    return {
+      ...agreementStepFrom(
+        source === data
+          ? {
+              ...d,
+              refundPolicyTitle: overlayOptional(
+                source.refundPolicyTitle,
+                d.refundPolicyTitle,
+              ),
+              refundPolicyBullets: overlayRefundPolicyBullets(
+                source.refundPolicyBullets,
+                kind,
+                d.refundPolicyBullets,
+              ),
+              refundPolicyConsentLabel: overlayOptional(
+                source.refundPolicyConsentLabel,
+                d.refundPolicyConsentLabel,
+              ),
+              agreementTitle: overlayOptional(
+                source.agreementTitle,
+                d.agreementTitle,
+              ),
+              agreementBullets: overlayAgreementBullets(
+                source.agreementBullets,
+                kind,
+                d.agreementBullets,
+              ),
+              agreementConsentLabel: overlayOptional(
+                source.agreementConsentLabel,
+                d.agreementConsentLabel,
+              ),
+            }
+          : d,
+      ),
+      title,
+    };
+  }
+
+  return {
+    ...guidelinesStepFrom(
+      source === data
+        ? {
+            ...d,
+            beforeSessionBlocks:
+              toGuidelineBlocks(source.beforeSessionBlocks) ??
+              d.beforeSessionBlocks,
+            guidelinesPrompt: overlayOptional(
+              source.guidelinesPrompt,
+              d.guidelinesPrompt,
+            ),
+            guidelinesReadLabel: overlayOptional(
+              source.guidelinesReadLabel,
+              d.guidelinesReadLabel,
+            ),
+            guidelinesDownloadLabel: overlayOptional(
+              source.guidelinesDownloadLabel,
+              d.guidelinesDownloadLabel,
+            ),
+            guidelinesTitle: overlayTitle(
+              source.guidelinesTitle,
+              d.guidelinesTitle,
+            ),
+            guidelinesDocument:
+              toGuidelineSections(source.guidelinesDocument) ??
+              d.guidelinesDocument,
+          }
+        : d,
+    ),
+    title,
+  };
+}
+
+function applyStepsToContent(
+  steps: RegisterStep[],
+  d: RegisterContent,
+): RegisterContent {
+  const personal = steps.filter((step) => step.kind === "personal");
+  const extra = steps.filter((step) => step.kind === "fields");
+  const health = lastStep(steps, "health");
+  const program = lastStep(steps, "program");
+  const agreement = lastStep(steps, "agreement");
+  const guidelines = lastStep(steps, "guidelines");
+
+  return {
+    ...d,
+    steps,
+    step1Title: personal[0]?.title ?? d.step1Title,
+    personalFields: [...personal, ...extra].flatMap(
+      (step) => step.fields ?? [],
+    ),
+    emergencyHeading: personal[0]?.emergencyHeading ?? "",
+    emergencyFields: personal.flatMap((step) => step.emergencyFields ?? []),
+    step2Title: health?.title ?? d.step2Title,
+    healthIntro: health?.healthIntro ?? [],
+    healthConditionsLegend: health?.healthConditionsLegend ?? "",
+    healthConditions: health?.healthConditions ?? [],
+    otherConditionLabel: health?.otherConditionLabel ?? "",
+    notApplicableLabel: health?.notApplicableLabel ?? "",
+    specifyPlaceholder:
+      health?.specifyPlaceholder ||
+      program?.specifyPlaceholder ||
+      d.specifyPlaceholder,
+    healthDetailsLabel: health?.healthDetailsLabel ?? "",
+    majorSurgeryQuestion: health?.majorSurgeryQuestion ?? "",
+    majorSurgeryHint: health?.majorSurgeryHint ?? "",
+    pregnancyLabel: health?.pregnancyLabel ?? "",
+    yesLabel: health?.yesLabel || program?.yesLabel || d.yesLabel,
+    noLabel: health?.noLabel || program?.noLabel || d.noLabel,
+    disclaimerIntro: health?.disclaimerIntro ?? "",
+    disclaimerLinkLabel: health?.disclaimerLinkLabel ?? "",
+    disclaimerConfirmLead: health?.disclaimerConfirmLead ?? "",
+    disclaimerTitle: health?.disclaimerTitle ?? d.disclaimerTitle,
+    disclaimerDocument: health?.disclaimerDocument ?? [],
+    disclaimerBullets: health?.disclaimerBullets ?? [],
+    disclaimerConsentLabel: health?.disclaimerConsentLabel ?? "",
+    step3Title: program?.title ?? d.step3Title,
+    howHeardLabel: program?.howHeardLabel ?? "",
+    howHeardGroups: program?.howHeardGroups ?? [],
+    howHeardOtherLabel: program?.howHeardOtherLabel ?? "",
+    priorPracticeLabel: program?.priorPracticeLabel ?? "",
+    otherIshaLabel: program?.otherIshaLabel ?? "",
+    otherIshaDetailsLabel: program?.otherIshaDetailsLabel ?? "",
+    step4Title: agreement?.title ?? d.step4Title,
+    refundPolicyTitle: agreement?.refundPolicyTitle ?? "",
+    refundPolicyBullets: agreement?.refundPolicyBullets ?? [],
+    refundPolicyConsentLabel: agreement?.refundPolicyConsentLabel ?? "",
+    agreementTitle: agreement?.agreementTitle ?? "",
+    agreementBullets: agreement?.agreementBullets ?? [],
+    agreementConsentLabel: agreement?.agreementConsentLabel ?? "",
+    step5Title: guidelines?.title ?? d.step5Title,
+    beforeSessionBlocks: guidelines?.beforeSessionBlocks ?? [],
+    guidelinesPrompt: guidelines?.guidelinesPrompt ?? "",
+    guidelinesReadLabel: guidelines?.guidelinesReadLabel ?? "",
+    guidelinesDownloadLabel: guidelines?.guidelinesDownloadLabel ?? "",
+    guidelinesTitle: guidelines?.guidelinesTitle ?? d.guidelinesTitle,
+    guidelinesDocument: guidelines?.guidelinesDocument ?? [],
+  };
+}
+
+/** Merge CMS register-page content over the built-in defaults. */
+export function resolveRegisterContent(
+  cms?: RegisterPage | null,
+  kind?: RegistrationKind,
+): RegisterContent {
+  const d = defaultsForKind(kind);
+  if (!cms) return d;
+
+  const savedSteps = cms.steps
+    ?.map((step) => parseCmsStep(step, d, kind))
+    .filter((step): step is RegisterStep => step != null);
+  if (savedSteps && savedSteps.length > 0) {
+    return applyStepsToContent(savedSteps, d);
+  }
+
+  const overlaid = overlayLegacy(cms, d, kind);
+  return applyStepsToContent(stepsFromContent(overlaid, kind), d);
+}
+
+export function hasRegisterStep(
+  content: RegisterContent,
+  kind: RegisterStepKind,
+): boolean {
+  return content.steps.some((step) => step.kind === kind);
+}
+
+function fieldToEditor(field: RegisterFormField): RegisterFormFieldData {
+  return {
+    key: field.key,
+    label: field.label,
+    required: field.required,
+    type: field.type,
+    options: field.options ? [...field.options] : undefined,
+    placeholder: field.placeholder,
+  };
+}
+
+function disclaimerToEditor(
+  sections: readonly DisclaimerSection[],
+): DisclaimerSectionData[] {
+  return sections.map((section) => ({
+    title: section.title,
+    intro: section.intro,
+    items: section.items.map((item) => ({
+      title: item.title,
+      lead: item.lead,
+      points: item.points ? [...item.points] : undefined,
+      contactName: item.contact?.name,
+      contactEmail: item.contact?.email,
+    })),
+  }));
+}
+
+function guidelineBlocksToEditor(
+  blocks: readonly GuidelineBlock[],
+): GuidelineBlockData[] {
+  return blocks.map((block) => ({
+    heading: block.heading,
+    paragraphs: block.paragraphs ? [...block.paragraphs] : undefined,
+    lists: block.lists?.map((list) => ({
+      label: list.label,
+      items: [...list.items],
+    })),
+  }));
+}
+
+function stepToEditor(step: RegisterStep): RegisterStepData {
+  return {
+    kind: step.kind,
+    title: step.title,
+    fields: step.fields?.map(fieldToEditor),
+    emergencyHeading: step.emergencyHeading,
+    emergencyFields: step.emergencyFields?.map(fieldToEditor),
+    healthIntro: step.healthIntro ? [...step.healthIntro] : undefined,
+    healthConditionsLegend: step.healthConditionsLegend,
+    healthConditions: step.healthConditions
+      ? [...step.healthConditions]
+      : undefined,
+    otherConditionLabel: step.otherConditionLabel,
+    notApplicableLabel: step.notApplicableLabel,
+    specifyPlaceholder: step.specifyPlaceholder,
+    healthDetailsLabel: step.healthDetailsLabel,
+    majorSurgeryQuestion: step.majorSurgeryQuestion,
+    majorSurgeryHint: step.majorSurgeryHint,
+    pregnancyLabel: step.pregnancyLabel,
+    yesLabel: step.yesLabel,
+    noLabel: step.noLabel,
+    disclaimerIntro: step.disclaimerIntro,
+    disclaimerLinkLabel: step.disclaimerLinkLabel,
+    disclaimerConfirmLead: step.disclaimerConfirmLead,
+    disclaimerTitle: step.disclaimerTitle,
+    disclaimerDocument: step.disclaimerDocument
+      ? disclaimerToEditor(step.disclaimerDocument)
+      : undefined,
+    disclaimerBullets: step.disclaimerBullets
+      ? [...step.disclaimerBullets]
+      : undefined,
+    disclaimerConsentLabel: step.disclaimerConsentLabel,
+    howHeardLabel: step.howHeardLabel,
+    howHeardGroups: step.howHeardGroups?.map((group) => ({
+      heading: group.heading,
+      options: [...group.options],
+    })),
+    howHeardOtherLabel: step.howHeardOtherLabel,
+    priorPracticeLabel: step.priorPracticeLabel,
+    otherIshaLabel: step.otherIshaLabel,
+    otherIshaDetailsLabel: step.otherIshaDetailsLabel,
+    refundPolicyTitle: step.refundPolicyTitle,
+    refundPolicyBullets: step.refundPolicyBullets
+      ? [...step.refundPolicyBullets]
+      : undefined,
+    refundPolicyConsentLabel: step.refundPolicyConsentLabel,
+    agreementTitle: step.agreementTitle,
+    agreementBullets: step.agreementBullets
+      ? [...step.agreementBullets]
+      : undefined,
+    agreementConsentLabel: step.agreementConsentLabel,
+    beforeSessionBlocks: step.beforeSessionBlocks
+      ? guidelineBlocksToEditor(step.beforeSessionBlocks)
+      : undefined,
+    guidelinesPrompt: step.guidelinesPrompt,
+    guidelinesReadLabel: step.guidelinesReadLabel,
+    guidelinesDownloadLabel: step.guidelinesDownloadLabel,
+    guidelinesTitle: step.guidelinesTitle,
+    guidelinesDocument: step.guidelinesDocument?.map((section) => ({
+      title: section.title,
+      blocks: guidelineBlocksToEditor(section.blocks),
+    })),
+  };
+}
+
+/** Values for the registration editor, with steps in the shape the form saves. */
+export function registerPageEditorValues(
+  cms: RegisterPage | null | undefined,
+  kind?: RegistrationKind,
+): Record<string, unknown> {
+  const content = resolveRegisterContent(cms, kind);
+  return {
+    ...content,
+    steps: content.steps.map(stepToEditor),
   };
 }
 

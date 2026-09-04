@@ -57,7 +57,6 @@ export function AboutSectionBlock({
           className={cn(imageFirst && "lg:order-1")}
           delay={imageFirst ? 0 : 0.08}
         >
-          <p className="eyebrow mb-4">About</p>
           <h2 className="text-display-sm text-balance">{title}</h2>
           {hasBody ? (
             <div className="prose-body mt-6 sm:mt-8 sm:text-lg [&_p]:text-charcoal/90">

@@ -24,10 +24,6 @@ export default async function AdminProgramsPage({
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="font-heading text-3xl text-charcoal">Programs</h1>
-          <p className="mt-2 max-w-prose text-sm text-brown">
-            The yoga programs and their descriptions, as shown on the Programs
-            pages.
-          </p>
         </div>
         <Link
           href="/admin/programs/new"

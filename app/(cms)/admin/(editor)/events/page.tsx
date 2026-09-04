@@ -117,10 +117,6 @@ export default async function AdminEventsPage({
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="font-heading text-3xl text-charcoal">Events</h1>
-          <p className="mt-2 max-w-prose text-sm text-brown">
-            Dates, times and prices for sessions. Past events move to the
-            archive on their own.
-          </p>
         </div>
         <Link
           href="/admin/events/new"

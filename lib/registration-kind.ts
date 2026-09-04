@@ -1,7 +1,7 @@
 /**
- * Which registration form to show: workshops, modules and retreats use the
- * full 5-step form (with independent CMS copy); free offerings use the first
- * page only.
+ * Which registration form to show: each kind has its own CMS page whose steps
+ * can be added, removed or reordered. Free offerings start as one page;
+ * workshops, modules and retreats start as the full form.
  */
 
 export const REGISTRATION_KINDS = ["workshop", "free", "module", "retreat"] as const;

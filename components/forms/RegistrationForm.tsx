@@ -31,6 +31,7 @@ import {
   DEFAULT_REGISTER_CONTENT,
   type RegisterContent,
   type RegisterFormField,
+  type RegisterStepKind,
 } from "@/lib/register-config";
 import {
   SHOW_PAYMENT_DETAILS_STEP,
@@ -135,6 +136,45 @@ const initialState: FormState = {
 
 type Errors = Partial<Record<string, string>>;
 
+type FormStepKind = RegisterStepKind | "payment";
+
+interface FormStep {
+  kind: FormStepKind;
+  title: string;
+  fields?: readonly RegisterFormField[];
+  emergencyHeading?: string;
+  emergencyFields?: readonly RegisterFormField[];
+}
+
+function formStepsFrom(content: RegisterContent): FormStep[] {
+  const list: FormStep[] = content.steps.map((step) => ({
+    kind: step.kind,
+    title: step.title,
+    fields: step.fields,
+    emergencyHeading: step.emergencyHeading,
+    emergencyFields: step.emergencyFields,
+  }));
+  if (SHOW_PAYMENT_DETAILS_STEP) {
+    const insertAt = list.findIndex((step) => step.kind === "agreement");
+    list.splice(insertAt >= 0 ? insertAt + 1 : list.length, 0, {
+      kind: "payment",
+      title: "Payment Details",
+    });
+  }
+  if (list.length === 0) {
+    return [
+      {
+        kind: "personal",
+        title: content.step1Title,
+        fields: content.personalFields,
+        emergencyHeading: content.emergencyHeading,
+        emergencyFields: content.emergencyFields,
+      },
+    ];
+  }
+  return list;
+}
+
 function Required() {
   return <span className="text-saffron">*</span>;
 }
@@ -157,16 +197,8 @@ export function RegistrationForm({
 }: RegistrationFormProps) {
   const simplified =
     simplifiedProp ?? isSimplifiedRegistration(event, undefined, kind);
-  const steps = simplified
-    ? [content.step1Title]
-    : [
-        content.step1Title,
-        content.step2Title,
-        content.step3Title,
-        content.step4Title,
-        ...(SHOW_PAYMENT_DETAILS_STEP ? ["Payment Details"] : []),
-        content.step5Title,
-      ];
+  const formSteps = formStepsFrom(content);
+  const steps = formSteps.map((item) => item.title);
   const otherCondition = content.otherConditionLabel;
   const notApplicable = content.notApplicableLabel;
   const yesNo = [content.yesLabel, content.noLabel].filter(Boolean);
@@ -236,13 +268,19 @@ export function RegistrationForm({
 
   function validateStep(current: number): Errors {
     const next: Errors = {};
+    const currentStep = formSteps[current];
+    if (!currentStep) return next;
 
-    if (current === 0) {
-      validateFields(content.personalFields, next);
-      if (!simplified) validateFields(content.emergencyFields, next);
+    if (currentStep.kind === "personal") {
+      validateFields(currentStep.fields ?? [], next);
+      validateFields(currentStep.emergencyFields ?? [], next);
     }
 
-    if (!simplified && current === 1) {
+    if (currentStep.kind === "fields") {
+      validateFields(currentStep.fields ?? [], next);
+    }
+
+    if (currentStep.kind === "health") {
       const healthChoices = [
         ...content.healthConditions,
         otherCondition,
@@ -264,7 +302,7 @@ export function RegistrationForm({
           "Please confirm you have read and agree to the disclaimer.";
     }
 
-    if (!simplified && current === 2) {
+    if (currentStep.kind === "program") {
       const howHeardShown =
         content.howHeardGroups.length > 0 || Boolean(content.howHeardOtherLabel);
       if (
@@ -279,7 +317,7 @@ export function RegistrationForm({
         next.otherIshaPractices = "Please select an option.";
     }
 
-    if (!simplified && current === 3) {
+    if (currentStep.kind === "agreement") {
       if (content.refundPolicyConsentLabel && !form.refundConsent)
         next.refundConsent = "Please confirm you agree to the Refund Policy.";
       if (content.agreementConsentLabel && !form.agreementConsent)
@@ -322,10 +360,11 @@ export function RegistrationForm({
     setStatus("submitting");
     setSubmitError(null);
 
-    const extraFields = [
-      ...content.personalFields,
-      ...(simplified ? [] : content.emergencyFields),
-    ]
+    const extraFields = formSteps
+      .flatMap((item) => [
+        ...(item.fields ?? []),
+        ...(item.emergencyFields ?? []),
+      ])
       .filter((field) => !isKnownKey(field.key))
       .map((field) => ({
         key: field.key,
@@ -393,7 +432,7 @@ export function RegistrationForm({
   }
 
   const isLastStep = step === steps.length - 1;
-  const currentStep = steps[step];
+  const currentKind = formSteps[step]?.kind;
 
   if (status === "success") {
     return (
@@ -491,10 +530,10 @@ export function RegistrationForm({
       {/* ---------------------------------------------------------------- */}
       {/* Step 1 — Personal Information                                     */}
       {/* ---------------------------------------------------------------- */}
-      {step === 0 ? (
+      {currentKind === "personal" || currentKind === "fields" ? (
         <div className={formStackClass}>
           <div className={formGridClass}>
-            {content.personalFields.map((field) => (
+            {(formSteps[step]?.fields ?? []).map((field) => (
               <RegisterFieldControl
                 key={field.key}
                 field={field}
@@ -506,15 +545,16 @@ export function RegistrationForm({
             ))}
           </div>
 
-          {!simplified && content.emergencyFields.length > 0 ? (
+          {currentKind === "personal" &&
+          (formSteps[step]?.emergencyFields?.length ?? 0) > 0 ? (
             <fieldset className={formBoxClass}>
-              {content.emergencyHeading ? (
+              {formSteps[step]?.emergencyHeading ? (
                 <legend className="px-1.5 text-xs font-medium text-charcoal sm:px-2 sm:text-sm">
-                  {content.emergencyHeading}
+                  {formSteps[step]?.emergencyHeading}
                 </legend>
               ) : null}
-              <div className={cn("space-y-3 sm:space-y-5", formGridClass)}>
-                {content.emergencyFields.map((field) => (
+              <div className={formGridClass}>
+                {(formSteps[step]?.emergencyFields ?? []).map((field) => (
                   <RegisterFieldControl
                     key={field.key}
                     field={field}
@@ -533,7 +573,7 @@ export function RegistrationForm({
       {/* ---------------------------------------------------------------- */}
       {/* Step 2 — Health-Related Information                               */}
       {/* ---------------------------------------------------------------- */}
-      {!simplified && step === 1 ? (
+      {currentKind === "health" ? (
         <div className="space-y-4 sm:space-y-6">
           {content.healthIntro.length > 0 ? (
             <div className="space-y-2 sm:space-y-3">
@@ -726,7 +766,7 @@ export function RegistrationForm({
       {/* ---------------------------------------------------------------- */}
       {/* Step 3 — Program-Related Information                              */}
       {/* ---------------------------------------------------------------- */}
-      {!simplified && step === 2 ? (
+      {currentKind === "program" ? (
         <div className={formStackClass}>
           {content.howHeardGroups.length > 0 || content.howHeardOtherLabel ? (
             <fieldset>
@@ -854,7 +894,7 @@ export function RegistrationForm({
       {/* ---------------------------------------------------------------- */}
       {/* Step 4 — Agreement                                                */}
       {/* ---------------------------------------------------------------- */}
-      {!simplified && step === 3 ? (
+      {currentKind === "agreement" ? (
         <div className="space-y-4 sm:space-y-6">
           {content.refundPolicyTitle ||
           content.refundPolicyBullets.length > 0 ||
@@ -932,11 +972,11 @@ export function RegistrationForm({
         </div>
       ) : null}
 
-      {!simplified && currentStep === "Payment Details" ? (
+      {currentKind === "payment" ? (
         <BankDetailsCard />
       ) : null}
 
-      {!simplified && currentStep === content.step5Title ? (
+      {currentKind === "guidelines" ? (
         <div className="space-y-4 sm:space-y-6">
           {content.beforeSessionBlocks.map((block) => (
             <div key={block.heading} className={cn(formBoxClass, "sm:p-6")}>

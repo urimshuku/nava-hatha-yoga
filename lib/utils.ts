@@ -416,10 +416,8 @@ export function eventRegisterHref(event: RegistrationEventInput): string {
   return `/register?${params.toString()}`;
 }
 
-/** Retreat register button: custom URL when set, otherwise the retreat form. */
+/** Retreat Register buttons always use Retreat Registration from the CMS. */
 export function retreatRegisterHref(retreat: RegistrationEventInput): string {
-  const custom = retreat.registrationLink?.trim();
-  if (custom) return custom;
   const params = new URLSearchParams({
     event: formatRegistrationEventLabel(retreat),
     kind: "retreat",

@@ -25,7 +25,6 @@ export default async function EventsArchivePage() {
   return (
     <>
       <PageHero
-        eyebrow={page.archiveEyebrow?.trim() || "Archive"}
         title={page.archiveTitle?.trim() || "Past events"}
         description={
           page.archiveDescription?.trim() ||

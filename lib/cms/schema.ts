@@ -55,6 +55,8 @@ export type FieldDef =
       /** Field to show in the collapsed row header. Defaults to the first text field. */
       titleField?: string;
       keepEmpty?: boolean;
+      /** Values applied when the editor adds a row. */
+      defaultItem?: Record<string, unknown>;
     });
 
 export interface SchemaSection {

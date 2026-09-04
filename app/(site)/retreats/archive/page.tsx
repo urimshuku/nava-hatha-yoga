@@ -28,7 +28,6 @@ export default async function RetreatsArchivePage() {
   return (
     <>
       <PageHero
-        eyebrow={page.archiveEyebrow?.trim() || "Archive"}
         title={page.archiveTitle?.trim() || "Past retreats"}
         description={
           page.archiveDescription?.trim() ||

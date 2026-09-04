@@ -133,7 +133,7 @@ function readField(
   }
 }
 
-function readFields(
+export function readFields(
   fields: FieldDef[],
   formData: FormData,
   prefix: string,

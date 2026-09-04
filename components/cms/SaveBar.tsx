@@ -121,31 +121,3 @@ export function FormNotice({
 
   return null;
 }
-
-/** Shown when reopening a working copy that is not on the website yet. */
-export function WorkingCopyBanner({
-  published,
-  unpublishedChanges,
-}: {
-  published?: boolean;
-  unpublishedChanges?: boolean;
-}) {
-  if (!published) {
-    return (
-      <p className="rounded border border-saffron/30 bg-saffron/5 px-4 py-3 text-sm text-saffron-hover">
-        This is saved but not on the website yet. Publish to put it live.
-      </p>
-    );
-  }
-
-  if (unpublishedChanges) {
-    return (
-      <p className="rounded border border-saffron/30 bg-saffron/5 px-4 py-3 text-sm text-saffron-hover">
-        You have saved changes that are not on the website yet. Publish to
-        update the live page.
-      </p>
-    );
-  }
-
-  return null;
-}

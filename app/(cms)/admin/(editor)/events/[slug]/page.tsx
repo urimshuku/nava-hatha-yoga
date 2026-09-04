@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getDocument, hasUnpublishedChanges, isTombstone } from "@/lib/cms/repository";
+import { getDocument, isTombstone } from "@/lib/cms/repository";
 import { getPrograms } from "@/lib/cms/site-content";
 import type { YogaEvent } from "@/lib/cms/content-types";
 
@@ -50,8 +50,6 @@ export default async function EditEventPage({
                 ? "saved"
                 : undefined
           }
-          unpublishedChanges={hasUnpublishedChanges(stored)}
-          published={stored.published}
           programs={programs.map((program) => ({
             slug: program.slug,
             title: program.title,

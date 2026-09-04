@@ -10,7 +10,7 @@ import {
 } from "@/components/cms/Field";
 import { FormSection } from "@/components/cms/FormSection";
 import { SessionsField } from "@/components/cms/RepeatableFields";
-import { FormError, FormNotice, SaveBar, WorkingCopyBanner } from "@/components/cms/SaveBar";
+import { FormError, FormNotice, SaveBar } from "@/components/cms/SaveBar";
 import type { YogaEvent } from "@/lib/cms/content-types";
 import {
   cityCountryFromLocation,
@@ -34,16 +34,12 @@ export function EventForm({
   programs,
   isNew,
   notice,
-  published,
-  unpublishedChanges,
 }: {
   event?: Partial<YogaEvent>;
   originalSlug?: string;
   programs: ProgramOption[];
   isNew: boolean;
   notice?: "saved" | "published";
-  published?: boolean;
-  unpublishedChanges?: boolean;
 }) {
   const [state, formAction, pending] = useActionState<EventFormState, FormData>(
     saveEvent,
@@ -87,12 +83,6 @@ export function EventForm({
       </div>
 
       <FormNotice kind={notice} />
-      {!notice && !isNew ? (
-        <WorkingCopyBanner
-          published={published}
-          unpublishedChanges={unpublishedChanges}
-        />
-      ) : null}
       <FormError message={state.error} />
 
       <FormSection title="Basic details">

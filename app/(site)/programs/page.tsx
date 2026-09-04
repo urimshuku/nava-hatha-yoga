@@ -39,7 +39,6 @@ export default async function ProgramsPage() {
   return (
     <>
       <PageHero
-        eyebrow={page.heroEyebrow?.trim() || placeholderProgramsPage.heroEyebrow}
         title={
           page.heroTitle?.trim() ||
           placeholderProgramsPage.heroTitle ||

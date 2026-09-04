@@ -30,6 +30,9 @@ export interface RegistrationSubmission {
   /** CMS field labels and values, in the order they appear on the form. */
   personalLines?: { label: string; value: string }[];
   emergencyLines?: { label: string; value: string }[];
+  includeEmergency?: boolean;
+  includeHealth?: boolean;
+  includeProgram?: boolean;
 
   // Step 2 — Health-Related Information
   healthConditions: string[];
@@ -49,7 +52,12 @@ export interface RegistrationSubmission {
 }
 
 export function formatRegistration(s: RegistrationSubmission): string {
-  const simplified = isSimplifiedRegistration(s.event, s.category);
+  const includeEmergency =
+    s.includeEmergency ?? !isSimplifiedRegistration(s.event, s.category);
+  const includeHealth =
+    s.includeHealth ?? !isSimplifiedRegistration(s.event, s.category);
+  const includeProgram =
+    s.includeProgram ?? !isSimplifiedRegistration(s.event, s.category);
 
   const lines = [
     `Event: ${s.event || "-"}`,
@@ -74,11 +82,7 @@ export function formatRegistration(s: RegistrationSubmission): string {
     );
   }
 
-  if (!simplified) {
-    const conditions =
-      s.healthConditions.length > 0 ? s.healthConditions.join(", ") : "-";
-    const howHeard = s.howHeard.length > 0 ? s.howHeard.join(", ") : "-";
-
+  if (includeEmergency) {
     if (s.emergencyLines && s.emergencyLines.length > 0) {
       lines.push("");
       for (const field of s.emergencyLines) {
@@ -89,7 +93,11 @@ export function formatRegistration(s: RegistrationSubmission): string {
         `Emergency contact: ${s.emergencyName || "-"} (${s.emergencyRelationship || "-"}) — ${s.emergencyPhone || "-"}`,
       );
     }
+  }
 
+  if (includeHealth) {
+    const conditions =
+      s.healthConditions.length > 0 ? s.healthConditions.join(", ") : "-";
     lines.push(
       "",
       "--- Health-Related Information ---",
@@ -98,6 +106,12 @@ export function formatRegistration(s: RegistrationSubmission): string {
       `Condition details: ${s.healthDetails || "-"}`,
       `Major surgery (last 6 months): ${s.majorSurgery || "-"}`,
       `Currently pregnant: ${s.pregnant || "-"}`,
+    );
+  }
+
+  if (includeProgram) {
+    const howHeard = s.howHeard.length > 0 ? s.howHeard.join(", ") : "-";
+    lines.push(
       "",
       "--- Program-Related Information ---",
       `How they heard: ${howHeard}`,

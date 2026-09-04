@@ -51,7 +51,6 @@ export default async function EventsPage() {
       <EventHashScroll />
       <JsonLd data={buildEventsJsonLd(events, settings)} />
       <PageHero
-        eyebrow={page.heroEyebrow?.trim() || placeholderEventsPage.heroEyebrow}
         title={page.heroTitle?.trim() || placeholderEventsPage.heroTitle || ""}
         description={
           page.heroDescription?.trim() ||

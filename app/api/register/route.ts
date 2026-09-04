@@ -13,11 +13,11 @@ import {
   labeledValuesForFields,
   parseExtraFields,
   REGISTER_EMAIL_RE,
+  hasRegisterStep,
   resolveRegisterContent,
   valueForRegisterField,
 } from "@/lib/register-config";
 import {
-  isSimplifiedRegistrationKind,
   parseRegistrationKind,
   resolveRegistrationKind,
 } from "@/lib/registration-kind";
@@ -111,7 +111,6 @@ export async function POST(request: Request) {
     eventLabel: event,
   });
   const content = resolveRegisterContent(await getRegisterPage(kind), kind);
-  const simplified = isSimplifiedRegistrationKind(kind);
   const category =
     matchedEvent?.category ??
     (matchedRetreat || kind === "retreat"
@@ -122,7 +121,10 @@ export async function POST(request: Request) {
   const extra = parseExtraFields(data.extraFields);
   const known = knownValues(data);
   const personalFields = content.personalFields;
-  const emergencyFields = simplified ? [] : content.emergencyFields;
+  const emergencyFields = content.emergencyFields;
+  const needsHealth = hasRegisterStep(content, "health");
+  const needsProgram = hasRegisterStep(content, "program");
+  const needsAgreement = hasRegisterStep(content, "agreement");
 
   if (
     hasInvalidRegisterFields(personalFields, known, extra) ||
@@ -159,7 +161,7 @@ export async function POST(request: Request) {
     ? data.healthConditions.filter((c) => typeof c === "string" && c.trim())
     : [];
 
-  if (!simplified) {
+  if (needsHealth) {
     const healthChoices = [
       ...content.healthConditions,
       content.otherConditionLabel,
@@ -187,7 +189,15 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
+    if (content.disclaimerConsentLabel && data.medicalConsent !== "yes") {
+      return NextResponse.json(
+        { error: "Please agree to all required terms to continue." },
+        { status: 400 },
+      );
+    }
+  }
 
+  if (needsProgram) {
     const howHeardShown =
       content.howHeardGroups.length > 0 || Boolean(content.howHeardOtherLabel);
     if (howHeardShown && howHeard.length === 0 && !howHeardOther) {
@@ -208,17 +218,17 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
+  }
 
-    if (
-      (content.disclaimerConsentLabel && data.medicalConsent !== "yes") ||
-      (content.refundPolicyConsentLabel && data.refundConsent !== "yes") ||
-      (content.agreementConsentLabel && data.agreementConsent !== "yes")
-    ) {
-      return NextResponse.json(
-        { error: "Please agree to all required terms to continue." },
-        { status: 400 },
-      );
-    }
+  if (
+    needsAgreement &&
+    ((content.refundPolicyConsentLabel && data.refundConsent !== "yes") ||
+      (content.agreementConsentLabel && data.agreementConsent !== "yes"))
+  ) {
+    return NextResponse.json(
+      { error: "Please agree to all required terms to continue." },
+      { status: 400 },
+    );
   }
 
   const fullName =
@@ -248,6 +258,9 @@ export async function POST(request: Request) {
       emergencyPhone: data.emergencyPhone?.trim(),
       personalLines,
       emergencyLines,
+      includeEmergency: emergencyFields.length > 0,
+      includeHealth: needsHealth,
+      includeProgram: needsProgram,
       healthConditions,
       healthConditionsOther: data.healthConditionsOther?.trim(),
       healthDetails,

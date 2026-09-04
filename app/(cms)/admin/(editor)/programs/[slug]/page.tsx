@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { portableTextToText } from "@/lib/cms/portable-text";
-import { getDocument, hasUnpublishedChanges, isTombstone } from "@/lib/cms/repository";
+import { getDocument, isTombstone } from "@/lib/cms/repository";
 import type { Program } from "@/lib/cms/content-types";
 
 import { RemoveFromWebsite } from "@/components/cms/RemoveFromWebsite";
@@ -48,8 +48,6 @@ export default async function EditProgramPage({
                 ? "saved"
                 : undefined
           }
-          unpublishedChanges={hasUnpublishedChanges(stored)}
-          published={stored.published}
           richText={{
             whatIs: portableTextToText(program.whatIs),
             aboutThePractice: portableTextToText(program.aboutThePractice),

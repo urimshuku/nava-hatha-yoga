@@ -3,7 +3,10 @@
 import { useId, useState } from "react";
 
 import { portableTextToText } from "@/lib/cms/portable-text";
+import { readFields } from "@/lib/cms/schema-parse";
 import { joinPath, type FieldDef } from "@/lib/cms/schema";
+
+import { RowActions } from "./RowActions";
 
 import {
   CheckboxField,
@@ -22,9 +25,6 @@ import { RichTextField } from "./RichTextField";
  * Renders any schema. One component handles every editable page, so the pages
  * themselves only declare which fields exist and where the values come from.
  */
-
-const removeButtonClassName =
-  "shrink-0 rounded border border-border px-2.5 py-1.5 text-xs text-brown transition-colors hover:border-saffron hover:text-saffron";
 
 const addButtonClassName =
   "rounded border border-dashed border-border-strong px-3 py-2 text-sm text-brown transition-colors hover:border-saffron hover:text-saffron";
@@ -48,6 +48,16 @@ function asRows(value: unknown): Record<string, unknown>[] {
           Boolean(entry) && typeof entry === "object",
       )
     : [];
+}
+
+function cloneValue<T>(value: T): T {
+  if (value === null || typeof value !== "object") return value;
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
+function formFromButton(button: HTMLElement): HTMLFormElement | null {
+  const form = button.closest("form");
+  return form instanceof HTMLFormElement ? form : null;
 }
 
 function childOf(values: unknown, name: string): unknown {
@@ -293,6 +303,7 @@ function SchemaField({
           titleField={field.titleField}
           fields={field.fields}
           defaultValues={asRows(value)}
+          defaultItem={field.defaultItem}
         />
       );
   }
@@ -303,16 +314,37 @@ function SchemaField({
  * renumbered, so removing the second of five rows cannot shuffle the values of
  * the inputs that stay on screen.
  */
+function nextRowIndex(rows: { index: number }[]): number {
+  return rows.reduce((max, row) => Math.max(max, row.index), -1) + 1;
+}
+
 function useIndexedRows<T>(initial: T[]) {
   const [rows, setRows] = useState(() =>
     initial.map((value, index) => ({ index, value })),
   );
-  const [nextIndex, setNextIndex] = useState(initial.length);
 
   const add = (value: T) => {
-    setRows((current) => [...current, { index: nextIndex, value }]);
-    setNextIndex((current) => current + 1);
+    setRows((current) => [
+      ...current,
+      { index: nextRowIndex(current), value },
+    ]);
   };
+
+  const insertAfter = (index: number, value: T) => {
+    setRows((current) => {
+      const position = current.findIndex((row) => row.index === index);
+      const inserted = { index: nextRowIndex(current), value };
+      if (position < 0) return [...current, inserted];
+      const next = [...current];
+      next.splice(position + 1, 0, inserted);
+      return next;
+    });
+  };
+
+  const update = (index: number, value: T) =>
+    setRows((current) =>
+      current.map((row) => (row.index === index ? { ...row, value } : row)),
+    );
 
   const remove = (index: number) =>
     setRows((current) => current.filter((row) => row.index !== index));
@@ -327,7 +359,7 @@ function useIndexedRows<T>(initial: T[]) {
       return next;
     });
 
-  return { rows, add, remove, move };
+  return { rows, add, insertAfter, update, remove, move };
 }
 
 function ListField({
@@ -343,7 +375,7 @@ function ListField({
   placeholder?: string;
   defaultValues: string[];
 }) {
-  const { rows, add, remove } = useIndexedRows<string>(
+  const { rows, add, insertAfter, update, remove, move } = useIndexedRows<string>(
     defaultValues.length > 0 ? defaultValues : [""],
   );
 
@@ -351,22 +383,22 @@ function ListField({
     <Field label={label} hint={hint}>
       <div className="space-y-2">
         {rows.map((row) => (
-          <div key={row.index} className="flex gap-2">
+          <div key={row.index} className="flex flex-wrap gap-2">
             <input
               type="text"
               name={`${path}__item`}
-              defaultValue={row.value}
+              value={row.value}
+              onChange={(event) => update(row.index, event.target.value)}
               placeholder={placeholder}
-              className={inputClassName}
+              className={`${inputClassName} min-w-0 flex-1`}
             />
-            <button
-              type="button"
-              onClick={() => remove(row.index)}
-              className={removeButtonClassName}
-              aria-label={`Remove line from ${label}`}
-            >
-              Remove
-            </button>
+            <RowActions
+              noun="line"
+              onUp={() => move(row.index, -1)}
+              onDown={() => move(row.index, 1)}
+              onDuplicate={() => insertAfter(row.index, row.value)}
+              onRemove={() => remove(row.index)}
+            />
           </div>
         ))}
         <button type="button" onClick={() => add("")} className={addButtonClassName}>
@@ -388,7 +420,7 @@ function GalleryField({
   hint?: string;
   defaultValues: Record<string, unknown>[];
 }) {
-  const { rows, add, remove, move } = useIndexedRows(defaultValues);
+  const { rows, add, insertAfter, remove, move } = useIndexedRows(defaultValues);
 
   return (
     <Field label={label} hint={hint}>
@@ -396,35 +428,38 @@ function GalleryField({
         {rows.map((row, position) => (
           <div key={row.index} className="rounded border border-border p-3">
             <input type="hidden" name={`${path}__index`} value={row.index} />
-            <div className="mb-2 flex items-center justify-between">
+            <div className="mb-2 flex items-center justify-between gap-2">
               <p className="text-xs font-medium text-brown">
                 Photo {position + 1}
               </p>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => move(row.index, -1)}
-                  className={removeButtonClassName}
-                  aria-label="Move photo earlier"
-                >
-                  Up
-                </button>
-                <button
-                  type="button"
-                  onClick={() => move(row.index, 1)}
-                  className={removeButtonClassName}
-                  aria-label="Move photo later"
-                >
-                  Down
-                </button>
-                <button
-                  type="button"
-                  onClick={() => remove(row.index)}
-                  className={removeButtonClassName}
-                >
-                  Remove
-                </button>
-              </div>
+              <RowActions
+                noun="photo"
+                onUp={() => move(row.index, -1)}
+                onDown={() => move(row.index, 1)}
+                onDuplicate={(event) => {
+                  const form = formFromButton(event.currentTarget);
+                  const json = form
+                    ? form.querySelector(
+                        `input[name="${path}.${row.index}__json"]`,
+                      )
+                    : null;
+                  const raw =
+                    json instanceof HTMLInputElement ? json.value : "";
+                  let value: Record<string, unknown> = cloneValue(row.value);
+                  if (raw.trim()) {
+                    try {
+                      const parsed = JSON.parse(raw) as unknown;
+                      if (parsed && typeof parsed === "object") {
+                        value = parsed as Record<string, unknown>;
+                      }
+                    } catch {
+                      value = cloneValue(row.value);
+                    }
+                  }
+                  insertAfter(row.index, value);
+                }}
+                onRemove={() => remove(row.index)}
+              />
             </div>
             <ImageField
               name={`${path}.${row.index}`}
@@ -441,6 +476,25 @@ function GalleryField({
   );
 }
 
+function rowHeading(
+  row: Record<string, unknown>,
+  position: number,
+  itemLabel: string,
+  titleField: string | undefined,
+  fields: FieldDef[],
+): string {
+  const titled = titleField ? asString(row[titleField])?.trim() : undefined;
+  if (titled) return titled;
+  const kindField = fields.find((field) => field.name === "kind");
+  if (kindField?.kind === "select") {
+    const kind = asString(row.kind);
+    const kindLabel = kindField.options.find((option) => option.value === kind)
+      ?.label;
+    if (kindLabel) return `${itemLabel} ${position + 1} — ${kindLabel}`;
+  }
+  return `${itemLabel} ${position + 1}`;
+}
+
 function RowsField({
   path,
   label,
@@ -449,6 +503,7 @@ function RowsField({
   titleField,
   fields,
   defaultValues,
+  defaultItem,
 }: {
   path: string;
   label: string;
@@ -457,9 +512,25 @@ function RowsField({
   titleField?: string;
   fields: FieldDef[];
   defaultValues: Record<string, unknown>[];
+  defaultItem?: Record<string, unknown>;
 }) {
-  const { rows, add, remove, move } = useIndexedRows(defaultValues);
+  const { rows, add, insertAfter, remove, move } = useIndexedRows(defaultValues);
   const groupId = useId();
+
+  function duplicateRow(rowIndex: number, button: HTMLElement) {
+    const form = formFromButton(button);
+    if (form) {
+      insertAfter(
+        rowIndex,
+        readFields(fields, new FormData(form), `${path}.${rowIndex}`),
+      );
+      return;
+    }
+    insertAfter(
+      rowIndex,
+      cloneValue(rows.find((row) => row.index === rowIndex)?.value ?? {}),
+    );
+  }
 
   return (
     <div>
@@ -478,35 +549,17 @@ function RowsField({
 
             <div className="mb-3 flex items-center justify-between gap-2 border-b border-border pb-2">
               <p className="text-xs font-semibold uppercase tracking-wide text-brown">
-                {titleField && asString(row.value[titleField])?.trim()
-                  ? asString(row.value[titleField])
-                  : `${itemLabel} ${position + 1}`}
+                {rowHeading(row.value, position, itemLabel, titleField, fields)}
               </p>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => move(row.index, -1)}
-                  className={removeButtonClassName}
-                  aria-label={`Move ${itemLabel} earlier`}
-                >
-                  Up
-                </button>
-                <button
-                  type="button"
-                  onClick={() => move(row.index, 1)}
-                  className={removeButtonClassName}
-                  aria-label={`Move ${itemLabel} later`}
-                >
-                  Down
-                </button>
-                <button
-                  type="button"
-                  onClick={() => remove(row.index)}
-                  className={removeButtonClassName}
-                >
-                  Remove
-                </button>
-              </div>
+              <RowActions
+                noun={itemLabel}
+                onUp={() => move(row.index, -1)}
+                onDown={() => move(row.index, 1)}
+                onDuplicate={(event) =>
+                  duplicateRow(row.index, event.currentTarget)
+                }
+                onRemove={() => remove(row.index)}
+              />
             </div>
 
             <div className="space-y-4">
@@ -519,7 +572,11 @@ function RowsField({
           </div>
         ))}
 
-        <button type="button" onClick={() => add({})} className={addButtonClassName}>
+        <button
+          type="button"
+          onClick={() => add(defaultItem ? { ...defaultItem } : {})}
+          className={addButtonClassName}
+        >
           Add {itemLabel}
         </button>
       </div>

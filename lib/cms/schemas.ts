@@ -30,12 +30,6 @@ const ctaGroup = (
 });
 
 const heroFields = (pageName: string): FieldDef[] => [
-  {
-    kind: "text",
-    name: "heroEyebrow",
-    label: "Small line above the heading",
-    hint: "The short line in capitals at the very top.",
-  },
   { kind: "text", name: "heroTitle", label: "Heading" },
   {
     kind: "textarea",
@@ -47,7 +41,6 @@ const heroFields = (pageName: string): FieldDef[] => [
 ];
 
 const archiveFields = (what: string): FieldDef[] => [
-  { kind: "text", name: "archiveEyebrow", label: "Small line above the heading" },
   { kind: "text", name: "archiveTitle", label: "Heading" },
   {
     kind: "textarea",
@@ -367,7 +360,6 @@ export const aboutPageSchema: DocumentSchema = {
     {
       title: "The top of the page",
       fields: [
-        { kind: "text", name: "heroEyebrow", label: "Small line above the heading" },
         { kind: "text", name: "title", label: "Heading" },
         {
           kind: "textarea",
@@ -665,7 +657,6 @@ export const contactPageSchema: DocumentSchema = {
     {
       title: "The top of the page",
       fields: [
-        { kind: "text", name: "heroEyebrow", label: "Small line above the heading" },
         { kind: "text", name: "heroTitle", label: "Heading" },
         {
           kind: "textarea",
@@ -775,10 +766,342 @@ function lastingSection(section: SchemaSection): SchemaSection {
   return { ...section, fields: section.fields.map(lasting) };
 }
 
-function registerFormSections(
-  pageName: string,
-  fullForm: boolean,
-): SchemaSection[] {
+function whenKind(kind: string, fields: FieldDef[]): FieldDef[] {
+  return fields.map((field) => ({
+    ...field,
+    visibleWhen: { name: "kind", equals: kind },
+  }));
+}
+
+const registerStepKindOptions = [
+  { value: "fields", label: "Extra questions" },
+  { value: "personal", label: "Personal details" },
+  { value: "health", label: "Health" },
+  { value: "program", label: "How they heard" },
+  { value: "agreement", label: "Agreement" },
+  { value: "guidelines", label: "Guidelines" },
+];
+
+const personalStepFields: FieldDef[] = [
+  {
+    kind: "rows",
+    name: "fields",
+    label: "Fields",
+    itemLabel: "field",
+    titleField: "label",
+    hint: "The order here is the order on the website.",
+    fields: formFieldRowFields,
+  },
+  {
+    kind: "text",
+    name: "emergencyHeading",
+    label: "Emergency contact heading",
+  },
+  {
+    kind: "rows",
+    name: "emergencyFields",
+    label: "Emergency contact fields",
+    itemLabel: "field",
+    titleField: "label",
+    fields: formFieldRowFields,
+  },
+];
+
+const extraQuestionsStepFields: FieldDef[] = [
+  {
+    kind: "rows",
+    name: "fields",
+    label: "Fields",
+    itemLabel: "field",
+    titleField: "label",
+    hint: "The order here is the order on the website.",
+    fields: formFieldRowFields,
+  },
+];
+
+const healthStepFields: FieldDef[] = [
+  {
+    kind: "list",
+    name: "healthIntro",
+    label: "Introduction",
+    hint: "One paragraph per line.",
+  },
+  {
+    kind: "text",
+    name: "healthConditionsLegend",
+    label: "Heading above the conditions",
+  },
+  {
+    kind: "list",
+    name: "healthConditions",
+    label: "Conditions people can tick",
+    hint: "One condition per line. Add or remove lines to change the list.",
+  },
+  { kind: "text", name: "otherConditionLabel", label: "The 'Other' option" },
+  {
+    kind: "text",
+    name: "notApplicableLabel",
+    label: "The 'not applicable' option",
+  },
+  {
+    kind: "text",
+    name: "specifyPlaceholder",
+    label: "Hint inside the 'please specify' box",
+  },
+  {
+    kind: "text",
+    name: "healthDetailsLabel",
+    label: "Label of the details box",
+  },
+  {
+    kind: "text",
+    name: "majorSurgeryQuestion",
+    label: "Question about surgery",
+  },
+  {
+    kind: "textarea",
+    name: "majorSurgeryHint",
+    label: "Note under the surgery question",
+    rows: 2,
+  },
+  {
+    kind: "text",
+    name: "pregnancyLabel",
+    label: "Question about pregnancy",
+  },
+  { kind: "text", name: "yesLabel", label: "Yes option" },
+  { kind: "text", name: "noLabel", label: "No option" },
+  {
+    kind: "textarea",
+    name: "disclaimerIntro",
+    label: "Line before the disclaimer link",
+    rows: 2,
+  },
+  {
+    kind: "text",
+    name: "disclaimerLinkLabel",
+    label: "Disclaimer link wording",
+  },
+  {
+    kind: "text",
+    name: "disclaimerConfirmLead",
+    label: "Line above the summary ticks",
+  },
+  { kind: "text", name: "disclaimerTitle", label: "Disclaimer heading" },
+  {
+    kind: "rows",
+    name: "disclaimerDocument",
+    label: "The full disclaimer",
+    hint: "Each part appears as a titled block in the document people can open and read.",
+    itemLabel: "part",
+    titleField: "title",
+    fields: [
+      { kind: "text", name: "title", label: "Title of this part" },
+      { kind: "textarea", name: "intro", label: "Introduction", rows: 2 },
+      {
+        kind: "rows",
+        name: "items",
+        label: "Points",
+        itemLabel: "point",
+        titleField: "title",
+        fields: [
+          { kind: "text", name: "title", label: "Title" },
+          { kind: "textarea", name: "lead", label: "Text", rows: 2 },
+          {
+            kind: "list",
+            name: "points",
+            label: "Bullet points",
+            hint: "One per line.",
+          },
+          { kind: "text", name: "contactName", label: "Contact name" },
+          { kind: "text", name: "contactEmail", label: "Contact email" },
+        ],
+      },
+    ],
+  },
+  {
+    kind: "list",
+    name: "disclaimerBullets",
+    label: "Short summary next to the tick box",
+    hint: "One point per line.",
+  },
+  {
+    kind: "textarea",
+    name: "disclaimerConsentLabel",
+    label: "Wording of the tick box",
+    rows: 2,
+  },
+];
+
+const programStepFields: FieldDef[] = [
+  {
+    kind: "text",
+    name: "howHeardLabel",
+    label: "Question about how they heard",
+  },
+  {
+    kind: "rows",
+    name: "howHeardGroups",
+    label: "Groups of choices",
+    itemLabel: "group",
+    titleField: "heading",
+    hint: "Add or remove a group or a choice inside it.",
+    fields: [
+      { kind: "text", name: "heading", label: "Group heading" },
+      {
+        kind: "list",
+        name: "options",
+        label: "Choices",
+        hint: "One choice per line.",
+      },
+    ],
+  },
+  { kind: "text", name: "howHeardOtherLabel", label: "The 'Other' option" },
+  {
+    kind: "textarea",
+    name: "priorPracticeLabel",
+    label: "Question about prior practice",
+    rows: 2,
+  },
+  {
+    kind: "text",
+    name: "otherIshaLabel",
+    label: "Question about other Isha practices",
+  },
+  {
+    kind: "text",
+    name: "otherIshaDetailsLabel",
+    label: "Follow-up if they answered yes",
+  },
+  { kind: "text", name: "yesLabel", label: "Yes option" },
+  { kind: "text", name: "noLabel", label: "No option" },
+  {
+    kind: "text",
+    name: "specifyPlaceholder",
+    label: "Hint inside the 'please specify' box",
+  },
+];
+
+const agreementStepFields: FieldDef[] = [
+  { kind: "text", name: "refundPolicyTitle", label: "Refund policy heading" },
+  {
+    kind: "list",
+    name: "refundPolicyBullets",
+    label: "The policy",
+    hint: "One point per line.",
+  },
+  {
+    kind: "textarea",
+    name: "refundPolicyConsentLabel",
+    label: "Wording of the refund tick box",
+    rows: 2,
+  },
+  { kind: "text", name: "agreementTitle", label: "Agreement heading" },
+  {
+    kind: "list",
+    name: "agreementBullets",
+    label: "What people agree to",
+    hint: "One point per line.",
+  },
+  {
+    kind: "textarea",
+    name: "agreementConsentLabel",
+    label: "Wording of the agreement tick box",
+    rows: 2,
+  },
+];
+
+const guidelinesStepFields: FieldDef[] = [
+  {
+    kind: "rows",
+    name: "beforeSessionBlocks",
+    label: "Blocks on this step",
+    itemLabel: "block",
+    titleField: "heading",
+    fields: [
+      { kind: "text", name: "heading", label: "Heading" },
+      {
+        kind: "list",
+        name: "paragraphs",
+        label: "Paragraphs",
+        hint: "One paragraph per line.",
+      },
+      {
+        kind: "rows",
+        name: "lists",
+        label: "Lists",
+        itemLabel: "list",
+        titleField: "label",
+        fields: [
+          { kind: "text", name: "label", label: "Heading of the list" },
+          {
+            kind: "list",
+            name: "items",
+            label: "Items",
+            hint: "One per line.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    kind: "textarea",
+    name: "guidelinesPrompt",
+    label: "Sentence before the read and download links",
+    rows: 2,
+  },
+  { kind: "text", name: "guidelinesReadLabel", label: "Read link wording" },
+  {
+    kind: "text",
+    name: "guidelinesDownloadLabel",
+    label: "Download link wording",
+  },
+  { kind: "text", name: "guidelinesTitle", label: "Full guidelines heading" },
+  {
+    kind: "rows",
+    name: "guidelinesDocument",
+    label: "The guidelines",
+    itemLabel: "part",
+    titleField: "title",
+    fields: [
+      { kind: "text", name: "title", label: "Title of this part" },
+      {
+        kind: "rows",
+        name: "blocks",
+        label: "Blocks",
+        itemLabel: "block",
+        titleField: "heading",
+        fields: [
+          { kind: "text", name: "heading", label: "Heading" },
+          {
+            kind: "list",
+            name: "paragraphs",
+            label: "Paragraphs",
+            hint: "One paragraph per line.",
+          },
+          {
+            kind: "rows",
+            name: "lists",
+            label: "Lists",
+            itemLabel: "list",
+            titleField: "label",
+            fields: [
+              { kind: "text", name: "label", label: "Heading of the list" },
+              {
+                kind: "list",
+                name: "items",
+                label: "Items",
+                hint: "One per line.",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+];
+
+function registerFormSections(pageName: string): SchemaSection[] {
   const hero: SchemaSection = {
     id: "page-heading",
     title: "The top of the page",
@@ -786,360 +1109,46 @@ function registerFormSections(
     fields: heroFields(pageName),
   };
 
-  const step1: SchemaSection = {
-    id: "step-1",
-    navTitle: "Step 1",
+  const steps: SchemaSection = {
     defaultOpen: true,
-    title: "Step 1 — Personal Information",
+    title: "Form steps",
     description:
-      "These are the same fields people fill in on the website. Rename one, add a new one, or remove one to change the live form.",
+      "Each row is one page of the form. Add, remove or reorder steps. Choose a type to edit that page, or Extra questions for more fields of your own.",
     collapsible: true,
     fields: [
       {
-        kind: "text",
-        name: "step1Title",
-        label: "Step title",
-        hint: "Shown at the top of this step on the website.",
-      },
-      {
         kind: "rows",
-        name: "personalFields",
-        label: "Fields",
-        itemLabel: "field",
-        titleField: "label",
-        hint: "The order here is the order on the website.",
-        fields: formFieldRowFields,
+        name: "steps",
+        label: "Steps",
+        itemLabel: "step",
+        titleField: "title",
+        defaultItem: { kind: "fields" },
+        hint: "The order here is the order people move through on the website.",
+        fields: [
+          {
+            kind: "select",
+            name: "kind",
+            label: "Type of step",
+            options: registerStepKindOptions,
+          },
+          {
+            kind: "text",
+            name: "title",
+            label: "Step title",
+            hint: "Shown at the top of this step on the website.",
+          },
+          ...whenKind("personal", personalStepFields),
+          ...whenKind("fields", extraQuestionsStepFields),
+          ...whenKind("health", healthStepFields),
+          ...whenKind("program", programStepFields),
+          ...whenKind("agreement", agreementStepFields),
+          ...whenKind("guidelines", guidelinesStepFields),
+        ],
       },
-      ...(fullForm
-        ? ([
-            {
-              kind: "text",
-              name: "emergencyHeading",
-              label: "Emergency contact heading",
-            },
-            {
-              kind: "rows",
-              name: "emergencyFields",
-              label: "Emergency contact fields",
-              itemLabel: "field",
-              titleField: "label",
-              fields: formFieldRowFields,
-            },
-          ] as FieldDef[])
-        : []),
     ],
   };
 
-  if (!fullForm) return [hero, step1].map(lastingSection);
-
-  return ([
-    hero,
-    step1,
-    {
-      id: "step-2",
-      navTitle: "Step 2",
-      title: "Step 2 — Health-Related Information",
-      description:
-        "Questions, tick-boxes and the medical disclaimer on the second step of the form.",
-      collapsible: true,
-      fields: [
-        { kind: "text", name: "step2Title", label: "Step title" },
-        {
-          kind: "list",
-          name: "healthIntro",
-          label: "Introduction",
-          hint: "One paragraph per line.",
-        },
-        {
-          kind: "text",
-          name: "healthConditionsLegend",
-          label: "Heading above the conditions",
-        },
-        {
-          kind: "list",
-          name: "healthConditions",
-          label: "Conditions people can tick",
-          hint: "One condition per line. Add or remove lines to change the list.",
-        },
-        { kind: "text", name: "otherConditionLabel", label: "The 'Other' option" },
-        {
-          kind: "text",
-          name: "notApplicableLabel",
-          label: "The 'not applicable' option",
-        },
-        {
-          kind: "text",
-          name: "specifyPlaceholder",
-          label: "Hint inside the 'please specify' box",
-        },
-        {
-          kind: "text",
-          name: "healthDetailsLabel",
-          label: "Label of the details box",
-        },
-        {
-          kind: "text",
-          name: "majorSurgeryQuestion",
-          label: "Question about surgery",
-        },
-        {
-          kind: "textarea",
-          name: "majorSurgeryHint",
-          label: "Note under the surgery question",
-          rows: 2,
-        },
-        {
-          kind: "text",
-          name: "pregnancyLabel",
-          label: "Question about pregnancy",
-        },
-        { kind: "text", name: "yesLabel", label: "Yes option" },
-        { kind: "text", name: "noLabel", label: "No option" },
-        {
-          kind: "textarea",
-          name: "disclaimerIntro",
-          label: "Line before the disclaimer link",
-          rows: 2,
-        },
-        {
-          kind: "text",
-          name: "disclaimerLinkLabel",
-          label: "Disclaimer link wording",
-        },
-        {
-          kind: "text",
-          name: "disclaimerConfirmLead",
-          label: "Line above the summary ticks",
-        },
-        { kind: "text", name: "disclaimerTitle", label: "Disclaimer heading" },
-        {
-          kind: "rows",
-          name: "disclaimerDocument",
-          label: "The full disclaimer",
-          hint: "Each part appears as a titled block in the document people can open and read.",
-          itemLabel: "part",
-          titleField: "title",
-          fields: [
-            { kind: "text", name: "title", label: "Title of this part" },
-            { kind: "textarea", name: "intro", label: "Introduction", rows: 2 },
-            {
-              kind: "rows",
-              name: "items",
-              label: "Points",
-              itemLabel: "point",
-              titleField: "title",
-              fields: [
-                { kind: "text", name: "title", label: "Title" },
-                { kind: "textarea", name: "lead", label: "Text", rows: 2 },
-                {
-                  kind: "list",
-                  name: "points",
-                  label: "Bullet points",
-                  hint: "One per line.",
-                },
-                { kind: "text", name: "contactName", label: "Contact name" },
-                { kind: "text", name: "contactEmail", label: "Contact email" },
-              ],
-            },
-          ],
-        },
-        {
-          kind: "list",
-          name: "disclaimerBullets",
-          label: "Short summary next to the tick box",
-          hint: "One point per line.",
-        },
-        {
-          kind: "textarea",
-          name: "disclaimerConsentLabel",
-          label: "Wording of the tick box",
-          rows: 2,
-        },
-      ],
-    },
-    {
-      id: "step-3",
-      navTitle: "Step 3",
-      title: "Step 3 — Program-Related Information",
-      description: "How they heard about the program and their practice history.",
-      collapsible: true,
-      fields: [
-        { kind: "text", name: "step3Title", label: "Step title" },
-        {
-          kind: "text",
-          name: "howHeardLabel",
-          label: "Question about how they heard",
-        },
-        {
-          kind: "rows",
-          name: "howHeardGroups",
-          label: "Groups of choices",
-          itemLabel: "group",
-          titleField: "heading",
-          hint: "Add or remove a group or a choice inside it.",
-          fields: [
-            { kind: "text", name: "heading", label: "Group heading" },
-            {
-              kind: "list",
-              name: "options",
-              label: "Choices",
-              hint: "One choice per line.",
-            },
-          ],
-        },
-        { kind: "text", name: "howHeardOtherLabel", label: "The 'Other' option" },
-        {
-          kind: "textarea",
-          name: "priorPracticeLabel",
-          label: "Question about prior practice",
-          rows: 2,
-        },
-        {
-          kind: "text",
-          name: "otherIshaLabel",
-          label: "Question about other Isha practices",
-        },
-        {
-          kind: "text",
-          name: "otherIshaDetailsLabel",
-          label: "Follow-up if they answered yes",
-        },
-      ],
-    },
-    {
-      id: "step-4",
-      navTitle: "Step 4",
-      title: "Step 4 — Agreement",
-      description: "The refund policy and the participant agreement.",
-      collapsible: true,
-      fields: [
-        { kind: "text", name: "step4Title", label: "Step title" },
-        { kind: "text", name: "refundPolicyTitle", label: "Refund policy heading" },
-        {
-          kind: "list",
-          name: "refundPolicyBullets",
-          label: "The policy",
-          hint: "One point per line.",
-        },
-        {
-          kind: "textarea",
-          name: "refundPolicyConsentLabel",
-          label: "Wording of the refund tick box",
-          rows: 2,
-        },
-        { kind: "text", name: "agreementTitle", label: "Agreement heading" },
-        {
-          kind: "list",
-          name: "agreementBullets",
-          label: "What people agree to",
-          hint: "One point per line.",
-        },
-        {
-          kind: "textarea",
-          name: "agreementConsentLabel",
-          label: "Wording of the agreement tick box",
-          rows: 2,
-        },
-      ],
-    },
-    {
-      id: "step-5",
-      navTitle: "Step 5",
-      title: "Step 5 — Before the Start of the Session",
-      description: "The notes and full guidelines shown on the last step.",
-      collapsible: true,
-      fields: [
-        { kind: "text", name: "step5Title", label: "Step title" },
-        {
-          kind: "rows",
-          name: "beforeSessionBlocks",
-          label: "Blocks on this step",
-          itemLabel: "block",
-          titleField: "heading",
-          fields: [
-            { kind: "text", name: "heading", label: "Heading" },
-            {
-              kind: "list",
-              name: "paragraphs",
-              label: "Paragraphs",
-              hint: "One paragraph per line.",
-            },
-            {
-              kind: "rows",
-              name: "lists",
-              label: "Lists",
-              itemLabel: "list",
-              titleField: "label",
-              fields: [
-                { kind: "text", name: "label", label: "Heading of the list" },
-                {
-                  kind: "list",
-                  name: "items",
-                  label: "Items",
-                  hint: "One per line.",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          kind: "textarea",
-          name: "guidelinesPrompt",
-          label: "Sentence before the read and download links",
-          rows: 2,
-        },
-        { kind: "text", name: "guidelinesReadLabel", label: "Read link wording" },
-        {
-          kind: "text",
-          name: "guidelinesDownloadLabel",
-          label: "Download link wording",
-        },
-        { kind: "text", name: "guidelinesTitle", label: "Full guidelines heading" },
-        {
-          kind: "rows",
-          name: "guidelinesDocument",
-          label: "The guidelines",
-          itemLabel: "part",
-          titleField: "title",
-          fields: [
-            { kind: "text", name: "title", label: "Title of this part" },
-            {
-              kind: "rows",
-              name: "blocks",
-              label: "Blocks",
-              itemLabel: "block",
-              titleField: "heading",
-              fields: [
-                { kind: "text", name: "heading", label: "Heading" },
-                {
-                  kind: "list",
-                  name: "paragraphs",
-                  label: "Paragraphs",
-                  hint: "One paragraph per line.",
-                },
-                {
-                  kind: "rows",
-                  name: "lists",
-                  label: "Lists",
-                  itemLabel: "list",
-                  titleField: "label",
-                  fields: [
-                    { kind: "text", name: "label", label: "Heading of the list" },
-                    {
-                      kind: "list",
-                      name: "items",
-                      label: "Items",
-                      hint: "One per line.",
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ] as SchemaSection[]).map(lastingSection);
+  return [hero, steps].map(lastingSection);
 }
 
 export function createRegisterPageSchema(options: {
@@ -1153,14 +1162,14 @@ export function createRegisterPageSchema(options: {
     title: options.title,
     description: options.description,
     previewPath: options.previewPath,
-    sections: registerFormSections(options.pageName, options.fullForm ?? true),
+    sections: registerFormSections(options.pageName),
   };
 }
 
 export const workshopRegisterPageSchema = createRegisterPageSchema({
   title: "Workshop Registration",
   description:
-    "The same five steps people complete on the website. Open a step to rename, add or remove fields. Please change the medical and legal text with care.",
+    "The steps people complete on the website. Add, remove or reorder a step, then open it to rename, add or remove fields. Please change the medical and legal text with care.",
   previewPath: "/register?kind=workshop",
   pageName: "workshop registration",
 });
@@ -1168,16 +1177,15 @@ export const workshopRegisterPageSchema = createRegisterPageSchema({
 export const freeOfferingRegisterPageSchema = createRegisterPageSchema({
   title: "Free Offering Registration",
   description:
-    "The one-page registration form used for free sessions. The heading and the personal details fields are the same as on the website.",
+    "Starts as a one-page form. Add, remove or reorder steps the same way as the other registration pages.",
   previewPath: "/register?kind=free",
   pageName: "free offering registration",
-  fullForm: false,
 });
 
 export const moduleRegisterPageSchema = createRegisterPageSchema({
   title: "Module Registration",
   description:
-    "The full five-step form for module registration. Starts as a copy of Workshop Registration; change it independently after that.",
+    "The steps for module registration. Starts as a copy of Workshop Registration; change it independently after that.",
   previewPath: "/register?kind=module",
   pageName: "module registration",
 });
@@ -1185,7 +1193,7 @@ export const moduleRegisterPageSchema = createRegisterPageSchema({
 export const retreatRegisterPageSchema = createRegisterPageSchema({
   title: "Retreat Registration",
   description:
-    "The full five-step form people complete when they register for a retreat. Starts as a copy of Workshop Registration; change it independently after that.",
+    "The steps people complete when they register for a retreat. Starts as a copy of Workshop Registration; change it independently after that.",
   previewPath: "/register?kind=retreat",
   pageName: "retreat registration",
 });
@@ -1278,12 +1286,6 @@ export const retreatSchema: DocumentSchema = {
           kind: "richtext",
           name: "cancellationPolicy",
           label: "Cancellation policy",
-        },
-        {
-          kind: "text",
-          name: "registrationLink",
-          label: "Registration link",
-          hint: "Leave empty to send people to Retreat Registration on this site.",
         },
       ],
     },

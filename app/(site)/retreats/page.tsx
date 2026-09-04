@@ -55,9 +55,6 @@ export default async function RetreatsPage() {
   return (
     <>
       <PageHero
-        eyebrow={
-          page.heroEyebrow?.trim() || placeholderRetreatsPage.heroEyebrow
-        }
         title={
           page.heroTitle?.trim() ||
           placeholderRetreatsPage.heroTitle ||

@@ -369,6 +369,8 @@ export interface RegisterPage {
   heroEyebrow?: string;
   heroTitle?: string;
   heroDescription?: string;
+  /** Ordered steps on the form. When missing, the built-in steps are used. */
+  steps?: RegisterStepData[];
   step1Title?: string;
   personalFields?: RegisterFormFieldData[];
   emergencyHeading?: string;
@@ -408,6 +410,59 @@ export interface RegisterPage {
   agreementBullets?: string[];
   agreementConsentLabel?: string;
   step5Title?: string;
+  beforeSessionBlocks?: GuidelineBlockData[];
+  guidelinesPrompt?: string;
+  guidelinesReadLabel?: string;
+  guidelinesDownloadLabel?: string;
+  guidelinesTitle?: string;
+  guidelinesDocument?: GuidelineSectionData[];
+}
+
+export type RegisterStepKindData =
+  | "personal"
+  | "health"
+  | "program"
+  | "agreement"
+  | "guidelines"
+  | "fields";
+
+export interface RegisterStepData {
+  kind?: string;
+  title?: string;
+  fields?: RegisterFormFieldData[];
+  emergencyHeading?: string;
+  emergencyFields?: RegisterFormFieldData[];
+  healthIntro?: string[];
+  healthConditionsLegend?: string;
+  healthConditions?: string[];
+  otherConditionLabel?: string;
+  notApplicableLabel?: string;
+  specifyPlaceholder?: string;
+  healthDetailsLabel?: string;
+  majorSurgeryQuestion?: string;
+  majorSurgeryHint?: string;
+  pregnancyLabel?: string;
+  yesLabel?: string;
+  noLabel?: string;
+  disclaimerIntro?: string;
+  disclaimerLinkLabel?: string;
+  disclaimerConfirmLead?: string;
+  disclaimerTitle?: string;
+  disclaimerDocument?: DisclaimerSectionData[];
+  disclaimerBullets?: string[];
+  disclaimerConsentLabel?: string;
+  howHeardLabel?: string;
+  howHeardGroups?: HowHeardGroupData[];
+  howHeardOtherLabel?: string;
+  priorPracticeLabel?: string;
+  otherIshaLabel?: string;
+  otherIshaDetailsLabel?: string;
+  refundPolicyTitle?: string;
+  refundPolicyBullets?: string[];
+  refundPolicyConsentLabel?: string;
+  agreementTitle?: string;
+  agreementBullets?: string[];
+  agreementConsentLabel?: string;
   beforeSessionBlocks?: GuidelineBlockData[];
   guidelinesPrompt?: string;
   guidelinesReadLabel?: string;

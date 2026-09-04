@@ -117,10 +117,6 @@ export default async function AdminRetreatsPage({
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="font-heading text-3xl text-charcoal">Retreats</h1>
-          <p className="mt-2 max-w-prose text-sm text-brown">
-            The retreats, with their dates, photos and full descriptions. The
-            wording around the list is under Pages.
-          </p>
         </div>
         <Link
           href="/admin/retreats/new"

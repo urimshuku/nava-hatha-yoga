@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getDocument, hasUnpublishedChanges, isTombstone } from "@/lib/cms/repository";
+import { getDocument, isTombstone } from "@/lib/cms/repository";
 import type { Retreat } from "@/lib/cms/content-types";
 
 import { RemoveFromWebsite } from "@/components/cms/RemoveFromWebsite";
@@ -45,8 +45,6 @@ export default async function EditRetreatPage({
                 ? "saved"
                 : undefined
           }
-          unpublishedChanges={hasUnpublishedChanges(stored)}
-          published={stored.published}
         />
       </div>
 

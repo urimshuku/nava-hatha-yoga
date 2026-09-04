@@ -13,7 +13,7 @@ export function LegalPageView({
 }) {
   return (
     <>
-      <PageHero eyebrow="Legal" title={page?.title ?? fallbackTitle} />
+      <PageHero title={page?.title ?? fallbackTitle} />
       <Section tone="cream">
         <Container size="narrow">
           <article className="prose prose-nava">

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { formatSessionHoursRange, sessionDayLabelsBetween } from "@/lib/utils";
 
 import { Field, inputClassName } from "./Field";
+import { RowActions } from "./RowActions";
 
 /**
  * Rows are submitted as repeated form fields with the same name, so the server
@@ -21,9 +22,6 @@ function toRows<T>(values: T[], empty: T): { id: string; value: T }[] {
   const source = values.length > 0 ? values : [empty];
   return source.map((value) => ({ id: nextRowId(), value }));
 }
-
-const removeButtonClassName =
-  "shrink-0 rounded border border-border px-2.5 py-2 text-xs text-brown transition-colors hover:border-saffron hover:text-saffron";
 
 const iconButtonClassName =
   "inline-flex h-[2.625rem] w-[2.625rem] shrink-0 items-center justify-center rounded border border-border text-brown transition-colors hover:border-saffron hover:text-saffron";
@@ -62,32 +60,64 @@ export function TextListField({
 }) {
   const [rows, setRows] = useState(() => toRows(defaultValues, ""));
 
+  function moveRow(id: string, direction: -1 | 1) {
+    setRows((current) => {
+      const position = current.findIndex((row) => row.id === id);
+      const target = position + direction;
+      if (position < 0 || target < 0 || target >= current.length) return current;
+      const next = [...current];
+      [next[position], next[target]] = [next[target], next[position]];
+      return next;
+    });
+  }
+
+  function duplicateRow(id: string) {
+    setRows((current) => {
+      const position = current.findIndex((row) => row.id === id);
+      if (position < 0) return current;
+      const next = [...current];
+      next.splice(position + 1, 0, {
+        id: nextRowId(),
+        value: current[position].value,
+      });
+      return next;
+    });
+  }
+
   return (
     <Field label={label} hint={hint}>
       <div className="space-y-2">
         {rows.map((row) => (
-          <div key={row.id} className="flex gap-2">
+          <div key={row.id} className="flex flex-wrap gap-2">
             <input
               type="text"
               name={name}
-              defaultValue={row.value}
+              value={row.value}
+              onChange={(event) =>
+                setRows((current) =>
+                  current.map((entry) =>
+                    entry.id === row.id
+                      ? { ...entry, value: event.target.value }
+                      : entry,
+                  ),
+                )
+              }
               placeholder={placeholder}
-              className={inputClassName}
+              className={`${inputClassName} min-w-0 flex-1`}
             />
-            <button
-              type="button"
-              onClick={() =>
+            <RowActions
+              noun="line"
+              onUp={() => moveRow(row.id, -1)}
+              onDown={() => moveRow(row.id, 1)}
+              onDuplicate={() => duplicateRow(row.id)}
+              onRemove={() =>
                 setRows((current) =>
                   current.length === 1
                     ? current
                     : current.filter((entry) => entry.id !== row.id),
                 )
               }
-              className={removeButtonClassName}
-              aria-label={`Remove ${label} row`}
-            >
-              Remove
-            </button>
+            />
           </div>
         ))}
         <button
@@ -183,6 +213,30 @@ export function SessionsField({
     });
   }
 
+  function moveRow(id: string, direction: -1 | 1) {
+    setRows((current) => {
+      const position = current.findIndex((row) => row.id === id);
+      const target = position + direction;
+      if (position < 0 || target < 0 || target >= current.length) return current;
+      const next = [...current];
+      [next[position], next[target]] = [next[target], next[position]];
+      return next;
+    });
+  }
+
+  function duplicateRow(id: string) {
+    setRows((current) => {
+      const position = current.findIndex((row) => row.id === id);
+      if (position < 0) return current;
+      const next = [...current];
+      next.splice(position + 1, 0, {
+        id: nextRowId(),
+        value: { ...current[position].value },
+      });
+      return next;
+    });
+  }
+
   return (
     <Field label={label} hint={hint}>
       <div className="space-y-2">
@@ -195,10 +249,10 @@ export function SessionsField({
           return (
             <div
               key={row.id}
-              className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto_auto] items-center gap-2"
+              className="flex flex-wrap items-center gap-2"
             >
               {continuation ? (
-                <div>
+                <div className="min-w-0 flex-1 basis-40">
                   <input
                     type="hidden"
                     name="sessionDay"
@@ -214,7 +268,7 @@ export function SessionsField({
                   onChange={(event) =>
                     updateRow(row.id, { day: event.target.value })
                   }
-                  className={`${inputClassName} min-w-0`}
+                  className={`${inputClassName} min-w-0 flex-1 basis-40`}
                 />
               )}
               <input
@@ -230,7 +284,7 @@ export function SessionsField({
                     hours: formatSessionHoursRange(event.target.value),
                   })
                 }
-                className={`${inputClassName} min-w-0`}
+                className={`${inputClassName} min-w-0 flex-1 basis-40`}
               />
               <button
                 type="button"
@@ -240,20 +294,19 @@ export function SessionsField({
               >
                 <IconPlus />
               </button>
-              <button
-                type="button"
-                onClick={() =>
+              <RowActions
+                noun="session"
+                onUp={() => moveRow(row.id, -1)}
+                onDown={() => moveRow(row.id, 1)}
+                onDuplicate={() => duplicateRow(row.id)}
+                onRemove={() =>
                   setRows((current) =>
                     current.length === 1
                       ? current
                       : current.filter((entry) => entry.id !== row.id),
                   )
                 }
-                className={removeButtonClassName}
-                aria-label="Remove session"
-              >
-                Remove
-              </button>
+              />
             </div>
           );
         })}

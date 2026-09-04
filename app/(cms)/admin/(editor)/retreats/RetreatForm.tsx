@@ -4,7 +4,7 @@ import { useActionState, useState, type FormEvent } from "react";
 
 import { TextField } from "@/components/cms/Field";
 import { FormSection } from "@/components/cms/FormSection";
-import { FormError, FormNotice, SaveBar, WorkingCopyBanner } from "@/components/cms/SaveBar";
+import { FormError, FormNotice, SaveBar } from "@/components/cms/SaveBar";
 import { SchemaFields } from "@/components/cms/SchemaFields";
 import { retreatSchema } from "@/lib/cms/schemas";
 import {
@@ -20,16 +20,12 @@ export function RetreatForm({
   originalSlug,
   isNew,
   notice,
-  published,
-  unpublishedChanges,
 }: {
   /** The retreat as it stands today, from the CMS or from Sanity. */
   retreat?: unknown;
   originalSlug?: string;
   isNew: boolean;
   notice?: "saved" | "published";
-  published?: boolean;
-  unpublishedChanges?: boolean;
 }) {
   const [state, formAction, pending] = useActionState<RetreatFormState, FormData>(
     saveRetreat,
@@ -92,12 +88,6 @@ export function RetreatForm({
       </div>
 
       <FormNotice kind={notice} />
-      {!notice && !isNew ? (
-        <WorkingCopyBanner
-          published={published}
-          unpublishedChanges={unpublishedChanges}
-        />
-      ) : null}
       <FormError message={state.error} />
 
       {retreatSchema.sections.map((section) => (

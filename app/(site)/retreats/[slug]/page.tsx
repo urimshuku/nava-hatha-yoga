@@ -64,9 +64,10 @@ export default async function RetreatDetailPage({ params }: PageProps) {
   const dateLabel = formatDateRange(retreat.date, retreat.endDate);
   const cityLabel = retreat.cityCountry?.trim();
   const addressLabel = retreat.location?.trim();
-  const meta = [dateLabel, cityLabel, retreat.priceLabel]
-    .filter(Boolean)
-    .join(" · ");
+  const meta = [dateLabel, cityLabel].filter(Boolean).join(" · ");
+  const priceLabel = retreat.priceLabel?.trim();
+  const showPrice =
+    Boolean(priceLabel) && !/^contact for details$/i.test(priceLabel ?? "");
 
   const retreatEvent = buildRetreatEventJsonLd(retreat, settings);
 
@@ -85,9 +86,6 @@ export default async function RetreatDetailPage({ params }: PageProps) {
       <section className="border-b border-border bg-ivory pb-10 pt-10 sm:pb-section-sm sm:pt-16 md:pt-40">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <p className="eyebrow mb-3 sm:mb-5">
-              {past ? "Past retreat" : "Retreat"}
-            </p>
             <h1 className="text-display text-balance">{retreat.title}</h1>
             {meta ? <p className="section-lead mt-4 sm:mt-5">{meta}</p> : null}
             {past ? (
@@ -173,11 +171,11 @@ export default async function RetreatDetailPage({ params }: PageProps) {
                         </dd>
                       </div>
                     ) : null}
-                    {retreat.priceLabel ? (
+                    {showPrice ? (
                       <div className="flex justify-between gap-4">
                         <dt className="text-brown">Price</dt>
                         <dd className="text-right font-medium text-charcoal">
-                          {retreat.priceLabel}
+                          {priceLabel}
                         </dd>
                       </div>
                     ) : null}

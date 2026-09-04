@@ -24,12 +24,14 @@ export function RetreatArchiveList({
             <TitleTag className="font-heading text-xl text-charcoal group-hover:text-saffron">
               {retreat.title}
             </TitleTag>
-            <time
-              className="shrink-0 text-sm text-brown"
-              dateTime={retreat.date}
-            >
-              {formatDateRange(retreat.date, retreat.endDate)}
-            </time>
+            <p className="shrink-0 text-sm text-brown">
+              {[
+                formatDateRange(retreat.date, retreat.endDate),
+                retreat.cityCountry?.trim(),
+              ]
+                .filter(Boolean)
+                .join(" · ")}
+            </p>
           </Link>
         </li>
       ))}

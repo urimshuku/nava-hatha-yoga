@@ -13,7 +13,7 @@ export function LocalProgramSymbol({ slug }: LocalProgramSymbolProps) {
   const src = programSymbolSrc(slug);
 
   if (!src) {
-    return <p className="eyebrow mb-5">Program</p>;
+    return null;
   }
 
   return (
