@@ -1120,7 +1120,7 @@ function registerFormSections(
 
   if (!fullForm) return [hero, step1].map(lastingSection);
 
-  return [
+  return ([
     hero,
     step1,
     {
@@ -1168,7 +1168,7 @@ function registerFormSections(
         ...guidelinesStepFields,
       ],
     },
-  ].map(lastingSection);
+  ] as SchemaSection[]).map(lastingSection);
 }
 
 export function createRegisterPageSchema(options: {
