@@ -85,6 +85,7 @@ export function RetreatForm({
           cancelAction={discardRetreatChanges}
           action={formAction}
           pending={pending}
+          sectionToggles
         />
       </div>
 

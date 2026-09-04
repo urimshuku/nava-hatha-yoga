@@ -58,6 +58,7 @@ export function ProgramForm({
           cancelAction={discardProgramChanges}
           action={formAction}
           pending={pending}
+          sectionToggles
         />
       </div>
 

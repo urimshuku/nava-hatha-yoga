@@ -91,6 +91,7 @@ export function EventForm({
           cancelAction={discardEventChanges}
           action={formAction}
           pending={pending}
+          sectionToggles
         />
       </div>
 

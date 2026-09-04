@@ -31,6 +31,44 @@ function IconChevron() {
   );
 }
 
+function IconChevronDown() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className="h-4 w-4 shrink-0"
+      aria-hidden="true"
+    >
+      <path
+        d="M6 9l6 6 6-6"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function IconChevronUp() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className="h-4 w-4 shrink-0"
+      aria-hidden="true"
+    >
+      <path
+        d="M6 15l6-6 6 6"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 interface FormSectionsContextValue {
   epoch: number;
   wantOpen: boolean | null;
@@ -72,19 +110,21 @@ export function SectionToggleButtons() {
   if (!sections) return null;
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-4">
       <button
         type="button"
         onClick={sections.collapseAll}
-        className="text-sm text-brown hover:text-saffron"
+        className="inline-flex items-center gap-1.5 text-sm text-brown hover:text-saffron"
       >
+        <IconChevronUp />
         Collapse all
       </button>
       <button
         type="button"
         onClick={sections.expandAll}
-        className="text-sm text-brown hover:text-saffron"
+        className="inline-flex items-center gap-1.5 text-sm text-brown hover:text-saffron"
       >
+        <IconChevronDown />
         Expand all
       </button>
     </div>

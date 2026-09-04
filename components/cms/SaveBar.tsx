@@ -18,12 +18,15 @@ export function SaveBar({
   cancelAction,
   action,
   pending: pendingProp,
+  sectionToggles = false,
 }: {
   cancelHref: string;
   /** Drops unpublished working-copy changes, then returns to cancelHref. */
   cancelAction?: (formData: FormData) => void | Promise<void>;
   action: (formData: FormData) => void;
   pending?: boolean;
+  /** Collapse all / Expand all, shown only on the top bar. */
+  sectionToggles?: boolean;
 }) {
   const { pending: formPending } = useFormStatus();
   const pending = pendingProp ?? formPending;
@@ -43,7 +46,7 @@ export function SaveBar({
   }
 
   return (
-    <div className="ml-auto flex shrink-0 flex-col items-end gap-2">
+    <div className="ml-auto flex shrink-0 flex-col items-end gap-3">
       <div className="flex items-center gap-3">
         <button
           type="submit"
@@ -77,7 +80,7 @@ export function SaveBar({
           </Link>
         )}
       </div>
-      <SectionToggleButtons />
+      {sectionToggles ? <SectionToggleButtons /> : null}
     </div>
   );
 }

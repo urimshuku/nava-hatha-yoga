@@ -54,6 +54,7 @@ export function PageForm({
           cancelHref={cancelHref}
           action={formAction}
           pending={pending}
+          sectionToggles
         />
       </div>
 
