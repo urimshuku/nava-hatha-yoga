@@ -172,8 +172,9 @@ export function SelectField({
         id={name}
         name={name}
         className={inputClassName}
+        onChange={onChange}
         {...(value != null
-          ? { value, onChange }
+          ? { value }
           : { defaultValue: defaultValue ?? "" })}
       >
         {placeholder ? <option value="">{placeholder}</option> : null}

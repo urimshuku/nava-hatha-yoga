@@ -15,6 +15,10 @@ interface FieldBase {
   label: string;
   /** Plain-language note about where the value appears on the website. */
   hint?: string;
+  /** Submitted with the form but not shown. */
+  hidden?: boolean;
+  /** Shown only when a sibling field has this value. */
+  visibleWhen?: { name: string; equals: string };
 }
 
 export type FieldDef =
@@ -65,6 +69,11 @@ export interface SchemaSection {
   navTitle?: string;
   /** When collapsible, start open. */
   defaultOpen?: boolean;
+  /**
+   * Hidden from the editor. Field values are kept on save so the section can
+   * be shown again later.
+   */
+  archived?: boolean;
 }
 
 export interface DocumentSchema {

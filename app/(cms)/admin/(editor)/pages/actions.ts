@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { findEditablePage } from "@/lib/cms/editable-pages";
-import { isPublishIntent, preserveSeo } from "@/lib/cms/form-values";
+import { isPublishIntent, preserveArchivedSections, preserveSeo } from "@/lib/cms/form-values";
 import { getDocument, isTombstone, saveDocument } from "@/lib/cms/repository";
 import { readDocument } from "@/lib/cms/schema-parse";
 import { assertCmsSession } from "@/lib/cms/session";
@@ -40,7 +40,11 @@ export async function savePage(
   const stored = await getDocument<Record<string, unknown>>(page.type, page.slug);
   const existing =
     stored && !isTombstone(stored.data) ? stored.data : undefined;
-  const dataWithSeo = preserveSeo(data, existing);
+  const dataWithSeo = preserveArchivedSections(
+    page.schema,
+    preserveSeo(data, existing),
+    existing,
+  );
 
   const publish = isPublishIntent(formData);
 

@@ -155,6 +155,8 @@ export function readDocument<T>(
   schema: DocumentSchema,
   formData: FormData,
 ): T {
-  const fields = schema.sections.flatMap((section) => section.fields);
+  const fields = schema.sections
+    .filter((section) => !section.archived)
+    .flatMap((section) => section.fields);
   return readFields(fields, formData, "") as T;
 }

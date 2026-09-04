@@ -69,16 +69,63 @@ export function SchemaFields({
   values: unknown;
   prefix?: string;
 }) {
+  const [live, setLive] = useState<Record<string, string>>({});
+  const watched = new Set(
+    fields.flatMap((field) =>
+      field.visibleWhen ? [field.visibleWhen.name] : [],
+    ),
+  );
+
+  function current(name: string): string | undefined {
+    if (Object.prototype.hasOwnProperty.call(live, name)) return live[name];
+    const stored = asString(childOf(values, name));
+    if (stored) return stored;
+    const field = fields.find((item) => item.name === name);
+    if (field?.kind === "select" && !field.placeholder) {
+      return field.options[0]?.value;
+    }
+    return stored;
+  }
+
   return (
     <>
-      {fields.map((field) => (
-        <SchemaField
-          key={joinPath(prefix, field.name)}
-          field={field}
-          values={values}
-          prefix={prefix}
-        />
-      ))}
+      {fields.map((field) => {
+        const path = joinPath(prefix, field.name);
+        if (field.hidden) {
+          return (
+            <input
+              key={path}
+              type="hidden"
+              name={path}
+              defaultValue={asString(childOf(values, field.name)) ?? ""}
+            />
+          );
+        }
+        if (
+          field.visibleWhen &&
+          current(field.visibleWhen.name) !== field.visibleWhen.equals
+        ) {
+          return null;
+        }
+        return (
+          <SchemaField
+            key={path}
+            field={field}
+            values={values}
+            prefix={prefix}
+            onLiveChange={
+              watched.has(field.name)
+                ? (value) =>
+                    setLive((prev) =>
+                      prev[field.name] === value
+                        ? prev
+                        : { ...prev, [field.name]: value },
+                    )
+                : undefined
+            }
+          />
+        );
+      })}
     </>
   );
 }
@@ -87,10 +134,12 @@ function SchemaField({
   field,
   values,
   prefix,
+  onLiveChange,
 }: {
   field: FieldDef;
   values: unknown;
   prefix: string;
+  onLiveChange?: (value: string) => void;
 }) {
   const path = joinPath(prefix, field.name);
   const value = childOf(values, field.name);
@@ -148,9 +197,17 @@ function SchemaField({
           name={path}
           label={field.label}
           hint={field.hint}
-          defaultValue={asString(value)}
+          defaultValue={
+            asString(value) ||
+            (field.placeholder ? "" : field.options[0]?.value)
+          }
           options={field.options}
           placeholder={field.placeholder}
+          onChange={
+            onLiveChange
+              ? (event) => onLiveChange(event.target.value)
+              : undefined
+          }
         />
       );
 

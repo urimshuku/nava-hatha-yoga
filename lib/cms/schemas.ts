@@ -736,27 +736,22 @@ const registerInputTypeOptions = [
 ];
 
 const formFieldRowFields: FieldDef[] = [
-  {
-    kind: "text",
-    name: "key",
-    label: "Field id",
-    hint: "Used in the notification email. Keep this when you only change the name people see. For a new field, use a short name such as dietaryNeeds.",
-  },
+  { kind: "text", name: "key", label: "Field id", hidden: true },
   { kind: "text", name: "label", label: "Name on the form" },
   { kind: "checkbox", name: "required", label: "Required" },
   {
     kind: "select",
     name: "type",
-    label: "Kind of box",
+    label: "Field type",
     options: registerInputTypeOptions,
   },
   {
     kind: "list",
     name: "options",
     label: "Dropdown choices",
-    hint: "Only used for a dropdown. One choice per line.",
+    hint: "One choice per line.",
+    visibleWhen: { name: "type", equals: "select" },
   },
-  { kind: "text", name: "placeholder", label: "Hint inside the box" },
 ];
 
 function lasting(field: FieldDef): FieldDef {
@@ -787,6 +782,7 @@ function registerFormSections(
   const hero: SchemaSection = {
     id: "page-heading",
     title: "The top of the page",
+    archived: true,
     fields: heroFields(pageName),
   };
 

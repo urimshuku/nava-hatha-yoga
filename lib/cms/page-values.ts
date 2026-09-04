@@ -70,7 +70,10 @@ function valuesFromWorkingCopy(
       heroEyebrow: data.heroEyebrow,
       heroTitle: data.heroTitle,
       heroDescription: data.heroDescription,
-      ...resolveRegisterContent(data as RegisterPage),
+      ...resolveRegisterContent(
+        data as RegisterPage,
+        registrationKindFromDocumentSlug(page.slug),
+      ),
     };
   }
 
@@ -117,7 +120,10 @@ async function valuesFromPublicSite(
         heroEyebrow: stored?.heroEyebrow,
         heroTitle: stored?.heroTitle,
         heroDescription: stored?.heroDescription,
-        ...resolveRegisterContent(stored),
+        ...resolveRegisterContent(
+          stored,
+          registrationKindFromDocumentSlug(page.slug),
+        ),
       };
     }
 

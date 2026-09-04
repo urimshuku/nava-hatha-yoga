@@ -36,7 +36,8 @@ export function PageForm({
     savePage,
     {},
   );
-  const jumpLinks = schema.sections.filter(
+  const visibleSections = schema.sections.filter((section) => !section.archived);
+  const jumpLinks = visibleSections.filter(
     (section) => section.collapsible && section.id,
   );
 
@@ -81,7 +82,7 @@ export function PageForm({
         </nav>
       ) : null}
 
-      {schema.sections.map((section) => (
+      {visibleSections.map((section) => (
         <FormSection
           key={section.id ?? section.title}
           id={section.id}

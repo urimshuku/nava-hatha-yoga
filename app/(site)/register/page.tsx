@@ -67,7 +67,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   const eventTitle = eventName
     ? splitRegistrationEventTitle(eventName)
     : undefined;
-  const content = resolveRegisterContent(registerPage);
+  const content = resolveRegisterContent(registerPage, kind);
   const simplified = isSimplifiedRegistrationKind(kind);
   const defaultTitle =
     kind === "free"

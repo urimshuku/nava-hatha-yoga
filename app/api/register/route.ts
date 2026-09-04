@@ -110,7 +110,7 @@ export async function POST(request: Request) {
     isRetreat,
     eventLabel: event,
   });
-  const content = resolveRegisterContent(await getRegisterPage(kind));
+  const content = resolveRegisterContent(await getRegisterPage(kind), kind);
   const simplified = isSimplifiedRegistrationKind(kind);
   const category =
     matchedEvent?.category ??

@@ -38,6 +38,7 @@ import type {
   RegisterInputType,
   RegisterPage,
 } from "@/lib/cms/content-types";
+import type { RegistrationKind } from "@/lib/registration-kind";
 import { slugifySegment } from "@/lib/utils";
 
 export type RegisterInputKind = RegisterInputType;
@@ -189,6 +190,24 @@ export const DEFAULT_HOW_HEARD_GROUPS: HowHeardGroup[] = [
   },
 ];
 
+const WORKSHOP_HOW_HEARD_LABEL = "How did you come to know of this program?";
+const RETREAT_HOW_HEARD_LABEL = "How did you come to know of this retreat?";
+
+const RETREAT_REFUND_POLICY_BULLETS = [
+  "No shows or Drop out or Missed sessions - No refunds or carry forward to next retreat are possible.",
+  "No refunds for cancellations made within 7 days prior to the retreat start date.",
+  "Cancellations made between 8-14 days before the retreat are eligible for a 50% refund, minus a 10% administrative fee.",
+  "Cancellations made more than 14 days in advance are eligible for a full refund, minus a 10% administrative fee.",
+] as const;
+
+const RETREAT_AGREEMENT_BULLETS = [
+  "I willingly undertake to attend the retreat in full;",
+  "I take full responsibility for my participation and release the organizers from any claims or liabilities;",
+  "I will not communicate the contents of the retreat, either directly or indirectly to anyone else.",
+  "I confirm that all information provided by me is true and accurate and complete to the best of my knowledge.",
+  "We reserve the right to all the retreat images, videos, text and may use it to create awareness about other retreats.",
+] as const;
+
 export const DEFAULT_REGISTER_CONTENT: RegisterContent = {
   step1Title: "Personal Information",
   personalFields: DEFAULT_PERSONAL_FIELDS,
@@ -215,7 +234,7 @@ export const DEFAULT_REGISTER_CONTENT: RegisterContent = {
   disclaimerBullets: MEDICAL_DISCLAIMER_BULLETS,
   disclaimerConsentLabel: MEDICAL_DISCLAIMER_CONSENT_LABEL,
   step3Title: "Program-Related Information",
-  howHeardLabel: "How did you come to know of this program?",
+  howHeardLabel: WORKSHOP_HOW_HEARD_LABEL,
   howHeardGroups: DEFAULT_HOW_HEARD_GROUPS,
   howHeardOtherLabel: "Other",
   priorPracticeLabel:
@@ -238,6 +257,73 @@ export const DEFAULT_REGISTER_CONTENT: RegisterContent = {
   guidelinesTitle: BEFORE_PROGRAM_TITLE,
   guidelinesDocument: BEFORE_PROGRAM_DOCUMENT,
 };
+
+function defaultsForKind(kind?: RegistrationKind): RegisterContent {
+  if (kind === "retreat") {
+    return {
+      ...DEFAULT_REGISTER_CONTENT,
+      howHeardLabel: RETREAT_HOW_HEARD_LABEL,
+      refundPolicyBullets: RETREAT_REFUND_POLICY_BULLETS,
+      agreementBullets: RETREAT_AGREEMENT_BULLETS,
+    };
+  }
+  return DEFAULT_REGISTER_CONTENT;
+}
+
+function overlayHowHeardLabel(
+  value: string | undefined,
+  kind: RegistrationKind | undefined,
+  fallback: string,
+): string {
+  if (kind === "retreat" && value?.trim() === WORKSHOP_HOW_HEARD_LABEL) {
+    return RETREAT_HOW_HEARD_LABEL;
+  }
+  return overlayOptional(value, fallback);
+}
+
+function toRetreatRefundBullet(line: string): string {
+  return line
+    .replace(
+      "next program are possible",
+      "next retreat are possible",
+    )
+    .replace(
+      "prior to the program start date",
+      "prior to the retreat start date",
+    )
+    .replace(
+      "before the program are eligible",
+      "before the retreat are eligible",
+    );
+}
+
+function overlayRefundPolicyBullets(
+  value: string[] | undefined,
+  kind: RegistrationKind | undefined,
+  fallback: readonly string[],
+): readonly string[] {
+  const bullets = overlayStrings(value, fallback);
+  if (kind !== "retreat") return bullets;
+  return bullets.map(toRetreatRefundBullet);
+}
+
+function toRetreatAgreementBullet(line: string): string {
+  return line
+    .replace("attend the program in full", "attend the retreat in full")
+    .replace("contents of the program", "contents of the retreat")
+    .replace("all the program images", "all the retreat images")
+    .replace("about other programs", "about other retreats");
+}
+
+function overlayAgreementBullets(
+  value: string[] | undefined,
+  kind: RegistrationKind | undefined,
+  fallback: readonly string[],
+): readonly string[] {
+  const bullets = overlayStrings(value, fallback);
+  if (kind !== "retreat") return bullets;
+  return bullets.map(toRetreatAgreementBullet);
+}
 
 function strings(value: string[] | undefined): string[] | undefined {
   if (value === undefined) return undefined;
@@ -359,7 +445,7 @@ function toFormField(data: RegisterFormFieldData): RegisterFormField | null {
     label,
     required: Boolean(data.required),
     type,
-    options: strings(data.options),
+    options: type === "select" ? strings(data.options) : undefined,
     placeholder: text(data.placeholder),
   };
 }
@@ -390,9 +476,10 @@ function toHowHeardGroups(
 /** Merge CMS register-page content over the built-in defaults. */
 export function resolveRegisterContent(
   cms?: RegisterPage | null,
+  kind?: RegistrationKind,
 ): RegisterContent {
-  if (!cms) return DEFAULT_REGISTER_CONTENT;
-  const d = DEFAULT_REGISTER_CONTENT;
+  const d = defaultsForKind(kind);
+  if (!cms) return d;
   return {
     step1Title: overlayTitle(cms.step1Title, d.step1Title),
     personalFields: toFormFields(cms.personalFields) ?? d.personalFields,
@@ -450,7 +537,7 @@ export function resolveRegisterContent(
       d.disclaimerConsentLabel,
     ),
     step3Title: overlayTitle(cms.step3Title, d.step3Title),
-    howHeardLabel: overlayOptional(cms.howHeardLabel, d.howHeardLabel),
+    howHeardLabel: overlayHowHeardLabel(cms.howHeardLabel, kind, d.howHeardLabel),
     howHeardGroups: toHowHeardGroups(cms.howHeardGroups) ?? d.howHeardGroups,
     howHeardOtherLabel: overlayOptional(
       cms.howHeardOtherLabel,
@@ -470,8 +557,9 @@ export function resolveRegisterContent(
       cms.refundPolicyTitle,
       d.refundPolicyTitle,
     ),
-    refundPolicyBullets: overlayStrings(
+    refundPolicyBullets: overlayRefundPolicyBullets(
       cms.refundPolicyBullets,
+      kind,
       d.refundPolicyBullets,
     ),
     refundPolicyConsentLabel: overlayOptional(
@@ -479,7 +567,11 @@ export function resolveRegisterContent(
       d.refundPolicyConsentLabel,
     ),
     agreementTitle: overlayOptional(cms.agreementTitle, d.agreementTitle),
-    agreementBullets: overlayStrings(cms.agreementBullets, d.agreementBullets),
+    agreementBullets: overlayAgreementBullets(
+      cms.agreementBullets,
+      kind,
+      d.agreementBullets,
+    ),
     agreementConsentLabel: overlayOptional(
       cms.agreementConsentLabel,
       d.agreementConsentLabel,

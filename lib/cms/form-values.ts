@@ -1,6 +1,7 @@
 import { EVENT_TIMEZONE, zonedLocalToUtcMs } from "@/lib/event-boundary";
 import { slugifySegment } from "@/lib/utils";
 import type { SanityImage } from "@/lib/cms/content-types";
+import type { DocumentSchema } from "@/lib/cms/schema";
 
 /** Shared helpers for reading the editor's forms. */
 
@@ -122,4 +123,23 @@ export function preserveSeo<T extends { seo?: unknown }>(
 ): T {
   if (data.seo !== undefined || existing?.seo === undefined) return data;
   return { ...data, seo: existing.seo };
+}
+
+/** Keep values from sections hidden in the editor so a save does not wipe them. */
+export function preserveArchivedSections(
+  schema: DocumentSchema,
+  data: Record<string, unknown>,
+  existing?: Record<string, unknown> | null,
+): Record<string, unknown> {
+  if (!existing) return data;
+  const next = { ...data };
+  for (const section of schema.sections) {
+    if (!section.archived) continue;
+    for (const field of section.fields) {
+      if (next[field.name] === undefined && existing[field.name] !== undefined) {
+        next[field.name] = existing[field.name];
+      }
+    }
+  }
+  return next;
 }
