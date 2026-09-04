@@ -33,7 +33,7 @@ export default async function EditProgramPage({
         href="/admin/programs"
         className="text-sm text-brown hover:text-saffron"
       >
-        Back to programs
+        ← Back to programs
       </Link>
 
       <div className="mt-4">

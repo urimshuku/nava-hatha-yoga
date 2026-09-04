@@ -30,7 +30,7 @@ export default async function EditRetreatPage({
         href="/admin/retreats"
         className="text-sm text-brown hover:text-saffron"
       >
-        Back to retreats
+        ← Back to retreats
       </Link>
 
       <div className="mt-4">

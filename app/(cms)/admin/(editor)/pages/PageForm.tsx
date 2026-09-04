@@ -83,8 +83,7 @@ export function PageForm({
           id={section.id}
           title={section.title}
           description={section.description}
-          collapsible={section.collapsible}
-          defaultOpen={section.defaultOpen}
+          collapsible
         >
           <SchemaFields fields={section.fields} values={values} />
         </FormSection>

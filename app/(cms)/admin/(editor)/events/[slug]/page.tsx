@@ -35,7 +35,7 @@ export default async function EditEventPage({
         href="/admin/events"
         className="text-sm text-brown hover:text-saffron"
       >
-        Back to workshops
+        ← Back to workshops
       </Link>
 
       <div className="mt-4">

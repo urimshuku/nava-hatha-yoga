@@ -1089,7 +1089,6 @@ function registerFormSections(
   const step1: SchemaSection = {
     id: "step-1",
     navTitle: "Step 1",
-    defaultOpen: true,
     title: "Step 1 — Personal Information",
     description:
       "These are the same fields people fill in on the website. Rename one, add a new one, or remove one to change the live form.",

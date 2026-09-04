@@ -28,8 +28,8 @@ export function FormSection({
   id,
   title,
   description,
-  collapsible,
-  defaultOpen,
+  collapsible = true,
+  defaultOpen = false,
   children,
 }: {
   id?: string;
