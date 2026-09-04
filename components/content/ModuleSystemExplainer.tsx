@@ -14,10 +14,8 @@ export function ModuleSystemExplainer() {
         open={open}
         onClose={() => setOpen(false)}
         title={MODULE_SYSTEM_EXPLAINER.title}
-        paragraphs={[
-          ...MODULE_SYSTEM_EXPLAINER.intro,
-          ...MODULE_SYSTEM_EXPLAINER.continuation,
-        ]}
+        paragraphs={MODULE_SYSTEM_EXPLAINER.intro}
+        bullets={MODULE_SYSTEM_EXPLAINER.continuation}
         examplesHeading={MODULE_SYSTEM_EXPLAINER.examplesHeading}
         examples={MODULE_SYSTEM_EXPLAINER.examples}
         titleId="module-system-title"

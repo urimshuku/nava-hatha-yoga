@@ -1,5 +1,14 @@
 import type { AdminListEntry } from "@/lib/cms/admin-list";
-import { cn } from "@/lib/utils";
+import { cn, eventTypeTag } from "@/lib/utils";
+
+/** The same type pill shown on public event cards. */
+export function EventTypeBadge({ category }: { category?: string }) {
+  return (
+    <span className="inline-flex items-center rounded-full bg-sand px-3 py-0.5 text-[11px] font-medium uppercase tracking-[0.14em] text-brown">
+      {eventTypeTag(category)}
+    </span>
+  );
+}
 
 /** Published = on the website; unpublished = saved but not shown. */
 export function SourceBadge({ entry }: { entry: AdminListEntry }) {

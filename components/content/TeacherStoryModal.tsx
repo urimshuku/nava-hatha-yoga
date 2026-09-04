@@ -8,6 +8,7 @@ interface TeacherStoryModalProps {
   onClose: () => void;
   title: string;
   paragraphs: readonly string[];
+  bullets?: readonly string[];
   examplesHeading?: string;
   examples?: readonly string[];
   titleId?: string;
@@ -32,6 +33,7 @@ export function TeacherStoryModal({
   onClose,
   title,
   paragraphs,
+  bullets,
   examplesHeading,
   examples,
   titleId = "teacher-story-title",
@@ -97,6 +99,13 @@ export function TeacherStoryModal({
                 {paragraph}
               </p>
             ))}
+            {bullets && bullets.length > 0 ? (
+              <ul className="list-disc space-y-2 pl-6">
+                {bullets.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            ) : null}
             {examplesHeading ? <p>{examplesHeading}</p> : null}
             {examples && examples.length > 0 ? (
               <ul className="list-disc space-y-2 pl-6">

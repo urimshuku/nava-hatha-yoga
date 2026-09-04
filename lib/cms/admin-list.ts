@@ -32,10 +32,13 @@ export interface AdminListEntry {
   updatedAt?: string;
   date?: string;
   endDate?: string;
+  /** Event type shown on the public cards, for example Workshop or Retreat. */
+  category?: string;
 }
 
-function toEntry<T extends { title?: string; date?: string; endDate?: string }>(
+function toEntry<T extends { title?: string; date?: string; endDate?: string; category?: string }>(
   document: CmsDocument<T>,
+  fallbackCategory?: string,
 ): AdminListEntry {
   const data = document.data;
 
@@ -49,6 +52,7 @@ function toEntry<T extends { title?: string; date?: string; endDate?: string }>(
     updatedAt: document.updatedAt,
     date: data?.date,
     endDate: resolveEventCardEndDate(data ?? {}) ?? data?.endDate,
+    category: data?.category ?? fallbackCategory,
   };
 }
 
@@ -84,7 +88,7 @@ export async function listEventEntries(): Promise<AdminListEntry[]> {
 
 export async function listRetreatEntries(): Promise<AdminListEntry[]> {
   const documents = await listDocuments<RetreatListItem>("retreat");
-  return documents.map(toEntry);
+  return documents.map((document) => toEntry(document, "Retreat"));
 }
 
 export async function listProgramEntries(): Promise<AdminListEntry[]> {

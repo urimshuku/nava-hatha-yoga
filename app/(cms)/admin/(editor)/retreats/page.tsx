@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CollapsibleAdminSection } from "@/components/cms/CollapsibleAdminSection";
 import { ContentListActions } from "@/components/cms/ContentListActions";
 import { FormNotice } from "@/components/cms/SaveBar";
-import { SourceBadge } from "@/components/cms/SourceBadge";
+import { EventTypeBadge, SourceBadge } from "@/components/cms/SourceBadge";
 import {
   compareStartDateAscending,
   compareStartDateDescending,
@@ -35,6 +35,7 @@ function RetreatRow({ entry }: { entry: AdminListEntry }) {
       </div>
 
       <div className="flex items-center gap-3">
+        <EventTypeBadge category={entry.category} />
         <SourceBadge entry={entry} />
         <ContentListActions
           slug={entry.slug}
