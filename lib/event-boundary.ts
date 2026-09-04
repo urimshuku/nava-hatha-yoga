@@ -39,6 +39,16 @@ function parseIsoYear(iso?: string): number | null {
   return Number.isFinite(year) ? year : null;
 }
 
+/** Prefer the start year when a leftover end date is earlier than the start. */
+function sessionDefaultYear(date?: string, endDate?: string): number | null {
+  const startMs = dateTimeValue(date);
+  const endMs = dateTimeValue(endDate);
+  if (startMs != null && endMs != null && endMs < startMs) {
+    return parseIsoYear(date);
+  }
+  return parseIsoYear(endDate) ?? parseIsoYear(date);
+}
+
 /** Convert a wall-clock time in `timeZone` to UTC milliseconds. */
 export function zonedLocalToUtcMs(
   year: number,
@@ -144,7 +154,7 @@ function lastSessionEndFromTimeField(
 ): number | null {
   if (!time) return null;
 
-  const defaultYear = parseIsoYear(endDate) ?? parseIsoYear(date);
+  const defaultYear = sessionDefaultYear(date, endDate);
   if (defaultYear == null) return null;
 
   let lastEnd: number | null = null;
@@ -176,9 +186,12 @@ export function eventEndTimestamp(event: EventBoundaryInput): number {
   if (fromSchedule != null) return fromSchedule;
 
   const fromEndDate = dateTimeValue(event.endDate);
-  if (fromEndDate != null) return fromEndDate;
+  const fromDate = dateTimeValue(event.date);
+  if (fromEndDate != null && (fromDate == null || fromEndDate >= fromDate)) {
+    return fromEndDate;
+  }
 
-  return dateTimeValue(event.date) ?? Number.POSITIVE_INFINITY;
+  return fromDate ?? Number.POSITIVE_INFINITY;
 }
 
 export function isPastEvent(event: EventBoundaryInput, now = Date.now()): boolean {

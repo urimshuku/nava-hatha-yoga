@@ -104,6 +104,19 @@ export function dateToTimestamp(
   ).toISOString();
 }
 
+/** Drop a leftover end date that is earlier than the start (common after duplicate). */
+export function omitEndDateBeforeStart(
+  start?: string,
+  end?: string,
+): string | undefined {
+  if (!end) return undefined;
+  if (!start) return end;
+  const startMs = Date.parse(start);
+  const endMs = Date.parse(end);
+  if (!Number.isFinite(startMs) || !Number.isFinite(endMs)) return end;
+  return endMs < startMs ? undefined : end;
+}
+
 /** "archive" is the past-events page, so it can never be a document slug. */
 const RESERVED_SLUGS = new Set(["archive", "new"]);
 

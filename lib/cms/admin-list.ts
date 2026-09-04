@@ -1,5 +1,5 @@
 import { eventStartTimestamp, isPastEvent } from "@/lib/event-boundary";
-import { resolveEventCardEndDate } from "@/lib/utils";
+import { composeEventTimeLabel, resolveEventCardEndDate } from "@/lib/utils";
 import type {
   ProgramListItem,
   RetreatListItem,
@@ -32,14 +32,24 @@ export interface AdminListEntry {
   updatedAt?: string;
   date?: string;
   endDate?: string;
+  /** Composed session schedule, used so last session end matches the public site. */
+  time?: string;
   /** Event type shown on the public cards, for example Workshop or Retreat. */
   category?: string;
 }
 
-function toEntry<T extends { title?: string; date?: string; endDate?: string; category?: string }>(
-  document: CmsDocument<T>,
-  fallbackCategory?: string,
-): AdminListEntry {
+function toEntry<
+  T extends {
+    title?: string;
+    date?: string;
+    endDate?: string;
+    category?: string;
+    sessions?: { day?: string; hours?: string }[];
+    sessionNote?: string;
+    time?: string;
+    description?: string;
+  },
+>(document: CmsDocument<T>, fallbackCategory?: string): AdminListEntry {
   const data = document.data;
 
   return {
@@ -52,12 +62,13 @@ function toEntry<T extends { title?: string; date?: string; endDate?: string; ca
     updatedAt: document.updatedAt,
     date: data?.date,
     endDate: resolveEventCardEndDate(data ?? {}) ?? data?.endDate,
+    time: composeEventTimeLabel(data ?? {}),
     category: data?.category ?? fallbackCategory,
   };
 }
 
 function boundary(entry: AdminListEntry) {
-  return { date: entry.date ?? "", endDate: entry.endDate };
+  return { date: entry.date ?? "", endDate: entry.endDate, time: entry.time };
 }
 
 export function isPastAdminEntry(entry: AdminListEntry): boolean {

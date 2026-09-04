@@ -66,7 +66,18 @@ export function RetreatForm({
     }
 
     if (target.name === "cityCountry") setCityCountry(target.value);
-    if (target.name === "date") setFirstDay(target.value);
+    if (target.name === "date") {
+      setFirstDay(target.value);
+      const endInput = event.currentTarget.elements.namedItem("endDate");
+      if (
+        endInput instanceof HTMLInputElement &&
+        endInput.value &&
+        target.value &&
+        endInput.value < target.value
+      ) {
+        endInput.value = "";
+      }
+    }
   }
 
   return (

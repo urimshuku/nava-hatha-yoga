@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { isPublishIntent, preserveSeo, resolveSlug, text } from "@/lib/cms/form-values";
-import { nextAvailableSlug, titleForCopy } from "@/lib/cms/copy";
+import { isPublishIntent, omitEndDateBeforeStart, preserveSeo, resolveSlug, text } from "@/lib/cms/form-values";
+import { ensureUpcomingOccurrence, nextAvailableSlug, titleForCopy } from "@/lib/cms/copy";
 import {
   deleteDocument,
   getDocument,
@@ -17,7 +17,7 @@ import { readDocument } from "@/lib/cms/schema-parse";
 import { retreatSchema } from "@/lib/cms/schemas";
 import { assertCmsSession } from "@/lib/cms/session";
 import type { Retreat } from "@/lib/cms/content-types";
-import { retreatWebAddress } from "@/lib/utils";
+import { retreatWebAddress, toDateInputValue } from "@/lib/utils";
 
 export interface RetreatFormState {
   error?: string;
@@ -69,6 +69,7 @@ export async function saveRetreat(
     ...preserveSeo(data, existing),
     _id: `cms.retreat.${slug}`,
     slug,
+    endDate: omitEndDateBeforeStart(data.date, data.endDate),
   };
 
   const publish = isPublishIntent(formData);
@@ -136,14 +137,21 @@ export async function duplicateRetreat(formData: FormData): Promise<void> {
     redirect("/admin/retreats");
   }
 
-  const newSlug = await nextAvailableSlug("retreat", `${stored.slug}-copy`);
   const title = titleForCopy(stored.data.title || stored.slug);
+  const data = ensureUpcomingOccurrence({
+    ...stored.data,
+    title,
+  });
+  const preferred =
+    retreatWebAddress(data.cityCountry, toDateInputValue(data.date)) ||
+    `${stored.slug}-copy`;
+  const newSlug = await nextAvailableSlug("retreat", preferred);
 
   await saveDocument({
     type: "retreat",
     slug: newSlug,
     data: {
-      ...stored.data,
+      ...data,
       _id: `cms.retreat.${newSlug}`,
       slug: newSlug,
       title,

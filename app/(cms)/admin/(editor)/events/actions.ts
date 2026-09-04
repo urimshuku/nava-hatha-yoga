@@ -3,11 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { nextAvailableSlug, titleForCopy } from "@/lib/cms/copy";
+import { ensureUpcomingOccurrence, nextAvailableSlug, titleForCopy } from "@/lib/cms/copy";
 import {
   dateToTimestamp,
   imageValue,
   isPublishIntent,
+  omitEndDateBeforeStart,
   pairedList,
   resolveSlug,
   text,
@@ -29,6 +30,7 @@ import {
   eventWebAddress,
   formatSessionHoursRange,
   stripEventDescriptionExtras,
+  toDateInputValue,
 } from "@/lib/utils";
 
 export interface EventFormState {
@@ -87,6 +89,10 @@ export async function saveEvent(
 
   const date = dateToTimestamp(text(formData, "date"), "start");
   if (!date) return { error: "Please choose the date of the workshop." };
+  const endDate = omitEndDateBeforeStart(
+    date,
+    dateToTimestamp(text(formData, "endDate"), "end"),
+  );
 
   const originalSlug = text(formData, "originalSlug");
   const categoryInput = text(formData, "category");
@@ -130,7 +136,7 @@ export async function saveEvent(
     title,
     slug,
     date,
-    endDate: dateToTimestamp(text(formData, "endDate"), "end"),
+    endDate,
     description: stripEventDescriptionExtras(text(formData, "description")) || undefined,
     sessions,
     sessionNote: text(formData, "sessionNote"),
@@ -220,14 +226,29 @@ export async function duplicateEvent(formData: FormData): Promise<void> {
     redirect("/admin/events");
   }
 
-  const newSlug = await nextAvailableSlug("event", `${stored.slug}-copy`);
   const title = titleForCopy(stored.data.title || stored.slug);
+  const data = ensureUpcomingOccurrence({
+    ...stored.data,
+    title,
+  });
+  const slugHead =
+    isFreeSessionCategory(data.category) || isModuleSystemCategory(data.category)
+      ? stored.data.title || title
+      : data.relatedProgram?.slug || stored.data.title || title;
+  const preferred =
+    eventWebAddress(
+      slugHead,
+      data.cityCountry,
+      toDateInputValue(data.date),
+      isModuleSystemCategory(data.category) ? "module" : undefined,
+    ) || `${stored.slug}-copy`;
+  const newSlug = await nextAvailableSlug("event", preferred);
 
   await saveDocument({
     type: "event",
     slug: newSlug,
     data: {
-      ...stored.data,
+      ...data,
       _id: `cms.event.${newSlug}`,
       slug: newSlug,
       title,

@@ -349,17 +349,7 @@ function useIndexedRows<T>(initial: T[]) {
   const remove = (index: number) =>
     setRows((current) => current.filter((row) => row.index !== index));
 
-  const move = (index: number, direction: -1 | 1) =>
-    setRows((current) => {
-      const position = current.findIndex((row) => row.index === index);
-      const target = position + direction;
-      if (position < 0 || target < 0 || target >= current.length) return current;
-      const next = [...current];
-      [next[position], next[target]] = [next[target], next[position]];
-      return next;
-    });
-
-  return { rows, add, insertAfter, update, remove, move };
+  return { rows, add, insertAfter, update, remove };
 }
 
 function ListField({
@@ -375,7 +365,7 @@ function ListField({
   placeholder?: string;
   defaultValues: string[];
 }) {
-  const { rows, add, insertAfter, update, remove, move } = useIndexedRows<string>(
+  const { rows, add, insertAfter, update, remove } = useIndexedRows<string>(
     defaultValues.length > 0 ? defaultValues : [""],
   );
 
@@ -394,8 +384,6 @@ function ListField({
             />
             <RowActions
               noun="line"
-              onUp={() => move(row.index, -1)}
-              onDown={() => move(row.index, 1)}
               onDuplicate={() => insertAfter(row.index, row.value)}
               onRemove={() => remove(row.index)}
             />
@@ -420,7 +408,7 @@ function GalleryField({
   hint?: string;
   defaultValues: Record<string, unknown>[];
 }) {
-  const { rows, add, insertAfter, remove, move } = useIndexedRows(defaultValues);
+  const { rows, add, insertAfter, remove } = useIndexedRows(defaultValues);
 
   return (
     <Field label={label} hint={hint}>
@@ -434,8 +422,6 @@ function GalleryField({
               </p>
               <RowActions
                 noun="photo"
-                onUp={() => move(row.index, -1)}
-                onDown={() => move(row.index, 1)}
                 onDuplicate={(event) => {
                   const form = formFromButton(event.currentTarget);
                   const json = form
@@ -514,7 +500,7 @@ function RowsField({
   defaultValues: Record<string, unknown>[];
   defaultItem?: Record<string, unknown>;
 }) {
-  const { rows, add, insertAfter, remove, move } = useIndexedRows(defaultValues);
+  const { rows, add, insertAfter, remove } = useIndexedRows(defaultValues);
   const groupId = useId();
 
   function duplicateRow(rowIndex: number, button: HTMLElement) {
@@ -553,8 +539,6 @@ function RowsField({
               </p>
               <RowActions
                 noun={itemLabel}
-                onUp={() => move(row.index, -1)}
-                onDown={() => move(row.index, 1)}
                 onDuplicate={(event) =>
                   duplicateRow(row.index, event.currentTarget)
                 }

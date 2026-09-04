@@ -694,13 +694,29 @@ export function hasCompleteSessions(
   return Boolean(sessions?.some((session) => session.day?.trim() && session.hours?.trim()));
 }
 
+const MAX_AUTO_SESSION_DAYS = 14;
+
+/** "12 September" or "12 September 2026" from a YYYY-MM-DD date input. */
+export function sessionDayLabel(
+  ymd?: string | null,
+  includeYear = false,
+): string {
+  if (!ymd || !/^\d{4}-\d{2}-\d{2}$/.test(ymd)) return "";
+  const date = new Date(`${ymd}T12:00:00.000Z`);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    ...(includeYear ? { year: "numeric" as const } : {}),
+    timeZone: "UTC",
+  }).format(date);
+}
+
 /**
  * One session-day label per calendar day between First Day and Last Day.
  * Empty when the span is a single day or longer than a typical workshop, so a
  * far-future last day does not create dozens of rows.
  */
-const MAX_AUTO_SESSION_DAYS = 14;
-
 export function sessionDayLabelsBetween(
   startYmd?: string | null,
   endYmd?: string | null,
@@ -724,19 +740,24 @@ export function sessionDayLabelsBetween(
   const cursor = new Date(start);
 
   while (cursor.getTime() <= end.getTime()) {
-    labels.push(
-      new Intl.DateTimeFormat("en-GB", {
-        day: "numeric",
-        month: "long",
-        ...(includeYear ? { year: "numeric" as const } : {}),
-        timeZone: "UTC",
-      }).format(cursor),
-    );
+    const ymd = cursor.toISOString().slice(0, 10);
+    labels.push(sessionDayLabel(ymd, includeYear));
     if (labels.length > MAX_AUTO_SESSION_DAYS) return [];
     cursor.setUTCDate(cursor.getUTCDate() + 1);
   }
 
   return labels.length >= 2 ? labels : [];
+}
+
+/** Session day labels for the start/end span, including a single-day event. */
+export function sessionDayLabelsForSpan(
+  startYmd?: string | null,
+  endYmd?: string | null,
+): string[] {
+  const range = sessionDayLabelsBetween(startYmd, endYmd);
+  if (range.length > 0) return range;
+  const single = sessionDayLabel(startYmd);
+  return single ? [single] : [];
 }
 
 /**

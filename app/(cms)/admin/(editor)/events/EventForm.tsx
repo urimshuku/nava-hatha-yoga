@@ -148,13 +148,17 @@ export function EventForm({
             hint="The day the event starts."
             value={firstDay}
             required
-            onChange={(change) => setFirstDay(change.target.value)}
+            onChange={(change) => {
+              const next = change.target.value;
+              setFirstDay(next);
+              if (lastDay && next && lastDay < next) setLastDay("");
+            }}
           />
           <DateField
             name="endDate"
             label="End date"
             hint="Leave empty for a single-day event."
-            defaultValue={event?.endDate}
+            value={lastDay}
             onChange={(change) => setLastDay(change.target.value)}
           />
         </div>

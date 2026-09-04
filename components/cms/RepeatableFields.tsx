@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { formatSessionHoursRange, sessionDayLabelsBetween } from "@/lib/utils";
+import { formatSessionHoursRange, sessionDayLabelsForSpan } from "@/lib/utils";
 
 import { Field, inputClassName } from "./Field";
 import { RowActions } from "./RowActions";
@@ -60,17 +60,6 @@ export function TextListField({
 }) {
   const [rows, setRows] = useState(() => toRows(defaultValues, ""));
 
-  function moveRow(id: string, direction: -1 | 1) {
-    setRows((current) => {
-      const position = current.findIndex((row) => row.id === id);
-      const target = position + direction;
-      if (position < 0 || target < 0 || target >= current.length) return current;
-      const next = [...current];
-      [next[position], next[target]] = [next[target], next[position]];
-      return next;
-    });
-  }
-
   function duplicateRow(id: string) {
     setRows((current) => {
       const position = current.findIndex((row) => row.id === id);
@@ -107,8 +96,6 @@ export function TextListField({
             />
             <RowActions
               noun="line"
-              onUp={() => moveRow(row.id, -1)}
-              onDown={() => moveRow(row.id, 1)}
               onDuplicate={() => duplicateRow(row.id)}
               onRemove={() =>
                 setRows((current) =>
@@ -160,19 +147,62 @@ export function SessionsField({
   lastDay?: string;
 }) {
   const [rows, setRows] = useState(() => toRows<SessionRow>(defaultValues, {}));
+  const dateSpan = useRef({ firstDay, lastDay, ready: false });
 
   useEffect(() => {
-    const labels = sessionDayLabelsBetween(firstDay, lastDay);
+    const labels = sessionDayLabelsForSpan(firstDay, lastDay);
+    const previous = dateSpan.current;
+    const spanChanged =
+      previous.ready &&
+      (previous.firstDay !== firstDay || previous.lastDay !== lastDay);
+    dateSpan.current = { firstDay, lastDay, ready: true };
     if (labels.length === 0) return;
 
     setRows((current) => {
-      if (current.some((row) => row.value.hours?.trim() || row.value.day?.trim())) {
-        return current;
+      if (
+        current.every(
+          (row) => !row.value.hours?.trim() && !row.value.day?.trim(),
+        )
+      ) {
+        return labels.map((day) => ({
+          id: nextRowId(),
+          value: { day, hours: "" },
+        }));
       }
-      return labels.map((day) => ({
-        id: nextRowId(),
-        value: { day, hours: "" },
-      }));
+
+      if (!spanChanged) return current;
+
+      const uniqueDays: string[] = [];
+      for (const row of current) {
+        const day = row.value.day?.trim() ?? "";
+        const previousDay = uniqueDays[uniqueDays.length - 1];
+        if (uniqueDays.length === 0 || !sameSessionDay(previousDay, day)) {
+          uniqueDays.push(day);
+        }
+      }
+
+      if (labels.length === 1 && uniqueDays.length <= 1) {
+        return current.map((row) => ({
+          ...row,
+          value: { ...row.value, day: labels[0] },
+        }));
+      }
+
+      if (uniqueDays.length !== labels.length) return current;
+
+      let group = -1;
+      let groupDay = "";
+      return current.map((row) => {
+        const day = row.value.day?.trim() ?? "";
+        if (group < 0 || !sameSessionDay(groupDay, day)) {
+          group += 1;
+          groupDay = day;
+        }
+        return {
+          ...row,
+          value: { ...row.value, day: labels[group] ?? row.value.day },
+        };
+      });
     });
   }, [firstDay, lastDay]);
 
@@ -209,17 +239,6 @@ export function SessionsField({
         id: nextRowId(),
         value: { day, hours: "" },
       });
-      return next;
-    });
-  }
-
-  function moveRow(id: string, direction: -1 | 1) {
-    setRows((current) => {
-      const position = current.findIndex((row) => row.id === id);
-      const target = position + direction;
-      if (position < 0 || target < 0 || target >= current.length) return current;
-      const next = [...current];
-      [next[position], next[target]] = [next[target], next[position]];
       return next;
     });
   }
@@ -296,8 +315,6 @@ export function SessionsField({
               </button>
               <RowActions
                 noun="session"
-                onUp={() => moveRow(row.id, -1)}
-                onDown={() => moveRow(row.id, 1)}
                 onDuplicate={() => duplicateRow(row.id)}
                 onRemove={() =>
                   setRows((current) =>
