@@ -92,10 +92,10 @@ export default async function RetreatDetailPage({ params }: PageProps) {
               <p className="mt-4 text-sm text-brown sm:mt-5">
                 This retreat has taken place.{" "}
                 <Link
-                  href="/retreats/archive"
+                  href="/events/archive"
                   className="text-charcoal underline decoration-border-strong underline-offset-4 transition-colors hover:text-saffron"
                 >
-                  View past retreats
+                  View past events
                 </Link>
               </p>
             ) : null}

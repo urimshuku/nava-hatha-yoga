@@ -86,11 +86,11 @@ export const MAIN_PAGES: EditablePage[] = [
   {
     id: "retreats",
     label: "Retreats Page",
-    summary: "What to expect, working with partners, and the past retreats page.",
+    summary: "What to expect and working with partners.",
     type: "retreatsPage",
     slug: SINGLETON_SLUG,
     schema: retreatsPageSchema,
-    revalidate: ["/retreats", "/retreats/archive"],
+    revalidate: ["/retreats", "/events", "/events/archive"],
     section: "pages",
   },
   {
@@ -174,9 +174,9 @@ export const REGISTRATION_PAGES: EditablePage[] = [
   },
   {
     id: "register-module",
-    label: "Module Registration",
+    label: "Modular Registration",
     summary:
-      "The full form for module registration. Starts as a copy of Workshop Registration.",
+      "The full form for modular registration. Starts as a copy of Workshop Registration.",
     type: "registerPage",
     slug: REGISTER_DOCUMENT_SLUG.module,
     schema: moduleRegisterPageSchema,

@@ -315,6 +315,27 @@ export function eventLocationBadge(
   return inferred ? inferred.toUpperCase() : location.toUpperCase();
 }
 
+/** Public label for an event or retreat type, shown next to the city. */
+export function eventTypeTag(category?: string | null): string {
+  const value = (category ?? "").trim().toLowerCase();
+  if (value === "free session" || value === "free offering") return "Free Offering";
+  if (value === "modular workshop" || value === "module") return "Modular Workshop";
+  if (value === "retreat") return "Retreat";
+  return "Workshop";
+}
+
+/** Public page for a listing: retreats keep their own URL. */
+export function eventDetailPath(event: {
+  slug?: string | null;
+  category?: string | null;
+}): string | undefined {
+  if (!event.slug) return undefined;
+  if ((event.category ?? "").trim().toLowerCase() === "retreat") {
+    return `/retreats/${event.slug}`;
+  }
+  return `/events/${event.slug}`;
+}
+
 /** Short city label for registration emails (e.g. Saranda, Tiranë). */
 export function eventLocationShort(
   location?: string | null,

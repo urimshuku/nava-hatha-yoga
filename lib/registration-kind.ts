@@ -21,7 +21,8 @@ export const REGISTER_DOCUMENT_SLUG: Record<RegistrationKind, string> = {
 };
 
 export function isFreeSessionCategory(category?: string | null): boolean {
-  return (category ?? "").trim().toLowerCase() === FREE_SESSION_CATEGORY.toLowerCase();
+  const value = (category ?? "").trim().toLowerCase();
+  return value === FREE_SESSION_CATEGORY.toLowerCase() || value === "free offering";
 }
 
 export function parseRegistrationKind(
@@ -43,7 +44,8 @@ export function registrationKindFromCategory(
   category?: string | null,
 ): RegistrationKind | undefined {
   const value = (category ?? "").trim().toLowerCase();
-  if (value === "free session") return "free";
+  if (value === "free session" || value === "free offering") return "free";
+  if (value === "modular workshop" || value === "module") return "module";
   if (value === "retreat") return "retreat";
   if (value === "workshop") return "workshop";
   return undefined;

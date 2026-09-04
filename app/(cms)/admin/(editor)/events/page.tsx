@@ -40,7 +40,7 @@ function EventRow({ entry }: { entry: AdminListEntry }) {
           slug={entry.slug}
           hidden={entry.hidden}
           editHref={`/admin/events/${entry.slug}`}
-          noun="event"
+          noun="workshop"
           duplicate={duplicateEvent}
           restore={restoreEvent}
           remove={deleteEvent}
@@ -116,13 +116,13 @@ export default async function AdminEventsPage({
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="font-heading text-3xl text-charcoal">Events</h1>
+          <h1 className="font-heading text-3xl text-charcoal">Workshops</h1>
         </div>
         <Link
           href="/admin/events/new"
           className="rounded bg-saffron px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-saffron-hover"
         >
-          Add an event
+          Add a workshop
         </Link>
       </div>
 
@@ -143,12 +143,12 @@ export default async function AdminEventsPage({
       <EventList
         title="Upcoming"
         entries={upcoming}
-        emptyMessage="No upcoming events yet. Use “Add an event” to create one."
+        emptyMessage="No upcoming workshops yet. Use “Add a workshop” to create one."
       />
       <EventList
         title="Past"
         entries={past}
-        emptyMessage="No past events."
+        emptyMessage="No past workshops."
         collapsible
       />
     </div>

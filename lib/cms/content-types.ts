@@ -179,7 +179,11 @@ export interface HomePage {
   seo?: SeoFields;
 }
 
-export type EventCategory = "Workshop" | "Retreat" | "Free Session";
+export type EventCategory =
+  | "Workshop"
+  | "Retreat"
+  | "Free Session"
+  | "Modular Workshop";
 
 export interface EventSession {
   day?: string;

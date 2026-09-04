@@ -20,7 +20,7 @@ import {
   getHomePage,
   getPrograms,
   getSiteSettings,
-  getUpcomingEvents,
+  getUpcomingListings,
 } from "@/lib/cms/site-content";
 import { SITE_NAME, SPECIAL_PROGRAM_SLUGS } from "@/lib/constants";
 import { placeholderHomePage } from "@/lib/placeholders";
@@ -98,7 +98,7 @@ export default async function HomePage() {
   const [home, settings, events, programs] = await Promise.all([
     getHomePage(),
     getSiteSettings(),
-    getUpcomingEvents(),
+    getUpcomingListings(),
     getPrograms(),
   ]);
 

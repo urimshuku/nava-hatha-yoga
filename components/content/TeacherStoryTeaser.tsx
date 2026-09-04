@@ -25,18 +25,18 @@ export function TeacherStoryTeaser({
         paragraphs={story.story}
       />
 
-      <div className="mt-8 flex flex-col items-center gap-6">
-        <div className="relative aspect-[4/5] w-60 max-w-full overflow-hidden rounded-2xl border border-border bg-ivory shadow-soft sm:w-64">
+      <div className="mt-8 flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:gap-12">
+        <div className="relative aspect-[4/5] w-60 max-w-full shrink-0 overflow-hidden rounded-2xl border border-border bg-ivory shadow-soft sm:w-64 lg:w-72">
           <Image
             src={story.photoSrc}
             alt={story.photoAlt}
             fill
-            sizes="256px"
+            sizes="(min-width: 1024px) 288px, 256px"
             className="object-cover object-[center_58%]"
           />
         </div>
 
-        <div className="mx-auto max-w-prose space-y-3 text-center font-heading text-base leading-relaxed sm:space-y-4 sm:text-lg">
+        <div className="mx-auto max-w-prose space-y-3 text-center font-heading text-base leading-relaxed sm:space-y-4 sm:text-lg lg:mx-0 lg:text-left">
           <p className="italic text-charcoal">{story.nameLine}</p>
 
           {story.teaser.map((paragraph) => (

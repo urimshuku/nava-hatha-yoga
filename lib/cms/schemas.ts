@@ -556,18 +556,6 @@ export const retreatsPageSchema: DocumentSchema = {
   sections: [
     { title: "The top of the page", fields: heroFields("Retreats") },
     {
-      title: "When no retreat is planned",
-      fields: [
-        {
-          kind: "text",
-          name: "comingSoonEyebrow",
-          label: "Small line above the heading",
-        },
-        { kind: "text", name: "comingSoonHeading", label: "Heading" },
-        { kind: "textarea", name: "comingSoonBody", label: "Text", rows: 3 },
-      ],
-    },
-    {
       title: "What to expect",
       fields: [
         {
@@ -589,7 +577,31 @@ export const retreatsPageSchema: DocumentSchema = {
       ],
     },
     {
+      title: "Invitation under What to expect",
+      fields: [
+        {
+          kind: "text",
+          name: "comingSoonHeading",
+          label: "Heading",
+        },
+        {
+          kind: "textarea",
+          name: "comingSoonBody",
+          label: "Text",
+          hint: "Shown under the heading, above the Upcoming events and Register your interest buttons.",
+          rows: 3,
+        },
+        {
+          kind: "text",
+          name: "comingSoonEyebrow",
+          label: "Small line above the heading",
+          hidden: true,
+        },
+      ],
+    },
+    {
       title: "Invitation under the list",
+      archived: true,
       fields: [
         {
           kind: "group",
@@ -646,7 +658,11 @@ export const retreatsPageSchema: DocumentSchema = {
         },
       ],
     },
-    { title: "Past retreats page", fields: archiveFields("retreats") },
+    {
+      title: "Past retreats page",
+      archived: true,
+      fields: archiveFields("retreats"),
+    },
   ],
 };
 
@@ -1183,11 +1199,11 @@ export const freeOfferingRegisterPageSchema = createRegisterPageSchema({
 });
 
 export const moduleRegisterPageSchema = createRegisterPageSchema({
-  title: "Module Registration",
+  title: "Modular Registration",
   description:
-    "The steps for module registration. Starts as a copy of Workshop Registration; change it independently after that.",
+    "The steps for modular registration. Starts as a copy of Workshop Registration; change it independently after that.",
   previewPath: "/register?kind=module",
-  pageName: "module registration",
+  pageName: "modular registration",
 });
 
 export const retreatRegisterPageSchema = createRegisterPageSchema({

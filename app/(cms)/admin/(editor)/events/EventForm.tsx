@@ -12,6 +12,7 @@ import { FormSection } from "@/components/cms/FormSection";
 import { SessionsField } from "@/components/cms/RepeatableFields";
 import { FormError, FormNotice, SaveBar } from "@/components/cms/SaveBar";
 import type { YogaEvent } from "@/lib/cms/content-types";
+import { EVENT_TYPE_OPTIONS } from "@/lib/constants";
 import {
   cityCountryFromLocation,
   eventWebAddress,
@@ -72,7 +73,7 @@ export function EventForm({
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <h1 className="font-heading text-3xl text-charcoal">
-          {isNew ? "New event" : (event?.title ?? "Edit event")}
+          {isNew ? "New workshop" : (event?.title ?? "Edit workshop")}
         </h1>
         <SaveBar
           cancelHref="/admin/events"
@@ -103,13 +104,13 @@ export function EventForm({
         <SelectField
           name="category"
           label="Event Type"
-          hint="Free sessions use the one-page Free Offering registration. Workshops use the full Workshop Registration form."
+          hint="Free offerings use the one-page form. Workshops and modular workshops use their matching registration forms."
           defaultValue={event?.category}
           placeholder="Choose one"
-          options={[
-            { value: "Workshop", label: "Workshop" },
-            { value: "Free Session", label: "Free Session" },
-          ]}
+          options={EVENT_TYPE_OPTIONS.map((option) => ({
+            value: option.value,
+            label: option.label,
+          }))}
         />
         <SelectField
           name="relatedProgram"

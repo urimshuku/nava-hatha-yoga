@@ -28,6 +28,9 @@ function refreshAffectedPages(slug: string) {
   revalidatePath("/retreats/archive");
   revalidatePath(`/retreats/${slug}`);
   revalidatePath("/admin/retreats");
+  revalidatePath("/");
+  revalidatePath("/events");
+  revalidatePath("/events/archive");
 }
 
 export async function saveRetreat(

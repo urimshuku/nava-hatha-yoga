@@ -35,7 +35,7 @@ export default async function EditEventPage({
         href="/admin/events"
         className="text-sm text-brown hover:text-saffron"
       >
-        Back to events
+        Back to workshops
       </Link>
 
       <div className="mt-4">
@@ -60,7 +60,7 @@ export default async function EditEventPage({
 
       <RemoveFromWebsite
         slug={slug}
-        noun="event"
+        noun="workshop"
         hide={hideEvent}
         remove={deleteEvent}
       />

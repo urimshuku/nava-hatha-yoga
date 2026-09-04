@@ -113,8 +113,14 @@ export const LEGAL_LINKS = [
   { label: "Cookie Policy", href: "/cookie-policy" },
 ] as const;
 
-export const EVENT_CATEGORIES = ["Workshop", "Free Session"] as const;
-export type EventCategory = (typeof EVENT_CATEGORIES)[number];
+/** Event types an editor can choose. Retreats are created under Retreats. */
+export const EVENT_TYPE_OPTIONS = [
+  { value: "Workshop", label: "Workshop" },
+  { value: "Free Session", label: "Free Offering" },
+  { value: "Modular Workshop", label: "Modular Workshop" },
+] as const;
+
+export const EVENT_CATEGORIES = EVENT_TYPE_OPTIONS.map((option) => option.value);
 
 export const PROGRAM_BEFORE_PROGRAM_TITLE = "Before the Program";
 

@@ -44,8 +44,8 @@ export function AboutHighlightCards({
   return (
     <Section tone="cream" size="small" className="border-b border-border">
       <Container>
-        <MotionReveal className="text-center">
-          <h2 className="text-display-sm text-balance">
+        <MotionReveal>
+          <h2 className="text-center text-display-sm text-balance">
             {heading?.trim() || "About the Teacher"}
           </h2>
           <TeacherStoryTeaser story={teacherStory} />

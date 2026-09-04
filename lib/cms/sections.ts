@@ -25,7 +25,7 @@ export const CMS_SECTIONS: CmsNavSection[] = [
     heading: "Content",
     items: [
       {
-        label: "Events",
+        label: "Workshops",
         href: "/admin/events",
         description:
           "Dates, times and prices for sessions. Shown on the Events page and the home page.",

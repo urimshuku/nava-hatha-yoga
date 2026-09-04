@@ -10,7 +10,7 @@ export function RemoveFromWebsite({
   remove,
 }: {
   slug: string;
-  noun: "event" | "program" | "retreat";
+  noun: "event" | "workshop" | "program" | "retreat";
   hide: (formData: FormData) => void | Promise<void>;
   remove: (formData: FormData) => void | Promise<void>;
 }) {

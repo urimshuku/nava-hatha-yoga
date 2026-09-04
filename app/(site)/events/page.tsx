@@ -18,10 +18,10 @@ import { PHASE1_EVENTS_SEO } from "@/lib/seo-phase1";
 import { buildEventsJsonLd } from "@/lib/structured-data";
 import {
   getEventsPage,
-  getPastEvents,
+  getPastListings,
   getPrograms,
   getSiteSettings,
-  getUpcomingEvents,
+  getUpcomingListings,
 } from "@/lib/cms/site-content";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -39,8 +39,8 @@ export const dynamic = "force-dynamic";
 
 export default async function EventsPage() {
   const [events, pastEvents, settings, programs, page] = await Promise.all([
-    getUpcomingEvents(),
-    getPastEvents(),
+    getUpcomingListings(),
+    getPastListings(),
     getSiteSettings(),
     getPrograms(),
     getEventsPage(),

@@ -281,8 +281,54 @@ export async function getRetreats(): Promise<RetreatListItem[]> {
   );
 }
 
+function listingFromRetreat(retreat: RetreatListItem): YogaEvent {
+  return {
+    _id: retreat._id,
+    title: retreat.title,
+    slug: retreat.slug,
+    date: retreat.date ?? "",
+    endDate: retreat.endDate,
+    cityCountry: retreat.cityCountry,
+    location: retreat.location,
+    priceLabel: retreat.priceLabel,
+    description: retreat.description,
+    image: retreat.image,
+    category: "Retreat",
+  };
+}
+
+/**
+ * The list shown on /events and in the homepage upcoming section: published
+ * events and retreats, soonest first.
+ */
+export async function getUpcomingListings(): Promise<YogaEvent[]> {
+  const [events, retreats] = await Promise.all([
+    getUpcomingEvents(),
+    getRetreats(),
+  ]);
+
+  return [...events, ...retreats.map(listingFromRetreat)].sort(
+    (a, b) => eventStartTimestamp(a) - eventStartTimestamp(b),
+  );
+}
+
 export async function getPastRetreats(): Promise<RetreatListItem[]> {
   return getPastFrom((await getAllPublishedRetreats()).map(withDateBoundary));
+}
+
+/**
+ * Past workshops and retreats for the Events archive, newest first.
+ */
+export async function getPastListings(): Promise<PastEvent[]> {
+  const [events, retreats] = await Promise.all([
+    getPastEvents(),
+    getPastRetreats(),
+  ]);
+
+  return getPastFrom([
+    ...events,
+    ...retreats.map((retreat) => toPastEvent(listingFromRetreat(retreat))),
+  ]);
 }
 
 export async function getRetreatSlugEntries(): Promise<SlugEntry[]> {

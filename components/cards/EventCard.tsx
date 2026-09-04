@@ -12,6 +12,8 @@ import {
   eventCardSummaryParagraphs,
   eventLocationBadge,
   eventRegisterHref,
+  eventDetailPath,
+  eventTypeTag,
   formatEventCalendarLine,
   formatEventDateBadge,
   formatSessionHoursRange,
@@ -224,6 +226,7 @@ export function EventCard({
   const displayEndDate = resolveEventCardEndDate(event);
   const dateBadge = formatEventDateBadge(event.date, displayEndDate);
   const locationBadge = eventLocationBadge(event.location, event.cityCountry);
+  const typeTag = eventTypeTag(event.category);
   const summaryParagraphs = eventCardSummaryParagraphs(event.description);
   const shareAnchorId = eventAnchorId(event._id);
   const programSlug = event.relatedProgram?.slug;
@@ -236,8 +239,11 @@ export function EventCard({
     event.yogaExperience?.trim() ||
     experienceNote?.trim() ||
     (intensity ? "No prior yoga experience required!" : undefined);
-  const sessionHref =
-    linkTitle && event.slug ? `/events/${event.slug}` : undefined;
+  const detailPath = eventDetailPath(event);
+  const sessionHref = linkTitle ? detailPath : undefined;
+  const sharePath = detailPath ?? `/events#${shareAnchorId}`;
+  const badgeClassName =
+    "inline-flex rounded-full bg-sand px-3 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-brown";
 
   return (
     <article
@@ -256,17 +262,12 @@ export function EventCard({
       ) : null}
       <div className="p-4 sm:p-7">
         <div className="flex items-start justify-between gap-3 sm:gap-4">
-          {locationBadge ? (
-            <span className="inline-flex rounded-full bg-sand px-3 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-brown">
-              {locationBadge}
-            </span>
-          ) : event.category ? (
-            <span className="inline-flex rounded-full bg-sand px-3 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-brown">
-              {event.category}
-            </span>
-          ) : (
-            <span />
-          )}
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            {locationBadge ? (
+              <span className={badgeClassName}>{locationBadge}</span>
+            ) : null}
+            <span className={badgeClassName}>{typeTag}</span>
+          </div>
 
           {dateBadge ? (
             <div className="shrink-0 text-right leading-none">
@@ -375,7 +376,7 @@ export function EventCard({
             ) : null}
             <EventShareButton
               title={`${event.title} · Nava Hatha Yoga`}
-              path={event.slug ? `/events/${event.slug}` : `/events#${shareAnchorId}`}
+              path={sharePath}
             />
           </div>
           {showRegistration ? (

@@ -17,7 +17,7 @@ export function ContentListActions({
   slug: string;
   hidden: boolean;
   editHref: string;
-  noun: "event" | "program" | "retreat";
+  noun: "event" | "workshop" | "program" | "retreat";
   duplicate: (formData: FormData) => void | Promise<void>;
   restore: (formData: FormData) => void | Promise<void>;
   remove: (formData: FormData) => void | Promise<void>;

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ElementType } from "react";
 
-import { formatDateRange, resolveEventCardEndDate } from "@/lib/utils";
+import { eventDetailPath, eventTypeTag, formatDateRange, resolveEventCardEndDate } from "@/lib/utils";
 import type { PastEvent } from "@/lib/cms/content-types";
 
 export function ArchiveList({
@@ -24,7 +24,7 @@ export function ArchiveList({
             {event.slug ? (
               <TitleTag className="font-heading text-xl text-charcoal">
                 <Link
-                  href={`/events/${event.slug}`}
+                  href={eventDetailPath(event) ?? `/events/${event.slug}`}
                   className="transition-colors hover:text-saffron"
                 >
                   {event.title}
@@ -42,7 +42,7 @@ export function ArchiveList({
           <div className="flex shrink-0 items-baseline gap-3 text-sm text-brown">
             {event.category ? (
               <span className="rounded-full bg-sand px-3 py-0.5 text-xs uppercase tracking-wide">
-                {event.category}
+                {eventTypeTag(event.category)}
               </span>
             ) : null}
             <time dateTime={event.date}>

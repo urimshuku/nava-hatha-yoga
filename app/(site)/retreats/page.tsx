@@ -1,13 +1,9 @@
 import type { Metadata } from "next";
 
-import { RetreatArchiveList } from "@/components/RetreatArchiveList";
-import { CollapsibleArchive } from "@/components/CollapsibleArchive";
-import { RetreatCard } from "@/components/cards/RetreatCard";
 import { PartnerProgramsSection } from "@/components/content/PartnerProgramsSection";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/Button";
-import { CTASection } from "@/components/ui/CTASection";
 import { MotionItem, MotionStagger } from "@/components/ui/Motion";
 import { MotionReveal } from "@/components/ui/MotionReveal";
 import { Ornament } from "@/components/ui/Ornament";
@@ -15,12 +11,24 @@ import { PageHero } from "@/components/ui/PageHero";
 import { placeholderRetreatsPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
 import { PHASE1_RETREATS_SEO } from "@/lib/seo-phase1";
-import {
-  getPastRetreats,
-  getRetreats,
-  getRetreatsPage,
-  getSiteSettings,
-} from "@/lib/cms/site-content";
+import { getRetreatsPage, getSiteSettings } from "@/lib/cms/site-content";
+
+const INVITE_HEADING =
+  "We are carefully preparing upcoming Classical Hatha Yoga retreats.";
+const INVITE_BODY =
+  "Check Upcoming Events to see if a retreat is scheduled, or register your interest for a potential retreat in a location of your choice.";
+
+function inviteHeading(value?: string) {
+  const text = value?.trim();
+  if (!text || /^retreats are on their way$/i.test(text)) return INVITE_HEADING;
+  return text;
+}
+
+function inviteBody(value?: string) {
+  const text = value?.trim();
+  if (!text || /no retreat is open for booking/i.test(text)) return INVITE_BODY;
+  return text;
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getRetreatsPage();
@@ -36,21 +44,15 @@ export async function generateMetadata(): Promise<Metadata> {
 export const dynamic = "force-dynamic";
 
 export default async function RetreatsPage() {
-  const [retreats, pastRetreats, page, settings] = await Promise.all([
-    getRetreats(),
-    getPastRetreats(),
+  const [page, settings] = await Promise.all([
     getRetreatsPage(),
     getSiteSettings(),
   ]);
-  const hasRetreats = retreats.length > 0;
-  const pastRetreatsTitle = page.archiveTitle?.trim() || "Past retreats";
 
   const expectations =
     page.expectations?.filter((item) => item.title?.trim()) ??
     placeholderRetreatsPage.expectations ??
     [];
-
-  const listingCta = page.listingCta ?? placeholderRetreatsPage.listingCta;
 
   return (
     <>
@@ -67,101 +69,53 @@ export default async function RetreatsPage() {
         }
       />
 
-      {hasRetreats ? (
-        <>
-          <Section tone="cream">
-            <Container>
-              <MotionStagger className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-                {retreats.map((retreat) => (
-                  <MotionItem key={retreat._id} className="h-full">
-                    <RetreatCard retreat={retreat} headingLevel={2} />
-                  </MotionItem>
-                ))}
-              </MotionStagger>
-              <CollapsibleArchive
-                id="past-retreats"
-                title={pastRetreatsTitle}
-                count={pastRetreats.length}
-              >
-                <RetreatArchiveList retreats={pastRetreats} headingLevel={3} />
-              </CollapsibleArchive>
-            </Container>
-          </Section>
-          <CTASection
-            heading={
-              listingCta?.heading ?? "Questions about a retreat?"
-            }
-            body={
-              listingCta?.body ??
-              "Reach out and we'll be glad to share more details and help you decide if it's right for you."
-            }
-            ctaLabel={listingCta?.cta?.label ?? "Contact us"}
-            ctaHref={listingCta?.cta?.href ?? "/contact"}
-          />
-        </>
-      ) : (
-        <>
-          <Section tone="cream">
-            <Container>
-              <MotionReveal className="mx-auto max-w-2xl rounded-2xl border border-border bg-ivory px-8 py-16 text-center shadow-soft sm:py-20">
-                <p className="eyebrow">
-                  {page.comingSoonEyebrow?.trim() || "Coming Soon"}
-                </p>
-                <h2 className="mt-4 text-display-sm text-balance">
-                  {page.comingSoonHeading?.trim() ||
-                    placeholderRetreatsPage.comingSoonHeading}
-                </h2>
-                <p className="section-lead mx-auto mt-4 max-w-md sm:mt-5">
-                  {page.comingSoonBody?.trim() ||
-                    placeholderRetreatsPage.comingSoonBody}
-                </p>
-                <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                  <Button href="/contact">Register your interest</Button>
-                  <Button href="/programs" variant="secondary">
-                    Explore programs
-                  </Button>
+      <Section tone="ivory">
+        <Container>
+          <MotionReveal className="text-center">
+            <p className="eyebrow mb-4">
+              {page.expectationsEyebrow?.trim() || "What to expect"}
+            </p>
+            <h2 className="text-display-sm text-balance">
+              {page.expectationsHeading?.trim() ||
+                placeholderRetreatsPage.expectationsHeading}
+            </h2>
+            <Ornament className="mt-8" />
+          </MotionReveal>
+          <MotionStagger className="mt-8 grid gap-4 sm:mt-12 sm:gap-6 md:grid-cols-3">
+            {expectations.map((item) => (
+              <MotionItem key={item.title} className="h-full">
+                <div className="h-full rounded-xl border border-border bg-cream p-5 text-center sm:p-8">
+                  <h3 className="font-heading text-xl text-charcoal sm:text-2xl">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-brown sm:mt-3">
+                    {item.body}
+                  </p>
                 </div>
-              </MotionReveal>
-              <CollapsibleArchive
-                id="past-retreats"
-                title={pastRetreatsTitle}
-                count={pastRetreats.length}
-              >
-                <RetreatArchiveList retreats={pastRetreats} headingLevel={3} />
-              </CollapsibleArchive>
-            </Container>
-          </Section>
+              </MotionItem>
+            ))}
+          </MotionStagger>
+        </Container>
+      </Section>
 
-          <Section tone="ivory" className="border-t border-border">
-            <Container>
-              <MotionReveal className="text-center">
-                <p className="eyebrow mb-4">
-                  {page.expectationsEyebrow?.trim() || "What to expect"}
-                </p>
-                <h2 className="text-display-sm text-balance">
-                  {page.expectationsHeading?.trim() ||
-                    placeholderRetreatsPage.expectationsHeading}
-                </h2>
-                <Ornament className="mt-8" />
-              </MotionReveal>
-              <MotionStagger className="mt-8 grid gap-4 sm:mt-12 sm:gap-6 md:grid-cols-3">
-                {expectations.map((item) => (
-                  <MotionItem key={item.title} className="h-full">
-                    <div className="h-full rounded-xl border border-border bg-cream p-5 text-center sm:p-8">
-                      <h3 className="font-heading text-xl text-charcoal sm:text-2xl">
-                        {item.title}
-                      </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-brown sm:mt-3">
-                        {item.body}
-                      </p>
-                    </div>
-                  </MotionItem>
-                ))}
-              </MotionStagger>
-            </Container>
-          </Section>
-        </>
-      )}
+      <Section tone="cream">
+        <Container>
+          <MotionReveal className="mx-auto max-w-2xl rounded-2xl border border-border bg-ivory px-8 py-16 text-center shadow-soft sm:py-20">
+            <h2 className="text-display-sm text-balance">
+              {inviteHeading(page.comingSoonHeading)}
+            </h2>
+            <p className="section-lead mx-auto mt-4 max-w-lg sm:mt-5">
+              {inviteBody(page.comingSoonBody)}
+            </p>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Button href="/events">Upcoming events</Button>
+              <Button href="/contact" variant="secondary">
+                Register your interest
+              </Button>
+            </div>
+          </MotionReveal>
+        </Container>
+      </Section>
 
       <PartnerProgramsSection
         whatsappNumber={settings.whatsapp}

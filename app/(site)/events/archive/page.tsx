@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHero } from "@/components/ui/PageHero";
 import { buildMetadata } from "@/lib/seo";
-import { getPastEvents, getEventsPage } from "@/lib/cms/site-content";
+import { getPastListings, getEventsPage } from "@/lib/cms/site-content";
 
 export const metadata: Metadata = buildMetadata({
   title: "Past Classical Hatha Yoga Events in Albania",
@@ -20,7 +20,7 @@ export const metadata: Metadata = buildMetadata({
 export const dynamic = "force-dynamic";
 
 export default async function EventsArchivePage() {
-  const [events, page] = await Promise.all([getPastEvents(), getEventsPage()]);
+  const [events, page] = await Promise.all([getPastListings(), getEventsPage()]);
 
   return (
     <>

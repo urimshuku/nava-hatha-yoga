@@ -8,7 +8,7 @@ import {
 } from "@/lib/constants";
 import { eventEndTimestamp, eventStartTimestamp, isPastEvent } from "@/lib/event-boundary";
 import { programImageSrc } from "@/lib/local-images";
-import { eventRegisterHref, retreatRegisterHref } from "@/lib/utils";
+import { eventDetailPath, eventRegisterHref, retreatRegisterHref } from "@/lib/utils";
 import { urlForImage } from "@/lib/cms/image-url";
 import type {
   Program,
@@ -155,7 +155,9 @@ export function buildEventJsonLd(
     "@context": "https://schema.org",
     "@type": "Event",
     name: event.title,
-    url: event.slug ? absoluteUrl(`/events/${event.slug}`) : absoluteUrl("/events"),
+    url: event.slug
+      ? absoluteUrl(eventDetailPath(event) ?? `/events/${event.slug}`)
+      : absoluteUrl("/events"),
     ...(event.description ? { description: event.description } : {}),
     startDate: toIsoDateTime(startMs),
     ...(Number.isFinite(endMs) && endMs !== Number.POSITIVE_INFINITY

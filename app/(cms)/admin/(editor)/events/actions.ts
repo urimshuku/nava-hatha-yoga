@@ -22,6 +22,7 @@ import {
 } from "@/lib/cms/repository";
 import { assertCmsSession } from "@/lib/cms/session";
 import { getPrograms } from "@/lib/cms/site-content";
+import { EVENT_TYPE_OPTIONS } from "@/lib/constants";
 import type { EventCategory, YogaEvent } from "@/lib/cms/content-types";
 import {
   eventWebAddress,
@@ -33,7 +34,9 @@ export interface EventFormState {
   error?: string;
 }
 
-const CATEGORIES: EventCategory[] = ["Workshop", "Free Session"];
+const CATEGORIES: EventCategory[] = EVENT_TYPE_OPTIONS.map(
+  (option) => option.value,
+);
 
 /** Clears the router cache so the client sees her change the moment she looks. */
 function refreshAffectedPages(slug: string) {
@@ -79,10 +82,10 @@ export async function saveEvent(
   await assertCmsSession();
 
   const title = text(formData, "title");
-  if (!title) return { error: "Please give the event a title." };
+  if (!title) return { error: "Please give the workshop a title." };
 
   const date = dateToTimestamp(text(formData, "date"), "start");
-  if (!date) return { error: "Please choose the date of the event." };
+  if (!date) return { error: "Please choose the date of the workshop." };
 
   const originalSlug = text(formData, "originalSlug");
   const slug = resolveSlug(
@@ -96,7 +99,7 @@ export async function saveEvent(
   if (!slug) {
     return {
       error:
-        "This event needs a web address. Add a title, or type one in the Web address field.",
+        "This workshop needs a web address. Add a title, or type one in the Web address field.",
     };
   }
 
@@ -154,7 +157,7 @@ export async function saveEvent(
   } catch (error) {
     console.error("Failed to save event.", error);
     return {
-      error: "The event could not be saved. Please try again.",
+      error: "The workshop could not be saved. Please try again.",
     };
   }
 
