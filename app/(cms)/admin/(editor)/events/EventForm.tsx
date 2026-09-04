@@ -13,6 +13,7 @@ import { SessionsField } from "@/components/cms/RepeatableFields";
 import { FormError, FormNotice, SaveBar } from "@/components/cms/SaveBar";
 import type { YogaEvent } from "@/lib/cms/content-types";
 import { EVENT_TYPE_OPTIONS } from "@/lib/constants";
+import { isFreeSessionCategory, isModuleSystemCategory } from "@/lib/registration-kind";
 import {
   cityCountryFromLocation,
   eventWebAddress,
@@ -56,14 +57,24 @@ export function EventForm({
 
   const defaultCity =
     event?.cityCountry?.trim() || cityCountryFromLocation(event?.location);
+  const [title, setTitle] = useState(() => event?.title ?? "");
+  const [category, setCategory] = useState(() => event?.category ?? "");
   const [programSlug, setProgramSlug] = useState(
     () => event?.relatedProgram?.slug ?? "",
   );
   const [cityCountry, setCityCountry] = useState(() => defaultCity ?? "");
   const [firstDay, setFirstDay] = useState(() => toDateInputValue(event?.date));
   const [lastDay, setLastDay] = useState(() => toDateInputValue(event?.endDate));
+  const slugHead = isFreeSessionCategory(category) || isModuleSystemCategory(category)
+    ? title
+    : programSlug || title;
   const slug =
-    eventWebAddress(programSlug, cityCountry, firstDay) || originalSlug || "";
+    eventWebAddress(
+      slugHead,
+      cityCountry,
+      firstDay,
+      isModuleSystemCategory(category) ? "module" : undefined,
+    ) || originalSlug || "";
 
   return (
     <form action={formAction} className="space-y-6">
@@ -91,7 +102,8 @@ export function EventForm({
           name="title"
           label="Title"
           hint="For example: Surya Kriya"
-          defaultValue={event?.title}
+          value={title}
+          onChange={(change) => setTitle(change.target.value)}
           required
         />
         <TextAreaField
@@ -105,7 +117,8 @@ export function EventForm({
           name="category"
           label="Event Type"
           hint="Free offerings use the one-page form. Workshops and Module System Workshop use their matching registration forms."
-          defaultValue={event?.category}
+          value={category}
+          onChange={(change) => setCategory(change.target.value)}
           placeholder="Choose one"
           options={EVENT_TYPE_OPTIONS.map((option) => ({
             value: option.value,
@@ -224,7 +237,13 @@ export function EventForm({
         <TextField
           name="slug"
           label="Web address"
-          hint="Always /events/ plus the program, city, and first day. It updates as you change those fields."
+          hint={
+            isModuleSystemCategory(category)
+              ? "Always /events/ plus the session name, the word module, the city, and first day. It updates as you change those fields."
+              : isFreeSessionCategory(category)
+                ? "Always /events/ plus the session name, city, and first day. It updates as you change those fields."
+                : "Always /events/ plus the program, city, and first day. It updates as you change those fields."
+          }
           value={slug}
           readOnly
         />

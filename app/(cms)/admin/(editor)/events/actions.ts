@@ -24,6 +24,7 @@ import { assertCmsSession } from "@/lib/cms/session";
 import { getPrograms } from "@/lib/cms/site-content";
 import { EVENT_TYPE_OPTIONS } from "@/lib/constants";
 import type { EventCategory, YogaEvent } from "@/lib/cms/content-types";
+import { isFreeSessionCategory, isModuleSystemCategory } from "@/lib/registration-kind";
 import {
   eventWebAddress,
   formatSessionHoursRange,
@@ -88,13 +89,25 @@ export async function saveEvent(
   if (!date) return { error: "Please choose the date of the workshop." };
 
   const originalSlug = text(formData, "originalSlug");
+  const categoryInput = text(formData, "category");
+  const category = CATEGORIES.find((entry) => entry === categoryInput);
+  const slugHead =
+    isFreeSessionCategory(category) || isModuleSystemCategory(category)
+      ? title
+      : text(formData, "relatedProgram") || title;
   const slug = resolveSlug(
     eventWebAddress(
-      text(formData, "relatedProgram") || title,
+      slugHead,
       text(formData, "cityCountry"),
       text(formData, "date"),
+      isModuleSystemCategory(category) ? "module" : undefined,
     ),
-    [text(formData, "relatedProgram") || title, text(formData, "cityCountry"), text(formData, "date")],
+    [
+      slugHead,
+      isModuleSystemCategory(category) ? "module" : undefined,
+      text(formData, "cityCountry"),
+      text(formData, "date"),
+    ],
   );
   if (!slug) {
     return {
@@ -102,9 +115,6 @@ export async function saveEvent(
         "This workshop needs a web address. Add a title, or type one in the Web address field.",
     };
   }
-
-  const categoryInput = text(formData, "category");
-  const category = CATEGORIES.find((entry) => entry === categoryInput);
 
   const base = await loadBaseEvent(originalSlug ?? slug);
   const sessions = pairedList(formData, "sessionDay", "sessionHours").map(

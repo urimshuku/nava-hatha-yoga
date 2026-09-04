@@ -487,17 +487,20 @@ function webAddressDate(date?: string | null): string {
 }
 
 /**
- * Public /events/ address from the program, city, and first day
- * (e.g. yogasanas-tirane-2026-09-25).
+ * Public /events/ address from the session/program, optional marker, city, and first day
+ * (e.g. yogasanas-tirane-2026-09-25, or eye-care-practices-module-tirane-2026-09-30).
  */
 export function eventWebAddress(
   title?: string | null,
   cityCountry?: string | null,
   date?: string | null,
+  infix?: string | null,
 ): string {
   const city = eventLocationShort(undefined, cityCountry);
   return slugifySegment(
-    [title?.trim(), city, webAddressDate(date)].filter(Boolean).join(" "),
+    [title?.trim(), infix?.trim(), city, webAddressDate(date)]
+      .filter(Boolean)
+      .join(" "),
   );
 }
 
