@@ -65,11 +65,7 @@ export default async function EventsPage() {
             <MotionStagger className="mx-auto flex max-w-4xl flex-col gap-4 sm:gap-6">
               {events.map((event) => (
                 <MotionItem key={event._id} className="h-full">
-                  <EventCard
-                    event={event}
-                    experienceNote={settings.eventExperienceNote}
-                    headingLevel={2}
-                  />
+                  <EventCard event={event} headingLevel={2} />
                 </MotionItem>
               ))}
             </MotionStagger>

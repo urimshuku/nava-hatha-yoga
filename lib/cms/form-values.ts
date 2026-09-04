@@ -5,11 +5,15 @@ import type { DocumentSchema } from "@/lib/cms/schema";
 
 /** Shared helpers for reading the editor's forms. */
 
-export function text(formData: FormData, name: string): string | undefined {
+export function text(
+  formData: FormData,
+  name: string,
+  keepEmpty = false,
+): string | undefined {
   const value = formData.get(name);
-  if (typeof value !== "string") return undefined;
+  if (typeof value !== "string") return keepEmpty ? "" : undefined;
   const trimmed = value.trim();
-  return trimmed ? trimmed : undefined;
+  return trimmed ? trimmed : keepEmpty ? "" : undefined;
 }
 
 export function checkbox(formData: FormData, name: string): boolean {

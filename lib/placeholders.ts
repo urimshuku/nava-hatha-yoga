@@ -975,8 +975,7 @@ export const placeholderEvents: YogaEvent[] = scheduledEvents.flatMap((event) =>
       location,
       cityCountry: /tiran/i.test(location) ? "Tiranë, Albania" : "Saranda, Albania",
       intensity: getProgramIntensity(event.programSlug) ?? undefined,
-      yogaExperience:
-        event.yogaExperience ?? "No prior yoga experience required!",
+      yogaExperience: event.yogaExperience,
       priceLabel: event.priceLabel ?? program.priceLabel ?? getProgramPriceLabel(event.programSlug),
       paymentNote: eventPaymentNote,
       teacher: "Erlinda Mustafaraj",

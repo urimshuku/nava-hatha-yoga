@@ -156,13 +156,6 @@ export const siteSettingsSchema: DocumentSchema = {
           hint: "Shown on program and event pages. Please keep the wording careful.",
           rows: 4,
         },
-        {
-          kind: "textarea",
-          name: "eventExperienceNote",
-          label: "Note about experience needed",
-          hint: "Shown on event pages.",
-          rows: 2,
-        },
       ],
     },
   ],
@@ -1289,6 +1282,7 @@ export const retreatSchema: DocumentSchema = {
           name: "ageRequirement",
           label: "Age requirement",
           hint: "Optional, for example: 14+",
+          keepEmpty: true,
         },
         {
           kind: "text",
@@ -1296,13 +1290,15 @@ export const retreatSchema: DocumentSchema = {
           label: "Intensity",
           hint: "Shown on the event card, for example: Medium.",
           placeholder: "Medium",
+          keepEmpty: true,
         },
         {
           kind: "text",
           name: "yogaExperience",
           label: "Yoga Experience",
-          hint: "Shown under the checkmark on the event card.",
+          hint: "Shown under the checkmark on the event card. Leave blank to hide it.",
           placeholder: "No prior yoga experience required!",
+          keepEmpty: true,
         },
         {
           kind: "text",

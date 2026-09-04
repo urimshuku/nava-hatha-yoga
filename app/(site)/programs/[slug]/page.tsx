@@ -340,11 +340,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
             </div>
             <div className="mx-auto mt-12 flex max-w-4xl flex-col gap-6">
               {relatedEvents.slice(0, 3).map((event) => (
-                <EventCard
-                  key={event._id}
-                  event={event}
-                  experienceNote={settings.eventExperienceNote}
-                />
+                <EventCard key={event._id} event={event} />
               ))}
             </div>
           </Container>

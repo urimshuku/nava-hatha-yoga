@@ -5,7 +5,6 @@ import type { ElementType, ReactNode } from "react";
 import { EventShareButton } from "@/components/cards/EventShareButton";
 import { ModuleSystemExplainer } from "@/components/content/ModuleSystemExplainer";
 import { Button } from "@/components/ui/Button";
-import { getProgramIntensity } from "@/lib/constants";
 import { programSymbolSrc } from "@/lib/local-images";
 import { isModuleSystemCategory } from "@/lib/registration-kind";
 import {
@@ -26,7 +25,6 @@ import type { YogaEvent } from "@/lib/cms/content-types";
 
 interface EventCardProps {
   event: YogaEvent;
-  experienceNote?: string;
   /** Use 1 on the session page; 2 on /events; 3 under a section heading. */
   headingLevel?: 1 | 2 | 3;
   /** Link the whole card to the session page when a slug exists. */
@@ -219,7 +217,6 @@ function EventTimeBlock({ time }: { time: string }) {
 
 export function EventCard({
   event,
-  experienceNote,
   headingLevel = 3,
   linkTitle = true,
   showRegistration = true,
@@ -234,14 +231,9 @@ export function EventCard({
   const shareAnchorId = eventAnchorId(event._id);
   const programSlug = event.relatedProgram?.slug;
   const symbolSrc = programSlug ? programSymbolSrc(programSlug) : null;
-  const intensity =
-    event.intensity?.trim() ||
-    event.relatedProgram?.intensity ||
-    getProgramIntensity(programSlug);
-  const experienceLabel =
-    event.yogaExperience?.trim() ||
-    experienceNote?.trim() ||
-    (intensity ? "No prior yoga experience required!" : undefined);
+  const ageRequirement = event.ageRequirement?.trim() || undefined;
+  const intensity = event.intensity?.trim() || undefined;
+  const experienceLabel = event.yogaExperience?.trim() || undefined;
   const detailPath = eventDetailPath(event);
   const sessionHref = linkTitle ? detailPath : undefined;
   const sharePath = detailPath ?? `/events#${shareAnchorId}`;
@@ -324,9 +316,9 @@ export function EventCard({
                 <span className="whitespace-pre-line">{event.location}</span>
               </EventDetailRow>
             ) : null}
-            {event.ageRequirement ? (
+            {ageRequirement ? (
               <EventDetailRow icon={<IconAge />} label="Age">
-                Age: {event.ageRequirement}
+                Age: {ageRequirement}
               </EventDetailRow>
             ) : null}
             {intensity ? (

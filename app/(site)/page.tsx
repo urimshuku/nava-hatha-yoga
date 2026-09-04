@@ -277,10 +277,7 @@ export default async function HomePage() {
                 <MotionStagger className="mx-auto flex max-w-4xl flex-col gap-4 sm:gap-6">
                   {events.slice(0, 3).map((event) => (
                     <MotionItem key={event._id} className="h-full">
-                      <EventCard
-                        event={event}
-                        experienceNote={settings.eventExperienceNote}
-                      />
+                      <EventCard event={event} />
                     </MotionItem>
                   ))}
                 </MotionStagger>

@@ -27,7 +27,6 @@ import { saveEvent, discardEventChanges, type EventFormState } from "./actions";
 export interface ProgramOption {
   slug: string;
   title: string;
-  intensity?: string;
 }
 
 export function EventForm({
@@ -191,30 +190,22 @@ export function EventForm({
         <TextField
           name="ageRequirement"
           label="Age requirement"
-          hint="Optional, for example: 14+"
-          defaultValue={event?.ageRequirement}
+          hint="Optional, for example: 14+. Leave blank to hide it."
+          defaultValue={event?.ageRequirement ?? ""}
         />
         <TextField
           name="intensity"
           label="Intensity"
-          hint="Shown on the event card, for example: Medium."
+          hint="Shown on the event card, for example: Medium. Leave blank to hide it."
           placeholder="Medium"
-          defaultValue={
-            event?.intensity?.trim() ||
-            programs.find((program) => program.slug === event?.relatedProgram?.slug)
-              ?.intensity ||
-            ""
-          }
+          defaultValue={event?.intensity ?? ""}
         />
         <TextField
           name="yogaExperience"
           label="Yoga Experience"
-          hint="Shown under the checkmark on the event card."
+          hint="Shown under the checkmark on the event card. Leave blank to hide it."
           placeholder="No prior yoga experience required!"
-          defaultValue={
-            event?.yogaExperience?.trim() ||
-            "No prior yoga experience required!"
-          }
+          defaultValue={event?.yogaExperience ?? ""}
         />
       </FormSection>
 

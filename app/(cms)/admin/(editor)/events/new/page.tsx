@@ -13,7 +13,6 @@ export default async function NewEventPage() {
       programs={programs.map((program) => ({
         slug: program.slug,
         title: program.title,
-        intensity: program.intensity,
       }))}
     />
   );

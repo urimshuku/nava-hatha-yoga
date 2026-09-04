@@ -95,7 +95,6 @@ export default async function EventDetailPage({ params }: PageProps) {
 
             <EventCard
               event={event}
-              experienceNote={settings.eventExperienceNote}
               headingLevel={1}
               linkTitle={false}
               showRegistration={!past}
