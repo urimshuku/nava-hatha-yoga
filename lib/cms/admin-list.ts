@@ -83,7 +83,7 @@ export function compareStartDateDescending(
 
 export async function listEventEntries(): Promise<AdminListEntry[]> {
   const documents = await listDocuments<YogaEvent>("event");
-  return documents.map(toEntry);
+  return documents.map((document) => toEntry(document));
 }
 
 export async function listRetreatEntries(): Promise<AdminListEntry[]> {
@@ -93,5 +93,5 @@ export async function listRetreatEntries(): Promise<AdminListEntry[]> {
 
 export async function listProgramEntries(): Promise<AdminListEntry[]> {
   const documents = await listDocuments<ProgramListItem>("program");
-  return documents.map(toEntry).sort((a, b) => a.title.localeCompare(b.title));
+  return documents.map((document) => toEntry(document)).sort((a, b) => a.title.localeCompare(b.title));
 }
