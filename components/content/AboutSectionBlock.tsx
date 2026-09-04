@@ -34,22 +34,17 @@ export function AboutSectionBlock({
         tone === "cream" ? "bg-cream" : "bg-ivory",
       )}
     >
-      <div className="mx-auto grid max-w-container items-center gap-10 px-6 sm:px-8 lg:grid-cols-2 lg:gap-16">
+      <div className="mx-auto grid max-w-container items-start gap-10 px-6 sm:px-8 lg:grid-cols-2 lg:gap-16">
         <MotionReveal
-          className={cn(imageFirst && "lg:order-2")}
+          className={cn("w-full", imageFirst && "lg:order-2")}
           delay={imageFirst ? 0.08 : 0}
         >
-          <div className="overflow-hidden rounded-2xl border border-border bg-ivory shadow-soft">
-            <div className="aspect-[4/3] sm:aspect-[5/4]">
-              <AboutSectionImage
-                title={title}
-                image={image}
-                width={760}
-                height={608}
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="h-full w-full"
-              />
-            </div>
+          <div className="relative aspect-[3/2] overflow-hidden rounded-2xl border border-border bg-ivory shadow-soft">
+            <AboutSectionImage
+              title={title}
+              image={image}
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
           </div>
         </MotionReveal>
 
