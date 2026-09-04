@@ -117,7 +117,7 @@ export const LEGAL_LINKS = [
 export const EVENT_TYPE_OPTIONS = [
   { value: "Workshop", label: "Workshop" },
   { value: "Free Session", label: "Free Offering" },
-  { value: "Modular Workshop", label: "Module System" },
+  { value: "Modular Workshop", label: "Module System Workshop" },
 ] as const;
 
 export const EVENT_CATEGORIES = EVENT_TYPE_OPTIONS.map((option) => option.value);

@@ -324,7 +324,7 @@ export function eventTypeTag(category?: string | null): string {
     value === "module" ||
     value === "module system"
   ) {
-    return "Module System";
+    return "Module System Workshop";
   }
   if (value === "retreat") return "Retreat";
   return "Workshop";

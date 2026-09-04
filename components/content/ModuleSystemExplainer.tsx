@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { ModuleSystemModal } from "@/components/content/ModuleSystemModal";
+import { TeacherStoryModal } from "@/components/content/TeacherStoryModal";
 import { MODULE_SYSTEM_EXPLAINER } from "@/lib/module-system";
 
 export function ModuleSystemExplainer() {
@@ -10,7 +10,18 @@ export function ModuleSystemExplainer() {
 
   return (
     <div className="relative z-10">
-      <ModuleSystemModal open={open} onClose={() => setOpen(false)} />
+      <TeacherStoryModal
+        open={open}
+        onClose={() => setOpen(false)}
+        title={MODULE_SYSTEM_EXPLAINER.title}
+        paragraphs={[
+          ...MODULE_SYSTEM_EXPLAINER.intro,
+          ...MODULE_SYSTEM_EXPLAINER.continuation,
+        ]}
+        examplesHeading={MODULE_SYSTEM_EXPLAINER.examplesHeading}
+        examples={MODULE_SYSTEM_EXPLAINER.examples}
+        titleId="module-system-title"
+      />
       <button
         type="button"
         onClick={(event) => {

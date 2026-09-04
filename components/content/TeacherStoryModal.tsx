@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 
 interface TeacherStoryModalProps {
   open: boolean;
   onClose: () => void;
   title: string;
-  paragraphs: string[];
+  paragraphs: readonly string[];
+  examplesHeading?: string;
+  examples?: readonly string[];
+  titleId?: string;
 }
 
 function IconClose() {
@@ -27,6 +31,9 @@ export function TeacherStoryModal({
   onClose,
   title,
   paragraphs,
+  examplesHeading,
+  examples,
+  titleId = "teacher-story-title",
 }: TeacherStoryModalProps) {
   useEffect(() => {
     if (!open) return;
@@ -45,14 +52,14 @@ export function TeacherStoryModal({
     };
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!open || typeof document === "undefined") return null;
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="teacher-story-title"
+      aria-labelledby={titleId}
     >
       <button
         type="button"
@@ -63,7 +70,7 @@ export function TeacherStoryModal({
 
       <div className="relative flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-border bg-ivory shadow-card">
         <div className="flex items-start justify-between gap-4 border-b border-border bg-cream/60 px-6 py-5 sm:px-8">
-          <h2 id="teacher-story-title" className="font-heading text-2xl text-charcoal">
+          <h2 id={titleId} className="font-heading text-2xl text-charcoal">
             {title}
           </h2>
           <button
@@ -86,9 +93,18 @@ export function TeacherStoryModal({
                 {paragraph}
               </p>
             ))}
+            {examplesHeading ? <p>{examplesHeading}</p> : null}
+            {examples && examples.length > 0 ? (
+              <ul className="list-disc space-y-2 pl-6">
+                {examples.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            ) : null}
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
