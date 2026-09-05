@@ -442,26 +442,33 @@ function stepsFromContent(
   ];
 }
 
-export const DEFAULT_REGISTER_CONTENT: RegisterContent = {
-  ...DEFAULT_REGISTER_COPY,
-  steps: stepsFromContent(DEFAULT_REGISTER_COPY, "workshop"),
-};
+function contentFromCopy(
+  copy: Omit<RegisterContent, "steps">,
+  kind?: RegistrationKind,
+): RegisterContent {
+  const steps = stepsFromContent(copy, kind ?? "workshop");
+  return applyStepsToContent(steps, { ...copy, steps });
+}
+
+export const DEFAULT_REGISTER_CONTENT: RegisterContent = contentFromCopy(
+  DEFAULT_REGISTER_COPY,
+  "workshop",
+);
 
 function defaultsForKind(kind?: RegistrationKind): RegisterContent {
   if (kind === "retreat") {
-    const copy = {
-      ...DEFAULT_REGISTER_COPY,
-      howHeardLabel: RETREAT_HOW_HEARD_LABEL,
-      refundPolicyBullets: RETREAT_REFUND_POLICY_BULLETS,
-      agreementBullets: RETREAT_AGREEMENT_BULLETS,
-    };
-    return { ...copy, steps: stepsFromContent(copy, "retreat") };
+    return contentFromCopy(
+      {
+        ...DEFAULT_REGISTER_COPY,
+        howHeardLabel: RETREAT_HOW_HEARD_LABEL,
+        refundPolicyBullets: RETREAT_REFUND_POLICY_BULLETS,
+        agreementBullets: RETREAT_AGREEMENT_BULLETS,
+      },
+      "retreat",
+    );
   }
   if (kind === "free") {
-    return {
-      ...DEFAULT_REGISTER_CONTENT,
-      steps: stepsFromContent(DEFAULT_REGISTER_COPY, "free"),
-    };
+    return contentFromCopy(DEFAULT_REGISTER_COPY, "free");
   }
   return DEFAULT_REGISTER_CONTENT;
 }
@@ -1145,6 +1152,24 @@ export function hasRegisterStep(
   kind: RegisterStepKind,
 ): boolean {
   return content.steps.some((step) => step.kind === kind);
+}
+
+/** Fields people actually see on the form, used so the API does not require hidden ones. */
+export function registerFieldsForValidation(content: RegisterContent): {
+  personal: RegisterFormField[];
+  emergency: RegisterFormField[];
+} {
+  const personal: RegisterFormField[] = [];
+  const emergency: RegisterFormField[] = [];
+  for (const step of content.steps) {
+    if (step.kind === "personal" || step.kind === "fields") {
+      personal.push(...(step.fields ?? []));
+    }
+    if (step.kind === "personal") {
+      emergency.push(...(step.emergencyFields ?? []));
+    }
+  }
+  return { personal, emergency };
 }
 
 function fieldToEditor(field: RegisterFormField): RegisterFormFieldData {

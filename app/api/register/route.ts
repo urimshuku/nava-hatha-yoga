@@ -15,6 +15,7 @@ import {
   REGISTER_EMAIL_RE,
   hasRegisterStep,
   resolveRegisterContent,
+  registerFieldsForValidation,
   valueForRegisterField,
 } from "@/lib/register-config";
 import {
@@ -120,8 +121,8 @@ export async function POST(request: Request) {
         : undefined);
   const extra = parseExtraFields(data.extraFields);
   const known = knownValues(data);
-  const personalFields = content.personalFields;
-  const emergencyFields = content.emergencyFields;
+  const { personal: personalFields, emergency: emergencyFields } =
+    registerFieldsForValidation(content);
   const needsHealth = hasRegisterStep(content, "health");
   const needsProgram = hasRegisterStep(content, "program");
   const needsAgreement = hasRegisterStep(content, "agreement");
