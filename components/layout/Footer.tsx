@@ -12,6 +12,7 @@ import {
   resolveInstagramHref,
   whatsappLink,
 } from "@/lib/constants";
+import { TIRANA_STUDIO, googleMapsUrl } from "@/lib/maps";
 import type { SiteSettings } from "@/lib/cms/content-types";
 
 export function Footer({ settings }: { settings?: SiteSettings }) {
@@ -107,6 +108,16 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
                   </a>
                 </li>
               ) : null}
+              <li>
+                <a
+                  href={googleMapsUrl(TIRANA_STUDIO.mapsQuery)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-saffron"
+                >
+                  Tirana on Google Maps
+                </a>
+              </li>
             </ul>
             <SocialIconLinks
               className="mt-6"
@@ -191,6 +202,16 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
                   </a>
                 </li>
               ) : null}
+              <li>
+                <a
+                  href={googleMapsUrl(TIRANA_STUDIO.mapsQuery)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-saffron"
+                >
+                  Tirana on Google Maps
+                </a>
+              </li>
             </ul>
             <SocialIconLinks
               className="mt-6"

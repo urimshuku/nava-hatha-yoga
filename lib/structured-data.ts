@@ -6,6 +6,11 @@ import {
   SITE_URL,
   getProgramPriceLabel,
 } from "@/lib/constants";
+import {
+  TIRANA_STUDIO,
+  googleMapsUrl,
+  mapsUrlForAddress,
+} from "@/lib/maps";
 import { eventEndTimestamp, eventStartTimestamp, isPastEvent } from "@/lib/event-boundary";
 import { programImageSrc } from "@/lib/local-images";
 import { eventDetailPath, eventRegisterHref, retreatRegisterHref } from "@/lib/utils";
@@ -21,11 +26,11 @@ type JsonLd = Record<string, unknown>;
 
 const ORG_ID = `${SITE_URL}/#organization`;
 
-/** Saranda, Albania — approximate city center for LocalBusiness geo. */
-const SARANDA_GEO = {
+/** Tirana studio (Albania Yoga Center / Plus Code 8RGM+54V). */
+const TIRANA_GEO = {
   "@type": "GeoCoordinates",
-  latitude: 39.8756,
-  longitude: 20.0049,
+  latitude: TIRANA_STUDIO.latitude,
+  longitude: TIRANA_STUDIO.longitude,
 } as const;
 
 function absoluteUrl(path: string): string {
@@ -70,6 +75,8 @@ function placeFromLocation(
       ? "Saranda"
       : placeName.split(",")[0]?.trim() || "Saranda";
 
+  const hasMap = mapsUrlForAddress(address);
+
   return {
     "@type": "Place",
     name: placeName,
@@ -79,6 +86,7 @@ function placeFromLocation(
       addressCountry: "AL",
       ...(address ? { streetAddress: address } : {}),
     },
+    ...(hasMap ? { hasMap } : {}),
   };
 }
 
@@ -116,14 +124,16 @@ export function buildOrganizationJsonLd(settings?: SiteSettings): JsonLd {
     ...(socialUrls?.length ? { sameAs: socialUrls } : {}),
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Saranda",
+      streetAddress: TIRANA_STUDIO.address,
+      addressLocality: "Tirana",
       addressCountry: "AL",
     },
-    geo: SARANDA_GEO,
+    geo: TIRANA_GEO,
+    hasMap: googleMapsUrl(TIRANA_STUDIO.mapsQuery),
     areaServed: [
       { "@type": "Country", name: "Albania" },
-      { "@type": "City", name: "Saranda" },
       { "@type": "City", name: "Tirana" },
+      { "@type": "City", name: "Saranda" },
     ],
     knowsAbout: "Classical Hatha Yoga",
   };
@@ -232,11 +242,13 @@ export function buildCourseJsonLd(
       courseMode: "https://schema.org/Onsite",
       location: {
         "@type": "Place",
-        name: settings?.location || CONTACT.location,
+        name: TIRANA_STUDIO.name,
+        hasMap: googleMapsUrl(TIRANA_STUDIO.mapsQuery),
         address: {
           "@type": "PostalAddress",
+          streetAddress: TIRANA_STUDIO.address,
           addressCountry: "AL",
-          addressLocality: "Saranda",
+          addressLocality: "Tirana",
         },
       },
     },

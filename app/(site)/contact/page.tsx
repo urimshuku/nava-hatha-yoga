@@ -4,9 +4,11 @@ import Link from "next/link";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
+import { GoogleMapsLink } from "@/components/ui/GoogleMapsLink";
 import { PageHero } from "@/components/ui/PageHero";
 import { SocialIconLinks } from "@/components/ui/SocialIconLinks";
 import { resolveInstagramHref, whatsappLink } from "@/lib/constants";
+import { SARANDA_VENUE, TIRANA_STUDIO } from "@/lib/maps";
 import { placeholderContactPage } from "@/lib/placeholders";
 import { buildMetadata } from "@/lib/seo";
 import { PHASE1_CONTACT_SEO } from "@/lib/seo-phase1";
@@ -95,14 +97,31 @@ export default async function ContactPage() {
 
               <div>
                 <h2 className="eyebrow mb-4">Teaching locations</h2>
-                <div className="space-y-4 text-sm leading-relaxed text-brown">
+                <div className="space-y-6 text-sm leading-relaxed text-brown">
                   <div>
                     <p className="mb-1 font-medium text-charcoal">
                       {locations?.mainHeading || "Main teaching locations"}
                     </p>
-                    <p>
-                      {locations?.mainLocations || "Tirana, Saranda."}
-                    </p>
+                    <div className="mt-3 space-y-4">
+                      <div>
+                        <p className="font-medium text-charcoal">
+                          {TIRANA_STUDIO.city}
+                        </p>
+                        <p>{TIRANA_STUDIO.address}</p>
+                        <p className="mt-1">
+                          <GoogleMapsLink query={TIRANA_STUDIO.mapsQuery} />
+                        </p>
+                      </div>
+                      <div>
+                        <p className="font-medium text-charcoal">
+                          {SARANDA_VENUE.city}
+                        </p>
+                        <p>{SARANDA_VENUE.address}</p>
+                        <p className="mt-1">
+                          <GoogleMapsLink query={SARANDA_VENUE.mapsQuery} />
+                        </p>
+                      </div>
+                    </div>
                   </div>
                   <div>
                     <p className="mb-1 font-medium text-charcoal">

@@ -19,6 +19,7 @@ import {
   formatDateRange,
   retreatRegisterHref,
 } from "@/lib/utils";
+import { mapsUrlForAddress } from "@/lib/maps";
 import { urlForImage } from "@/lib/cms/image-url";
 import { getRetreatBySlug, getSiteSettings } from "@/lib/cms/site-content";
 
@@ -64,6 +65,7 @@ export default async function RetreatDetailPage({ params }: PageProps) {
   const dateLabel = formatDateRange(retreat.date, retreat.endDate);
   const cityLabel = retreat.cityCountry?.trim();
   const addressLabel = retreat.location?.trim();
+  const addressMapsHref = mapsUrlForAddress(addressLabel);
   const meta = [dateLabel, cityLabel].filter(Boolean).join(" · ");
   const priceLabel = retreat.priceLabel?.trim();
   const showPrice =
@@ -167,7 +169,19 @@ export default async function RetreatDetailPage({ params }: PageProps) {
                       <div className="flex justify-between gap-4 border-b border-border pb-3">
                         <dt className="text-brown">Address</dt>
                         <dd className="text-right font-medium text-charcoal">
-                          {addressLabel}
+                          {addressMapsHref ? (
+                            <a
+                              href={addressMapsHref}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:text-saffron"
+                              aria-label={`Open ${addressLabel} in Google Maps`}
+                            >
+                              {addressLabel}
+                            </a>
+                          ) : (
+                            addressLabel
+                          )}
                         </dd>
                       </div>
                     ) : null}

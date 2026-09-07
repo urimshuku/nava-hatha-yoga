@@ -6,6 +6,7 @@ import { EventShareButton } from "@/components/cards/EventShareButton";
 import { ModuleSystemExplainer } from "@/components/content/ModuleSystemExplainer";
 import { Button } from "@/components/ui/Button";
 import { programSymbolSrc } from "@/lib/local-images";
+import { mapsUrlForAddress } from "@/lib/maps";
 import { isModuleSystemCategory } from "@/lib/registration-kind";
 import {
   cn,
@@ -237,6 +238,7 @@ export function EventCard({
   const detailPath = eventDetailPath(event);
   const sessionHref = linkTitle ? detailPath : undefined;
   const sharePath = detailPath ?? `/events#${shareAnchorId}`;
+  const mapsHref = mapsUrlForAddress(event.location);
   const badgeClassName =
     "inline-flex rounded-full bg-sand px-3 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-brown";
 
@@ -313,7 +315,19 @@ export function EventCard({
             ) : null}
             {event.location ? (
               <EventDetailRow icon={<IconPin />} label="Address">
-                <span className="whitespace-pre-line">{event.location}</span>
+                {mapsHref ? (
+                  <a
+                    href={mapsHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative z-10 whitespace-pre-line hover:text-saffron"
+                    aria-label={`Open ${event.location} in Google Maps`}
+                  >
+                    {event.location}
+                  </a>
+                ) : (
+                  <span className="whitespace-pre-line">{event.location}</span>
+                )}
               </EventDetailRow>
             ) : null}
             {ageRequirement ? (

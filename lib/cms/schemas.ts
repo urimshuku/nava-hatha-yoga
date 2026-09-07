@@ -707,6 +707,8 @@ export const contactPageSchema: DocumentSchema = {
               kind: "textarea",
               name: "mainLocations",
               label: "Main places",
+              hint: "The public Contact page shows the Tirana and Saranda Google Maps links on its own. This field is no longer used there.",
+              hidden: true,
               rows: 2,
             },
             {
