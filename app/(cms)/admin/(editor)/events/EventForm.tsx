@@ -117,7 +117,7 @@ export function EventForm({
         <SelectField
           name="category"
           label="Event Type"
-          hint="Free offerings use the one-page form. Workshops and Module System Workshop use their matching registration forms."
+          hint="This type selects Workshop, Free Offering, or Module System Registration. Create retreats under Retreats instead."
           value={category}
           onChange={(change) => setCategory(change.target.value)}
           placeholder="Choose one"

@@ -436,10 +436,9 @@ export function formatRegistrationEventLabel(
 export function eventRegisterHref(event: RegistrationEventInput): string {
   const params = new URLSearchParams({
     event: formatRegistrationEventLabel(event),
+    kind: registrationKindFromCategory(event.category) ?? "workshop",
   });
   if (event.slug) params.set("slug", event.slug);
-  const kind = registrationKindFromCategory(event.category);
-  if (kind && kind !== "workshop") params.set("kind", kind);
   return `/register?${params.toString()}`;
 }
 

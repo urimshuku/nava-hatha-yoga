@@ -9,7 +9,6 @@ import { programSymbolSrc } from "@/lib/local-images";
 import { mapsUrlForAddress } from "@/lib/maps";
 import { isModuleSystemCategory } from "@/lib/registration-kind";
 import {
-  cn,
   eventAnchorId,
   eventCardSummaryParagraphs,
   eventLocationBadge,
@@ -28,7 +27,7 @@ interface EventCardProps {
   event: YogaEvent;
   /** Use 1 on the session page; 2 on /events; 3 under a section heading. */
   headingLevel?: 1 | 2 | 3;
-  /** Link the whole card to the session page when a slug exists. */
+  /** Link the title to the session or retreat page when a slug exists. */
   linkTitle?: boolean;
   showRegistration?: boolean;
 }
@@ -245,18 +244,8 @@ export function EventCard({
   return (
     <article
       id={shareAnchorId}
-      className={cn(
-        "relative scroll-mt-24 overflow-hidden rounded-xl border border-border bg-ivory shadow-soft transition-shadow duration-300 ease-calm hover:shadow-card sm:scroll-mt-28",
-        sessionHref && "group",
-      )}
+      className="relative scroll-mt-24 overflow-hidden rounded-xl border border-border bg-ivory shadow-soft transition-shadow duration-300 ease-calm hover:shadow-card sm:scroll-mt-28"
     >
-      {sessionHref ? (
-        <Link
-          href={sessionHref}
-          className="absolute inset-0 z-0"
-          aria-label={`View ${event.title}`}
-        />
-      ) : null}
       <div className="p-4 sm:p-7">
         <div className="flex items-start justify-between gap-3 sm:gap-4">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -287,8 +276,17 @@ export function EventCard({
               className="h-7 w-7 shrink-0 object-contain opacity-90"
             />
           ) : null}
-          <TitleTag className="font-heading text-xl text-charcoal transition-colors group-hover:text-saffron sm:text-[1.75rem]">
-            {event.title}
+          <TitleTag className="font-heading text-xl text-charcoal sm:text-[1.75rem]">
+            {sessionHref ? (
+              <Link
+                href={sessionHref}
+                className="transition-colors hover:text-saffron"
+              >
+                {event.title}
+              </Link>
+            ) : (
+              event.title
+            )}
           </TitleTag>
         </div>
 
@@ -320,7 +318,7 @@ export function EventCard({
                     href={mapsHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="relative z-10 whitespace-pre-line hover:text-saffron"
+                    className="whitespace-pre-line hover:text-saffron"
                     aria-label={`Open ${event.location} in Google Maps`}
                   >
                     {event.location}
@@ -357,7 +355,7 @@ export function EventCard({
         </div>
       </div>
 
-      <div className="relative z-10 flex flex-col gap-3 border-t border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-7 sm:py-4">
+      <div className="flex flex-col gap-3 border-t border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-7 sm:py-4">
         {event.priceLabel || event.paymentNote ? (
           <p className="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-heading text-lg text-charcoal sm:text-xl">
             {event.priceLabel ? (
