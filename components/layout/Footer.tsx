@@ -12,7 +12,7 @@ import {
   resolveInstagramHref,
   whatsappLink,
 } from "@/lib/constants";
-import { TIRANA_STUDIO, googleMapsUrl } from "@/lib/maps";
+import { TIRANA_STUDIO } from "@/lib/maps";
 import type { SiteSettings } from "@/lib/cms/content-types";
 
 export function Footer({ settings }: { settings?: SiteSettings }) {
@@ -110,12 +110,22 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
               ) : null}
               <li>
                 <a
-                  href={googleMapsUrl(TIRANA_STUDIO.mapsQuery)}
+                  href={TIRANA_STUDIO.listingUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-saffron"
                 >
                   Tirana on Google Maps
+                </a>
+              </li>
+              <li>
+                <a
+                  href={TIRANA_STUDIO.reviewsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-saffron"
+                >
+                  Reviews on Google
                 </a>
               </li>
             </ul>
@@ -204,12 +214,22 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
               ) : null}
               <li>
                 <a
-                  href={googleMapsUrl(TIRANA_STUDIO.mapsQuery)}
+                  href={TIRANA_STUDIO.listingUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-saffron"
                 >
                   Tirana on Google Maps
+                </a>
+              </li>
+              <li>
+                <a
+                  href={TIRANA_STUDIO.reviewsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-saffron"
+                >
+                  Reviews on Google
                 </a>
               </li>
             </ul>

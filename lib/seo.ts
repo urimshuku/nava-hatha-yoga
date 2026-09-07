@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/constants";
+import { preferCurrentGeoCopy } from "@/lib/geo-copy";
 import { urlForImage } from "@/lib/cms/image-url";
 import type { SeoFields } from "@/lib/cms/content-types";
 
@@ -78,7 +79,10 @@ export function buildMetadata({
   image,
 }: BuildMetadataArgs = {}): Metadata {
   const resolvedTitle = seo?.title || title;
-  const resolvedDescription = seo?.description || description || SITE_DESCRIPTION;
+  const resolvedDescription = preferCurrentGeoCopy(
+    seo?.description,
+    description || SITE_DESCRIPTION,
+  );
   const canonical = new URL(path, SITE_URL).toString();
   // Keep og/twitter title aligned with the document title / root layout default.
   const ogTitle = resolvedTitle

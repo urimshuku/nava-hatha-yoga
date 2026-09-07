@@ -537,7 +537,7 @@ export const placeholderHomePage: HomePage = {
         "Classical Hatha Yoga is about creating a body that is not a hurdle in your life. The body becomes a stepping stone in the progress towards blossoming into your ultimate possibility.",
       ),
       linkedBlock("intro-geo", [
-        "These practices are offered in Albania, based in Saranda and Tirana, and taught in their traditional form. Begin with ",
+        "These practices are offered in Albania as yoga classes, based in Tirana and Saranda, and taught in their traditional form. Begin with ",
         { text: "Upa Yoga", href: "/programs/upa-yoga" },
         ", explore ",
         { text: "Surya Kriya", href: "/programs/surya-kriya" },
@@ -579,7 +579,7 @@ export const placeholderHomePage: HomePage = {
   upcomingEventsSection: {
     eyebrow: "Events",
     title: "Upcoming events",
-    description: "Classes are held in person in Saranda and Tirana, Albania.",
+    description: "Yoga classes are held in person in Tirana and Saranda, Albania.",
     emptyTitle: "New events are being scheduled",
     emptyDescription:
       "There are no events listed right now. Please check back soon or get in touch to register your interest.",
@@ -1057,11 +1057,11 @@ export const placeholderRetreatsPage: RetreatsPage = {
   heroEyebrow: "Retreats & Partner Programs",
   heroTitle: "Retreat details",
   heroDescription:
-    "Upcoming immersive Classical Hatha Yoga retreats in Albania — devoted to traditional practice, quiet settings, and inner transformation.",
+    "Upcoming Hatha yoga retreats in Tirana and Saranda, Albania — yoga and nature retreats devoted to traditional practice, quiet settings, and inner transformation.",
   comingSoonEyebrow: "Coming Soon",
   comingSoonHeading: "Retreats in preparation",
   comingSoonBody:
-    "Check Upcoming Events to see if a retreat is scheduled, or register your interest for a potential retreat in a location of your choice.",
+    "Check Upcoming Events to see if a yoga retreat is scheduled in Tirana or Saranda, or register your interest for a weekend yoga retreat in Albania — including wellness, meditation, and yoga and nature retreats. Other locations upon request: Vlorë, Gjirokastër, Korçë, and Corfu.",
   expectationsEyebrow: "What to expect",
   expectationsHeading: "An invitation to go deeper",
   expectations: [

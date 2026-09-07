@@ -105,16 +105,28 @@ export default async function ContactPage() {
                     <div className="mt-3 space-y-4">
                       <div>
                         <p className="font-medium text-charcoal">
-                          {TIRANA_STUDIO.city}
+                          {TIRANA_STUDIO.city} — base
                         </p>
                         <p>{TIRANA_STUDIO.address}</p>
-                        <p className="mt-1">
+                        <p className="mt-1 flex flex-wrap gap-x-2 gap-y-1">
                           <GoogleMapsLink query={TIRANA_STUDIO.mapsQuery} />
+                          <span aria-hidden="true" className="text-brown">
+                            ·
+                          </span>
+                          <GoogleMapsLink href={TIRANA_STUDIO.listingUrl}>
+                            Find us on Google
+                          </GoogleMapsLink>
+                          <span aria-hidden="true" className="text-brown">
+                            ·
+                          </span>
+                          <GoogleMapsLink href={TIRANA_STUDIO.reviewsUrl}>
+                            Reviews on Google
+                          </GoogleMapsLink>
                         </p>
                       </div>
                       <div>
                         <p className="font-medium text-charcoal">
-                          {SARANDA_VENUE.city}
+                          {SARANDA_VENUE.city} — teaching / service area
                         </p>
                         <p>{SARANDA_VENUE.address}</p>
                         <p className="mt-1">

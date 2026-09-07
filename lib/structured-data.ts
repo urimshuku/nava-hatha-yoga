@@ -5,12 +5,14 @@ import {
   SITE_NAME,
   SITE_URL,
   getProgramPriceLabel,
+  resolveInstagramHref,
 } from "@/lib/constants";
+import { preferCurrentGeoCopy } from "@/lib/geo-copy";
 import {
   TIRANA_STUDIO,
-  googleMapsUrl,
   mapsUrlForAddress,
 } from "@/lib/maps";
+import { PHASE1_PROGRAM_SEO } from "@/lib/seo-phase1";
 import { eventEndTimestamp, eventStartTimestamp, isPastEvent } from "@/lib/event-boundary";
 import { programImageSrc } from "@/lib/local-images";
 import { eventDetailPath, eventRegisterHref, retreatRegisterHref } from "@/lib/utils";
@@ -108,20 +110,32 @@ export function buildOrganizationJsonLd(settings?: SiteSettings): JsonLd {
   const socialUrls = settings?.social
     ?.map((link) => link.url)
     .filter((url): url is string => Boolean(url));
+  const sameAs = [
+    ...new Set(
+      [
+        resolveInstagramHref(settings?.social),
+        TIRANA_STUDIO.listingUrl,
+        ...(socialUrls ?? []),
+      ].filter(Boolean),
+    ),
+  ];
 
   return {
     "@context": "https://schema.org",
     "@type": "HealthAndBeautyBusiness",
     "@id": ORG_ID,
     name: brandName,
-    description: settings?.description || SITE_DESCRIPTION,
+    description: preferCurrentGeoCopy(
+      settings?.description,
+      SITE_DESCRIPTION,
+    ),
     url: SITE_URL,
     image: logoUrl,
     logo: logoUrl,
     priceRange: "€€",
     ...(settings?.email ? { email: settings.email } : {}),
     ...(settings?.phone ? { telephone: settings.phone } : {}),
-    ...(socialUrls?.length ? { sameAs: socialUrls } : {}),
+    sameAs,
     address: {
       "@type": "PostalAddress",
       streetAddress: TIRANA_STUDIO.address,
@@ -129,7 +143,7 @@ export function buildOrganizationJsonLd(settings?: SiteSettings): JsonLd {
       addressCountry: "AL",
     },
     geo: TIRANA_GEO,
-    hasMap: googleMapsUrl(TIRANA_STUDIO.mapsQuery),
+    hasMap: TIRANA_STUDIO.listingUrl,
     areaServed: [
       { "@type": "Country", name: "Albania" },
       { "@type": "City", name: "Tirana" },
@@ -220,14 +234,19 @@ export function buildCourseJsonLd(
     ? absoluteUrl(programImage.width(1200).height(800).url())
     : absoluteUrl(programImageSrc(program.slug) ?? BRAND_LOGO.src);
 
+  const fallbackDescription =
+    PHASE1_PROGRAM_SEO[program.slug]?.description ||
+    program.shortIntro ||
+    `${program.title} — Classical Hatha Yoga program at ${settings?.brandName || SITE_NAME}.`;
+
   return {
     "@context": "https://schema.org",
     "@type": "Course",
     name: program.title,
-    description:
-      program.seo?.description ||
-      program.shortIntro ||
-      `${program.title} — Classical Hatha Yoga program at ${settings?.brandName || SITE_NAME}.`,
+    description: preferCurrentGeoCopy(
+      program.seo?.description,
+      fallbackDescription,
+    ),
     url,
     image: imageUrl,
     provider: {
@@ -243,7 +262,7 @@ export function buildCourseJsonLd(
       location: {
         "@type": "Place",
         name: TIRANA_STUDIO.name,
-        hasMap: googleMapsUrl(TIRANA_STUDIO.mapsQuery),
+        hasMap: TIRANA_STUDIO.listingUrl,
         address: {
           "@type": "PostalAddress",
           streetAddress: TIRANA_STUDIO.address,

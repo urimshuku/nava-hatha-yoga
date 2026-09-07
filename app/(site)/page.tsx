@@ -24,6 +24,7 @@ import {
 } from "@/lib/cms/site-content";
 import { SITE_NAME, SPECIAL_PROGRAM_SLUGS } from "@/lib/constants";
 import { placeholderHomePage } from "@/lib/placeholders";
+import { preferCurrentGeoCopy, rewriteSarandaFirstPortableText } from "@/lib/geo-copy";
 import { buildMetadata } from "@/lib/seo";
 import { PHASE1_HOME_SEO } from "@/lib/seo-phase1";
 import { buildEventsJsonLd } from "@/lib/structured-data";
@@ -205,9 +206,11 @@ export default async function HomePage() {
             <MotionReveal delay={0.1} className="max-w-prose">
               <CMSRichText
                 value={
-                  home.intro?.body?.length
-                    ? home.intro.body
-                    : placeholderHomePage.intro?.body
+                  rewriteSarandaFirstPortableText(
+                    home.intro?.body?.length
+                      ? home.intro.body
+                      : placeholderHomePage.intro?.body,
+                  ) ?? placeholderHomePage.intro?.body
                 }
                 className="sm:text-lg"
               />
@@ -265,10 +268,11 @@ export default async function HomePage() {
             <SectionHeading
               eyebrow={eventsSection?.eyebrow ?? "Events"}
               title={eventsSection?.title ?? "Upcoming events"}
-              description={
-                eventsSection?.description ??
-                "Classes are held in person in Saranda and Tirana, Albania."
-              }
+              description={preferCurrentGeoCopy(
+                eventsSection?.description,
+                placeholderHomePage.upcomingEventsSection?.description ??
+                  "Yoga classes are held in person in Tirana and Saranda, Albania.",
+              )}
             />
           </MotionReveal>
           <div className="mt-8 sm:mt-12">

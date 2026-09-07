@@ -58,7 +58,7 @@ export const FOOTER_CERTIFICATION_LOGO = {
   height: 135,
 } as const;
 export const SITE_DESCRIPTION =
-  "Nava Hatha Yoga offers Classical Hatha Yoga in Saranda & Tirana, Albania — practices taught in their traditional form to support clarity, balance, and inner stability. Classes are in-person.";
+  "Nava Hatha Yoga offers Classical Hatha Yoga in Tirana and Saranda, Albania — traditional Hatha yoga classes at a yoga studio in Albania. Classes are in-person.";
 
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://navahathayoga.com";
@@ -69,7 +69,7 @@ export const CONTACT = {
   // Digits only (international format, no +, spaces, or symbols) for wa.me links
   whatsapp: "355699391791",
   instagram: "navahathayoga",
-  location: "Saranda & Tirana, Albania",
+  location: "Tirana and Saranda, Albania",
 };
 
 export function whatsappLink(message?: string): string {

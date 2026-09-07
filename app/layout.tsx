@@ -3,14 +3,17 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { fontBody, fontHeading } from "@/lib/fonts";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/constants";
+import { preferCurrentGeoCopy } from "@/lib/geo-copy";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { getSiteSettings } from "@/lib/cms/site-content";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   const brandName = settings.brandName ?? SITE_NAME;
-  const description =
-    settings.seo?.description ?? settings.description ?? SITE_DESCRIPTION;
+  const description = preferCurrentGeoCopy(
+    settings.seo?.description ?? settings.description,
+    SITE_DESCRIPTION,
+  );
   const defaultTitle =
     settings.seo?.title ?? `${brandName} · Classical Hatha Yoga`;
 

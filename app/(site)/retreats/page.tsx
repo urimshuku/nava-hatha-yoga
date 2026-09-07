@@ -9,13 +9,13 @@ import { MotionReveal } from "@/components/ui/MotionReveal";
 import { Ornament } from "@/components/ui/Ornament";
 import { PageHero } from "@/components/ui/PageHero";
 import { placeholderRetreatsPage } from "@/lib/placeholders";
+import { preferCurrentGeoCopy } from "@/lib/geo-copy";
 import { buildMetadata } from "@/lib/seo";
 import { PHASE1_RETREATS_SEO } from "@/lib/seo-phase1";
 import { getRetreatsPage, getSiteSettings } from "@/lib/cms/site-content";
 
-const INVITE_HEADING = "Retreats in preparation";
-const INVITE_BODY =
-  "Check Upcoming Events to see if a retreat is scheduled, or register your interest for a potential retreat in a location of your choice.";
+const INVITE_HEADING = PHASE1_RETREATS_SEO.comingSoonHeading;
+const INVITE_BODY = PHASE1_RETREATS_SEO.comingSoonBody;
 
 function inviteHeading(value?: string) {
   const text = value?.trim();
@@ -34,7 +34,7 @@ function inviteHeading(value?: string) {
 function inviteBody(value?: string) {
   const text = value?.trim();
   if (!text || /no retreat is open for booking/i.test(text)) return INVITE_BODY;
-  return text;
+  return preferCurrentGeoCopy(text, INVITE_BODY);
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -69,11 +69,11 @@ export default async function RetreatsPage() {
           placeholderRetreatsPage.heroTitle ||
           PHASE1_RETREATS_SEO.heroTitle
         }
-        description={
-          page.heroDescription?.trim() ||
+        description={preferCurrentGeoCopy(
+          page.heroDescription,
           placeholderRetreatsPage.heroDescription ||
-          PHASE1_RETREATS_SEO.heroDescription
-        }
+            PHASE1_RETREATS_SEO.heroDescription,
+        )}
       />
 
       <Section tone="cream">

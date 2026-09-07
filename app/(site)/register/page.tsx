@@ -23,7 +23,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = buildMetadata({
   title: "Register",
-  description: "Register for a Hatha Yoga program in Saranda & Tirana, Albania.",
+  description: "Register for a Hatha Yoga program in Tirana and Saranda, Albania.",
   path: "/register",
   noIndex: true,
 });
