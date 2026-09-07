@@ -25,9 +25,12 @@ const PREVIOUS_GEO_DESCRIPTIONS = new Set(
     "Learn Upa Yoga in Albania — a simple, powerful Classical Hatha practice taught as intended, with teaching based in Saranda and Tirana.",
     "Classes are held in person in Tirana and Saranda, Albania.",
     "Classes are held in person in Saranda and Tirana, Albania.",
+    "Yoga classes are held in person in Tirana and Saranda, Albania.",
     "Discover upcoming Classical Hatha Yoga retreats in Albania, created for immersive traditional practice and inner transformation. Register your interest for future retreats.",
     "Upcoming immersive Classical Hatha Yoga retreats in Albania — devoted to traditional practice, quiet settings, and inner transformation.",
+    "Upcoming Hatha yoga retreats in Tirana and Saranda, Albania — yoga and nature retreats devoted to traditional practice, quiet settings, and inner transformation.",
     "Check Upcoming Events to see if a retreat is scheduled, or register your interest for a potential retreat in a location of your choice.",
+    "Check Upcoming Events to see if a yoga retreat is scheduled in Tirana or Saranda, or register your interest for a weekend yoga retreat in Albania — including wellness, meditation, and yoga and nature retreats. Other locations upon request: Vlorë, Gjirokastër, Korçë, and Corfu.",
   ].map(normalizeSeoText),
 );
 
@@ -66,10 +69,6 @@ export function rewriteSarandaFirstCities(text: string): string {
     .replace(
       /These practices are offered in Albania, based in (?:Saranda and Tirana|Tirana and Saranda), and taught in their traditional form/gi,
       "These practices are offered in Albania as yoga classes, based in Tirana and Saranda, and taught in their traditional form",
-    )
-    .replace(
-      /Classes are held in person in (?:Saranda and Tirana|Tirana and Saranda), Albania/gi,
-      "Yoga classes are held in person in Tirana and Saranda, Albania",
     )
     .replace(
       /taught in Saranda, with sessions in Tirana when scheduled/gi,

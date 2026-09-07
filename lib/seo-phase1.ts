@@ -28,10 +28,10 @@ export const PHASE1_RETREATS_SEO = {
     "Yoga retreat Albania — Hatha yoga retreat and yoga retreat Tirana, based in Tirana and Saranda. Upcoming weekend yoga retreat Albania, wellness retreat Albania, meditation retreat Albania, yoga and nature retreat, and yoga retreat Balkans. Upon request in Vlora, Gjirokaster, Korca, and Corfu.",
   heroTitle: "Retreat details",
   heroDescription:
-    "Upcoming Hatha yoga retreats in Tirana and Saranda, Albania — yoga and nature retreats devoted to traditional practice, quiet settings, and inner transformation.",
+    "Upcoming Hatha yoga retreats in Albania — yoga and nature retreats devoted to traditional practice, quiet settings, and inner transformation.",
   comingSoonHeading: "Retreats in preparation",
   comingSoonBody:
-    "Check Upcoming Events to see if a yoga retreat is scheduled in Tirana or Saranda, or register your interest for a weekend yoga retreat in Albania — including wellness, meditation, and yoga and nature retreats. Other locations upon request: Vlorë, Gjirokastër, Korçë, and Corfu.",
+    "Check Upcoming Events to see if a retreat is scheduled, or register your interest for a potential retreat in a location of your choice.",
 } as const;
 
 export const PHASE1_ABOUT_SEO = {

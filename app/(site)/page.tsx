@@ -24,7 +24,7 @@ import {
 } from "@/lib/cms/site-content";
 import { SITE_NAME, SPECIAL_PROGRAM_SLUGS } from "@/lib/constants";
 import { placeholderHomePage } from "@/lib/placeholders";
-import { preferCurrentGeoCopy, rewriteSarandaFirstPortableText } from "@/lib/geo-copy";
+import { isStaleGeoSeoCopy, rewriteSarandaFirstPortableText } from "@/lib/geo-copy";
 import { buildMetadata } from "@/lib/seo";
 import { PHASE1_HOME_SEO } from "@/lib/seo-phase1";
 import { buildEventsJsonLd } from "@/lib/structured-data";
@@ -268,11 +268,12 @@ export default async function HomePage() {
             <SectionHeading
               eyebrow={eventsSection?.eyebrow ?? "Events"}
               title={eventsSection?.title ?? "Upcoming events"}
-              description={preferCurrentGeoCopy(
-                eventsSection?.description,
-                placeholderHomePage.upcomingEventsSection?.description ??
-                  "Yoga classes are held in person in Tirana and Saranda, Albania.",
-              )}
+              description={
+                eventsSection?.description &&
+                !isStaleGeoSeoCopy(eventsSection.description)
+                  ? eventsSection.description
+                  : undefined
+              }
             />
           </MotionReveal>
           <div className="mt-8 sm:mt-12">

@@ -115,17 +115,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
                   rel="noopener noreferrer"
                   className="hover:text-saffron"
                 >
-                  Tirana on Google Maps
-                </a>
-              </li>
-              <li>
-                <a
-                  href={TIRANA_STUDIO.reviewsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-saffron"
-                >
-                  Reviews on Google
+                  Google Maps Location
                 </a>
               </li>
             </ul>
@@ -219,17 +209,7 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
                   rel="noopener noreferrer"
                   className="hover:text-saffron"
                 >
-                  Tirana on Google Maps
-                </a>
-              </li>
-              <li>
-                <a
-                  href={TIRANA_STUDIO.reviewsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-saffron"
-                >
-                  Reviews on Google
+                  Google Maps Location
                 </a>
               </li>
             </ul>
