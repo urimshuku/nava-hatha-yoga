@@ -10,7 +10,7 @@
 export const PHASE1_HOME_SEO = {
   title: "Classical Hatha Yoga in Albania",
   description:
-    "Authentic Classical Hatha Yoga in Albania — traditional Hatha yoga and yoga classes in Tirana and Saranda. Yoga studio in Albania. Joga klasike, joga Hatha.",
+    "Authentic Classical Hatha Yoga in Albania — traditional Hatha yoga and yoga classes in Tirana and Saranda. Yoga studio in Albania.",
 } as const;
 
 export const PHASE1_PROGRAMS_PAGE_SEO = {
@@ -45,7 +45,7 @@ export const PHASE1_ABOUT_SEO = {
 export const PHASE1_CONTACT_SEO = {
   title: "Register for Classical Hatha Yoga in Albania",
   description:
-    "Yoga classes and lessons in Tirana and Saranda, Albania — Classical Hatha Yoga, beginner yoga, yoga studio Tirana. Upon request in Vlora, Gjirokaster, Korca, and Corfu. Studio joga Tirana, mësime joga, kurse joga, joga për fillestarë, joga dhe meditim.",
+    "Yoga classes and lessons in Tirana and Saranda, Albania — Classical Hatha Yoga, beginner yoga, yoga studio Tirana. Upon request in Vlora, Gjirokaster, Korca, and Corfu.",
   heroDescription:
     "For questions regarding upcoming programs, private instruction, or teaching locations, please leave a message below.",
 } as const;

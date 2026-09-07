@@ -12,6 +12,8 @@ const PREVIOUS_GEO_DESCRIPTIONS = new Set(
   [
     "Authentic Classical Hatha Yoga in Albania — traditional practices taught as intended in Tirana and Saranda, for clarity, balance, and inner transformation.",
     "Authentic Classical Hatha Yoga in Albania — traditional practices taught as intended in Saranda & Tirana, for clarity, balance, and inner transformation.",
+    "Authentic Classical Hatha Yoga in Albania — traditional Hatha yoga and yoga classes in Tirana and Saranda. Yoga studio in Albania. Joga klasike, joga Hatha.",
+    "Yoga classes and lessons in Tirana and Saranda, Albania — Classical Hatha Yoga, beginner yoga, yoga studio Tirana. Upon request in Vlora, Gjirokaster, Korca, and Corfu. Studio joga Tirana, mësime joga, kurse joga, joga për fillestarë, joga dhe meditim.",
     "Meet the Classical Hatha Yoga teacher behind Nava Hatha Yoga in Albania — certified training, traditional practices taught as intended, based in Tirana and Saranda.",
     "Meet the Classical Hatha Yoga teacher behind Nava Hatha Yoga in Albania — certified training, traditional practices taught as intended, based in Saranda & Tirana.",
     "Meet the Classical Hatha Yoga teacher behind Nava Hatha Yoga in Albania — certified training, traditional practices taught as intended, based in Saranda.",
@@ -47,10 +49,17 @@ export function isStaleSarandaFirstCopy(text: string): boolean {
   );
 }
 
+export function isStaleAlbanianSeoCopy(text: string): boolean {
+  return /joga klasike|joga hatha|studio joga|m[eë]sime joga|kurse joga|joga p[eë]r fillestar|joga dhe meditim|studio meditimi/i.test(
+    text,
+  );
+}
+
 export function isStaleGeoSeoCopy(text: string): boolean {
   return (
     PREVIOUS_GEO_DESCRIPTIONS.has(normalizeSeoText(text)) ||
-    isStaleSarandaFirstCopy(text)
+    isStaleSarandaFirstCopy(text) ||
+    isStaleAlbanianSeoCopy(text)
   );
 }
 
