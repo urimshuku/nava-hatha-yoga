@@ -109,7 +109,7 @@ export default async function ContactPage() {
                         </p>
                         <p>{TIRANA_STUDIO.address}</p>
                         <p className="mt-1">
-                          <GoogleMapsLink query={TIRANA_STUDIO.mapsQuery} />
+                          <GoogleMapsLink href={TIRANA_STUDIO.listingUrl} />
                         </p>
                       </div>
                       <div>
@@ -118,7 +118,7 @@ export default async function ContactPage() {
                         </p>
                         <p>{SARANDA_VENUE.address}</p>
                         <p className="mt-1">
-                          <GoogleMapsLink query={SARANDA_VENUE.mapsQuery} />
+                          <GoogleMapsLink href={SARANDA_VENUE.listingUrl} />
                         </p>
                       </div>
                     </div>

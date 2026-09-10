@@ -1,12 +1,19 @@
 /**
- * Google Maps search URLs for NAVA teaching places.
+ * Google Maps URLs for NAVA teaching places.
  *
- * These use Google's Maps URLs API so a tap opens Maps (or the Maps app).
- * The Tirana listing URL is the public Google entry point (no Place ID).
+ * Tirana uses coordinates so a tap drops a pin on the studio, not a search for
+ * similarly named yoga businesses. Other addresses still use a Maps search.
  */
+
+export const MAPS_LINK_LABEL = "Main Location";
 
 export function googleMapsUrl(query: string): string {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+
+/** Pin a specific point. `query=lat,lng` opens that marker, not a place search. */
+export function googleMapsPinUrl(latitude: number, longitude: number): string {
+  return `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
 }
 
 /** Google Search for reviews of a place when there is no Place ID. */
@@ -24,7 +31,7 @@ export const TIRANA_STUDIO = {
   mapsQuery: TIRANA_MAPS_QUERY,
   latitude: 41.32544,
   longitude: 19.83281,
-  listingUrl: googleMapsUrl(TIRANA_MAPS_QUERY),
+  listingUrl: googleMapsPinUrl(41.32544, 19.83281),
   reviewsUrl: googleReviewsUrl(TIRANA_MAPS_QUERY),
 } as const;
 
@@ -33,6 +40,7 @@ export const SARANDA_VENUE = {
   name: "Saranda",
   address: "Rruga Skenderbeu 31, 9701, Saranda",
   mapsQuery: "Rruga Skenderbeu 31, 9701, Saranda, Albania",
+  listingUrl: googleMapsUrl("Rruga Skenderbeu 31, 9701, Saranda, Albania"),
 } as const;
 
 export function mapsUrlForAddress(address?: string | null): string | undefined {
@@ -40,10 +48,10 @@ export function mapsUrlForAddress(address?: string | null): string | undefined {
   if (!value) return undefined;
 
   if (/8RGM\+54V|albania yoga center/i.test(value)) {
-    return googleMapsUrl(TIRANA_STUDIO.mapsQuery);
+    return TIRANA_STUDIO.listingUrl;
   }
   if (/skenderbeu/i.test(value)) {
-    return googleMapsUrl(SARANDA_VENUE.mapsQuery);
+    return SARANDA_VENUE.listingUrl;
   }
   return googleMapsUrl(value);
 }

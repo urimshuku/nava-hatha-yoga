@@ -12,7 +12,6 @@ import {
   resolveInstagramHref,
   whatsappLink,
 } from "@/lib/constants";
-import { TIRANA_STUDIO } from "@/lib/maps";
 import type { SiteSettings } from "@/lib/cms/content-types";
 
 export function Footer({ settings }: { settings?: SiteSettings }) {
@@ -108,16 +107,6 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
                   </a>
                 </li>
               ) : null}
-              <li>
-                <a
-                  href={TIRANA_STUDIO.listingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-saffron"
-                >
-                  Google Maps Location
-                </a>
-              </li>
             </ul>
             <SocialIconLinks
               className="mt-6"
@@ -202,16 +191,6 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
                   </a>
                 </li>
               ) : null}
-              <li>
-                <a
-                  href={TIRANA_STUDIO.listingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-saffron"
-                >
-                  Google Maps Location
-                </a>
-              </li>
             </ul>
             <SocialIconLinks
               className="mt-6"

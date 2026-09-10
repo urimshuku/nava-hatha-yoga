@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { googleMapsUrl } from "@/lib/maps";
+import { googleMapsUrl, MAPS_LINK_LABEL } from "@/lib/maps";
 import { cn } from "@/lib/utils";
 
 const googleLinkClass =
@@ -9,7 +9,7 @@ const googleLinkClass =
 export function GoogleMapsLink({
   query,
   href,
-  children = "Open in Google Maps",
+  children = MAPS_LINK_LABEL,
   className,
 }: {
   query?: string;
