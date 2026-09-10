@@ -1,4 +1,8 @@
 import { getCmsEnv } from "./env";
+import {
+  cmsPasswordMatchesHash,
+  getStoredCmsPasswordHash,
+} from "./password-store";
 import { CMS_SESSION_COOKIE } from "./session-cookie";
 
 export { CMS_SESSION_COOKIE };
@@ -87,6 +91,11 @@ export async function getCmsAuthConfig(): Promise<CmsAuthConfig> {
 }
 
 export async function isPasswordCorrect(input: string): Promise<boolean> {
+  const storedHash = await getStoredCmsPasswordHash();
+  if (storedHash) {
+    return cmsPasswordMatchesHash(input, storedHash);
+  }
+
   const config = await getCmsAuthConfig();
   if (!config.ready) return false;
   return equalsInConstantTime(input, config.password);

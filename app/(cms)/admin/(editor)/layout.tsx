@@ -42,6 +42,12 @@ export default async function AdminLayout({
           >
             View the website
           </Link>
+          <Link
+            href="/admin/change-password"
+            className="block text-brown hover:text-saffron"
+          >
+            Change password
+          </Link>
           <form action={logout}>
             <button
               type="submit"

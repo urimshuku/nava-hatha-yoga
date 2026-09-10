@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { CMS_DEFAULT_PATH } from "@/lib/cms/sections";
@@ -38,6 +39,11 @@ export default async function AdminLoginPage({
 
         <div className="rounded-lg border border-border bg-white p-6 shadow-soft">
           <LoginForm next={next} />
+          <p className="mt-4 text-center text-sm">
+            <Link href="/admin/change-password" className="text-brown hover:text-saffron">
+              Change password
+            </Link>
+          </p>
         </div>
       </div>
     </main>
